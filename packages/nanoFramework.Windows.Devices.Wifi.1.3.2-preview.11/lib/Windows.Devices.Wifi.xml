@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Windows.Devices.Wifi</name>
+    </assembly>
+    <members>
+        <member name="M:Windows.Devices.WiFi.WiFiEventListener.ProcessEvent(System.UInt32,System.UInt32,System.DateTime)">
+            <summary>
+            Process an event
+            </summary>
+            <param name="data1"> bits 0-8 = subCategory, bits 9-15=category, bits 16-31=data1 </param>
+            <param name="data2"> data2 </param>
+            <param name="time"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Windows.Devices.WiFi.AvailableNetworksChangedEventHandler">
+            <summary>
+            Event raised when a scan completes on this Wi-Fi adapter. 
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiAdapter">
+            <summary>
+            Provides a means to scan for nearby WiFi access points, enumerate those that are found, and connect to an access point.
+            </summary>
+        </member>
+        <member name="E:Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged">
+            <summary>
+            Event raised when a scan completes on this Wi-Fi adapter. 
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAdapter.NetworkInterface">
+            <summary>
+            Gets the network interface number associatted with this Wi-Fi adapter
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAdapter.NetworkReport">
+            <summary>
+            Gets a list of available networks populated by the last Wi-Fi scan on this WiFiNetworkAdapter.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.Connect(Windows.Devices.WiFi.WiFiAvailableNetwork,Windows.Devices.WiFi.WiFiReconnectionKind,System.String)">
+            <summary>
+            Connect this Wi-Fi device to the specified network, with the specified passphrase and reconnection policy.
+            </summary>
+            <param name="availableNetwork">Describes the Wi-Fi network to be connected.</param>
+            <param name="reconnectionKind">Specifies how to reconnect if the connection is lost.</param>
+            <param name="passwordCredential">The passphrase to be used to connect to the access point.</param>
+            <returns>
+            On successful conclusion of the operation, returns an object that describes the result of the connect operation.
+            </returns>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.Disconnect">
+            <summary>
+            Disconnects any active Wi-Fi connection through this adapter.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.FindAllAdapters">
+            <summary>
+            A static method that enumerates all the Wi-Fi adapters in the system.
+            </summary>
+            <returns>>On successful completion, returns an array of WiFiAdapter objects</returns>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.ScanAsync">
+            <summary>
+            Directs this adapter to initiate an asynchronous network scan.
+            </summary>
+            <remarks>On successful completion, returns a list of networks scanned by this adapter signalled by the AvailableNetworksChanged event.
+            Use NetworkReport to retrive the list of available Networks.
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.Finalize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.WiFi.WiFiAdapter.Dispose">
+            <summary>
+            Dispose WiFiAdapter
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiAvailableNetwork">
+            <summary>
+            Describes an available Wi-Fi network.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAvailableNetwork.Bsid">
+            <summary>
+            Gets the MAC address of the access point.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAvailableNetwork.Ssid">
+            <summary>
+            Gets the SSID (name) of the network.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAvailableNetwork.NetworkKind">
+            <summary>
+            Gets a value describing the kind of network being described.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts">
+            <summary>
+            Gets the signal strength of the network in Ddm
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiAvailableNetwork.SignalBars">
+            <summary>
+            Gets the strength of the signal as a number of bars.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiConnectionResult">
+            <summary>
+            Describes the results of an attempt to connect to a Wi-Fi network.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiConnectionResult.ConnectionStatus">
+            <summary>
+            Gets the connection result value.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiConnectionStatus">
+            <summary>
+            Status of the connection attempt.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.AccessRevoked">
+            <summary>
+            Connection failed because access to the network has been revoked.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.InvalidCredential">
+            <summary>
+            Connection failed because an invalid credential was presented.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.NetworkNotAvailable">
+            <summary>
+            Connection failed because the network is not available.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.Success">
+            <summary>
+            Connection succeeded.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.Timeout">
+            <summary>
+            Connection failed because the connection attempt timed out.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.UnspecifiedFailure">
+            <summary>
+            Connection failed for a reason other than those in this list.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiConnectionStatus.UnsupportedAuthenticationProtocol">
+            <summary>
+            Connection failed because the authentication protocol is not supported.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiNetworkKind">
+            <summary>
+            Describes the kinds of Wi-Fi networks.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiNetworkKind.Adhoc">
+            <summary>
+            An independent (IBSS) network.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiNetworkKind.Any">
+            <summary>
+            Either an infrastructure or independent network.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiNetworkKind.Infrastructure">
+            <summary>
+            An infrastructure network.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiNetworkReport">
+            <summary>
+            Contains the result of a network scan operation.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.WiFi.WiFiNetworkReport.AvailableNetworks">
+            <summary>
+            A list of available networks.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.WiFi.WiFiReconnectionKind">
+            <summary>
+            Describes whether to automatically reconnect to this network.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiReconnectionKind.Automatic">
+            <summary>
+            Reconnect automatically.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.WiFi.WiFiReconnectionKind.Manual">
+            <summary>
+            Allow user to reconnect manually.
+            </summary>
+        </member>
+    </members>
+</doc>

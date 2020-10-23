@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>nanoFramework.Hardware.Esp32.Rmt</name>
+    </assembly>
+    <members>
+        <member name="T:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel">
+            <summary>
+            A class that can be used to Receive RMT items on ESP32
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.ReceiveTimeout">
+            <summary>
+            The receive time-out used when calling GetAllItems. Default 1 second.
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Public constructor to create receiver channel object.
+            </summary>
+            <param name="gpio">The GPIO pin number that we want to use for receiving</param>
+            <param name="rmtBufferSize">The maximum number of RMT commands to be reserved in receiver input buffer. 
+            Default 100.</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.Start(System.Boolean)">
+            <summary>
+            Start receiving data on channel.
+            </summary>
+            <param name="clearBuffer">Clears buffer before starting.</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.Stop">
+            <summary>
+            Stop receiving data on channel.
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.EnableFilter(System.Boolean,System.Byte)">
+            <summary>
+            Enable / Disable filter for channel.
+            </summary>
+            <param name="enable">True to Enable filter</param>
+            <param name="threshold">Pulse width to ignore expressed in number of source clock cycles,
+            Value between 1-255</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.SetIdleThresold(System.UInt16)">
+            <summary>
+            Set the Idle Threshold in ticks.
+            </summary>
+            <Remarks>
+            The receive process finishes(goes idle) when no edges have been detected for Idle Threshold clock cycles.</Remarks>
+            <param name="threshold">Value between 1 and 65535 (0xFFFF)</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.ReceiverChannel.GetAllItems">
+            <summary>
+            Get all RmtCommand items available.
+            </summary>
+            <remarks>If no signal received in time-out period then empty array will be returned.</remarks>
+            <returns>Return array of RMTCommand. <br/>
+            If no signal received in time-out period then empty array will be returned.
+            </returns>
+        </member>
+        <member name="T:nanoFramework.Hardware.Esp32.Rmt.RmtChannel">
+            <summary>
+            Base class for a RMT channel
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtChannel._channel">
+            <summary>
+            Assigned RMT channel, assigned when channel created.
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtChannel._clockDivider">
+            <summary>
+            Clock divider used on channel
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtChannel._sourceClock">
+            <summary>
+            RMT channel source clock
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtChannel._NumberRmtChannels">
+            <summary>
+            The number of RMT channels available.
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtChannel._MaxChannelNumber">
+            <summary>
+            The largest channel number. Channel numbers start at 0.
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtChannel.Channel">
+            <summary>
+            The channel number we are using
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtChannel.ClockDivider">
+            <summary>
+            The value can be between 1 and 255.
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtChannel.SourceClock">
+            <summary>
+            The source clock. Only the 80MHz APB clock is currently supported.
+            </summary>
+        </member>
+        <member name="T:nanoFramework.Hardware.Esp32.Rmt.SourceClock">
+            <summary>
+            Enum for source Clock types
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.SourceClock.APB">
+            <summary>
+             80MHz clock source.
+            </summary>
+            <remarks>
+            Currently this is the only supported mode on ESP32.
+            </remarks>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.SourceClock.REF">
+            <summary>
+            Not supported
+            </summary>
+        </member>
+        <member name="T:nanoFramework.Hardware.Esp32.Rmt.RmtCommand">
+            <summary>
+            Class to encapsulate a RMT item
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtCommand._level0">
+            <summary>
+            Command level 1
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtCommand._level1">
+            <summary>
+            Command level 2
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtCommand._duration0">
+            <summary>
+            Command duration 1
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtCommand._duration1">
+            <summary>
+            Command duration 2
+            </summary>
+        </member>
+        <member name="F:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.MaxDuration">
+            <summary>
+            Max value of rmt_item32_t::durationX (15 bit unsigned value)
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.#ctor(System.UInt16,System.Boolean,System.UInt16,System.Boolean)">
+            <summary>
+            Create new rmt command
+            </summary>
+            <param name="duration1"></param>
+            <param name="level1"></param>
+            <param name="duration2"></param>
+            <param name="level2"></param>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.Duration0">
+            <summary>
+            Level1 duration in RMT channel ticks
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.Duration1">
+            <summary>
+            Level2 duration in RMT channel ticks
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.Level0">
+            <summary>
+            Level 0 value high/low
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.Level1">
+            <summary>
+            Level 1 value high/low
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.RmtCommand.CheckDuration(System.UInt16)">
+            <summary>
+            Check if the given duration exceeds max duration, Maximum supported duration is 32768
+            </summary>
+            <param name="duration"></param>
+        </member>
+        <member name="T:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel">
+            <summary>
+            A class that can be used to create and transmit RMT commands on ESP32
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.AddCommand(nanoFramework.Hardware.Esp32.Rmt.RmtCommand)">
+            <summary>
+            Add new RMT command to the list of commands that will be sent
+            </summary>
+            <param name="cmd">RmtCommand to Add</param>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.Item(System.Int32)">
+            <summary>
+            Access a command from the array of commands that will be sent
+            </summary>
+            <param name="index">Index into RMTCommand array</param>
+            <returns>RMT command from index</returns>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.CarrierEnabled">
+            <summary>
+            Is the carrier wave enabled?
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.IsChannelIdle">
+            <summary>
+            Is the channel idle?
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.IdleLevel">
+            <summary>
+            The level of the channel when in an idle state.
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.CarrierHighDuration">
+            <summary>
+            The duration of the carrier wave's high pulse, in source clock ticks.
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.CarrierLowDuration">
+            <summary>
+            The duration of the carrier wave's low pulse, in source clock ticks.
+            </summary>
+        </member>
+        <member name="P:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.CarrierLevel">
+            <summary>
+            The level of the carrier wave's.
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.SerializeCommands">
+            <summary>
+            Serialize commands to rmt_item32_t native byte format
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.#ctor(System.Int32)">
+            <summary>
+            Public constructor to create Transmitter object
+            </summary>
+            <param name="gpio">The GPIO pin number that we want to use for transmitting</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.ConfigureCarrier">
+            <summary>
+            Configures the carrier's settings.
+            </summary>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.Send(System.Boolean)">
+            <summary>
+            Send the filled RMT commands to the transmitter
+            </summary>
+            <param name="waitTxDone">If true wait the TX process to end, false function returns without waiting, but if another command is send before the end of the previous process an error will occur.</param>
+        </member>
+        <member name="M:nanoFramework.Hardware.Esp32.Rmt.TransmitterChannel.SendData(System.Byte[],System.Boolean)">
+            <summary>
+            Send a RAW data to RMT module
+            </summary>
+            <param name="data">byte array of data for tx module ready for native function</param>
+            <param name="waitTxDone"></param>
+        </member>
+    </members>
+</doc>

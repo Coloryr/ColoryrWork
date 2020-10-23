@@ -1,0 +1,644 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Windows.Devices.Gpio</name>
+    </assembly>
+    <members>
+        <member name="T:Windows.Devices.Gpio.GpioPinExtensions">
+            <summary>
+            nanoFramework extensions for <see cref="T:Windows.Devices.Gpio.GpioPin"/>.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPinExtensions.SetAlternateFunction(Windows.Devices.Gpio.GpioPin,System.Int32)">
+            <summary>
+            Sets the pin to the specified alternate function.
+            </summary>
+            <param name="pin"></param>
+            <param name="alternateFunction">The value of the alternate function.</param>
+            <remarks>
+            This extension is exclusive of nanoFramework and it may not be supported in all platforms.
+            WARNING: Use with caution! There is no validation on the execution of this call and there is the potential for breaking things, 
+            so be sure to know what you are doing when using it.
+            Platforms supporting this feature: Cortex-M and ESP32.
+            Platforms not supporting this feature: none.
+            </remarks>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioChangePolarity">
+            <summary>
+            Represents the polarity of changes that are relevant to the associated action.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioChangePolarity.Both">
+            <summary>
+            Transitions from both low to high and high to low should trigger the associated action.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioChangePolarity.Falling">
+            <summary>
+            Transitions from high to low should trigger the associated action.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioChangePolarity.Rising">
+            <summary>
+            Transitions from low to high should trigger the associated action.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioController">
+            <summary>
+            Represents the default general-purpose I/O (GPIO) controller for the system.
+            </summary>
+            <remarks>To get a <see cref="T:Windows.Devices.Gpio.GpioController"/> object, use the <see cref="M:Windows.Devices.Gpio.GpioController.GetDefault"/> method.</remarks>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioController.PinCount">
+            <summary>
+            Gets the number of pins on the general-purpose I/O (GPIO) controller.
+            </summary>
+            <value>
+            The number of pins on the GPIO controller. Some pins may not be available in user mode.
+            For information about how the pin numbers correspond to physical pins, see the documentation for your circuit board.
+            </value>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioController.GetDefault">
+            <summary>
+            Gets the default general-purpose I/O (GPIO) controller for the system.
+            </summary>
+            <returns>The default GPIO controller for the system, or null if the system has no GPIO controller.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioController.OpenPin(System.Int32)">
+            <summary>
+            Opens a connection to the specified general-purpose I/O (GPIO) pin in exclusive mode.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. The pin number must be
+            <list type="bullet">
+            <item><term>in range</term></item>
+            <item><term>available to usermode applications</term></item>
+            </list>
+            <para>Pin numbers start at 0, and increase to the maximum pin number, which is one less than the value returned by GpioController.PinCount.</para>
+            <para>Which pins are available to usermode depends on the circuit board on which the code is running.For information about how pin numbers correspond to physical pins, see the documentation for your circuit board.</para>
+            </param>
+            <returns>The opened GPIO pin.</returns>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_INVALIDARG (0x80070057)</term>
+            <description>An invalid parameter was specified. This error will be returned if the pin number is out of range. 
+            Pin numbers start at 0 and increase to the maximum pin number, which is one less than the value returned by <see cref="P:Windows.Devices.Gpio.GpioController.PinCount"/>.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_NOT_FOUND) (0x80070490)</term>
+            <description>The pin is not available to usermode applications; it is reserved by the system. See the documentation for your circuit board to find out which pins are available to usermode applications.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_SHARING_VIOLATION) (0x80070020)</term>
+            <description>The pin is currently open in an incompatible sharing mode. For example:
+            <list type="bullet">
+            <item><term>The pin is already open in GpioSharingMode.Exclusive mode.</term></item>
+            <item><term>The pin is already open in GpioSharingMode.SharedReadOnly mode when you request to open it in GpioSharingMode.Exclusive mode. </term></item>
+            </list></description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_GPIO_INCOMPATIBLE_CONNECT_MODE) (0x80073bde)</term>
+            <description>The pin is currently muxed to a different function; for example I2C, SPI, or UART. Ensure the pin is not in use by another function.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_GEN_FAILURE) (0x8007001f)</term>
+            <description>The GPIO driver returned an error. Ensure that the GPIO driver is running and configured correctly.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioController.OpenPin(System.Int32,Windows.Devices.Gpio.GpioSharingMode)">
+            <summary>
+            Opens the specified general-purpose I/O (GPIO) pin in the specified mode.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. The pin number must be
+            <list type="bullet">
+            <item><term>in range</term></item>
+            <item><term>available to usermode applications</term></item>
+            </list>
+            <para>Pin numbers start at 0, and increase to the maximum pin number, which is one less than the value returned by GpioController.PinCount.</para>
+            <para>Which pins are available to usermode depends on the circuit board on which the code is running.For information about how pin numbers correspond to physical pins, see the documentation for your circuit board.</para>
+            </param>
+            <param name="sharingMode">The mode in which you want to open the GPIO pin, which determines whether other connections to the pin can be opened while you have the pin open.</param>
+            <returns>The opened GPIO pin.</returns>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_INVALIDARG (0x80070057)</term>
+            <description>An invalid parameter was specified. This error will be returned if the pin number is out of range. 
+            Pin numbers start at 0 and increase to the maximum pin number, which is one less than the value returned by <see cref="P:Windows.Devices.Gpio.GpioController.PinCount"/>.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_NOT_FOUND) (0x80070490)</term>
+            <description>The pin is not available to usermode applications; it is reserved by the system. See the documentation for your circuit board to find out which pins are available to usermode applications.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_SHARING_VIOLATION) (0x80070020)</term>
+            <description>The pin is currently open in an incompatible sharing mode. For example:
+            <list type="bullet">
+            <item><term>The pin is already open in GpioSharingMode.Exclusive mode.</term></item>
+            <item><term>The pin is already open in GpioSharingMode.SharedReadOnly mode when you request to open it in GpioSharingMode.Exclusive mode. </term></item>
+            </list></description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_GPIO_INCOMPATIBLE_CONNECT_MODE) (0x80073bde)</term>
+            <description>The pin is currently muxed to a different function; for example I2C, SPI, or UART. Ensure the pin is not in use by another function.</description></item>
+            <item><term>HRESULT_FROM_WIN32(ERROR_GEN_FAILURE) (0x8007001f)</term>
+            <description>The GPIO driver returned an error. Ensure that the GPIO driver is running and configured correctly.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioController.TryOpenPin(System.Int32,Windows.Devices.Gpio.GpioSharingMode,Windows.Devices.Gpio.GpioPin@,Windows.Devices.Gpio.GpioOpenStatus@)">
+            <summary>
+            Opens the specified general-purpose I/O (GPIO) pin in the specified mode, and gets a status value that you can use to handle a failure to open the pin programmatically.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. Some pins may not be available in user mode. For information about how the pin numbers correspond to physical pins, see the documentation for your circuit board.</param>
+            <param name="sharingMode">The mode in which you want to open the GPIO pin, which determines whether other connections to the pin can be opened while you have the pin open.</param>
+            <param name="pin">The opened GPIO pin if the return value is true; otherwise null.</param>
+            <param name="openStatus">An enumeration value that indicates either that the attempt to open the GPIO pin succeeded, or the reason that the attempt to open the GPIO pin failed.</param>
+            <returns>True if the method successfully opened the pin; otherwise false.
+            <para>If the method returns true, the pin parameter receives an instance of a GpioPin, and the openStatus parameter receives GpioOpenStatus.PinOpened.If the method returns false, the pin parameter is null and the openStatus parameter receives the reason that the operation failed.</para></returns>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioOpenStatus">
+            <summary>
+            Describes the possible results of opening a pin with the <see><cref>GpioPin.TryOpenPin</cref></see> method.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioOpenStatus.MuxingConflict">
+            <summary>
+            The pin is currently opened for a different function, such as I2C, SPI, or UART. Ensure the pin is not in use by another function.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioOpenStatus.PinOpened">
+            <summary>
+            The GPIO pin was successfully opened.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioOpenStatus.PinUnavailable">
+            <summary>
+            The pin is reserved by the system and is not available to apps that run in user mode.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioOpenStatus.SharingViolation">
+            <summary>
+            <para>The pin is currently open in an incompatible sharing mode. For example:</para>
+            <list type="bullet">
+            <item><term>The pin is already open in GpioSharingMode.Exclusive mode.</term></item>
+            <item><term>The pin is already open in GpioSharingMode.SharedReadOnly mode when you request to open it in GpioSharingMode.Exclusive mode.</term></item>
+            </list>
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioOpenStatus.UnknownError">
+            <summary>
+            The pin could not be opened.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioPin">
+            <summary>
+            Represents a general-purpose I/O (GPIO) pin.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioPin.DebounceTimeout">
+            <summary>
+            Gets or sets the debounce timeout for the general-purpose I/O (GPIO) pin, which is an interval during which changes to the value of the pin are filtered out and do not generate ValueChanged events.
+            </summary>
+            <value>
+            The debounce timeout for the GPIO pin, which is an interval during which changes to the value of the pin are filtered out and do not generate ValueChanged events.
+            If the length of this interval is 0, all changes to the value of the pin generate ValueChanged events.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioPin.PinNumber">
+            <summary>
+            Gets the pin number of the general-purpose I/O (GPIO) pin.
+            </summary>
+            <value>
+            The pin number of the GPIO pin.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioPin.SharingMode">
+            <summary>
+            Gets the sharing mode in which the general-purpose I/O (GPIO) pin is open.
+            </summary>
+            <value>
+            The sharing mode in which the GPIO pin is open.
+            </value>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.GetDriveMode">
+            <summary>
+            Gets the current drive mode for the general-purpose I/O (GPIO) pin. The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.
+            </summary>
+            <returns>An enumeration value that indicates the current drive mode for the GPIO pin.
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.IsDriveModeSupported(Windows.Devices.Gpio.GpioPinDriveMode)">
+            <summary>
+            Gets whether the general-purpose I/O (GPIO) pin supports the specified drive mode.
+            </summary>
+            <param name="driveMode">The drive mode that you want to check for support.</param>
+            <returns>
+              True if the GPIO pin supports the drive mode that driveMode specifies; otherwise false. 
+            If you specify a drive mode for which this method returns false when you call <see cref="M:Windows.Devices.Gpio.GpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)"/>, <see cref="M:Windows.Devices.Gpio.GpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)"/> generates an exception.
+            </returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)">
+            <summary>
+            Sets the drive mode of the general-purpose I/O (GPIO) pin. 
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.
+            </summary>
+            <param name="value">An enumeration value that specifies drive mode to use for the GPIO pin.
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.</param>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_INVALIDARG : The GPIO pin does not support the specified drive mode.</term></item>
+            <item><term>E_ACCESSDENIED : The pin is open in shared read-only mode.Close the pin and reopen it in exclusive mode to change the drive mode of the pin.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.Read">
+            <summary>
+            Reads the current value of the general-purpose I/O (GPIO) pin.
+            </summary>
+            <returns>The current value of the GPIO pin. If the pin is configured as an output, this value is the last value written to the pin.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.Write(Windows.Devices.Gpio.GpioPinValue)">
+            <summary>
+            Drives the specified value onto the general purpose I/O (GPIO) pin according to the current drive mode for the pin 
+            if the pin is configured as an output, or updates the latched output value for the pin if the pin is configured as an input.
+            </summary>
+            <param name="value">The enumeration value to write to the GPIO pin.
+            <para>If the GPIO pin is configured as an output, the method drives the specified value onto the pin according to the current drive mode for the pin.</para>
+            <para>If the GPIO pin is configured as an input, the method updates the latched output value for the pin. The latched output value is driven onto the pin when the configuration for the pin changes to output.</para>
+            </param>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_ACCESSDENIED : The GPIO pin is open in shared read-only mode. To write to the pin, close the pin and reopen the pin in exclusive mode.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="E:Windows.Devices.Gpio.GpioPin.ValueChanged">
+            <summary>
+            Occurs when the value of the general-purpose I/O (GPIO) pin changes, either because of an external stimulus when the pin is configured as an input, or when a value is written to the pin when the pin in configured as an output.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.OnPinChangedInternal(Windows.Devices.Gpio.GpioPinEdge)">
+            <summary>
+            Handles internal events and re-dispatches them to the publicly subscribed delegates.
+            </summary>
+            <param name="edge">The state transition for this event.</param>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPin.Toggle">
+            <summary>
+            Toggles the output of the general purpose I/O (GPIO) pin if the pin is configured as an output.
+            </summary>
+            <remarks>
+            This method is exclusive of nanoFramework and it's not available in the UWP API.
+            </remarks>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioPinDriveMode">
+            <summary>
+            Describes whether a general-purpose I/O (GPIO) pin is configured as an input or an output, and how values are driven onto the pin
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.Input">
+            <summary>
+            Configures the GPIO pin in floating mode, with high impedance.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.InputPullDown">
+            <summary>
+            Configures the GPIO pin as high impedance with a pull-down resistor to ground.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.InputPullUp">
+            <summary>
+            Configures the GPIO pin as high impedance with a pull-up resistor to the voltage charge connection (VCC).
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.Output">
+            <summary>
+            Configures the GPIO pin in strong drive mode, with low impedance.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.OutputOpenDrain">
+            <summary>
+            Configures the GPIO in open drain mode.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.OutputOpenDrainPullUp">
+            <summary>
+            Configures the GPIO pin in open drain mode with resistive pull-up mode.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.OutputOpenSource">
+            <summary>
+            Configures the GPIO pin in open collector mode.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinDriveMode.OutputOpenSourcePullDown">
+            <summary>
+            Configures the GPIO pin in open collector mode with resistive pull-down mode.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioPinEdge">
+            <summary>
+            Describes the possible types of change that can occur to the value of the general-purpose I/O (GPIO) pin for the GpioPin.ValueChanged event.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinEdge.FallingEdge">
+            <summary>
+            The value of the GPIO pin changed from high to low.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinEdge.RisingEdge">
+            <summary>
+            The value of the GPIO pin changed from low to high.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioPinValue">
+            <summary>
+            Describes the possible values for a general-purpose I/O (GPIO) pin.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinValue.Low">
+            <summary>
+            The value of the GPIO pin is low.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioPinValue.High">
+            <summary>
+            The value of the GPIO pin is high.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioPinValueChangedEventArgs">
+            <summary>
+            Provides data about the <see cref="E:Windows.Devices.Gpio.GpioPin.ValueChanged"/> event that occurs when the value of the general-purpose I/O (GPIO) pin changes, either because of an external stimulus when the pin is configured as an input, or when a value is written to the pin when the pin in configured as an output.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioPinValueChangedEventArgs.#ctor(Windows.Devices.Gpio.GpioPinEdge)">
+            <summary>
+            Creats a new instance of the GpioPinValueChangedEventArgs class
+            </summary>
+            <param name="edge">An enumeration value that indicates the type of change that occurred to the value of the GPIO pin for the GpioPin.ValueChanged event.</param>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioPinValueChangedEventArgs.Edge">
+            <summary>
+            Gets the type of change that occurred to the value of the general-purpose I/O (GPIO) pin for the <see cref="E:Windows.Devices.Gpio.GpioPin.ValueChanged"/> event.
+            </summary>
+            <value>An enumeration value that indicates the type of change that occurred to the value of the GPIO pin for
+                the GpioPin.ValueChanged event.</value>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioSharingMode">
+            <summary>
+            Describes the modes in which you can open a general-purpose I/O (GPIO) pin.
+            <para>These modes determine whether other connections to the GPIO pin can be opened while you have the pin open.</para>
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioSharingMode.Exclusive">
+            <summary>
+            Opens the GPIO pin exclusively, so that no other connection to the pin can be opened.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioSharingMode.SharedReadOnly">
+            <summary>
+            <para>Opens the GPIO pin as shared, so that other connections in SharedReadOnly mode to the pin can be opened.</para>
+            <para>You can only perform operations that do not change the state of the GPIO pin in shared mode. Operations that you can perform on the GPIO pin in shared mode include:</para>
+            <list type="bullet">
+            <item><term>Calling the GpioPin.Read method.</term></item>
+            <item><term>Calling the GpioPin.GetDriveMode method.</term></item>
+            <item><term>Getting the values of properties, such as GpioPin.PinNumber and GpioPin.DebounceTimeout.</term></item>
+            <item><term>Registering an event handler for the GpioPin.ValueChanged event.</term></item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioChangeCount">
+            <summary>
+            Represents a near-simultaneous sampling of the number of times a pin has changed value, and the time at which this count was sampled.
+            This structure can be used to determine the number of pin value changes over a period of time.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioChangeCount.Count">
+            <summary>
+            The number of times the transition of polarity specified by <see><cref>GpioChangeCounter.Polarity</cref></see> occured on the pin.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.Gpio.GpioChangeCount.RelativeTime">
+            <summary>
+            The time at which this count was sampled. The time is sampled close to (but not simultaneously with) the count.
+            This timestamp can be used to determine the elapsed time between two GpioChangeCount records.
+            It does not correspond to any absolute or system time.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.GpioChangeCounter">
+            <summary>
+            Counts changes of a specified polarity on a general-purpose I/O (GPIO) pin.
+            </summary>
+            <remarks>
+            <para>
+            When the pin is an input, interrupts are used to detect pin changes unless the MCU supports a counter in hardware. 
+            Changes of the pin are enabled for the specified polarity, and the count is incremented when a change occurs.
+            </para>
+            <para>
+            When the pin is an output, the count will increment whenever the specified transition occurs on the pin. 
+            For example, if the pin is configured as an output and counting is enabled for rising edges, writing a 0 and then a 1 will cause the count to be incremented.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioChangeCounter.#ctor(Windows.Devices.Gpio.GpioPin)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Windows.Devices.Gpio.GpioChangeCounter"/> class associated with the specified pin.
+            Only a single <see cref="T:Windows.Devices.Gpio.GpioChangeCounter"/> may be associated with a pin at any given time.
+            </summary>
+            <param name="pin">The pin on which to count changes.
+            This pin must have been opened in Exclusive mode, and cannot be associated with another GpioChangeCounter.
+            </param>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_INVALIDARG : TThe pin is already associated with a change counter.That change counter must be disposed before the pin can be associated with a new change counter.</term></item>
+            <item><term>E_ACCESSDENIED : The pin is not opened in Exclusive mode.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioChangeCounter.IsStarted">
+            <summary>
+            Gets whether pin change counting is currently active.
+            </summary>
+            <returns><c>TRUE</c> if this pin change counting is active and <c>FALSE</c> otherwise.</returns>
+        </member>
+        <member name="P:Windows.Devices.Gpio.GpioChangeCounter.Polarity">
+            <summary>
+            Gets or sets the polarity of transitions that will be counted. The polarity may only be changed when pin counting is not started.
+            </summary>
+            <remarks><para>The default polarity value is Falling. See <see cref="T:Windows.Devices.Gpio.GpioChangePolarity"></see> for more information on polarity values. Counting a single edge can be considerably more efficient than counting both edges.</para>
+            <para>The following exceptions can be thrown when setting the polarity:</para>
+            <list type="bullet">
+            <item><term>E_INVALID_OPERATION :Change counting is currently active. Polarity can only be set before calling Start() or after calling Stop().</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioChangeCounter.Read">
+            <summary>
+            Reads the current count of polarity changes. Before counting has been started, this will return 0.
+            </summary>
+            <returns>A <see cref="T:Windows.Devices.Gpio.GpioChangeCount" /> structure containing a count and an associated timestamp.</returns>
+            <remarks><para>The following exception can be thrown by this method:</para>
+            <list type="bullet">
+            <item><term>E_OBJECT_DISPOSED : The change counter or the associated pin has been disposed.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioChangeCounter.Reset">
+            <summary>
+            Resets the count to 0 and returns the previous count.
+            </summary>
+            <returns>A <see cref="T:Windows.Devices.Gpio.GpioChangeCount" /> structure containing a count and an associated timestamp.</returns>
+            <remarks><para>The following exception can be thrown by this method:</para>
+            <list type="bullet">
+            <item><term>E_OBJECT_DISPOSED : The change counter or the associated pin has been disposed.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Windows.Devices.Gpio.GpioChangeCounter.Start" -->
+        <member name="M:Windows.Devices.Gpio.GpioChangeCounter.Stop">
+            <summary>
+            Stop counting changes in pin polarity. This method may only be called when change counting is currently active.
+            </summary>
+            <remarks>
+            <para>Calling Stop() may enable or reconfigure interrupts for the pin.</para>
+            <para>The following exceptions can be thrown by this method:</para>
+            <list type="bullet">
+            <item><term>E_INVALID_OPERATION : Change counting has not been started.</term></item>
+            <item><term>E_OBJECT_DISPOSED : The change counter or the associated pin has been disposed.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.GpioChangeCounter.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.Gpio.IGpioController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.Gpio.IGpioController.PinCount">
+            <summary>
+            Gets the number of pins on the general-purpose I/O (GPIO) controller.
+            </summary>
+            <value>
+            The number of pins on the GPIO controller. Some pins may not be available in user mode.
+            For information about how the pin numbers correspond to physical pins, see the documentation for your circuit board.
+            </value>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioController.OpenPin(System.Int32)">
+            <summary>
+            Opens a connection to the specified general-purpose I/O (GPIO) pin in exclusive mode.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. The pin number must be
+            <list type="bullet">
+            <item><term>in range</term></item>
+            <item><term>available to usermode applications</term></item>
+            </list>
+            <para>Pin numbers start at 0, and increase to the maximum pin number, which is one less than the value returned by GpioController.PinCount.</para>
+            <para>Which pins are available to usermode depends on the circuit board on which the code is running.For information about how pin numbers correspond to physical pins, see the documentation for your circuit board.</para>
+            </param>
+            <returns>An interface to the opened  GPIO pin.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioController.OpenPin(System.Int32,Windows.Devices.Gpio.GpioSharingMode)">
+            <summary>
+            Opens a connection to the specified general-purpose I/O (GPIO) pin in exclusive mode.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. The pin number must be
+            <list type="bullet">
+            <item><term>in range</term></item>
+            <item><term>available to usermode applications</term></item>
+            </list>
+            <para>Pin numbers start at 0, and increase to the maximum pin number, which is one less than the value returned by GpioController.PinCount.</para>
+            <para>Which pins are available to usermode depends on the circuit board on which the code is running.For information about how pin numbers correspond to physical pins, see the documentation for your circuit board.</para>
+            </param>
+            <param name="sharingMode">The mode in which you want to open the GPIO pin, which determines whether other connections to the pin can be opened while you have the pin open.</param>
+            <returns>An interface to the opened  GPIO pin.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioController.TryOpenPin(System.Int32,Windows.Devices.Gpio.GpioSharingMode,Windows.Devices.Gpio.IGpioPin@,Windows.Devices.Gpio.GpioOpenStatus@)">
+            <summary>
+            Opens the specified general-purpose I/O (GPIO) pin in the specified mode, and gets a status value that you can use to handle a failure to open the pin programmatically.
+            </summary>
+            <param name="pinNumber">The pin number of the GPIO pin that you want to open. Some pins may not be available in user mode. For information about how the pin numbers correspond to physical pins, see the documentation for your circuit board.</param>
+            <param name="sharingMode">The mode in which you want to open the GPIO pin, which determines whether other connections to the pin can be opened while you have the pin open.</param>
+            <param name="pin">The opened GPIO pin if the return value is true; otherwise null.</param>
+            <param name="openStatus">An enumeration value that indicates either that the attempt to open the GPIO pin succeeded, or the reason that the attempt to open the GPIO pin failed.</param>
+            <returns>True if the method successfully opened the pin; otherwise false.
+            <para>If the method returns true, the pin parameter receives an instance of a GpioPin, and the openStatus parameter receives GpioOpenStatus.PinOpened.If the method returns false, the pin parameter is null and the openStatus parameter receives the reason that the operation failed.</para></returns>
+        </member>
+        <member name="T:Windows.Devices.Gpio.IGpioPin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.Gpio.IGpioPin.DebounceTimeout">
+            <summary>
+            Gets or sets the debounce timeout for the general-purpose I/O (GPIO) pin, which is an interval during which changes to the value of the pin are filtered out and do not generate ValueChanged events.
+            </summary>
+            <value>
+            The debounce timeout for the GPIO pin, which is an interval during which changes to the value of the pin are filtered out and do not generate ValueChanged events.
+            If the length of this interval is 0, all changes to the value of the pin generate ValueChanged events.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.Gpio.IGpioPin.PinNumber">
+            <summary>
+            Gets the pin number of the general-purpose I/O (GPIO) pin.
+            </summary>
+            <value>
+            The pin number of the GPIO pin.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.Gpio.IGpioPin.SharingMode">
+            <summary>
+            Gets the sharing mode in which the general-purpose I/O (GPIO) pin is open.
+            </summary>
+            <value>
+            The sharing mode in which the GPIO pin is open.
+            </value>
+        </member>
+        <member name="E:Windows.Devices.Gpio.IGpioPin.ValueChanged">
+            <summary>
+            Occurs when the value of the general-purpose I/O (GPIO) pin changes, either because of an external stimulus when the pin is configured as an input, or when a value is written to the pin when the pin in configured as an output.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioPin.IsDriveModeSupported(Windows.Devices.Gpio.GpioPinDriveMode)">
+            <summary>
+            Gets whether the general-purpose I/O (GPIO) pin supports the specified drive mode.
+            </summary>
+            <param name="driveMode">The drive mode that you want to check for support.</param>
+            <returns>
+              True if the GPIO pin supports the drive mode that driveMode specifies; otherwise false. 
+            If you specify a drive mode for which this method returns false when you call <see cref="M:Windows.Devices.Gpio.IGpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)"/>, <see cref="M:Windows.Devices.Gpio.IGpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)"/> generates an exception.
+            </returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioPin.GetDriveMode">
+            <summary>
+            Gets the current drive mode for the general-purpose I/O (GPIO) pin. The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.
+            </summary>
+            <returns>An enumeration value that indicates the current drive mode for the GPIO pin.
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.</returns>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioPin.SetDriveMode(Windows.Devices.Gpio.GpioPinDriveMode)">
+            <summary>
+            Sets the drive mode of the general-purpose I/O (GPIO) pin. 
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.
+            </summary>
+            <param name="value">An enumeration value that specifies drive mode to use for the GPIO pin.
+            The drive mode specifies whether the pin is configured as an input or an output, and determines how values are driven onto the pin.</param>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_INVALIDARG : The GPIO pin does not support the specified drive mode.</term></item>
+            <item><term>E_ACCESSDENIED : The pin is open in shared read-only mode. Close the pin and reopen it in exclusive mode to change the drive mode of the pin.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioPin.Write(Windows.Devices.Gpio.GpioPinValue)">
+            <summary>
+            Drives the specified value onto the general purpose I/O (GPIO) pin according to the current drive mode for the pin 
+            if the pin is configured as an output, or updates the latched output value for the pin if the pin is configured as an input.
+            </summary>
+            <param name="value">The enumeration value to write to the GPIO pin.
+            <para>If the GPIO pin is configured as an output, the method drives the specified value onto the pin according to the current drive mode for the pin.</para>
+            <para>If the GPIO pin is configured as an input, the method updates the latched output value for the pin. The latched output value is driven onto the pin when the configuration for the pin changes to output.</para>
+            </param>
+            <remarks>The following exceptions can be thrown by this method:
+            <list type="bullet">
+            <item><term>E_ACCESSDENIED : The GPIO pin is open in shared read-only mode. To write to the pin, close the pin and reopen the pin in exclusive mode.</term></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.Gpio.IGpioPin.Read">
+            <summary>
+            Reads the current value of the general-purpose I/O (GPIO) pin.
+            </summary>
+            <returns>The current value of the GPIO pin. If the pin is configured as an output, this value is the last value written to the pin.</returns>
+        </member>
+    </members>
+</doc>

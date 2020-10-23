@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Windows.Devices.I2c</name>
+    </assembly>
+    <members>
+        <member name="T:Windows.Devices.I2c.I2cBusSpeed">
+            <summary>
+            Describes the bus speeds that are available for connecting to an inter-integrated circuit (I2C) device. 
+            The bus speed is the frequency at which to clock the I2C bus when accessing the device.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cBusSpeed.StandardMode">
+            <summary>
+            The standard speed of 100 kilohertz (kHz). This speed is the default.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cBusSpeed.FastMode">
+            <summary>
+            A fast speed of 400 kHz.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cConnectionSettings">
+            <summary>
+            Represents the connection settings you want to use for an inter-integrated circuit (I2C) device.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32)">
+            <summary>
+            Creates and initializes a new instance of the I2cConnectionSettings class for inter-integrated circuit (I2C) device with specified bus address,
+            using the default settings of the standard mode for the bus speed and exclusive sharing mode.
+            </summary>
+            <param name="slaveAddress">The bus address of the inter-integrated circuit (I2C) device to which the settings of the I2cConnectionSettings should apply.
+            Only 7-bit addressing is supported, so the range of values that are valid is from 8 to 119 (that's 0x08 and 0x77).</param>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cConnectionSettings.#ctor(Windows.Devices.I2c.I2cConnectionSettings)">
+            <summary>
+            Initializes a copy of a <see cref="T:Windows.Devices.I2c.I2cConnectionSettings"/> object.
+            </summary>
+            <param name="settings">Object to copy from.</param>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cConnectionSettings.BusSpeed">
+            <summary>
+            Gets or sets the bus speed to use for connecting to an inter-integrated circuit (I2C) device. The bus speed is the frequency at which to clock the I2C bus when accessing the device.
+            </summary>
+            <value>
+            The bus speed to use for connecting to anI2C device.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cConnectionSettings.SharingMode">
+            <summary>
+            Gets or sets the sharing mode to use to connect to the inter-integrated circuit (I2C) bus address. This mode determines whether other connections to the I2C bus address can be opened
+            while you are connect to the I2C bus address.
+            </summary>
+            <value>
+            The sharing mode to use to connect to the I2C bus address.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cConnectionSettings.SlaveAddress">
+            <summary>
+            Gets or sets the bus address of the inter-integrated circuit (I2C) device.
+            </summary>
+            <value>
+            The bus address of the I2C device. Only 7-bit addressing is supported, so the range of values that are valid is from 8 to 119 (that's 0x08 and 0x77).
+            </value>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cController">
+            <summary>
+            Represents the I2C controller for the system.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cController.DeviceCollection">
+            <summary>
+            Device collection associated with this <see cref="T:Windows.Devices.I2c.I2cController"/>.
+            </summary>
+            <remarks>
+            This collection is for internal use only.
+            </remarks>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cController.GetDefault">
+            <summary>
+            Gets the default I2C controller on the system.
+            </summary>
+            <returns>The default I2C controller on the system, or null if the system has no I2C controller.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cController.GetDevice(Windows.Devices.I2c.I2cConnectionSettings)">
+            <summary>
+            Gets the I2C device with the specified settings.
+            </summary>
+            <param name="settings"></param>
+            <returns>The desired connection settings.</returns>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cControllerManager.ControllersCollection">
+            <summary>
+            <see cref="T:Windows.Devices.I2c.I2cController"/> collection.
+            </summary>
+            <remarks>
+            This collection is for internal use only.
+            </remarks>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cDevice">
+            <summary>
+            Represents a communications channel to a device on an inter-integrated circuit (I2C) bus.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cDevice.ConnectionSettings">
+            <summary>
+            Gets the connection settings used for communication with the inter-integrated circuit (I2C) device.
+            </summary>
+            <value>
+            The connection settings used for communication with the inter-integrated circuit (I2C) device.
+            </value>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cDevice.DeviceId">
+            <summary>
+            Gets the plug and play device identifier of the inter-integrated circuit (I2C) bus controller for the device.
+            </summary>
+            <value>
+            The plug and play device identifier of the inter-integrated circuit (I2C) bus controller for the device.
+            </value>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.FromId(System.String,Windows.Devices.I2c.I2cConnectionSettings)">
+            <summary>
+            Retrieves an <see cref="T:Windows.Devices.I2c.I2cDevice"/> object for the inter-integrated circuit (I2C) bus controller that has the specified plug and play device identifier, using the specified connection settings.
+            </summary>
+            <param name="i2cBus">The plug and play device identifier of the I2C bus controller for which you want to create an <see cref="T:Windows.Devices.I2c.I2cDevice"/> object.</param>
+            <param name="settings">The connection settings to use for communication with the I2C bus controller that deviceId specifies.</param>
+            <returns>An operation that returns the I2cDevice object.</returns>
+            <remarks>
+            This method is specific to nanoFramework. The equivalent method in the UWP API is: FromIdAsync.
+            </remarks>
+            <exception cref="T:Windows.Devices.I2c.I2cDeviceAlreadyInUseException">T</exception>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.GetDeviceSelector(System.String)">
+            <summary>
+            Retrieves an Advanced Query Syntax (AQS) string for the inter-integrated circuit (I2C) bus that has the specified friendly name. You can use this string with the DeviceInformation.FindAll
+            method to get a DeviceInformation object for that bus.
+            </summary>
+            <param name="friendlyName">A friendly name for the particular I2C bus on a particular hardware platform for which you want to get the AQS string.</param>
+            <returns>An AQS string for the I2C bus that friendlyName specifies, which you can use with the DeviceInformation.FindAllAsync method to get a DeviceInformation object for that bus.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.GetDeviceSelector">
+            <summary>
+            Retrieves an Advanced Query Syntax (AQS) string for all of the inter-integrated circuit (I2C) bus controllers on the system. You can use this string with the DeviceInformation.FindAll
+            method to get DeviceInformation objects for those bus controllers.
+            </summary>
+            <returns>An AQS string for all of the I2C bus controllers on the system, which you can use with the DeviceInformation.FindAllAsync method to get DeviceInformation 
+            objects for those bus controllers.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.Read(System.Byte[])">
+            <summary>
+            Reads data from the inter-integrated circuit (I2C) bus on which the device is connected into the specified buffer.
+            </summary>
+            <param name="buffer">The buffer to which you want to read the data from the I2C bus. The length of the buffer determines how much data to request from the device.</param>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.ReadPartial(System.Byte[])">
+            <summary>
+            Reads data from the inter-integrated circuit (I2C) bus on which the device is connected into the specified buffer, and returns information about the success of the 
+            operation that you can use for error handling.
+            </summary>
+            <param name="buffer">The buffer to which you want to read the data from the I2C bus. The length of the buffer determines how much data to request from the device.</param>
+            <returns>A structure that contains information about the success of the read operation and the actual number of bytes that the operation read into the buffer.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.Write(System.Byte[])">
+            <summary>
+            Writes data to the inter-integrated circuit (I2C) bus on which the device is connected, based on the bus address specified in the I2cConnectionSetting s object
+            that you used to create the I2cDevice object.
+            </summary>
+            <param name="buffer">A buffer that contains the data that you want to write to the I2C device. This data should not include the bus address.</param>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.WritePartial(System.Byte[])">
+            <summary>
+            Writes data to the inter-integrated circuit (I2C) bus on which the device is connected, and returns information about the success of the operation that you can use for error handling.
+            </summary>
+            <param name="buffer">A buffer that contains the data that you want to write to the I2C device. This data should not include the bus address.</param>
+            <returns>A structure that contains information about the success of the write operation and the actual number of bytes that the operation wrote into the buffer.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.WriteRead(System.Byte[],System.Byte[])">
+            <summary>
+            Performs an atomic operation to write data to and then read data from the inter-integrated circuit (I2C) bus on which the device is connected, and sends a restart
+            condition between the write and read operations.
+            </summary>
+            <param name="writeBuffer">A buffer that contains the data that you want to write to the I2C device. This data should not include the bus address.</param>
+            <param name="readBuffer">The buffer to which you want to read the data from the I2C bus. The length of the buffer determines how much data to request from the device.</param>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDevice.WriteReadPartial(System.Byte[],System.Byte[])">
+            <summary>
+            Performs an atomic operation to write data to and then read data from the inter-integrated circuit (I2C) bus on which the device is connected, and returns information about the
+            success of the operation that you can use for error handling.
+            </summary>
+            <param name="writeBuffer">A buffer that contains the data that you want to write to the I2C device. This data should not include the bus address.</param>
+            <param name="readBuffer">The buffer to which you want to read the data from the I2C bus. The length of the buffer determines how much data to request from the device.</param>
+            <returns>A structure that contains information about whether both the read and write parts of the operation succeeded and the sum of the actual number of bytes that the
+            operation wrote and the actual number of bytes that the operation read.</returns>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cDeviceAlreadyInUseException">
+            <summary>
+            Exception thrown when a check in driver's constructor finds a device that already exists with the same settings (I2C bus AND slave address)
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.I2c.I2cDeviceAlreadyInUseException.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cSharingMode">
+            <summary>
+            Describes the modes in which you can connect to an inter-integrated circuit (I2C) bus address. 
+            These modes determine whether other connections to the I2C bus address can be opened while you are connected to the I2C bus address.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cSharingMode.Exclusive">
+            <summary>
+            Connects to the I2C bus address exclusively, so that no other connection to the I2C bus address can be made while you remain connected. This mode is the default mode.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cSharingMode.Shared">
+            <summary>
+            Connects to the I2C bus address in shared mode, so that other connections to the I2C bus address can be made while you remain connected.
+            You can perform all operations on shared connections, but use such connections with care. When multiple client apps change the global state of the I2C device,
+            race conditions can result.
+            An example use case for using a shared connection is a sensor that obtains readings without changing the state of the device.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cTransferResult">
+            <summary>
+            Provides information about whether the data transfers that the ReadPartial, WritePartial, or WriteReadPartial method performed succeeded, and the actual number
+            of bytes the method transferred.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cTransferResult.BytesTransferred">
+            <summary>
+            The actual number of bytes that the operation actually transferred. The following table describes what this value represents for each method.
+            </summary>
+        </member>
+        <member name="P:Windows.Devices.I2c.I2cTransferResult.Status">
+            <summary>
+            An enumeration value that indicates if the read or write operation transferred the full number of bytes that the method requested, or the reason
+            that the full transfer did not succeed. For WriteReadPartial, the value indicates whether the data for both the write and the read operations was entirely transferred.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.I2c.I2cTransferStatus">
+            <summary>
+            Describes whether the data transfers that the ReadPartial, WritePartial, or WriteReadPartial method performed succeeded, or provides the reason that the transfers did not succeed.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cTransferStatus.FullTransfer">
+            <summary>
+            The data was entirely transferred. For WriteReadPartial, the data for both the write and the read operations was entirely transferred.
+            For this status code, the value of the I2cTransferResult.BytesTransferred member that the method returns is the same as the size of the buffer
+            you specified when you called the method, or is equal to the sum of the sizes of two buffers that you specified for WriteReadPartial.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cTransferStatus.ClockStretchTimeout">
+            <summary>
+            The transfer failed due to the clock being stretched for too long. Ensure the clock line is not being held low.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cTransferStatus.PartialTransfer">
+            <summary>
+            The I2C device negatively acknowledged the data transfer before all of the data was transferred.
+            For this status code, the value of the I2cTransferResult.BytesTransferred member that the method returns is the number of bytes actually transferred.
+            For WriteReadPartial, the value is the sum of the number of bytes that the operation wrote and the number of bytes that the operation read.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cTransferStatus.SlaveAddressNotAcknowledged">
+            <summary>
+            The bus address was not acknowledged. For this status code, the value of the I2cTransferResult.BytesTransferred member that the method returns of the method is 0.
+            </summary>
+        </member>
+        <member name="F:Windows.Devices.I2c.I2cTransferStatus.UnknownError">
+            <summary>
+            The transfer failed for an unknown reason.
+            </summary>
+        </member>
+        <member name="T:Windows.Devices.I2c.II2cDeviceStatics">
+            <summary>
+            Provides ways to open a communications channel to a device on an inter-integrated circuit (I2C) bus.
+            </summary>
+        </member>
+        <member name="M:Windows.Devices.I2c.II2cDeviceStatics.FromId(System.String,Windows.Devices.I2c.I2cConnectionSettings)">
+            <summary>
+            Retrieves an I2cDevice object asynchronously for the inter-integrated circuit (I2C) bus controller that has the specified plug and play device identifier,
+            using the specified connection settings.
+            </summary>
+            <param name="deviceId">The plug and play device identifier of the I2C bus controller for which you want to create an I2cDevice object.</param>
+            <param name="settings">The connection settings to use for communication with the I2C bus controller that deviceId specifies.</param>
+            <returns>An operation that returns the I2cDevice object.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.II2cDeviceStatics.GetDeviceSelector">
+            <summary>
+            Retrieves an Advanced Query Syntax (AQS) string for all of the inter-integrated circuit (I2C) bus controllers on the system. You can use this string with the 
+            DeviceInformation.FindAllAsync method to get DeviceInformation objects for those bus controllers.
+            </summary>
+            <returns>An AQS string for all of the I2C bus controllers on the system, which you can use with the DeviceInformation.FindAll method to get DeviceInformation 
+            objects for those bus controllers.</returns>
+        </member>
+        <member name="M:Windows.Devices.I2c.II2cDeviceStatics.GetDeviceSelector(System.String)">
+            <summary>
+            Retrieves an Advanced Query Syntax (AQS) string for the inter-integrated circuit (I2C) bus that has the specified friendly name. You can use this string with the 
+            DeviceInformation.FindAll method to get a DeviceInformation object for that bus.
+            </summary>
+            <param name="friendlyName">A friendly name for the particular I2C bus on a particular hardware platform for which you want to get the AQS string.</param>
+            <returns>An AQS string for the I2C bus that friendlyName specifies, which you can use with the DeviceInformation.FindAll method to get a DeviceInformation object for that bus.</returns>
+        </member>
+    </members>
+</doc>

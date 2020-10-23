@@ -1,0 +1,414 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>nanoFramework.System.Collections</name>
+    </assembly>
+    <members>
+        <member name="T:System.Collections.DictionaryEntry">
+            <summary>
+            Defines a dictionary key/value pair that can be set or retrieved.
+            </summary>
+        </member>
+        <member name="F:System.Collections.DictionaryEntry.Key">
+            <summary>
+            Gets or sets the key in the key/value pair.
+            </summary>
+            <returns>The key in the key/value pair.</returns>
+        </member>
+        <member name="F:System.Collections.DictionaryEntry.Value">
+            <summary>
+            Gets or sets the value in the key/value pair.
+            </summary>
+            <returns>The value in the key/value pair.</returns>
+        </member>
+        <member name="M:System.Collections.DictionaryEntry.#ctor(System.Object,System.Object)">
+            <summary>
+            Initializes an instance of the DictionaryEntry type with the specified key and value.
+            </summary>
+            <param name="key">The object defined in each key/value pair.</param>
+            <param name="value">The definition associated with key.</param>
+        </member>
+        <member name="T:System.Collections.Hashtable">
+            <summary>
+            HashTable is an Associative Container.
+            Created in March 2010.
+            by Eric Harlow.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the default initial capacity and load factor.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor(System.Int32)">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the specified initial capacity, 
+            and the default load factor.
+            </summary>
+            <param name="capacity">The initial capacity of the HashTable</param>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the specified initial capacity, 
+            load factor.
+            </summary>
+            <param name="capacity">The initial capacity of the HashTable</param>
+            <param name="maxLoadFactor">The load factor to cause a rehash</param>
+        </member>
+        <member name="P:System.Collections.Hashtable.MaxLoadFactor">
+            <summary>
+            MaxLoadFactor Property is the value used to trigger a rehash.
+            Default value is 2.
+            A higher number can decrease lookup performance for large collections.
+            While a value of 1 maintains a constant time complexity at the cost of increased memory requirements.   
+            </summary>
+        </member>
+        <member name="P:System.Collections.Hashtable.GrowthFactor">
+            <summary>
+            GrowthFactor Property is a multiplier to increase the HashTable size by during a rehash.
+            Default value is 2.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.Clone">
+            <summary>
+            Make a new object which is a copy of the object instanced.
+            </summary>
+            <returns>A new object that represents a clone of the object.</returns>
+        </member>
+        <member name="M:System.Collections.Hashtable.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>An IEnumerator object that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="P:System.Collections.Hashtable.Count">
+            <summary>
+            Gets the number of elements contained in the ICollection.
+            </summary>
+            <value>
+            The number of elements contained in the ICollection.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the ICollection is synchronized (thread safe).
+            </summary>
+            <value>
+            true if access to the ICollection is synchronized (thread safe); otherwise, false.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the ICollection.
+            </summary>
+            <value>
+            An object that can be used to synchronize access to the ICollection.
+            </value>
+        </member>
+        <member name="M:System.Collections.Hashtable.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the ICollection to an Array, starting at a particular Array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements copied from ICollection. The Array must have zero-based indexing.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="P:System.Collections.Hashtable.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the IDictionary object is read-only.
+            </summary>
+            <value>
+            true if the IDictionary object is read-only; otherwise, false.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.IsFixedSize">
+            <summary>
+            Gets a value indicating whether the IDictionary object has a fixed size.
+            </summary>
+            <value>
+            true if the IDictionary object has a fixed size; otherwise, false.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.Keys">
+            <summary>
+            Gets an ICollection object containing the keys of the IDictionary object.
+            </summary>
+            <value>
+            An ICollection object containing the keys of the IDictionary object.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.Values">
+            <summary>
+            Gets an ICollection object containing the values in the IDictionary object.
+            </summary>
+            <value>
+            An ICollection object containing the values in the IDictionary object.
+            </value>
+        </member>
+        <member name="P:System.Collections.Hashtable.Item(System.Object)">
+            <summary>
+            Gets or sets the element with the specified key.
+            </summary>
+            <param name="key">The key of the element to get or set.</param>
+            <returns>The element with the specified key, or <see langword="null"/> if the key does not exist.</returns>
+        </member>
+        <member name="M:System.Collections.Hashtable.Add(System.Object,System.Object)">
+            <summary>
+            Adds an element with the provided key and value to the IDictionary object.
+            </summary>
+            <param name="key">The Object to use as the key of the element to add.</param>
+            <param name="value">The Object to use as the value of the element to add.</param>
+        </member>
+        <member name="M:System.Collections.Hashtable.Clear">
+            <summary>
+            Removes all elements from the IDictionary object.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.Contains(System.Object)">
+            <summary>
+            Determines whether the IDictionary object contains an element with the specified key.
+            </summary>
+            <param name="key">The key to locate in the IDictionary object.</param>
+            <returns>true if the IDictionary contains an element with the key; otherwise, false.</returns>
+        </member>
+        <member name="M:System.Collections.Hashtable.Remove(System.Object)">
+            <summary>
+            Removes the element with the specified key from the IDictionary object.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+        </member>
+        <member name="T:System.Collections.IDictionary">
+            <summary>
+            Represents a nongeneric collection of key/value pairs.
+            </summary>
+        </member>
+        <member name="P:System.Collections.IDictionary.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the IDictionary object is read-only.
+            </summary>
+            <value>
+            true if the IDictionary object is read-only; otherwise, false.
+            </value>
+        </member>
+        <member name="P:System.Collections.IDictionary.IsFixedSize">
+            <summary>
+            Gets a value indicating whether the IDictionary object has a fixed size.
+            </summary>
+            <value>
+            true if the IDictionary object has a fixed size; otherwise, false.
+            </value>
+        </member>
+        <member name="P:System.Collections.IDictionary.Keys">
+            <summary>
+            Gets an ICollection object containing the keys of the IDictionary object.
+            </summary>
+            <value>
+            An ICollection object containing the keys of the IDictionary object.
+            </value>
+        </member>
+        <member name="P:System.Collections.IDictionary.Values">
+            <summary>
+            Gets an ICollection object containing the values in the IDictionary object.
+            </summary>
+            <value>
+            An ICollection object containing the values in the IDictionary object.
+            </value>
+        </member>
+        <member name="P:System.Collections.IDictionary.Item(System.Object)">
+            <summary>
+            Gets or sets the element with the specified key.
+            </summary>
+            <param name="key">The key of the element to get or set.</param>
+            <returns>The element with the specified key, or <see langword="null"/> if the key does not exist.</returns>
+        </member>
+        <member name="M:System.Collections.IDictionary.Add(System.Object,System.Object)">
+            <summary>
+            Adds an element with the provided key and value to the IDictionary object.
+            </summary>
+            <param name="key">The Object to use as the key of the element to add.</param>
+            <param name="value">The Object to use as the value of the element to add.</param>
+        </member>
+        <member name="M:System.Collections.IDictionary.Clear">
+            <summary>
+            Removes all elements from the IDictionary object.
+            </summary>
+        </member>
+        <member name="M:System.Collections.IDictionary.Contains(System.Object)">
+            <summary>
+            Determines whether the IDictionary object contains an element with the specified key.
+            </summary>
+            <param name="key">The key to locate in the IDictionary object.</param>
+            <returns>true if the IDictionary contains an element with the key; otherwise, false.</returns>
+        </member>
+        <member name="M:System.Collections.IDictionary.Remove(System.Object)">
+            <summary>
+            Removes the element with the specified key from the IDictionary object.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+        </member>
+        <member name="T:System.Collections.Queue">
+            <summary>
+            A circular-array implementation of a queue. Enqueue can be O(n).  Dequeue is O(1).
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.#ctor">
+            <summary>
+            Initializes a new instance of the Queue class that is empty, has the default initial
+            capacity, and uses the default growth factor (2x).
+            </summary>
+        </member>
+        <member name="P:System.Collections.Queue.Count">
+            <summary>
+            Gets the number of elements contained in the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.Clone">
+            <summary>
+            Creates a shallow copy of the Queue.
+            </summary>
+            <returns>A shallow copy of the Queue.</returns>
+        </member>
+        <member name="P:System.Collections.Queue.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the Queue is synchronized (thread safe).
+            Always return false.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Queue.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.Clear">
+            <summary>
+            Removes all objects from the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the Queue elements to an existing one-dimensional Array, starting at
+            the specified array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements copied from Queue.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:System.Collections.Queue.Enqueue(System.Object)">
+            <summary>
+            Adds an object to the end of the Queue.
+            </summary>
+            <param name="obj">The object to add to the Queue.</param>
+        </member>
+        <member name="M:System.Collections.Queue.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the Queue.
+            </summary>
+            <returns>An IEnumerator for the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Dequeue">
+            <summary>
+            Removes and returns the object at the beginning of the Queue.
+            </summary>
+            <returns>The object that is removed from the beginning of the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Peek">
+            <summary>
+            Returns the object at the beginning of the Queue without removing it.
+            </summary>
+            <returns>The object at the beginning of the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Contains(System.Object)">
+            <summary>
+            Determines whether an element is in the Queue.
+            </summary>
+            <param name="obj">The Object to locate in the Queue.</param>
+            <returns>true if obj is found in the Queue; otherwise, false.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.ToArray">
+            <summary>
+            Copies the Queue elements to a new array. The order of the elements in the new
+            array is the same as the order of the elements from the beginning of the Queue
+            to its end.
+            </summary>
+            <returns>A new array containing elements copied from the Queue.</returns>
+        </member>
+        <member name="T:System.Collections.Stack">
+            <summary>
+            An array implementation of a stack. Push can be O(n). Pop is O(1).
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.#ctor">
+            <summary>
+            Initializes a new instance of the Stack class that is empty and has the default initial capacity.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.Count">
+            <summary>
+            Size of the stack
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.IsSynchronized">
+            <summary>
+            Returns whether the current stack is synchornized. Always return false.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the Stack.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.Clear">
+            <summary>
+            Removes all Objects from the Stack.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.Clone">
+            <summary>
+            Creates a shallow copy of the Stack.
+            </summary>
+            <returns>A shallow copy of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Contains(System.Object)">
+            <summary>
+            Determines whether an element is in the Stack.
+            </summary>
+            <param name="obj">The Object to locate in the Stack.</param>
+            <returns>true, if obj is found in the Stack; otherwise, false</returns>
+        </member>
+        <member name="M:System.Collections.Stack.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the Stack to an existing one-dimensional Array, starting at the specified array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements copied from Stack.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:System.Collections.Stack.GetEnumerator">
+            <summary>
+            Returns an IEnumerator for this Stack.
+            </summary>
+            <returns>An IEnumerator for the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Peek">
+            <summary>
+            Returns the object at the top of the Stack without removing it.
+            </summary>
+            <returns>The Object at the top of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Pop">
+            <summary>
+            Removes and returns the object at the top of the Stack.
+            </summary>
+            <returns>The Object removed from the top of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Push(System.Object)">
+            <summary>
+            Inserts an object at the top of the Stack.
+            </summary>
+            <param name="obj">The Object to push onto the Stack.</param>
+        </member>
+        <member name="M:System.Collections.Stack.ToArray">
+            <summary>
+            Copies the Stack to a new array, in the same order Pop would return the items.
+            </summary>
+            <returns>A new array containing copies of the elements of the Stack.</returns>
+        </member>
+    </members>
+</doc>
