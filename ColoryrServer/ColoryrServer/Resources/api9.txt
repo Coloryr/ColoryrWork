@@ -1,0 +1,597 @@
+#region 程序集 HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a
+// C:\Users\40206\.nuget\packages\htmlagilitypack\1.11.24\lib\netstandard2.0\HtmlAgilityPack.dll
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.XPath;
+
+namespace HtmlAgilityPack
+{
+    //
+    // 摘要:
+    //     Represents a complete HTML document.
+    public class HtmlDocument : IXPathNavigable
+    {
+        //
+        // 摘要:
+        //     The HtmlDocument Text. Careful if you modify it.
+        public string Text;
+        //
+        // 摘要:
+        //     The max number of nested child nodes. Added to prevent stackoverflow problem
+        //     when a page has tens of thousands of opening html tags with no closing tags
+        public int OptionMaxNestedChildNodes;
+        //
+        // 摘要:
+        //     Defines if empty nodes must be written as closed during output. Default is false.
+        public bool OptionWriteEmptyNodes;
+        //
+        // 摘要:
+        //     Defines if the 'id' attribute must be specifically used. Default is true.
+        public bool OptionUseIdAttribute;
+        //
+        // 摘要:
+        //     Defines the name of a node that will throw the StopperNodeException when found
+        //     as an end node. Default is null.
+        public string OptionStopperNodeName;
+        //
+        // 摘要:
+        //     Defines if name must be output in uppercase. Default is false.
+        public bool OptionOutputUpperCase;
+        //
+        // 摘要:
+        //     Defines if name must be output with it's original case. Useful for asp.net tags
+        //     and attributes. Default is false.
+        public bool OptionOutputOriginalCase;
+        //
+        // 摘要:
+        //     Defines if attribute value output must be optimized (not bound with double quotes
+        //     if it is possible). Default is false.
+        public bool OptionOutputOptimizeAttributeValues;
+        //
+        // 摘要:
+        //     If used together with HtmlAgilityPack.HtmlDocument.OptionOutputAsXml and enabled,
+        //     Xml namespaces in element names are preserved. Default is false.
+        public bool OptionPreserveXmlNamespaces;
+        //
+        // 摘要:
+        //     Defines if output must conform to XML, instead of HTML. Default is false.
+        public bool OptionOutputAsXml;
+        //
+        // 摘要:
+        //     Defines if LI, TR, TH, TD tags must be partially fixed when nesting errors are
+        //     detected. Default is false.
+        public bool OptionFixNestedTags;
+        //
+        // 摘要:
+        //     Defines if declared encoding must be read from the document. Declared encoding
+        //     is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX"
+        //     html node. Default is true.
+        public bool OptionReadEncoding;
+        //
+        // 摘要:
+        //     Defines if source text must be extracted while parsing errors. If the document
+        //     has a lot of errors, or cascading errors, parsing performance can be dramatically
+        //     affected if set to true. Default is false.
+        public bool OptionExtractErrorSourceText;
+        //
+        // 摘要:
+        //     Defines the default stream encoding to use. Default is System.Text.Encoding.Default.
+        public Encoding OptionDefaultStreamEncoding;
+        //
+        // 摘要:
+        //     True to disable, false to enable the server side code.
+        public bool DisableServerSideCode;
+        //
+        // 摘要:
+        //     Defines if SelectNodes method will return null or empty collection when no node
+        //     matched the XPath expression. Setting this to true will return empty collection
+        //     and false will return null. Default is false.
+        public bool OptionEmptyCollection;
+        //
+        // 摘要:
+        //     Defines if a checksum must be computed for the document while parsing. Default
+        //     is false.
+        public bool OptionComputeChecksum;
+        //
+        // 摘要:
+        //     Defines if non closed nodes will be checked at the end of parsing. Default is
+        //     true.
+        public bool OptionCheckSyntax;
+        //
+        // 摘要:
+        //     Defines if closing for non closed nodes must be done at the end or directly in
+        //     the document. Setting this to true can actually change how browsers render the
+        //     page. Default is false.
+        public bool OptionAutoCloseOnEnd;
+        //
+        // 摘要:
+        //     Adds Debugging attributes to node. Default is false.
+        public bool OptionAddDebuggingAttributes;
+        //
+        // 摘要:
+        //     True to stay backward compatible with previous version of HAP. This option does
+        //     not guarantee 100% compatibility.
+        public bool BackwardCompatibility;
+        //
+        // 摘要:
+        //     Defines the maximum length of source text or parse errors. Default is 100.
+        public int OptionExtractErrorSourceTextMaxLength;
+
+        //
+        // 摘要:
+        //     Creates an instance of an HTML document.
+        public HtmlDocument();
+
+        //
+        // 摘要:
+        //     True to disable, false to enable the behavior tag p.
+        public static bool DisableBehaviorTagP { get; set; }
+        //
+        // 摘要:
+        //     Default builder to use in the HtmlDocument constructor
+        public static Action<HtmlDocument> DefaultBuilder { get; set; }
+        //
+        // 摘要:
+        //     Defines the max level we would go deep into the html document. If this depth
+        //     level is exceeded, and exception is thrown.
+        public static int MaxDepthLevel { get; set; }
+        //
+        // 摘要:
+        //     Action to execute before the Parse is executed
+        public Action<HtmlDocument> ParseExecuting { get; set; }
+        //
+        // 摘要:
+        //     Gets the parsed text.
+        //
+        // 值:
+        //     The parsed text.
+        public string ParsedText { get; }
+        //
+        // 摘要:
+        //     Gets the remaining text. Will always be null if OptionStopperNodeName is null.
+        public string Remainder { get; }
+        //
+        // 摘要:
+        //     Gets the document's declared encoding. Declared encoding is determined using
+        //     the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node
+        //     (pre-HTML5) or the meta charset="XXXXX" html node (HTML5).
+        public Encoding DeclaredEncoding { get; }
+        //
+        // 摘要:
+        //     Gets the root node of the document.
+        public HtmlNode DocumentNode { get; }
+        //
+        // 摘要:
+        //     Gets the document's output encoding.
+        public Encoding Encoding { get; }
+        //
+        // 摘要:
+        //     Gets a list of parse errors found in the document.
+        public IEnumerable<HtmlParseError> ParseErrors { get; }
+        //
+        // 摘要:
+        //     Gets the document CRC32 checksum if OptionComputeChecksum was set to true before
+        //     parsing, 0 otherwise.
+        public int CheckSum { get; }
+        //
+        // 摘要:
+        //     Gets the offset of Remainder in the original Html text. If OptionStopperNodeName
+        //     is null, this will return the length of the original Html text.
+        public int RemainderOffset { get; }
+        //
+        // 摘要:
+        //     Gets the document's stream encoding.
+        public Encoding StreamEncoding { get; }
+
+        //
+        // 摘要:
+        //     Gets a valid XML name.
+        //
+        // 参数:
+        //   name:
+        //     Any text.
+        //
+        // 返回结果:
+        //     A string that is a valid XML name.
+        public static string GetXmlName(string name);
+        public static string GetXmlName(string name, bool isAttribute, bool preserveXmlNamespaces);
+        //
+        // 摘要:
+        //     Applies HTML encoding to a specified string.
+        //
+        // 参数:
+        //   html:
+        //     The input string to encode. May not be null.
+        //
+        // 返回结果:
+        //     The encoded string.
+        public static string HtmlEncode(string html);
+        //
+        // 摘要:
+        //     Determines if the specified character is considered as a whitespace character.
+        //
+        // 参数:
+        //   c:
+        //     The character to check.
+        //
+        // 返回结果:
+        //     true if if the specified character is considered as a whitespace character.
+        public static bool IsWhiteSpace(int c);
+        //
+        // 摘要:
+        //     Creates an HTML attribute with the specified name.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute. May not be null.
+        //
+        // 返回结果:
+        //     The new HTML attribute.
+        public HtmlAttribute CreateAttribute(string name);
+        //
+        // 摘要:
+        //     Creates an HTML attribute with the specified name.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute. May not be null.
+        //
+        //   value:
+        //     The value of the attribute.
+        //
+        // 返回结果:
+        //     The new HTML attribute.
+        public HtmlAttribute CreateAttribute(string name, string value);
+        //
+        // 摘要:
+        //     Creates an HTML comment node.
+        //
+        // 返回结果:
+        //     The new HTML comment node.
+        public HtmlCommentNode CreateComment();
+        //
+        // 摘要:
+        //     Creates an HTML comment node with the specified comment text.
+        //
+        // 参数:
+        //   comment:
+        //     The comment text. May not be null.
+        //
+        // 返回结果:
+        //     The new HTML comment node.
+        public HtmlCommentNode CreateComment(string comment);
+        //
+        // 摘要:
+        //     Creates an HTML element node with the specified name.
+        //
+        // 参数:
+        //   name:
+        //     The qualified name of the element. May not be null.
+        //
+        // 返回结果:
+        //     The new HTML node.
+        public HtmlNode CreateElement(string name);
+        //
+        // 摘要:
+        //     Creates a new XPathNavigator object for navigating this HTML document.
+        //
+        // 返回结果:
+        //     An XPathNavigator object. The XPathNavigator is positioned on the root of the
+        //     document.
+        public XPathNavigator CreateNavigator();
+        //
+        // 摘要:
+        //     Creates an HTML text node with the specified text.
+        //
+        // 参数:
+        //   text:
+        //     The text of the node. May not be null.
+        //
+        // 返回结果:
+        //     The new HTML text node.
+        public HtmlTextNode CreateTextNode(string text);
+        //
+        // 摘要:
+        //     Creates an HTML text node.
+        //
+        // 返回结果:
+        //     The new HTML text node.
+        public HtmlTextNode CreateTextNode();
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream. May not be null.
+        //
+        //   checkHtml:
+        //     The html is checked.
+        //
+        // 返回结果:
+        //     The detected encoding.
+        public Encoding DetectEncoding(Stream stream, bool checkHtml);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream. May not be null.
+        //
+        // 返回结果:
+        //     The detected encoding.
+        public Encoding DetectEncoding(Stream stream);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML file.
+        //
+        // 参数:
+        //   path:
+        //     Path for the file containing the HTML document to detect. May not be null.
+        //
+        // 返回结果:
+        //     The detected encoding.
+        public Encoding DetectEncoding(string path);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML text provided on a TextReader.
+        //
+        // 参数:
+        //   reader:
+        //     The TextReader used to feed the HTML. May not be null.
+        //
+        // 返回结果:
+        //     The detected encoding.
+        public Encoding DetectEncoding(TextReader reader);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML document from a file first, and then loads the
+        //     file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read.
+        public void DetectEncodingAndLoad(string path);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML document from a file first, and then loads the
+        //     file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        //
+        //   detectEncoding:
+        //     true to detect encoding, false otherwise.
+        public void DetectEncodingAndLoad(string path, bool detectEncoding);
+        //
+        // 摘要:
+        //     Detects the encoding of an HTML text.
+        //
+        // 参数:
+        //   html:
+        //     The input html text. May not be null.
+        //
+        // 返回结果:
+        //     The detected encoding.
+        public Encoding DetectEncodingHtml(string html);
+        //
+        // 摘要:
+        //     Gets the HTML node with the specified 'id' attribute value.
+        //
+        // 参数:
+        //   id:
+        //     The attribute id to match. May not be null.
+        //
+        // 返回结果:
+        //     The HTML node with the matching id or null if not found.
+        public HtmlNode GetElementbyId(string id);
+        //
+        // 摘要:
+        //     Loads an HTML document from a stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream.
+        public void Load(Stream stream);
+        //
+        // 摘要:
+        //     Loads an HTML document from a stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the stream.
+        public void Load(Stream stream, bool detectEncodingFromByteOrderMarks);
+        //
+        // 摘要:
+        //     Loads an HTML document from a stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream.
+        //
+        //   encoding:
+        //     The character encoding to use.
+        public void Load(Stream stream, Encoding encoding);
+        //
+        // 摘要:
+        //     Loads an HTML document from a stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream.
+        //
+        //   encoding:
+        //     The character encoding to use.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the stream.
+        public void Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks);
+        //
+        // 摘要:
+        //     Loads an HTML document from a stream.
+        //
+        // 参数:
+        //   stream:
+        //     The input stream.
+        //
+        //   encoding:
+        //     The character encoding to use.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the stream.
+        //
+        //   buffersize:
+        //     The minimum buffer size.
+        public void Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int buffersize);
+        //
+        // 摘要:
+        //     Loads the HTML document from the specified TextReader.
+        //
+        // 参数:
+        //   reader:
+        //     The TextReader used to feed the HTML data into the document. May not be null.
+        public void Load(TextReader reader);
+        //
+        // 摘要:
+        //     Loads an HTML document from a file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        public void Load(string path);
+        //
+        // 摘要:
+        //     Loads an HTML document from a file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        //
+        //   encoding:
+        //     The character encoding to use. May not be null.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the file.
+        //
+        //   buffersize:
+        //     The minimum buffer size.
+        public void Load(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int buffersize);
+        //
+        // 摘要:
+        //     Loads an HTML document from a file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        //
+        //   encoding:
+        //     The character encoding to use. May not be null.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the file.
+        public void Load(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks);
+        //
+        // 摘要:
+        //     Loads an HTML document from a file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        //
+        //   encoding:
+        //     The character encoding to use. May not be null.
+        public void Load(string path, Encoding encoding);
+        //
+        // 摘要:
+        //     Loads an HTML document from a file.
+        //
+        // 参数:
+        //   path:
+        //     The complete file path to be read. May not be null.
+        //
+        //   detectEncodingFromByteOrderMarks:
+        //     Indicates whether to look for byte order marks at the beginning of the file.
+        public void Load(string path, bool detectEncodingFromByteOrderMarks);
+        //
+        // 摘要:
+        //     Loads the HTML document from the specified string.
+        //
+        // 参数:
+        //   html:
+        //     String containing the HTML document to load. May not be null.
+        public void LoadHtml(string html);
+        //
+        // 摘要:
+        //     Saves the HTML document to the specified XmlWriter.
+        //
+        // 参数:
+        //   writer:
+        //     The XmlWriter to which you want to save.
+        public void Save(XmlWriter writer);
+        //
+        // 摘要:
+        //     Saves the mixed document to the specified file.
+        //
+        // 参数:
+        //   filename:
+        //     The location of the file where you want to save the document. May not be null.
+        //
+        //   encoding:
+        //     The character encoding to use. May not be null.
+        public void Save(string filename, Encoding encoding);
+        //
+        // 摘要:
+        //     Saves the mixed document to the specified file.
+        //
+        // 参数:
+        //   filename:
+        //     The location of the file where you want to save the document.
+        public void Save(string filename);
+        //
+        // 摘要:
+        //     Saves the HTML document to the specified StreamWriter.
+        //
+        // 参数:
+        //   writer:
+        //     The StreamWriter to which you want to save.
+        public void Save(StreamWriter writer);
+        //
+        // 摘要:
+        //     Saves the HTML document to the specified TextWriter.
+        //
+        // 参数:
+        //   writer:
+        //     The TextWriter to which you want to save. May not be null.
+        public void Save(TextWriter writer);
+        //
+        // 摘要:
+        //     Saves the HTML document to the specified stream.
+        //
+        // 参数:
+        //   outStream:
+        //     The stream to which you want to save. May not be null.
+        //
+        //   encoding:
+        //     The character encoding to use. May not be null.
+        public void Save(Stream outStream, Encoding encoding);
+        //
+        // 摘要:
+        //     Saves the HTML document to the specified stream.
+        //
+        // 参数:
+        //   outStream:
+        //     The stream to which you want to save.
+        public void Save(Stream outStream);
+        public void UseAttributeOriginalName(string tagName);
+    }
+}

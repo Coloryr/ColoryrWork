@@ -1,0 +1,910 @@
+using ColorServer;
+using ColorServer.DataBase;
+using ColorServer.DllManager;
+using ColorServer.Http;
+using ColorServer.IoT;
+using ColorServer.Robot;
+using ColorServer.Utils;
+using ColorServer.WebSocket;
+using Fleck;
+using HtmlAgilityPack;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ColoryrSDK
+{
+    public class HttpRequest
+    {
+        private Dictionary<string, dynamic> Parameter;
+        public NameValueCollection RowRequest { get; private set; }//原始请求的字符串
+        public string Cookie { get; private set; }
+        /// <summary>
+        /// <summary>
+        /// 请求头结构
+        /// </summary>
+        /// <param name="Parameter">参数</param>
+        /// <param name="RowRequest">原始请求头</param>
+        /// <param name="IsValid">是否验证</param>
+        /// <param name="Cookie">对话</param>
+        public HttpRequest(Dictionary<string, dynamic> Parameter, NameValueCollection RowRequest, string Cookie);
+
+        /// 获取参数
+        /// </summary>
+        /// <param name="arg">参数名</param>
+        /// <returns>数据</returns>
+        public string GetParameter(string arg);
+    }
+    public class HttpResponse
+    {
+        public string Response { get; set; }
+        public int ReCode { get; set; }
+        public Dictionary<string, string> Head { get; set; } = new Dictionary<string, string>();
+        /// <summary>
+        /// 返回头结构体
+        /// </summary>
+        /// <param name="ReCode">相应代码</param>
+        public HttpResponse(int ReCode = 200);
+        /// <summary>
+        /// 往返回的字符串写数据
+        /// </summary>
+        /// <param name="str">要写的数据</param>
+        public HttpResponse Write(string str);
+        /// <summary>
+        /// 往返回头写数据
+        /// </summary>
+        /// <param name="Key">键</param>
+        /// <param name="Value">值</param>
+        public void AddHead(string Key, string Value);
+    }
+    public class HttpResponseSession : HttpResponse
+    {
+        public string Cookie { get; private set; }
+        /// <summary>
+        /// 带会话的返回头
+        /// </summary>
+        /// <param name="Cookie">会话</param>
+        public HttpResponseSession(string Cookie) : base();
+    }
+    public class HttpResponseDictionary
+    {
+        public int ReCode { get; set; }
+        public Dictionary<string, object> Response { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, string> Head { get; set; } = new Dictionary<string, string>();
+        /// <summary>
+        /// 返回头结构体
+        /// </summary>
+        /// <param name="ReCode">相应代码</param>
+        public HttpResponseDictionary(int ReCode = 200);
+        /// <summary>
+        /// 往返回的字符串写数据
+        /// </summary>
+        /// <param name="Key">键</param>
+        /// <param name="Value">值</param>
+        public void AddResponse(string Key, object Value);
+        /// <summary>
+        /// 往返回头写数据
+        /// </summary>
+        /// <param name="Key">键</param>
+        /// <param name="Value">值</param>
+        public void AddHead(string Key, string Value);
+        /// <summary>
+        /// 写数据
+        /// </summary>
+        /// <param name="res"></param>
+        /// <param name="text"></param>
+        /// <param name="data"></param>
+        public HttpResponseDictionary Send(int res, string text, dynamic data = null);
+    }
+    public class HttpResponseDictionarySession : HttpResponseDictionary
+    {
+        public string Cookie { get; private set; }
+        /// <summary>
+        /// 带会话的返回头
+        /// </summary>
+        /// <param name="Cookie">会话</param>
+        public HttpResponseDictionarySession(string Cookie) : base();
+    }
+
+    public class Mysql
+    {
+        private string Database;
+        /// <summary>
+        /// Mysql数据库
+        /// </summary>
+        /// <param name="Database">数据库名</param>
+        public Mysql(string Database);
+
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public List<List<dynamic>> MysqlSql(string sql, MySqlParameter[] arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="arg">Mysql命令语句</param>
+        /// <returns>执行结果</returns>
+        public List<List<dynamic>> MysqlSql(MySqlCommand arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>Mysql命令语句</returns>
+        public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg);
+        private MySqlCommand GenCommand(string sql, Dictionary<string, string> arg);
+    }
+
+    public class MSsql
+    {
+        private string Database;
+        /// <summary>
+        /// MSsql数据库
+        /// </summary>
+        /// <param name="Database">数据库名</param>
+        public MSsql(string Database);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public List<List<dynamic>> MSsqlSql(string sql, MySqlParameter[] arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>Mysql命令语句</returns>
+        public SqlCommand MysqlCommand(string sql, Dictionary<string, string> arg);
+        private SqlCommand GenCommand(string sql, Dictionary<string, string> arg);
+    }
+
+    public class Oracle
+    {
+        private string Database;
+        /// <summary>
+        /// MSsql数据库
+        /// </summary>
+        /// <param name="Database">数据库名</param>
+        public Oracle(string Database);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public List<List<dynamic>> OracleSql(string sql, OracleParameter[] arg);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>Mysql命令语句</returns>
+        public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg);
+        private OracleCommand GenCommand(string sql, Dictionary<string, string> arg);
+    }
+
+    public class Redis
+    {
+        public Redis();
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>值</returns>
+        public object Get(dynamic key);
+        /// <summary>
+        /// 设置键值对
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="Time">存在秒</param>
+        public bool Set(dynamic key, dynamic value, int Time = 0);
+        /// <summary>
+        /// 是否存在键
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>是否存在</returns>
+        public bool Exists(dynamic key);
+        /// <summary>
+        /// 删除键值对
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>是否成功</returns>
+        public bool Remove(dynamic key);
+        /// <summary>
+        /// 累加
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>累加后的数据</returns>
+        public long Increment(string key, long val = 1);
+    }
+    public class Session
+    {
+        public string Cookie { get; private set; }
+        /// <summary>
+        /// 启用会话
+        /// </summary>
+        /// <param name="Cookie">会话</param>
+        public Session(string Cookie);
+        /// <summary>
+        /// 开始会话
+        /// </summary>
+        public void Start();
+        /// <summary>
+        /// 获取值
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>返回值</returns>
+        public dynamic Get(string key);
+        /// <summary>
+        /// 设置键值
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void Set(string key, dynamic value);
+        /// <summary>
+        /// 检查是否有Cookie
+        /// </summary>
+        /// <returns>是否存在</returns>
+        public bool HaveCookie();
+        /// <summary>
+        /// 检查是否有键
+        /// </summary>
+        /// <param name="key">键名</param>
+        /// <returns>是否存在</returns>
+        public bool HaveKey(string key);
+        /// <summary>
+        /// 关闭会话
+        /// </summary>
+        public void Close();
+    }
+    /// <summary>
+    /// IoT设备请求头
+    /// </summary>
+    public class IoTRequest
+    {
+        public string Name { get; private set; }
+        public byte[] Data { get; private set; }
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="Name">IoT设备注册的名字</param>
+        /// <param name="Data">IoT发送的数据</param>
+        public IoTRequest(string Name, byte[] Data);
+    }
+    public class IoT
+    {
+        /// <summary>
+        /// 获取IoT设备列表
+        /// </summary>
+        /// <returns>设备列表</returns>
+        public static List<string> GetIoTList();
+        /// <summary>
+        /// 向IoT设备发送字符串
+        /// </summary>
+        /// <param name="Name">设备名</param>
+        /// <param name="Data">字符串</param>
+        public static void Send(string Name, string Data);
+        /// <summary>
+        /// 向IoT设备发送数据
+        /// </summary>
+        /// <param name="Name">设备名</param>
+        /// <param name="Data">数据</param>
+        public static void Send(string Name, byte[] Data);
+    }
+    public class Html : IDisposable
+    {
+        private HttpClient Http;
+        private CancellationToken Cancel;
+
+        protected Html(TimeSpan timeOut, CookieContainer CookieContainer,
+            CancellationToken CancellationToken = new CancellationToken(),
+            Dictionary<string, string> Head = null);
+
+        /// <summary>
+        /// http爬虫
+        /// </summary>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public Html() : this(TimeSpan.FromSeconds(10), new CookieContainer());
+
+        /// <summary>
+        /// http爬虫
+        /// </summary>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public Html(CookieContainer cookieContainer) : this(TimeSpan.FromSeconds(10), cookieContainer);
+        ~Html();
+        /// <summary>
+        /// Http爬虫
+        /// </summary>
+        /// <param name="timeOut">请求超时</param>
+        /// <param name="cancel">取消请求</param>
+        /// <param name="head">请求头</param>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public Html(TimeSpan timeOut, CancellationToken cancel,
+            Dictionary<string, string> head, CookieContainer cookieContainer) : this(timeOut, cookieContainer, cancel, head);
+        /// <summary>
+        /// 获取byte
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>byte</returns>
+        public byte[] GetByte(string url);
+        /// <summary>
+        /// 获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>字符串</returns>
+        public string GetString(string url);
+        /// <summary>
+        /// 发送表单获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">参数</param>
+        /// <returns>字符串</returns>
+        public string PostString(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// 获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>解析后的html</returns>
+        public HtmlDocument GetWebHtml(string url);
+        /// <summary>
+        /// 发送表单获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns></returns>
+        public HtmlDocument PostWebHtml(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// 进行一次http请求
+        /// </summary>
+        /// <param name="httpRequest">请求结构</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage Do(HttpRequestMessage httpRequest);
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="data">数据</param>
+        /// <returns>返回的字符串</returns>
+        public string PutString(string url, byte[] data);
+        /// <summary>
+        /// 发送表单数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage PostData(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// Get获取数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage GetData(string url);
+        /// <summary>
+        /// 释放
+        /// </summary>
+        public void Dispose();
+    }
+
+    public class HtmlAsync : IDisposable
+    {
+        private HttpClient Http;
+        private CancellationToken Cancel;
+        protected HtmlAsync(TimeSpan timeOut, CookieContainer CookieContainer,
+            CancellationToken CancellationToken = new CancellationToken(),
+            Dictionary<string, string> Head = null)
+        {;
+        /// <summary>
+        /// http爬虫
+        /// </summary>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public HtmlAsync() : this(TimeSpan.FromSeconds(10), new CookieContainer());
+
+        /// <summary>
+        /// http爬虫
+        /// </summary>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public HtmlAsync(CookieContainer cookieContainer) : this(TimeSpan.FromSeconds(10), cookieContainer);
+        ~HtmlAsync();
+        /// <summary>
+        /// Http爬虫
+        /// </summary>
+        /// <param name="timeOut">请求超时</param>
+        /// <param name="cancel">取消请求</param>
+        /// <param name="head">请求头</param>
+        /// <param name="cookieContainer">cookie储存对象</param>
+        public HtmlAsync(TimeSpan timeOut, CancellationToken cancel,
+            Dictionary<string, string> head, CookieContainer cookieContainer) : this(timeOut, cookieContainer, cancel, head);
+        /// <summary>
+        /// 获取byte
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>byte</returns>
+        public Task<byte[]> GetByte(string url);
+        /// <summary>
+        /// 获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>字符串</returns>
+        public Task<string> GetString(string url);
+        /// <summary>
+        /// 发送表单获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">参数</param>
+        /// <returns>字符串</returns>
+        public async Task<string> PostString(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// 获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>解析后的html</returns>
+        public async Task<HtmlDocument> GetWebHtml(string url);
+        /// <summary>
+        /// 发送表单获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns></returns>
+        public async Task<HtmlDocument> PostWebHtml(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// 进行一次http请求
+        /// </summary>
+        /// <param name="httpRequest">请求结构</param>
+        /// <returns>返回结构</returns>
+        public async Task<HttpResponseMessage> DoString(HttpRequestMessage httpRequest);
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="data">数据</param>
+        /// <returns>返回的字符串</returns>
+        public async Task<string> PutString(string url, byte[] data);
+        /// <summary>
+        /// 发送表单数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns>返回结构</returns>
+        public async Task<HttpResponseMessage> PostData(string url, Dictionary<string, string> arg);
+        /// <summary>
+        /// Get获取数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>返回结构</returns>
+        public async Task<HttpResponseMessage> GetData(string url);
+        /// <summary>
+        /// 释放
+        /// </summary>
+        public void Dispose();
+    }
+    public class HtmlDoc
+    {
+        public HtmlDocument html;
+        /// <summary>
+        /// Html解析
+        /// </summary>
+        /// <param name="data">Html字符串</param>
+        public HtmlDoc(string data);
+        /// <summary>
+        /// Html解析
+        /// </summary>
+        /// <param name="data">Html节点</param>
+        public HtmlDoc(HtmlNode data);
+        /// <summary>
+        /// 选择节点
+        /// </summary>
+        /// <param name="NodeName">标签名</param>
+        /// <param name="ClassName">class名字</param>
+        /// <returns></returns>
+        public List<HtmlNode> Select(string NodeName, string ClassName);
+        /// <summary>
+        /// 选择节点
+        /// </summary>
+        /// <param name="NodeName">标签名</param>
+        /// <param name="AttributesName">元素名字</param>
+        /// <param name="Attributes">元素</param>
+        /// <returns></returns>
+        public List<HtmlNode> Select(string NodeName, string AttributesName, string Attributes);
+        /// <summary>
+        /// 选择节点
+        /// </summary>
+        /// <param name="NodeName">标签名</param>
+        /// <returns></returns>
+        public List<HtmlNode> Select(string NodeName);
+    }
+    public class EnCode
+    {
+        /// <summary>
+        /// Base64编码
+        /// </summary>
+        /// <param name="data">源数据</param>
+        /// <returns>编码后数据</returns>
+        public static string BASE64(string data);
+        /// <summary>
+        /// MD5加密
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <returns>加密后的字符串</returns>
+        public static string MD5(string data);
+        /// <summary>
+        /// MD5加密
+        /// </summary>
+        /// <param name="data">加密</param>
+        /// <returns>加密后的byte</returns>
+        public static byte[] MD5_R(string data);
+        /// <summary>
+        /// OPENSSL加密
+        /// </summary>
+        /// <param name="publicKey">公钥</param>
+        /// <param name="data">数据</param>
+        /// <param name="fOAEP"></param>
+        /// <returns>加密后的数据</returns>
+        public static string OpenSSL(string publicKey, string data, bool fOAEP = false);
+        /// <summary>
+        /// SHA1加密
+        /// </summary>
+        /// <param name="data">原数据</param>
+        /// <returns>加密后的数据</returns>
+        public static string SHA1(string data);
+        /// <summary>
+        /// AES-128-CBC加密
+        /// </summary>
+        /// <param name="data">原始数据</param>
+        /// <param name="key">密匙</param>
+        /// <param name="iv">盐</param>
+        /// <returns>加密后的数据</returns>
+        public static byte[] AES128(string data, string key, byte[] iv);
+    }
+    public class DeCode
+    {
+        /// <summary>
+        /// BASE64解码
+        /// </summary>
+        /// <param name="data">要解密的数据</param>
+        /// <returns>加密后的数据</returns>
+        public static string BASE64(string data);
+        /// <summary>
+        /// AES128解码
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <param name="key">密钥</param>
+        /// <param name="iv">盐</param>
+        /// <returns>解密后的数据</returns>
+        public static string AES128(byte[] data, string key, byte[] iv);
+        /// <summary>
+        /// AES256解密
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <param name="key">密钥</param>
+        /// <param name="iv">盐</param>
+        /// <returns>解密后的数据</returns>
+        public static string AES256(byte[] data, string key, string iv);
+        /// <summary>
+        /// OPENSSL解码
+        /// </summary>
+        /// <param name="privateKey">私钥</param>
+        /// <param name="data">数据</param>
+        /// <param name="fOAEP"></param>
+        /// <returns>解密后的数据</returns>
+        public static string OpenSSL(string privateKey, string data, bool fOAEP = false);
+    }
+    public class Tools
+    {
+        /// <summary>
+        /// HEX字符串到HEX
+        /// </summary>
+        /// <param name="hexString">HEX字符串</param>
+        /// <returns>HEX数组</returns>
+        public static byte[] StrToHexByte(string hexString);
+        /// <summary>
+        /// 截取字符串
+        /// </summary>
+        /// <param name="a">源字符串</param>
+        /// <param name="b">从开始</param>
+        /// <param name="c">到结束</param>
+        /// <returns>分割后的</returns>
+        public static string GetString(string a, string b, string c = null);
+        /// <summary>
+        /// GBK到UTF-8
+        /// </summary>
+        /// <param name="msg">GBK字符串</param>
+        /// <returns>UTF-8字符串</returns>
+        public static string GBKtoUTF8(string msg);
+        /// <summary>
+        /// UTF-8到GBK
+        /// </summary>
+        /// <param name="msg">UTF-8字符串</param>
+        /// <returns>GBK字符串</returns>
+        public static string UTF8toGBK(string msg);
+        /// <summary>
+        /// 转成JSON字符串
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns>json字符串</returns>
+        public static string ToJson(object obj);
+        /// <summary>
+        /// JSON转成对象
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="json">字符串</param>
+        /// <returns>对象</returns>
+        public static T ToObject<T>(string json);
+        /// <summary>
+        /// 字符串转成JSON对象
+        /// </summary>
+        /// <param name="json">json字符串</param>
+        /// <returns>JSON对象</returns>
+        public static JObject ToJObject(string json);
+        /// <summary>
+        /// 获取类
+        /// </summary>
+        /// <param name="classname">类名</param>
+        /// <returns>类</returns>
+        public static dynamic GetClass(string classname, params object[] obj);
+        /// <summary>
+        /// 获取时间戳
+        /// </summary>
+        /// <returns>时间戳</returns>
+        public static long GetTimeSpan();
+        /// <summary>
+        /// 转码
+        /// </summary>
+        /// <param name="InputType">输入格式</param>
+        /// <param name="OutputType">输出格式</param>
+        /// <param name="InputData">输入数据</param>
+        /// <returns>转码后的数据</returns>
+        public static byte[] Transcoding(TranscodeType InputType, TranscodeType OutputType, byte[] InputData);
+        /// <summary>
+        /// 判断WebSocket客户端是否在线
+        /// </summary>
+        /// <param name="id">客户端ID</param>
+        /// <returns>是否在线</returns>
+        public static bool WebSocketIsOnline(string id);
+        /// <summary>
+        /// 获取在线的机器人
+        /// </summary>
+        /// <returns>机器人QQ号列表</returns>
+        public static List<long> GetBots();
+        /// <summary>
+        /// 压缩HTML
+        /// </summary>
+        /// <param name="html">原始数据</param>
+        /// <returns>压缩后的数据</returns>
+        public static string CompressHTML(string html);
+        /// <summary>
+        /// 压缩JS
+        /// </summary>
+        /// <param name="js">原始数据</param>
+        /// <returns>压缩后的数据</returns>
+        public static string CompressJS(string js);
+        /// <summary>
+        /// 压缩CSS
+        /// </summary>
+        /// <param name="css">原始数据</param>
+        /// <returns>压缩后的数据</returns>
+        public static string CompressCSS(string css);
+    }
+    public class WebSocketMessage
+    {
+        public IWebSocketConnection Client { get; private set; }
+        public string Data { get; private set; }
+        /// <summary>
+        /// WebSocket传来数据
+        /// </summary>
+        /// <param name="Client">WS客户端</param>
+        /// <param name="Data">WS本次传来的数据</param>
+        public WebSocketMessage(IWebSocketConnection Client, string Data);
+    }
+    public class WebSocketOpen
+    {
+        public IWebSocketConnection Client { get; private set; }
+        /// <summary>
+        /// WebSocket连接
+        /// </summary>
+        /// <param name="Client">WS客户端</param>
+        public WebSocketOpen(IWebSocketConnection Client);
+    }
+    public class WebSocketClose
+    {
+        public IWebSocketConnection Client { get; private set; }
+        /// <summary>
+        /// WebSocket断开
+        /// </summary>
+        /// <param name="Client">WS客户端</param>
+        public WebSocketClose(IWebSocketConnection Client);
+    }
+    public class RobotAfter
+    {
+        public enum MessageType
+        {
+            group, private_, friend
+        }
+        public long qq { get; private set; }
+        public MessageType type { get; private set; }
+        public long id { get; private set; }
+        public long fid { get; private set; }
+        public bool res { get; private set; }
+        public string error { get; private set; }
+        public string messageId { get; private set; }
+        public List<string> message { get; private set; }
+        /// <summary>
+        /// 机器人发送消息后回调
+        /// </summary>
+        /// <param name="type">消息类型</param>
+        /// <param name="qq">QQ机器人账户</param>
+        /// <param name="id">群号</param>
+        /// <param name="fid">QQ号</param>
+        /// <param name="res">是否发送成功</param>
+        /// <param name="message">消息</param>
+        public RobotAfter(MessageType type, long qq, long id, long fid, bool res, string error, List<string> message);
+        /// <summary>
+        /// 撤回消息
+        /// </summary>
+        public void ReCall();
+    }
+    public class RobotRequest
+    {
+        public enum MessageType
+        {
+            group, private_, friend
+        }
+        public long qq { get; private set; }
+        public MessageType type { get; private set; }
+        public long id { get; private set; }
+        public long fid { get; private set; }
+        public string name { get; private set; }
+        public List<string> message { get; private set; }
+        public string messageId { get; private set; }
+        /// <summary>
+        /// 机器人请求
+        /// </summary>
+        /// <param name="type">消息类型</param>
+        /// <param name="qq">QQ机器人账户</param>
+        /// <param name="id">群号</param>
+        /// <param name="fid">QQ号</param>
+        /// <param name="name">名字</param>
+        /// <param name="message">消息</param>
+        public RobotRequest(MessageType type, long qq, long id, long fid, string name, List<string> message);
+        /// <summary>
+        /// 撤回消息
+        /// </summary>
+        public void ReCall();
+        /// <summary>
+        /// 发送消息回应
+        /// </summary>
+        /// <param name="message">消息</param>
+        public void SendMessage(List<string> message);
+        /// <summary>
+        /// 发送图片回应
+        /// </summary>
+        /// <param name="img">图片二进制</param>
+        public void SendImage(byte[] img);
+        /// <summary>
+        /// 发送本地文件回应
+        /// </summary>
+        /// <param name="file">文件名</param>
+        public void SendImageFile(string file);
+        /// <summary>
+        /// 发送声音回应
+        /// </summary>
+        /// <param name="sound">音频二进制</param>
+        public void SendSound(byte[] sound);
+        /// <summary>
+        /// 发送本地声音文件回复
+        /// </summary>
+        /// <param name="sound">文件名</param>
+        public void SendSoundFile(string file);
+    }
+    public class RobotEvent
+    {
+        public enum EventType
+        {
+            GroupMemberJoin, GroupMemberQuit, GroupMemberKick
+        };
+        public long qq { get; private set; }
+        public long id { get; private set; }
+        public long fid { get; private set; }
+        public string name { get; private set; }
+        public string oname { get; private set; }
+        public long oid { get; private set; }
+        public EventType type { get; private set; }
+        private RobotRequest RobotRequest;
+        /// <summary>
+        /// 机器人事件
+        /// </summary>
+        /// <param name="qq">QQ机器人账户</param>
+        /// <param name="id">群号</param>
+        /// <param name="fid">用户QQ号</param>
+        /// <param name="name">用户昵称</param>
+        /// <param name="oname">管理者昵称</param>
+        /// <param name="oid">管理者QQ号</param>
+        /// <param name="type">事件类型</param>
+        public RobotEvent(EventType type, long qq, long id, long fid, string name, string oname, long oid);
+        /// <summary>
+        /// 发送消息回应
+        /// </summary>
+        /// <param name="message">消息</param>
+        public void SendMessage(List<string> message);
+        /// <summary>
+        /// 发送图片回应
+        /// </summary>
+        /// <param name="img">图片二进制</param>
+        public void SendImage(byte[] img);
+        /// <summary>
+        /// 发送声音回应
+        /// </summary>
+        /// <param name="sound">音频二进制</param>
+        public void SendSound(byte[] sound);
+    }
+    public class FileLoad
+    {
+        /// <summary>
+        /// 从文件加载字符串
+        /// </summary>
+        /// <param name="filename">文件名</param>
+        /// <returns>文件里面的字符串</returns>
+        public static string LoadString(string filename);
+        /// <summary>
+        /// 读一个文件
+        /// </summary>
+        /// <param name="filename">文件名</param>
+        /// <returns>文件二进制</returns>
+        public static byte[] LoadBytes(string filename);
+    }
+    public class VarDump : Exception
+    {
+        private object[] obj;
+        /// <summary>
+        /// 变量输出
+        /// </summary>
+        /// <param name="obj">变量</param>
+        public VarDump(params object[] obj);
+        public string Get();
+    }
+    internal class RepeatDictionaryComparer : IEqualityComparer<string>
+    {
+        public bool Equals(string x, string y);
+        public int GetHashCode(string obj);
+    }
+}

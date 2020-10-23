@@ -1,0 +1,992 @@
+#region 程序集 HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a
+// C:\Users\40206\.nuget\packages\htmlagilitypack\1.11.24\lib\netstandard2.0\HtmlAgilityPack.dll
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Xml;
+using System.Xml.XPath;
+
+namespace HtmlAgilityPack
+{
+    //
+    // 摘要:
+    //     Represents an HTML node.
+    [DebuggerDisplay("Name: {OriginalName}")]
+    public class HtmlNode : IXPathNavigable
+    {
+        //
+        // 摘要:
+        //     Gets the name of a comment node. It is actually defined as '#comment'.
+        public static readonly string HtmlNodeTypeNameComment;
+        //
+        // 摘要:
+        //     Gets the name of the document node. It is actually defined as '#document'.
+        public static readonly string HtmlNodeTypeNameDocument;
+        //
+        // 摘要:
+        //     Gets the name of a text node. It is actually defined as '#text'.
+        public static readonly string HtmlNodeTypeNameText;
+        //
+        // 摘要:
+        //     Gets a collection of flags that define specific behaviors for specific element
+        //     nodes. The table contains a DictionaryEntry list with the lowercase tag name
+        //     as the Key, and a combination of HtmlElementFlags as the Value.
+        public static Dictionary<string, HtmlElementFlag> ElementsFlags;
+
+        //
+        // 摘要:
+        //     Initializes HtmlNode, providing type, owner and where it exists in a collection
+        //
+        // 参数:
+        //   type:
+        //
+        //   ownerdocument:
+        //
+        //   index:
+        public HtmlNode(HtmlNodeType type, HtmlDocument ownerdocument, int index);
+
+        //
+        // 摘要:
+        //     Gets the text between the start and end tags of the object.
+        public virtual string InnerText { get; }
+        //
+        // 摘要:
+        //     Gets or Sets the HTML between the start and end tags of the object.
+        public virtual string InnerHtml { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the value of the 'id' HTML attribute. The document must have been
+        //     parsed using the OptionUseIdAttribute set to true.
+        public string Id { get; set; }
+        //
+        // 摘要:
+        //     Gets a value indicating whether the current node has any attributes on the closing
+        //     tag.
+        public bool HasClosingAttributes { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating whether this node has any child nodes.
+        public bool HasChildNodes { get; }
+        //
+        // 摘要:
+        //     Gets the closing tag of the node, null if the node is self-closing.
+        public HtmlNode EndNode { get; }
+        //
+        // 摘要:
+        //     Gets the first child of the node.
+        public HtmlNode FirstChild { get; }
+        //
+        // 摘要:
+        //     Gets the last child of the node.
+        public HtmlNode LastChild { get; }
+        //
+        // 摘要:
+        //     Gets the collection of HTML attributes for the closing tag. May not be null.
+        public HtmlAttributeCollection ClosingAttributes { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating if this node has been closed or not.
+        public bool Closed { get; }
+        //
+        // 摘要:
+        //     Gets all the children of the node.
+        public HtmlNodeCollection ChildNodes { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating whether the current node has any attributes.
+        public bool HasAttributes { get; }
+        //
+        // 摘要:
+        //     Gets the line number of this node in the document.
+        public int Line { get; }
+        //
+        // 摘要:
+        //     Gets the stream position of the area between the opening and closing tag of the
+        //     node, relative to the start of the document.
+        public int InnerStartIndex { get; }
+        //
+        // 摘要:
+        //     Gets the collection of HTML attributes for this node. May not be null.
+        public HtmlAttributeCollection Attributes { get; }
+        //
+        // 摘要:
+        //     Gets the length of the area between the opening and closing tag of the node.
+        public int InnerLength { get; }
+        //
+        // 摘要:
+        //     Gets the length of the entire node, opening and closing tag included.
+        public int OuterLength { get; }
+        //
+        // 摘要:
+        //     Gets or sets this node's name.
+        public string Name { get; set; }
+        //
+        // 摘要:
+        //     Gets the HTML node immediately following this element.
+        public HtmlNode NextSibling { get; }
+        //
+        // 摘要:
+        //     Gets the type of this node.
+        public HtmlNodeType NodeType { get; }
+        //
+        // 摘要:
+        //     The original unaltered name of the tag
+        public string OriginalName { get; }
+        //
+        // 摘要:
+        //     Gets or Sets the object and its content in HTML.
+        public virtual string OuterHtml { get; }
+        //
+        // 摘要:
+        //     Gets the HtmlAgilityPack.HtmlDocument to which this node belongs.
+        public HtmlDocument OwnerDocument { get; }
+        //
+        // 摘要:
+        //     Gets the parent of this node (for nodes that can have parents).
+        public HtmlNode ParentNode { get; }
+        //
+        // 摘要:
+        //     Gets the node immediately preceding this node.
+        public HtmlNode PreviousSibling { get; }
+        //
+        // 摘要:
+        //     Gets the stream position of this node in the document, relative to the start
+        //     of the document.
+        public int StreamPosition { get; }
+        //
+        // 摘要:
+        //     Gets the column number of this node in the document.
+        public int LinePosition { get; }
+        //
+        // 摘要:
+        //     Gets a valid XPath string that points to this node
+        public string XPath { get; }
+        //
+        // 摘要:
+        //     The depth of the node relative to the opening root html element. This value is
+        //     used to determine if a document has to many nested html nodes which can cause
+        //     stack overflows
+        public int Depth { get; set; }
+
+        //
+        // 摘要:
+        //     Determines if an element node can be kept overlapped.
+        //
+        // 参数:
+        //   name:
+        //     The name of the element node to check. May not be null.
+        //
+        // 返回结果:
+        //     true if the name is the name of an element node that can be kept overlapped,
+        //     false otherwise.
+        public static bool CanOverlapElement(string name);
+        //
+        // 摘要:
+        //     Creates an HTML node from a string representing literal HTML.
+        //
+        // 参数:
+        //   html:
+        //     The HTML text.
+        //
+        // 返回结果:
+        //     The newly created node instance.
+        public static HtmlNode CreateNode(string html);
+        //
+        // 摘要:
+        //     Determines if an element node is a CDATA element node.
+        //
+        // 参数:
+        //   name:
+        //     The name of the element node to check. May not be null.
+        //
+        // 返回结果:
+        //     true if the name is the name of a CDATA element node, false otherwise.
+        public static bool IsCDataElement(string name);
+        //
+        // 摘要:
+        //     Determines if an element node is closed.
+        //
+        // 参数:
+        //   name:
+        //     The name of the element node to check. May not be null.
+        //
+        // 返回结果:
+        //     true if the name is the name of a closed element node, false otherwise.
+        public static bool IsClosedElement(string name);
+        //
+        // 摘要:
+        //     Determines if an element node is defined as empty.
+        //
+        // 参数:
+        //   name:
+        //     The name of the element node to check. May not be null.
+        //
+        // 返回结果:
+        //     true if the name is the name of an empty element node, false otherwise.
+        public static bool IsEmptyElement(string name);
+        //
+        // 摘要:
+        //     Determines if a text corresponds to the closing tag of an node that can be kept
+        //     overlapped.
+        //
+        // 参数:
+        //   text:
+        //     The text to check. May not be null.
+        //
+        // 返回结果:
+        //     true or false.
+        public static bool IsOverlappedClosingElement(string text);
+        //
+        // 摘要:
+        //     Adds one or more classes to this node.
+        //
+        // 参数:
+        //   name:
+        //     The node list to add. May not be null.
+        public void AddClass(string name);
+        //
+        // 摘要:
+        //     Adds one or more classes to this node.
+        //
+        // 参数:
+        //   name:
+        //     The node list to add. May not be null.
+        //
+        //   throwError:
+        //     true to throw Error if class name exists, false otherwise.
+        public void AddClass(string name, bool throwError);
+        //
+        // 摘要:
+        //     Returns a collection of all ancestor nodes of this element.
+        [IteratorStateMachine(typeof(<Ancestors>d__116))]
+        public IEnumerable<HtmlNode> Ancestors();
+        //
+        // 摘要:
+        //     Get Ancestors with matching name
+        //
+        // 参数:
+        //   name:
+        [IteratorStateMachine(typeof(<Ancestors>d__117))]
+        public IEnumerable<HtmlNode> Ancestors(string name);
+        //
+        // 摘要:
+        //     Returns a collection of all ancestor nodes of this element.
+        [IteratorStateMachine(typeof(<AncestorsAndSelf>d__118))]
+        public IEnumerable<HtmlNode> AncestorsAndSelf();
+        //
+        // 摘要:
+        //     Gets all anscestor nodes and the current node
+        //
+        // 参数:
+        //   name:
+        [IteratorStateMachine(typeof(<AncestorsAndSelf>d__119))]
+        public IEnumerable<HtmlNode> AncestorsAndSelf(string name);
+        //
+        // 摘要:
+        //     Adds the specified node to the end of the list of children of this node.
+        //
+        // 参数:
+        //   newChild:
+        //     The node to add. May not be null.
+        //
+        // 返回结果:
+        //     The node added.
+        public HtmlNode AppendChild(HtmlNode newChild);
+        //
+        // 摘要:
+        //     Adds the specified node to the end of the list of children of this node.
+        //
+        // 参数:
+        //   newChildren:
+        //     The node list to add. May not be null.
+        public void AppendChildren(HtmlNodeCollection newChildren);
+        //
+        // 摘要:
+        //     Gets all Attributes with name
+        //
+        // 参数:
+        //   name:
+        public IEnumerable<HtmlAttribute> ChildAttributes(string name);
+        //
+        // 摘要:
+        //     Creates a duplicate of the node
+        public HtmlNode Clone();
+        //
+        // 摘要:
+        //     Creates a duplicate of the node.
+        //
+        // 参数:
+        //   deep:
+        //     true to recursively clone the subtree under the specified node; false to clone
+        //     only the node itself.
+        //
+        // 返回结果:
+        //     The cloned node.
+        public HtmlNode CloneNode(bool deep);
+        //
+        // 摘要:
+        //     Creates a duplicate of the node and changes its name at the same time.
+        //
+        // 参数:
+        //   newName:
+        //     The new name of the cloned node. May not be null.
+        //
+        //   deep:
+        //     true to recursively clone the subtree under the specified node; false to clone
+        //     only the node itself.
+        //
+        // 返回结果:
+        //     The cloned node.
+        public HtmlNode CloneNode(string newName, bool deep);
+        //
+        // 摘要:
+        //     Creates a duplicate of the node and changes its name at the same time.
+        //
+        // 参数:
+        //   newName:
+        //     The new name of the cloned node. May not be null.
+        //
+        // 返回结果:
+        //     The cloned node.
+        public HtmlNode CloneNode(string newName);
+        //
+        // 摘要:
+        //     Creates a duplicate of the node and the subtree under it.
+        //
+        // 参数:
+        //   node:
+        //     The node to duplicate. May not be null.
+        public void CopyFrom(HtmlNode node);
+        //
+        // 摘要:
+        //     Creates a duplicate of the node.
+        //
+        // 参数:
+        //   node:
+        //     The node to duplicate. May not be null.
+        //
+        //   deep:
+        //     true to recursively clone the subtree under the specified node, false to clone
+        //     only the node itself.
+        public void CopyFrom(HtmlNode node, bool deep);
+        //
+        // 摘要:
+        //     Creates a new XPathNavigator object for navigating this HTML node.
+        //
+        // 返回结果:
+        //     An XPathNavigator object. The XPathNavigator is positioned on the node from which
+        //     the method was called. It is not positioned on the root of the document.
+        public XPathNavigator CreateNavigator();
+        //
+        // 摘要:
+        //     Creates an XPathNavigator using the root of this document.
+        public XPathNavigator CreateRootNavigator();
+        //
+        // 摘要:
+        //     Gets all Descendant nodes for this node and each of child nodes
+        //
+        // 参数:
+        //   level:
+        //     The depth level of the node to parse in the html tree
+        //
+        // 返回结果:
+        //     the current element as an HtmlNode
+        [IteratorStateMachine(typeof(<DescendantNodes>d__130))]
+        [Obsolete("Use Descendants() instead, the results of this function will change in a future version")]
+        public IEnumerable<HtmlNode> DescendantNodes(int level = 0);
+        //
+        // 摘要:
+        //     Returns a collection of all descendant nodes of this element, in document order
+        [Obsolete("Use DescendantsAndSelf() instead, the results of this function will change in a future version")]
+        public IEnumerable<HtmlNode> DescendantNodesAndSelf();
+        //
+        // 摘要:
+        //     Get all descendant nodes with matching name
+        //
+        // 参数:
+        //   name:
+        [IteratorStateMachine(typeof(<Descendants>d__134))]
+        public IEnumerable<HtmlNode> Descendants(string name);
+        //
+        // 摘要:
+        //     Gets all Descendant nodes in enumerated list
+        [IteratorStateMachine(typeof(<Descendants>d__133))]
+        public IEnumerable<HtmlNode> Descendants(int level);
+        //
+        // 摘要:
+        //     Gets all Descendant nodes in enumerated list
+        public IEnumerable<HtmlNode> Descendants();
+        //
+        // 摘要:
+        //     Returns a collection of all descendant nodes of this element, in document order
+        [IteratorStateMachine(typeof(<DescendantsAndSelf>d__135))]
+        public IEnumerable<HtmlNode> DescendantsAndSelf();
+        //
+        // 摘要:
+        //     Gets all descendant nodes including this node
+        //
+        // 参数:
+        //   name:
+        [IteratorStateMachine(typeof(<DescendantsAndSelf>d__136))]
+        public IEnumerable<HtmlNode> DescendantsAndSelf(string name);
+        //
+        // 摘要:
+        //     Gets first generation child node matching name
+        //
+        // 参数:
+        //   name:
+        public HtmlNode Element(string name);
+        //
+        // 摘要:
+        //     Gets matching first generation child nodes matching name
+        //
+        // 参数:
+        //   name:
+        [IteratorStateMachine(typeof(<Elements>d__138))]
+        public IEnumerable<HtmlNode> Elements(string name);
+        //
+        // 摘要:
+        //     Gets the attributes in this collection.
+        //
+        // 参数:
+        //   attributeNames:
+        //     A variable-length parameters list containing attribute names.
+        //
+        // 返回结果:
+        //     An enumerator that allows foreach to be used to process the attributes in this
+        //     collection.
+        public IEnumerable<HtmlAttribute> GetAttributes(params string[] attributeNames);
+        //
+        // 摘要:
+        //     Gets the attributes in this collection.
+        //
+        // 返回结果:
+        //     An enumerator that allows foreach to be used to process the attributes in this
+        //     collection.
+        public IEnumerable<HtmlAttribute> GetAttributes();
+        //
+        // 摘要:
+        //     Helper method to get the value of an attribute of this node. If the attribute
+        //     is not found, the default value will be returned.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to get. May not be null.
+        //
+        //   def:
+        //     The default value to return if not found.
+        //
+        // 返回结果:
+        //     The value of the attribute if found, the default value if not found.
+        public T GetAttributeValue<T>(string name, T def);
+        //
+        // 摘要:
+        //     Helper method to get the value of an attribute of this node. If the attribute
+        //     is not found, the default value will be returned.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to get. May not be null.
+        //
+        //   def:
+        //     The default value to return if not found.
+        //
+        // 返回结果:
+        //     The value of the attribute if found, the default value if not found.
+        public bool GetAttributeValue(string name, bool def);
+        //
+        // 摘要:
+        //     Helper method to get the value of an attribute of this node. If the attribute
+        //     is not found, the default value will be returned.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to get. May not be null.
+        //
+        //   def:
+        //     The default value to return if not found.
+        //
+        // 返回结果:
+        //     The value of the attribute if found, the default value if not found.
+        public int GetAttributeValue(string name, int def);
+        //
+        // 摘要:
+        //     Helper method to get the value of an attribute of this node. If the attribute
+        //     is not found, the default value will be returned.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to get. May not be null.
+        //
+        //   def:
+        //     The default value to return if not found.
+        //
+        // 返回结果:
+        //     The value of the attribute if found, the default value if not found.
+        public string GetAttributeValue(string name, string def);
+        //
+        // 摘要:
+        //     Gets the CSS Class from the node.
+        //
+        // 返回结果:
+        //     The CSS Class from the node
+        [IteratorStateMachine(typeof(<GetClasses>d__185))]
+        public IEnumerable<string> GetClasses();
+        //
+        // 摘要:
+        //     Gets data attribute.
+        //
+        // 参数:
+        //   key:
+        //     The key.
+        //
+        // 返回结果:
+        //     The data attribute.
+        public HtmlAttribute GetDataAttribute(string key);
+        //
+        // 摘要:
+        //     Gets the data attributes in this collection.
+        //
+        // 返回结果:
+        //     An enumerator that allows foreach to be used to process the data attributes in
+        //     this collection.
+        public IEnumerable<HtmlAttribute> GetDataAttributes();
+        //
+        // 摘要:
+        //     Gets direct inner text.
+        //
+        // 返回结果:
+        //     The direct inner text.
+        public virtual string GetDirectInnerText();
+        //
+        // 摘要:
+        //     Fill an object and go through it's properties and fill them too.
+        //
+        // 类型参数:
+        //   T:
+        //     Type of object to want to fill. It should have atleast one property that defined
+        //     XPath.
+        //
+        // 返回结果:
+        //     Returns an object of type T including Encapsulated data.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     Why it's thrown.
+        //
+        //   T:System.ArgumentNullException:
+        //     Why it's thrown.
+        //
+        //   T:System.MissingMethodException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.MissingXPathException:
+        //     Why it's thrown.
+        //
+        //   T:System.Xml.XPath.XPathException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeAttributeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:System.FormatException:
+        //     Why it's thrown.
+        //
+        //   T:System.Exception:
+        //     Why it's thrown.
+        public T GetEncapsulatedData<T>();
+        //
+        // 摘要:
+        //     Fill an object and go through it's properties and fill them too.
+        //
+        // 参数:
+        //   targetType:
+        //     Type of object to want to fill. It should have atleast one property that defined
+        //     XPath.
+        //
+        //   htmlDocument:
+        //     If htmlDocument includes data , leave this parameter null. Else pass your specific
+        //     htmldocument.
+        //
+        // 返回结果:
+        //     Returns an object of type targetType including Encapsulated data.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     Why it's thrown.
+        //
+        //   T:System.ArgumentNullException:
+        //     Why it's thrown.
+        //
+        //   T:System.MissingMethodException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.MissingXPathException:
+        //     Why it's thrown.
+        //
+        //   T:System.Xml.XPath.XPathException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeAttributeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:System.FormatException:
+        //     Why it's thrown.
+        //
+        //   T:System.Exception:
+        //     Why it's thrown.
+        public object GetEncapsulatedData(Type targetType, HtmlDocument htmlDocument = null);
+        //
+        // 摘要:
+        //     Fill an object and go through it's properties and fill them too.
+        //
+        // 参数:
+        //   htmlDocument:
+        //     If htmlDocument includes data , leave this parameter null. Else pass your specific
+        //     htmldocument.
+        //
+        // 类型参数:
+        //   T:
+        //     Type of object to want to fill. It should have atleast one property that defined
+        //     XPath.
+        //
+        // 返回结果:
+        //     Returns an object of type T including Encapsulated data.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     Why it's thrown.
+        //
+        //   T:System.ArgumentNullException:
+        //     Why it's thrown.
+        //
+        //   T:System.MissingMethodException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.MissingXPathException:
+        //     Why it's thrown.
+        //
+        //   T:System.Xml.XPath.XPathException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:HtmlAgilityPack.NodeAttributeNotFoundException:
+        //     Why it's thrown.
+        //
+        //   T:System.FormatException:
+        //     Why it's thrown.
+        //
+        //   T:System.Exception:
+        //     Why it's thrown.
+        public T GetEncapsulatedData<T>(HtmlDocument htmlDocument);
+        //
+        // 摘要:
+        //     Check if the node class has the parameter class.
+        //
+        // 参数:
+        //   class:
+        //     The class.
+        //
+        // 返回结果:
+        //     True if node class has the parameter class, false if not.
+        public bool HasClass(string className);
+        //
+        // 摘要:
+        //     Inserts the specified node immediately after the specified reference node.
+        //
+        // 参数:
+        //   newChild:
+        //     The node to insert. May not be null.
+        //
+        //   refChild:
+        //     The node that is the reference node. The newNode is placed after the refNode.
+        //
+        // 返回结果:
+        //     The node being inserted.
+        public HtmlNode InsertAfter(HtmlNode newChild, HtmlNode refChild);
+        //
+        // 摘要:
+        //     Inserts the specified node immediately before the specified reference node.
+        //
+        // 参数:
+        //   newChild:
+        //     The node to insert. May not be null.
+        //
+        //   refChild:
+        //     The node that is the reference node. The newChild is placed before this node.
+        //
+        // 返回结果:
+        //     The node being inserted.
+        public HtmlNode InsertBefore(HtmlNode newChild, HtmlNode refChild);
+        //
+        // 摘要:
+        //     Adds the specified node to the beginning of the list of children of this node.
+        //
+        // 参数:
+        //   newChild:
+        //     The node to add. May not be null.
+        //
+        // 返回结果:
+        //     The node added.
+        public HtmlNode PrependChild(HtmlNode newChild);
+        //
+        // 摘要:
+        //     Adds the specified node list to the beginning of the list of children of this
+        //     node.
+        //
+        // 参数:
+        //   newChildren:
+        //     The node list to add. May not be null.
+        public void PrependChildren(HtmlNodeCollection newChildren);
+        //
+        // 摘要:
+        //     Removes node from parent collection
+        public void Remove();
+        //
+        // 摘要:
+        //     Removes all the children and/or attributes of the current node.
+        public void RemoveAll();
+        //
+        // 摘要:
+        //     Removes all the children of the current node.
+        public void RemoveAllChildren();
+        //
+        // 摘要:
+        //     Removes all id for node described by node.
+        //
+        // 参数:
+        //   node:
+        //     The node.
+        public void RemoveAllIDforNode(HtmlNode node);
+        //
+        // 摘要:
+        //     Removes the specified child node.
+        //
+        // 参数:
+        //   oldChild:
+        //     The node being removed. May not be null.
+        //
+        // 返回结果:
+        //     The node removed.
+        public HtmlNode RemoveChild(HtmlNode oldChild);
+        //
+        // 摘要:
+        //     Removes the specified child node.
+        //
+        // 参数:
+        //   oldChild:
+        //     The node being removed. May not be null.
+        //
+        //   keepGrandChildren:
+        //     true to keep grand children of the node, false otherwise.
+        //
+        // 返回结果:
+        //     The node removed.
+        public HtmlNode RemoveChild(HtmlNode oldChild, bool keepGrandChildren);
+        //
+        // 摘要:
+        //     Removes the class attribute from the node.
+        public void RemoveClass();
+        //
+        // 摘要:
+        //     Removes the specified class from the node.
+        //
+        // 参数:
+        //   name:
+        //     The class being removed. May not be null.
+        public void RemoveClass(string name);
+        //
+        // 摘要:
+        //     Removes the specified class from the node.
+        //
+        // 参数:
+        //   name:
+        //     The class being removed. May not be null.
+        //
+        //   throwError:
+        //     true to throw Error if class name doesn't exist, false otherwise.
+        public void RemoveClass(string name, bool throwError);
+        //
+        // 摘要:
+        //     Removes the class attribute from the node.
+        //
+        // 参数:
+        //   throwError:
+        //     true to throw Error if class name doesn't exist, false otherwise.
+        public void RemoveClass(bool throwError);
+        //
+        // 摘要:
+        //     Replaces the child node oldChild with newChild node.
+        //
+        // 参数:
+        //   newChild:
+        //     The new node to put in the child list.
+        //
+        //   oldChild:
+        //     The node being replaced in the list.
+        //
+        // 返回结果:
+        //     The node replaced.
+        public HtmlNode ReplaceChild(HtmlNode newChild, HtmlNode oldChild);
+        //
+        // 摘要:
+        //     Replaces the class name oldClass with newClass name.
+        //
+        // 参数:
+        //   newClass:
+        //     The new class name.
+        //
+        //   oldClass:
+        //     The class being replaced.
+        public void ReplaceClass(string newClass, string oldClass);
+        //
+        // 摘要:
+        //     Replaces the class name oldClass with newClass name.
+        //
+        // 参数:
+        //   newClass:
+        //     The new class name.
+        //
+        //   oldClass:
+        //     The class being replaced.
+        //
+        //   throwError:
+        //     true to throw Error if class name doesn't exist, false otherwise.
+        public void ReplaceClass(string newClass, string oldClass, bool throwError);
+        //
+        // 摘要:
+        //     Selects a list of nodes matching the HtmlAgilityPack.HtmlNode.XPath expression.
+        //
+        // 参数:
+        //   xpath:
+        //     The XPath expression.
+        //
+        // 返回结果:
+        //     An HtmlAgilityPack.HtmlNodeCollection containing a collection of nodes matching
+        //     the HtmlAgilityPack.HtmlNode.XPath query, or null if no node matched the XPath
+        //     expression.
+        public HtmlNodeCollection SelectNodes(string xpath);
+        //
+        // 摘要:
+        //     Selects a list of nodes matching the HtmlAgilityPack.HtmlNode.XPath expression.
+        //
+        // 参数:
+        //   xpath:
+        //     The XPath expression.
+        //
+        // 返回结果:
+        //     An HtmlAgilityPack.HtmlNodeCollection containing a collection of nodes matching
+        //     the HtmlAgilityPack.HtmlNode.XPath query, or null if no node matched the XPath
+        //     expression.
+        public HtmlNodeCollection SelectNodes(XPathExpression xpath);
+        //
+        // 摘要:
+        //     Selects a list of nodes matching the HtmlAgilityPack.HtmlNode.XPath expression.
+        //
+        // 参数:
+        //   xpath:
+        //     The XPath expression.
+        //
+        // 返回结果:
+        //     An HtmlAgilityPack.HtmlNodeCollection containing a collection of nodes matching
+        //     the HtmlAgilityPack.HtmlNode.XPath query, or null if no node matched the XPath
+        //     expression.
+        public HtmlNode SelectSingleNode(XPathExpression xpath);
+        //
+        // 摘要:
+        //     Selects the first XmlNode that matches the XPath expression.
+        //
+        // 参数:
+        //   xpath:
+        //     The XPath expression. May not be null.
+        //
+        // 返回结果:
+        //     The first HtmlAgilityPack.HtmlNode that matches the XPath query or a null reference
+        //     if no matching node was found.
+        public HtmlNode SelectSingleNode(string xpath);
+        //
+        // 摘要:
+        //     Helper method to set the value of an attribute of this node. If the attribute
+        //     is not found, it will be created automatically.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to set. May not be null.
+        //
+        //   value:
+        //     The value for the attribute.
+        //
+        // 返回结果:
+        //     The corresponding attribute instance.
+        public HtmlAttribute SetAttributeValue(string name, string value);
+        //
+        // 摘要:
+        //     Sets child nodes identifier.
+        //
+        // 参数:
+        //   chilNode:
+        //     The chil node.
+        public void SetChildNodesId(HtmlNode chilNode);
+        //
+        // 摘要:
+        //     Sets the parent Html node and properly determines the current node's depth using
+        //     the parent node's depth.
+        public void SetParent(HtmlNode parent);
+        //
+        // 摘要:
+        //     Saves all the children of the node to a string.
+        //
+        // 返回结果:
+        //     The saved string.
+        public string WriteContentTo();
+        //
+        // 摘要:
+        //     Saves all the children of the node to the specified TextWriter.
+        //
+        // 参数:
+        //   outText:
+        //     The TextWriter to which you want to save.
+        //
+        //   level:
+        //     Identifies the level we are in starting at root with 0
+        public void WriteContentTo(TextWriter outText, int level = 0);
+        //
+        // 摘要:
+        //     Saves the current node to the specified XmlWriter.
+        //
+        // 参数:
+        //   writer:
+        //     The XmlWriter to which you want to save.
+        public void WriteTo(XmlWriter writer);
+        //
+        // 摘要:
+        //     Saves the current node to a string.
+        //
+        // 返回结果:
+        //     The saved string.
+        public string WriteTo();
+        //
+        // 摘要:
+        //     Saves the current node to the specified TextWriter.
+        //
+        // 参数:
+        //   outText:
+        //     The TextWriter to which you want to save.
+        //
+        //   level:
+        //     identifies the level we are in starting at root with 0
+        public virtual void WriteTo(TextWriter outText, int level = 0);
+    }
+}

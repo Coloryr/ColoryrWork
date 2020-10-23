@@ -1,0 +1,138 @@
+﻿<Window x:Class="SendBuild.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="动态编译" MinHeight="450" MinWidth="527" Height="450" Width="527" 
+        Background="Transparent" Loaded="Window_Loaded" Closed="Window_Closed" Icon="/SendBuild;component/Color_yr.ico">
+    <Grid Background="White">
+        <TabControl Margin="0,0,0,0" Background="White" Name="Tab">
+            <TabItem Header="DLL" Style="{StaticResource TabItem}" Foreground="Black" Background="Transparent">
+                <Grid>
+                    <ListView Margin="0,0,0,30" Background="#22FFFFFF" x:Name="CSList">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="描述" Width="150" DisplayMemberBinding="{Binding Text}"/>
+                                <GridViewColumn Header="ID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="DllAdd"/>
+                                <MenuItem Header="修改" Click="DllEdit"/>
+                                <MenuItem Header="删除" Click="DllRemove"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                    <Button Content="刷新" Click="ReClick" Height="25" VerticalAlignment="Bottom" Name="Re1"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}"/>
+                    <Button Content="编译" Click="BuildClick" Height="25" VerticalAlignment="Bottom" Name="Build1"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}" Margin="0,0,80,0"/>
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Background="White" Name="Search" 
+                             VerticalAlignment="Bottom" Width="340" TextChanged="TextBox_TextChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Class" Style="{StaticResource TabItem}" Foreground="Black" Background="Transparent">
+                <Grid>
+                    <ListView Margin="0,0,0,30" Background="#22FFFFFF" x:Name="ClassList">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="描述" Width="150" DisplayMemberBinding="{Binding Text}"/>
+                                <GridViewColumn Header="ID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="ClassAdd"/>
+                                <MenuItem Header="修改" Click="ClassEdit"/>
+                                <MenuItem Header="删除" Click="ClassRemove"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                    <Button Content="刷新" Click="ReClick" Height="25" VerticalAlignment="Bottom" Name="Re2"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}"/>
+                    <Button Content="编译" Click="BuildClick" Height="25" VerticalAlignment="Bottom" Name="Build2"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}" Margin="0,0,80,0"/>
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Name="Search1" Background="White"
+                             VerticalAlignment="Bottom" Width="340" TextChanged="TextBox_TextChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="IoT" Style="{StaticResource TabItem}" Foreground="Black" Background="Transparent">
+                <Grid>
+                    <ListView Margin="0,0,0,30" Background="#22FFFFFF" x:Name="IoTList">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="描述" Width="150" DisplayMemberBinding="{Binding Text}"/>
+                                <GridViewColumn Header="ID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="IoTAdd"/>
+                                <MenuItem Header="修改" Click="IoTEdit"/>
+                                <MenuItem Header="删除" Click="IoTRemove"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                    <Button Content="刷新" Click="ReClick" Height="25" VerticalAlignment="Bottom" Name="Re3"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}"/>
+                    <Button Content="编译" Click="BuildClick" Height="25" VerticalAlignment="Bottom" Name="Build3"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}" Margin="0,0,80,0"/>
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Name="Search2" Background="White"
+                             VerticalAlignment="Bottom" Width="340" TextChanged="TextBox_TextChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="WS" Style="{StaticResource TabItem}" Foreground="Black" Background="Transparent">
+                <Grid>
+                    <ListView Margin="0,0,0,30" Background="#22FFFFFF" x:Name="WSList">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="描述" Width="150" DisplayMemberBinding="{Binding Text}"/>
+                                <GridViewColumn Header="ID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="WSAdd"/>
+                                <MenuItem Header="修改" Click="WSEdit"/>
+                                <MenuItem Header="删除" Click="WSRemove"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                    <Button Content="刷新" Click="ReClick" Height="25" VerticalAlignment="Bottom" Name="Re4"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}"/>
+                    <Button Content="编译" Click="BuildClick" Height="25" VerticalAlignment="Bottom" Name="Build4"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}" Margin="0,0,80,0"/>
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Name="Search3" Background="White"
+                             VerticalAlignment="Bottom" Width="340" TextChanged="TextBox_TextChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Robot" Style="{StaticResource TabItem}" Foreground="Black" Background="Transparent">
+                <Grid>
+                    <ListView Margin="0,0,0,30" Background="#22FFFFFF" x:Name="RobotList">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="描述" Width="150" DisplayMemberBinding="{Binding Text}"/>
+                                <GridViewColumn Header="ID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="RobotAdd"/>
+                                <MenuItem Header="修改" Click="RobotEdit"/>
+                                <MenuItem Header="删除" Click="RobotRemove"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                    <Button Content="刷新" Click="ReClick" Height="25" VerticalAlignment="Bottom" Name="Re5"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}"/>
+                    <Button Content="编译" Click="BuildClick" Height="25" VerticalAlignment="Bottom" Name="Build5"
+                        Background="#55FFFFFF" HorizontalAlignment="Right" Width="75" Style="{StaticResource Button}" Margin="0,0,80,0"/>
+                    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Name="Search4" Background="White"
+                             VerticalAlignment="Bottom" Width="340" TextChanged="TextBox_TextChanged"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="Button" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <!--定义圆角外边框-->
+                    <Border Name="gridborder" BorderThickness="1" CornerRadius="3">
+                        <TextBlock x:Name="data" Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="true">
+                            <Setter TargetName="gridborder" Property="Background" Value="#00000000"/>
+                            <Setter TargetName="gridborder" Property="BorderBrush" Value="#FF5EBDD3"/>
+                            <Setter TargetName="data" Property="Foreground" Value="#FF000000"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="gridborder" Property="Background" Value="#00000000"/>
+                            <Setter TargetName="gridborder" Property="BorderBrush" Value="#FF5EBDD3"/>
+                            <Setter TargetName="data" Property="Foreground" Value="#FF999999"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

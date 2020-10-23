@@ -1,0 +1,451 @@
+#region 程序集 StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46
+// C:\Users\40206\.nuget\packages\stackexchange.redis\2.1.58\lib\netstandard2.0\StackExchange.Redis.dll
+#endregion
+
+using StackExchange.Redis;
+using System;
+using System.IO;
+
+namespace StackExchange.Redis
+{
+    //
+    // 摘要:
+    //     Represents values that can be stored in redis
+    public readonly struct RedisValue : IEquatable<RedisValue>, IComparable<RedisValue>, IComparable, IConvertible
+    {
+        //
+        // 摘要:
+        //     Creates a StackExchange.Redis.RedisValue from a string.
+        public RedisValue(string value);
+
+        //
+        // 摘要:
+        //     A null value
+        public static RedisValue Null { get; }
+        //
+        // 摘要:
+        //     Represents the string ""
+        public static RedisValue EmptyString { get; }
+        //
+        // 摘要:
+        //     Indicates whether the value should be considered a null value
+        public bool IsNull { get; }
+        //
+        // 摘要:
+        //     Indicates whether the value is a primitive integer (signed or unsigned)
+        public bool IsInteger { get; }
+        //
+        // 摘要:
+        //     Indicates whether the value is either null or a zero-length value
+        public bool IsNullOrEmpty { get; }
+        //
+        // 摘要:
+        //     Indicates whether the value is greater than zero-length or has an integer value
+        public bool HasValue { get; }
+
+        //
+        // 摘要:
+        //     Create a RedisValue from a MemoryStream; it will *attempt* to use the internal
+        //     buffer directly, but if this isn't possibly it will fallback to ToArray
+        //
+        // 参数:
+        //   stream:
+        //     The System.IO.MemoryStream to create a value from.
+        public static RedisValue CreateFrom(MemoryStream stream);
+        //
+        // 摘要:
+        //     Parse this object as a value - to be used alongside Box.
+        //
+        // 参数:
+        //   value:
+        //     The value to unbox.
+        public static RedisValue Unbox(object value);
+        //
+        // 摘要:
+        //     Obtain this value as an object - to be used alongside Unbox
+        public object Box();
+        //
+        // 摘要:
+        //     Compare against a RedisValue for relative order
+        //
+        // 参数:
+        //   other:
+        //     The other StackExchange.Redis.RedisValue to compare.
+        public int CompareTo(RedisValue other);
+        //
+        // 摘要:
+        //     See Object.Equals()
+        //
+        // 参数:
+        //   obj:
+        //     The other StackExchange.Redis.RedisValue to compare.
+        public override bool Equals(object obj);
+        //
+        // 摘要:
+        //     Indicates whether two RedisValue values are equivalent
+        //
+        // 参数:
+        //   other:
+        //     The StackExchange.Redis.RedisValue to compare to.
+        public bool Equals(RedisValue other);
+        //
+        // 摘要:
+        //     See Object.GetHashCode()
+        public override int GetHashCode();
+        //
+        // 摘要:
+        //     Get the size of this value in bytes
+        public long Length();
+        //
+        // 摘要:
+        //     Indicates whether the current value has the supplied value as a prefix.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to check.
+        public bool StartsWith(RedisValue value);
+        //
+        // 摘要:
+        //     Returns a string representation of the value
+        public override string ToString();
+        //
+        // 摘要:
+        //     Convert to a double if possible, returning true.
+        //     Returns false otherwise.
+        //
+        // 参数:
+        //   val:
+        //     The System.Double value, if conversion was possible.
+        public bool TryParse(out double val);
+        //
+        // 摘要:
+        //     Convert to a signed long if possible, returning true.
+        //     Returns false otherwise.
+        //
+        // 参数:
+        //   val:
+        //     The System.Int64 value, if conversion was possible.
+        public bool TryParse(out long val);
+        //
+        // 摘要:
+        //     Convert to a int if possible, returning true.
+        //     Returns false otherwise.
+        //
+        // 参数:
+        //   val:
+        //     The System.Int32 value, if conversion was possible.
+        public bool TryParse(out int val);
+
+        //
+        // 摘要:
+        //     Indicates whether two RedisValue values are equivalent
+        //
+        // 参数:
+        //   x:
+        //     The first StackExchange.Redis.RedisValue to compare.
+        //
+        //   y:
+        //     The second StackExchange.Redis.RedisValue to compare.
+        public static bool operator ==(RedisValue x, RedisValue y);
+        //
+        // 摘要:
+        //     Indicates whether two RedisValue values are equivalent
+        //
+        // 参数:
+        //   x:
+        //     The first StackExchange.Redis.RedisValue to compare.
+        //
+        //   y:
+        //     The second StackExchange.Redis.RedisValue to compare.
+        public static bool operator !=(RedisValue x, RedisValue y);
+
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a ReadOnlyMemory
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static implicit operator ReadOnlyMemory<byte>(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a byte[].
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static implicit operator byte[](RedisValue value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{bool}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{bool} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(bool? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an byte[].
+        //
+        // 参数:
+        //   value:
+        //     The byte[] to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(byte[] value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.String.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static implicit operator string(RedisValue value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.String.
+        //
+        // 参数:
+        //   value:
+        //     The System.String to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(string value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from a Memory{byte}.
+        //
+        // 参数:
+        //   value:
+        //     The Memory{byte} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(Memory<byte> value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from a ReadOnlyMemory{byte}.
+        //
+        // 参数:
+        //   value:
+        //     The ReadOnlyMemory{byte} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(ReadOnlyMemory<byte> value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{double}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{double} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(double? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.Double.
+        //
+        // 参数:
+        //   value:
+        //     The System.Double to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(double value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{uint}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{uint} to convert to a StackExchange.Redis.RedisValue.
+        [CLSCompliant(false)]
+        public static implicit operator RedisValue(uint? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.UInt32.
+        //
+        // 参数:
+        //   value:
+        //     The System.UInt32 to convert to a StackExchange.Redis.RedisValue.
+        [CLSCompliant(false)]
+        public static implicit operator RedisValue(uint value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{ulong}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{ulong} to convert to a StackExchange.Redis.RedisValue.
+        [CLSCompliant(false)]
+        public static implicit operator RedisValue(ulong? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.UInt64.
+        //
+        // 参数:
+        //   value:
+        //     The System.UInt64 to convert to a StackExchange.Redis.RedisValue.
+        [CLSCompliant(false)]
+        public static implicit operator RedisValue(ulong value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{long}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{long} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(long? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.Int64.
+        //
+        // 参数:
+        //   value:
+        //     The System.Int64 to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(long value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an Nullable{int}.
+        //
+        // 参数:
+        //   value:
+        //     The Nullable{int} to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(int? value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.Int32.
+        //
+        // 参数:
+        //   value:
+        //     The System.Int32 to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(int value);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.RedisValue from an System.Boolean.
+        //
+        // 参数:
+        //   value:
+        //     The System.Boolean to convert to a StackExchange.Redis.RedisValue.
+        public static implicit operator RedisValue(bool value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{bool}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator bool?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Int64.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        [CLSCompliant(false)]
+        public static explicit operator ulong(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{int}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator int?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{ulong}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        [CLSCompliant(false)]
+        public static explicit operator ulong?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{long}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator long?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{decimal}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator decimal?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{float}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator float?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{double}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator double?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Single.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator float(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Decimal.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator decimal(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Double.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator double(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.UInt32.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        [CLSCompliant(false)]
+        public static explicit operator uint(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Int64.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator long(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Boolean.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator bool(RedisValue value);
+        //
+        // 摘要:
+        //     Converts the StackExchange.Redis.RedisValue to a Nullable{uint}.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        [CLSCompliant(false)]
+        public static explicit operator uint?(RedisValue value);
+        //
+        // 摘要:
+        //     Converts a StackExchange.Redis.RedisValue to a System.Int32.
+        //
+        // 参数:
+        //   value:
+        //     The StackExchange.Redis.RedisValue to convert.
+        public static explicit operator int(RedisValue value);
+    }
+}

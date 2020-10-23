@@ -1,0 +1,197 @@
+#region 程序集 HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a
+// C:\Users\40206\.nuget\packages\htmlagilitypack\1.11.24\lib\netstandard2.0\HtmlAgilityPack.dll
+#endregion
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+namespace HtmlAgilityPack
+{
+    //
+    // 摘要:
+    //     Represents a combined list and collection of HTML nodes.
+    [DefaultMember("Item")]
+    public class HtmlAttributeCollection : IList<HtmlAttribute>, ICollection<HtmlAttribute>, IEnumerable<HtmlAttribute>, IEnumerable
+    {
+        //
+        // 摘要:
+        //     Gets a given attribute from the list using its name.
+        public HtmlAttribute this[string name] { get; set; }
+        //
+        // 摘要:
+        //     Gets the attribute at the specified index.
+        public HtmlAttribute this[int index] { get; set; }
+
+        //
+        // 摘要:
+        //     Gets readonly status of colelction
+        public bool IsReadOnly { get; }
+        //
+        // 摘要:
+        //     Gets the number of elements actually contained in the list.
+        public int Count { get; }
+
+        //
+        // 摘要:
+        //     Adds a new attribute to the collection with the given values
+        //
+        // 参数:
+        //   name:
+        //
+        //   value:
+        public void Add(string name, string value);
+        //
+        // 摘要:
+        //     Adds supplied item to collection
+        //
+        // 参数:
+        //   item:
+        public void Add(HtmlAttribute item);
+        //
+        // 摘要:
+        //     Adds a range supplied items to collection.
+        //
+        // 参数:
+        //   items:
+        //     An IEnumerable<HtmlAttribute> of items to append to this.
+        public void AddRange(IEnumerable<HtmlAttribute> items);
+        //
+        // 摘要:
+        //     Adds a range supplied items to collection using a dictionary.
+        //
+        // 参数:
+        //   items:
+        //     A Dictionary<string,string> of items to append to this.
+        public void AddRange(Dictionary<string, string> items);
+        //
+        // 摘要:
+        //     Creates and inserts a new attribute as the last attribute in the collection.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to insert.
+        //
+        //   value:
+        //     The value of the attribute to insert.
+        //
+        // 返回结果:
+        //     The appended attribute.
+        public HtmlAttribute Append(string name, string value);
+        //
+        // 摘要:
+        //     Inserts the specified attribute as the last attribute in the collection.
+        //
+        // 参数:
+        //   newAttribute:
+        //     The attribute to insert. May not be null.
+        //
+        // 返回结果:
+        //     The appended attribute.
+        public HtmlAttribute Append(HtmlAttribute newAttribute);
+        //
+        // 摘要:
+        //     Creates and inserts a new attribute as the last attribute in the collection.
+        //
+        // 参数:
+        //   name:
+        //     The name of the attribute to insert.
+        //
+        // 返回结果:
+        //     The appended attribute.
+        public HtmlAttribute Append(string name);
+        //
+        // 摘要:
+        //     Returns all attributes with specified name. Handles case insentivity
+        //
+        // 参数:
+        //   attributeName:
+        //     Name of the attribute
+        [IteratorStateMachine(typeof(<AttributesWithName>d__35))]
+        public IEnumerable<HtmlAttribute> AttributesWithName(string attributeName);
+        //
+        // 摘要:
+        //     Checks for existance of attribute with given name
+        //
+        // 参数:
+        //   name:
+        public bool Contains(string name);
+        //
+        // 摘要:
+        //     Retreives existence of supplied item
+        //
+        // 参数:
+        //   item:
+        public bool Contains(HtmlAttribute item);
+        //
+        // 摘要:
+        //     Copies collection to array
+        //
+        // 参数:
+        //   array:
+        //
+        //   arrayIndex:
+        public void CopyTo(HtmlAttribute[] array, int arrayIndex);
+        //
+        // 摘要:
+        //     Retrieves the index for the supplied item, -1 if not found
+        //
+        // 参数:
+        //   item:
+        public int IndexOf(HtmlAttribute item);
+        //
+        // 摘要:
+        //     Inserts given item into collection at supplied index
+        //
+        // 参数:
+        //   index:
+        //
+        //   item:
+        public void Insert(int index, HtmlAttribute item);
+        //
+        // 摘要:
+        //     Inserts the specified attribute as the first node in the collection.
+        //
+        // 参数:
+        //   newAttribute:
+        //     The attribute to insert. May not be null.
+        //
+        // 返回结果:
+        //     The prepended attribute.
+        public HtmlAttribute Prepend(HtmlAttribute newAttribute);
+        //
+        // 摘要:
+        //     Removes an attribute from the list, using its name. If there are more than one
+        //     attributes with this name, they will all be removed.
+        //
+        // 参数:
+        //   name:
+        //     The attribute's name. May not be null.
+        public void Remove(string name);
+        //
+        // 摘要:
+        //     Removes all attributes from the collection
+        public void Remove();
+        //
+        // 摘要:
+        //     Removes a given attribute from the list.
+        //
+        // 参数:
+        //   attribute:
+        //     The attribute to remove. May not be null.
+        public void Remove(HtmlAttribute attribute);
+        //
+        // 摘要:
+        //     Remove all attributes in the list.
+        public void RemoveAll();
+        //
+        // 摘要:
+        //     Removes the attribute at the specified index.
+        //
+        // 参数:
+        //   index:
+        //     The index of the attribute to remove.
+        public void RemoveAt(int index);
+    }
+}
