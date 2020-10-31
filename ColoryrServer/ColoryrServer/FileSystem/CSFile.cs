@@ -87,7 +87,7 @@ namespace ColoryrServer.FileSystem
             return false;
         }
 
-        private static void Storage(string Local, CSFileCode obj)
+        private static void Storage(string Local, object obj)
         {
             Task.Factory.StartNew(() =>
             {
@@ -101,6 +101,7 @@ namespace ColoryrServer.FileSystem
                 }
             });
         }
+
         public static void StorageDll(CSFileCode obj)
         {
             var url = DllFileLocal + obj.UUID + ".json";
@@ -156,6 +157,28 @@ namespace ColoryrServer.FileSystem
             Storage(url, obj);
             UpdataMAP();
         }
+        public static void StorageApp(AppFileObj obj)
+        {
+            var url = AppFileLocal + obj.UUID + ".json";
+            if (AppFileList.ContainsKey(obj.UUID))
+            {
+                AppFileList.Remove(obj.UUID);
+            }
+            AppFileList.Add(obj.UUID, obj);
+            Storage(url, obj);
+            UpdataMAP();
+        }
+        public static void StorageMcu(McuFileObj obj)
+        {
+            var url = McuFileLocal + obj.UUID + ".json";
+            if (McuFileList.ContainsKey(obj.UUID))
+            {
+                McuFileList.Remove(obj.UUID);
+            }
+            McuFileList.Add(obj.UUID, obj);
+            Storage(url, obj);
+            UpdataMAP();
+        }
         public static CSFileCode GetDll(string uuid)
         {
             return DllFileList[uuid];
@@ -176,12 +199,10 @@ namespace ColoryrServer.FileSystem
         {
             return RobotFileList[uuid];
         }
-
         public static AppFileObj GetApp(string uuid)
         {
             return AppFileList[uuid];
         }
-
         public static McuFileObj GetMcu(string uuid)
         {
             return McuFileList[uuid];

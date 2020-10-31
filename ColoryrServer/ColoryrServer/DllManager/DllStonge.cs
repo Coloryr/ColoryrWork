@@ -16,11 +16,17 @@ namespace ColoryrServer.DllManager
         private static readonly Dictionary<string, AssemblySave> WebSocketList = new Dictionary<string, AssemblySave>();
         private static readonly Dictionary<string, AssemblySave> RobotList = new Dictionary<string, AssemblySave>();
 
+        private static readonly Dictionary<string, AppSave> AppList = new Dictionary<string, AppSave>();
+        private static readonly Dictionary<string, McuSave> McuList = new Dictionary<string, AppSave>();
+
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
         public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll/IoT/";
         public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll/WebSocket/";
         public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
+
+        public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
+        public static readonly string McuLocal = ServerMain.RunLocal + @"Dll/Mcu/";
 
         private static readonly ReaderWriterLockSlim Lock1 = new ReaderWriterLockSlim();
         private static readonly ReaderWriterLockSlim Lock2 = new ReaderWriterLockSlim();
@@ -346,6 +352,14 @@ namespace ColoryrServer.DllManager
             if (!Directory.Exists(RobotLocal))
             {
                 Directory.CreateDirectory(RobotLocal);
+            }
+            if (!Directory.Exists(AppLocal))
+            {
+                Directory.CreateDirectory(AppLocal);
+            }
+            if (!Directory.Exists(McuLocal))
+            {
+                Directory.CreateDirectory(McuLocal);
             }
             var DllName = Function.GetPathFileName(DllLocal);
             foreach (var FileItem in DllName)

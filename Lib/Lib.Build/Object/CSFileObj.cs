@@ -53,6 +53,7 @@ namespace Lib.Build.Object
     {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Xamls { get; set; }
+        public string Key { get; set; }
         public CodeType Type { get; }
         public AppFileObj(CSFileObj obj)
         {
@@ -74,6 +75,7 @@ namespace Lib.Build.Object
     public class McuFileObj : CSFileObj
     {
         public Dictionary<string, string> Codes { get; set; }
+        public string Key { get; set; }
         public CodeType Type { get; }
         public McuFileObj(CSFileObj obj)
         {
