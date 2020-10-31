@@ -5,7 +5,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 
 namespace ColoryrServer.DllManager
 {
@@ -13,7 +15,7 @@ namespace ColoryrServer.DllManager
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
-            var Res = GenTask.StartGen(File.UUID, CSharpSyntaxTree.ParseText(File.Code));
+            var Res = GenTask.StartGen(File.UUID, new List<SyntaxTree> { CSharpSyntaxTree.ParseText(File.Code) }, GenLib.Dll);
             if (!Res.Isok)
             {
                 return Res;

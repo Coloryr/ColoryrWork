@@ -64,5 +64,15 @@ namespace Lib.Server
             }
             return con;
         }
+        public static List<DirectoryInfo> GetPathName(string appLocal)
+        {
+            var files = new List<DirectoryInfo>();
+            var root = new DirectoryInfo(appLocal);
+            foreach (var f in root.GetDirectories())
+            {
+                files.Add(f);
+            }
+            return files;
+        }
     }
 }

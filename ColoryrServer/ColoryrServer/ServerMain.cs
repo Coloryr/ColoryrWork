@@ -77,7 +77,7 @@ namespace ColoryrServer
             {
                 isGo = true;
                 //初始化运行路径
-                RunLocal = AppDomain.CurrentDomain.BaseDirectory;
+                RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer\\";
                 //设置编码
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 //创建日志文件

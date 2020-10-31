@@ -1,4 +1,7 @@
-﻿using Lib.Server;
+﻿using ColoryrServer.DllManager.GenSave;
+using ColoryrServer.FileSystem;
+using Lib.Build.Object;
+using Lib.Server;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +20,7 @@ namespace ColoryrServer.DllManager
         private static readonly Dictionary<string, AssemblySave> RobotList = new Dictionary<string, AssemblySave>();
 
         private static readonly Dictionary<string, AppSave> AppList = new Dictionary<string, AppSave>();
-        private static readonly Dictionary<string, McuSave> McuList = new Dictionary<string, AppSave>();
+        private static readonly Dictionary<string, McuSave> McuList = new Dictionary<string, McuSave>();
 
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
@@ -33,6 +36,8 @@ namespace ColoryrServer.DllManager
         private static readonly ReaderWriterLockSlim Lock3 = new ReaderWriterLockSlim();
         private static readonly ReaderWriterLockSlim Lock4 = new ReaderWriterLockSlim();
         private static readonly ReaderWriterLockSlim Lock5 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim Lock6 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim Lock7 = new ReaderWriterLockSlim();
 
         private static void RemoveAll(string dir)
         {
@@ -331,6 +336,104 @@ namespace ColoryrServer.DllManager
             }
         }
 
+        public static void AddApp(string uuid, AppSave save)
+        {
+            Lock6.EnterWriteLock();
+            try
+            {
+                if (AppList.ContainsKey(uuid))
+                {
+                    AppList.Remove(uuid);
+                }
+                AppList.Add(uuid, save);
+            }
+            finally
+            {
+                Lock6.ExitWriteLock();
+            }
+        }
+        public static void RemoveApp(string uuid)
+        {
+            Lock6.EnterWriteLock();
+            try
+            {
+                if (AppList.ContainsKey(uuid))
+                {
+                    AppList.Remove(uuid);
+                }
+            }
+            finally
+            {
+                Lock6.ExitWriteLock();
+            }
+        }
+        public static AppSave GetApp(string uuid, string key)
+        {
+            Lock6.EnterReadLock();
+            try
+            {
+                if (AppList.TryGetValue(uuid, out var save))
+                {
+                    return save.Key == key ? save : null;
+                }
+                else
+                    return null;
+            }
+            finally
+            {
+                Lock6.ExitReadLock();
+            }
+        }
+
+        public static void AddMcu(string uuid, McuSave save)
+        {
+            Lock7.EnterWriteLock();
+            try
+            {
+                if (McuList.ContainsKey(uuid))
+                {
+                    McuList.Remove(uuid);
+                }
+                McuList.Add(uuid, save);
+            }
+            finally
+            {
+                Lock7.ExitWriteLock();
+            }
+        }
+        public static void RemoveMcu(string uuid)
+        {
+            Lock7.EnterWriteLock();
+            try
+            {
+                if (McuList.ContainsKey(uuid))
+                {
+                    McuList.Remove(uuid);
+                }
+            }
+            finally
+            {
+                Lock7.ExitWriteLock();
+            }
+        }
+        public static McuSave GetMcu(string uuid, string key)
+        {
+            Lock7.EnterReadLock();
+            try
+            {
+                if (McuList.TryGetValue(uuid, out var save))
+                {
+                    return save.Key == key ? save : null;
+                }
+                else
+                    return null;
+            }
+            finally
+            {
+                Lock7.ExitReadLock();
+            }
+        }
+
         public void DynamicInit()
         {
             if (!Directory.Exists(DllLocal))
@@ -543,6 +646,73 @@ namespace ColoryrServer.DllManager
                         }
                         AddRobot(Name, AssemblySave);
                     }
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+            var Dirs = Function.GetPathName(AppLocal);
+            foreach (var FileItem in DllName)
+            {
+                try
+                {
+                    var save = new AppSave();
+                    string Name = FileItem.Name;
+                    var obj = CSFile.GetApp(Name);
+                    if (obj == null)
+                        continue;
+                    save.Key = obj.Key;
+                    ServerMain.LogOut("加载App：" + Name);
+                    using (var FileStream = new FileStream(FileItem.FullName + "\\app.dll", FileMode.Open, FileAccess.Read))
+                    {
+                        save.Dll = new byte[FileStream.Length];
+                        var pdb = FileItem.FullName + "app.pdb";
+                        if (File.Exists(pdb))
+                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
+                            {
+                                save.Pdb = new byte[FileStream1.Length];
+                                FileStream1.Read(save.Pdb);
+                            }
+                        else
+                            FileStream.Read(save.Dll);
+                    }
+                    save.Xamls = new Dictionary<string, string>();
+                    foreach (var item in Function.GetPathFileName(FileItem.FullName))
+                    {
+                        if (item.Name.EndsWith(".xaml"))
+                        {
+                            save.Xamls.Add(item.Name, File.ReadAllText(item.FullName));
+                        }
+                    }
+                    AddApp(Name, save);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+            Dirs = Function.GetPathName(McuLocal);
+            foreach (var FileItem in DllName)
+            {
+                try
+                {
+                    var save = new McuSave();
+                    string Name = FileItem.Name;
+                    var obj = CSFile.GetMcu(Name);
+                    if (obj == null)
+                        continue;
+                    save.Key = obj.Key;
+                    ServerMain.LogOut("加载Mcu：" + Name);
+                    save.Codes = new Dictionary<string, string>();
+                    foreach (var item in Function.GetPathFileName(FileItem.FullName))
+                    {
+                        if (item.Name.EndsWith(".lua"))
+                        {
+                            save.Codes.Add(item.Name, File.ReadAllText(item.FullName));
+                        }
+                    }
+                    AddMcu(Name, save);
                 }
                 catch (Exception e)
                 {

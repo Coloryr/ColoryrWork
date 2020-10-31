@@ -12,6 +12,7 @@ namespace ColoryrServer.DllManager
 {
     class DllBuild
     {
+        public static readonly Dictionary<string, string> Token = new Dictionary<string, string>();
         public static HttpReturn HttpBuildDll(BuildOBJ Json, User User)
         {
             object Object = null;
@@ -21,10 +22,10 @@ namespace ColoryrServer.DllManager
                 if (User.Password.ToLower() == password.ToLower())
                 {
                     Json.UUID = Guid.NewGuid().ToString().Replace("-", "");
-                    if (GenTask.Token.ContainsKey(Json.User))
-                        GenTask.Token[Json.User] = Json.UUID;
+                    if (Token.ContainsKey(Json.User))
+                       Token[Json.User] = Json.UUID;
                     else
-                        GenTask.Token.Add(Json.User, Json.UUID);
+                        Token.Add(Json.User, Json.UUID);
                     Object = new ReMessage
                     {
                         Build = true,
@@ -42,7 +43,7 @@ namespace ColoryrServer.DllManager
                     };
                 }
             }
-            else if (GenTask.Token.ContainsKey(Json.User) && GenTask.Token[Json.User] == Json.Token)
+            else if (Token.ContainsKey(Json.User) && Token[Json.User] == Json.Token)
             {
                 GenReOBJ BuildBack = null;
                 Stopwatch SW;

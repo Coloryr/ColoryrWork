@@ -1,7 +1,9 @@
 ﻿using ColoryrServer.FileSystem;
 using Lib.Build.Object;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
@@ -13,7 +15,7 @@ namespace ColoryrServer.DllManager
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
-            var Res = GenTask.StartGen(File.UUID, CSharpSyntaxTree.ParseText(File.Code));
+            var Res = GenTask.StartGen(File.UUID, new List<SyntaxTree> { CSharpSyntaxTree.ParseText(File.Code) }, GenLib.Dll);
             if (!Res.Isok)
             {
                 return Res;

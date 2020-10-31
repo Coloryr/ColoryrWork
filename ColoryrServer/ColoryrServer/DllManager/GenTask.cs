@@ -1,3 +1,4 @@
+using Lib.Server;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -7,16 +8,35 @@ using System.IO;
 
 namespace ColoryrServer.DllManager
 {
+    public enum GenLib
+    { 
+        Dll, App
+    }
     class GenTask
     {
-        public static Dictionary<string, string> Token = new Dictionary<string, string>();
-        private static List<MetadataReference> References = new List<MetadataReference>();
-        public static GenReOBJ StartGen(string Name, SyntaxTree Code)
+        public static readonly List<MetadataReference> References = new List<MetadataReference>();
+        public static readonly List<MetadataReference> AppReferences = new List<MetadataReference>();
+        public static readonly List<MetadataReference> McuReferences = new List<MetadataReference>();
+
+        private static readonly string AppLibLocal = ServerMain.RunLocal + "Libs/App/";
+
+        public static GenReOBJ StartGen(string Name, List<SyntaxTree> Code, GenLib lib)
         {
+            List<MetadataReference> refs;
+            switch (lib)
+            {
+                default:
+                case GenLib.Dll:
+                    refs = References;
+                    break;
+                case GenLib.App:
+                    refs = AppReferences;
+                    break;
+            }
             CSharpCompilation compilation = CSharpCompilation.Create(
                 Name,
-                syntaxTrees: new[] { Code },
-                references: References,
+                syntaxTrees: Code,
+                references: refs,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             var MS = new MemoryStream();
             var MSPdb = new MemoryStream();
@@ -59,6 +79,16 @@ namespace ColoryrServer.DllManager
                 if (string.IsNullOrWhiteSpace(Item.Location))
                     continue;
                 References.Add(MetadataReference.CreateFromFile(Item.Location));
+            }
+            if (!Directory.Exists(AppLibLocal))
+            {
+                Directory.CreateDirectory(AppLibLocal);
+            }
+            var Dlls = Function.GetPathFileName(AppLibLocal);
+
+            foreach (var Item in Dlls)
+            {
+                AppReferences.Add(MetadataReference.CreateFromFile(Item.FullName));
             }
         }
     }

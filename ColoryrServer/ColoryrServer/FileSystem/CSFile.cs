@@ -181,31 +181,59 @@ namespace ColoryrServer.FileSystem
         }
         public static CSFileCode GetDll(string uuid)
         {
-            return DllFileList[uuid];
+            if (DllFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static CSFileCode GetClass(string uuid)
         {
-            return ClassFileList[uuid];
+            if (ClassFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static CSFileCode GetIoT(string uuid)
         {
-            return IoTFileList[uuid];
+            if (IoTFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static CSFileCode GetWebSocket(string uuid)
         {
-            return WebSocketFileList[uuid];
+            if (WebSocketFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static CSFileCode GetRobot(string uuid)
         {
-            return RobotFileList[uuid];
+            if (RobotFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static AppFileObj GetApp(string uuid)
         {
-            return AppFileList[uuid];
+            if (AppFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
         public static McuFileObj GetMcu(string uuid)
         {
-            return McuFileList[uuid];
+            if (McuFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
         }
 
         public static void RemoveFile(CodeType type, string uuid)

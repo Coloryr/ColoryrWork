@@ -3,6 +3,7 @@ using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
@@ -64,7 +65,7 @@ public class app_{0}
             {
                 Code = CSharpSyntaxTree.ParseText(CodeFile.Code);
             }
-            var Res = GenTask.StartGen(CodeFile.UUID, Code);
+            var Res = GenTask.StartGen(CodeFile.UUID, new List<SyntaxTree> { Code }, GenLib.Dll);
             if (!Res.Isok)
             {
                 return Res;

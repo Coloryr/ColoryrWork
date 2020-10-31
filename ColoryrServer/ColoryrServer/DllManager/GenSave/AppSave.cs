@@ -9,6 +9,8 @@ namespace ColoryrServer.DllManager
     class AppSave
     {
         public byte[] Dll { get; set; }
+        public byte[] Pdb { get; set; }
+        public string Key { get; set; }
         public Dictionary<string, string> Xamls { get; set; }
     }
 }
