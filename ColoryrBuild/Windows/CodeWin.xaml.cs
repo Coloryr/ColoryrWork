@@ -6,7 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
-namespace SendBuild
+namespace ColoryrBuild
 {
     /// <summary>
     /// CodeWin.xaml 的交互逻辑

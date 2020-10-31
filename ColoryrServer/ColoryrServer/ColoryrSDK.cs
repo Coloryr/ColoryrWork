@@ -1,6 +1,7 @@
 ﻿using ColoryrServer;
 using ColoryrServer.DataBase;
 using ColoryrServer.DllManager;
+using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
 using ColoryrServer.Robot;
@@ -526,7 +527,7 @@ namespace ColoryrSDK
         /// <param name="Data">字符串</param>
         public static void Send(string Name, string Data)
         {
-            IoTPack.SendPack(Name, Encoding.UTF8.GetBytes(Data));
+            IoTPackDo.SendPack(Name, Encoding.UTF8.GetBytes(Data));
         }
         /// <summary>
         /// 向IoT设备发送数据
@@ -535,7 +536,7 @@ namespace ColoryrSDK
         /// <param name="Data">数据</param>
         public static void Send(string Name, byte[] Data)
         {
-            IoTPack.SendPack(Name, Data);
+            IoTPackDo.SendPack(Name, Data);
         }
     }
     public class Html : IDisposable

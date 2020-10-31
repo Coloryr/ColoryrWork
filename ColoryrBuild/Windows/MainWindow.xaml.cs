@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SendBuild
+namespace ColoryrBuild
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑

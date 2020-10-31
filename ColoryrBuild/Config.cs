@@ -1,6 +1,6 @@
 ﻿using Lib.Build;
 
-namespace SendBuild
+namespace ColoryrBuild
 {
     public class ConfigOBJ
     {

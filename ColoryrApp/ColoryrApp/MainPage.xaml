@@ -7,7 +7,7 @@
         <Label Text="Hello World" FontSize="Title" Padding="30,10,30,10" WidthRequest="500"
                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                ClassId="Label"/>
-        <Label Text="Hello World" FontSize="Title" Padding="30,10,30,10" WidthRequest="500"
+        <Label Text="No DLL Load" FontSize="Title" Padding="30,10,30,10" WidthRequest="500"
                HorizontalOptions="Center" HorizontalTextAlignment="Center"
                x:Name="Label"/>
     </StackLayout>

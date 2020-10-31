@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Http;
+﻿using ColoryrServer.FileSystem;
+using ColoryrServer.Http;
 using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
@@ -311,17 +312,25 @@ namespace ColoryrServer.DllManager
                             };
                         }
                         else
-                            Object = new CSFileList
+                        {
+                            var temp = new CSFileList();
+                            foreach (var item in CSFile.DllFileList)
                             {
-                                list = CSFile.DllFileList
-                            };
+                                temp.list.Add(item.Key, item.Value);
+                            }
+                            Object = temp;
+                        }
                         break;
                     case ReType.GetClass:
                         if (User.Admin)
-                            Object = new CSFileList
+                        {
+                            var temp = new CSFileList();
+                            foreach (var item in CSFile.ClassFileList)
                             {
-                                list = CSFile.ClassFileList
-                            };
+                                temp.list.Add(item.Key, item.Value);
+                            }
+                            Object = temp;
+                        }
                         else
                             Object = new CSFileList
                             {
@@ -330,10 +339,14 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.GetIoT:
                         if (User.Admin)
-                            Object = new CSFileList
+                        {
+                            var temp = new CSFileList();
+                            foreach (var item in CSFile.IoTFileList)
                             {
-                                list = CSFile.IoTFileList
-                            };
+                                temp.list.Add(item.Key, item.Value);
+                            }
+                            Object = temp;
+                        }
                         else
                             Object = new CSFileList
                             {
@@ -342,10 +355,14 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.GetWebSocket:
                         if (User.Admin)
-                            Object = new CSFileList
+                        {
+                            var temp = new CSFileList();
+                            foreach (var item in CSFile.WebSocketFileList)
                             {
-                                list = CSFile.WebSocketFileList
-                            };
+                                temp.list.Add(item.Key, item.Value);
+                            }
+                            Object = temp;
+                        }
                         else
                             Object = new CSFileList
                             {
@@ -354,10 +371,14 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.GetRobot:
                         if (User.Admin)
-                            Object = new CSFileList
+                        {
+                            var temp = new CSFileList();
+                            foreach (var item in CSFile.RobotFileList)
                             {
-                                list = CSFile.RobotFileList
-                            };
+                                temp.list.Add(item.Key, item.Value);
+                            }
+                            Object = temp;
+                        }
                         else
                             Object = new CSFileList
                             {

@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiffPlex</name>
+    </assembly>
+    <members>
+        <member name="P:DiffPlex.Chunkers.CharacterChunker.Instance">
+            <summary>
+            Gets the default singleton instance of the chunker.
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Chunkers.LineChunker.Instance">
+            <summary>
+            Gets the default singleton instance of the chunker.
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Chunkers.LineEndingsPreservingChunker.Instance">
+            <summary>
+            Gets the default singleton instance of the chunker.
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Chunkers.WordChunker.Instance">
+            <summary>
+            Gets the default singleton instance of the chunker.
+            </summary>
+        </member>
+        <member name="P:DiffPlex.DiffBuilder.InlineDiffBuilder.Instance">
+            <summary>
+            Gets the default singleton instance of the inline diff builder.
+            </summary>
+        </member>
+        <member name="M:DiffPlex.DiffBuilder.InlineDiffBuilder.Diff(System.String,System.String,System.Boolean,System.Boolean,DiffPlex.IChunker)">
+            <summary>
+            Gets the inline textual diffs.
+            </summary>
+            <param name="oldText">The old text to diff.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreWhiteSpace">true if ignore the white space; othewise, false.</param>
+            <param name="ignoreCase">true if case-insensitive; otherwise, false.</param>
+            <param name="chunker">The chunker.</param>
+            <returns>The diffs result.</returns>
+        </member>
+        <member name="M:DiffPlex.DiffBuilder.InlineDiffBuilder.Diff(DiffPlex.IDiffer,System.String,System.String,System.Boolean,System.Boolean,DiffPlex.IChunker)">
+            <summary>
+            Gets the inline textual diffs.
+            </summary>
+            <param name="differ">The differ instance.</param>
+            <param name="oldText">The old text to diff.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreWhiteSpace">true if ignore the white space; othewise, false.</param>
+            <param name="ignoreCase">true if case-insensitive; otherwise, false.</param>
+            <param name="chunker">The chunker.</param>
+            <returns>The diffs result.</returns>
+        </member>
+        <member name="T:DiffPlex.DiffBuilder.ISideBySideDiffBuilder">
+            <summary>
+            Provides methods that generate differences between texts for displaying in a side by side view.
+            </summary>
+        </member>
+        <member name="M:DiffPlex.DiffBuilder.ISideBySideDiffBuilder.BuildDiffModel(System.String,System.String)">
+            <summary>
+            Builds a diff model for  displaying diffs in a side by side view
+            </summary>
+            <param name="oldText">The old text.</param>
+            <param name="newText">The new text.</param>
+            <returns>The side by side diff model</returns>
+        </member>
+        <member name="T:DiffPlex.DiffBuilder.Model.SideBySideDiffModel">
+            <summary>
+            A model which represents differences between to texts to be shown side by side
+            </summary>
+        </member>
+        <member name="P:DiffPlex.DiffBuilder.SideBySideDiffBuilder.Instance">
+            <summary>
+            Gets the default singleton instance.
+            </summary>
+        </member>
+        <member name="M:DiffPlex.DiffBuilder.SideBySideDiffBuilder.Diff(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Gets the side-by-side textual diffs.
+            </summary>
+            <param name="oldText">The old text to diff.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreWhiteSpace">true if ignore the white space; othewise, false.</param>
+            <param name="ignoreCase">true if case-insensitive; otherwise, false.</param>
+            <returns>The diffs result.</returns>
+        </member>
+        <member name="M:DiffPlex.DiffBuilder.SideBySideDiffBuilder.Diff(DiffPlex.IDiffer,System.String,System.String,System.Boolean,System.Boolean,DiffPlex.IChunker,DiffPlex.IChunker)">
+            <summary>
+            Gets the side-by-side textual diffs.
+            </summary>
+            <param name="differ">The differ instance.</param>
+            <param name="oldText">The old text to diff.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreWhiteSpace">true if ignore the white space; othewise, false.</param>
+            <param name="ignoreCase">true if case-insensitive; otherwise, false.</param>
+            <param name="lineChunker">The line chunker.</param>
+            <param name="wordChunker">The word chunker.</param>
+            <returns>The diffs result.</returns>
+        </member>
+        <member name="P:DiffPlex.Differ.Instance">
+            <summary>
+            Gets the default singleton instance of differ instance.
+            </summary>
+        </member>
+        <member name="M:DiffPlex.Differ.CalculateEditLength(System.Int32[],System.Int32,System.Int32,System.Int32[],System.Int32,System.Int32)">
+            <summary>
+            Finds the middle snake and the minimum length of the edit script comparing string A and B
+            </summary>
+            <param name="A"></param>
+            <param name="startA">Lower bound inclusive</param>
+            <param name="endA">Upper bound exclusive</param>
+            <param name="B"></param>
+            <param name="startB">lower bound inclusive</param>
+            <param name="endB">upper bound exclusive</param>
+            <returns></returns>
+        </member>
+        <member name="T:DiffPlex.IChunker">
+            <summary>
+            Responsible for how to turn the document into pieces
+            </summary>
+        </member>
+        <member name="M:DiffPlex.IChunker.Chunk(System.String)">
+            <summary>
+            Divide text into sub-parts
+            </summary>
+        </member>
+        <member name="T:DiffPlex.IDiffer">
+            <summary>
+            Responsible for generating differences between texts
+            </summary>
+        </member>
+        <member name="M:DiffPlex.IDiffer.CreateDiffs(System.String,System.String,System.Boolean,System.Boolean,DiffPlex.IChunker)">
+            <summary>
+            Creates a diff by comparing text line by line.
+            </summary>
+            <param name="oldText">The old text.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreWhiteSpace">if set to <c>true</c> will ignore white space when determining if lines are the same.</param>
+            <param name="ignoreCase">Determine if the text comparision is case sensitive or not</param>
+            <param name="chunker">Component responsible for tokenizing the compared texts</param>
+            <returns>A DiffResult object which details the differences</returns>
+        </member>
+        <member name="T:DiffPlex.Model.DiffBlock">
+            <summary>
+            A block of consecutive edits from A and/or B
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffBlock.DeleteStartA">
+            <summary>
+            Position where deletions in A begin
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffBlock.DeleteCountA">
+            <summary>
+            The number of deletions in A
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffBlock.InsertStartB">
+            <summary>
+            Position where insertion in B begin
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffBlock.InsertCountB">
+            <summary>
+            The number of insertions in B
+            </summary>
+        </member>
+        <member name="T:DiffPlex.Model.DiffResult">
+            <summary>
+            The result of diffing two peices of text
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffResult.PiecesOld">
+            <summary>
+            The chunked peices of the old text
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffResult.PiecesNew">
+            <summary>
+            The chunked peices of the new text
+            </summary>
+        </member>
+        <member name="P:DiffPlex.Model.DiffResult.DiffBlocks">
+            <summary>
+            A collection of DiffBlocks which details deletions and insertions
+            </summary>
+        </member>
+    </members>
+</doc>

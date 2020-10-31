@@ -1,6 +1,6 @@
 ﻿using Lib.Build.Object;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.FileSystem
 {
     class APIFile
     {

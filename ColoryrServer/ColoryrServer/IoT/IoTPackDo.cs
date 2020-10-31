@@ -2,13 +2,12 @@
 using ColoryrSDK;
 using System;
 using System.Threading.Tasks;
+using Lib.IoT;
 
 namespace ColoryrServer.IoT
 {
-    class IoTPack
+    class IoTPackDo
     {
-        private static readonly byte[] RePack = { 0x00, 0xff, 0x5a, 0xa5, 0xff };
-        private static readonly byte[] SdPack = { 0xff, 0x56, 0x87, 0x4f, 0x3a };
         public static string CheckPack(byte[] pack)
         {
             if (pack.Length != 12)
@@ -18,7 +17,7 @@ namespace ColoryrServer.IoT
             int a = 0;
             for (; a < 5; a++)
             {
-                if (pack[a] != RePack[a])
+                if (pack[a] != IoTPack.ReadPack[a])
                     return null;
             }
             var MAC = new byte[6];
@@ -40,10 +39,10 @@ namespace ColoryrServer.IoT
 
         public static void SendPack(string name, byte[] pack)
         {
-            var data = new byte[pack.Length + SdPack.Length + 1];
+            var data = new byte[pack.Length + IoTPack.SendPack.Length + 1];
 
-            SdPack.CopyTo(data, 0);
-            pack.CopyTo(data, SdPack.Length);
+            IoTPack.SendPack.CopyTo(data, 0);
+            pack.CopyTo(data, IoTPack.SendPack.Length);
             data[data.Length - 1] = (byte)'\0';
             IoTSocket.SendData(name, data);
         }
@@ -53,7 +52,7 @@ namespace ColoryrServer.IoT
             int a = 0;
             for (; a < 5; a++)
             {
-                if (Data[a] != RePack[a])
+                if (Data[a] != IoTPack.ReadPack[a])
                     return;
             }
             var Data1 = new byte[Data.Length - 1];

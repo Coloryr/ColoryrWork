@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace SendBuild
+namespace ColoryrBuild
 {
     /// <summary>
     /// Login.xaml 的交互逻辑

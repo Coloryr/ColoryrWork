@@ -35,7 +35,7 @@ namespace ColoryrServer.DataBase
             }
         }
         /// <summary>
-        /// Mysql初始化
+        /// MSCon初始化
         /// </summary>
         /// <returns>是否连接成功</returns>
         public static bool Start()

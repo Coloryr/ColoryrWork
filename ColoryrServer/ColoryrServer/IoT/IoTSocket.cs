@@ -80,14 +80,14 @@ namespace ColoryrServer.IoT
                 }
                 Data = new byte[Client.Available];
                 Client.Receive(Data);
-                Name = IoTPack.CheckPack(Data);
+                Name = IoTPackDo.CheckPack(Data);
                 if (Name == null)
                 {
                     ServerMain.LogOut("非法的IoT设备连接");
                     return;
                 }
                 Add(Name, Client);
-                IoTPack.SendPack(Name, new byte[0]);
+                IoTPackDo.SendPack(Name, new byte[0]);
                 while (true)
                 {
                     if (Client == null)
@@ -114,7 +114,7 @@ namespace ColoryrServer.IoT
                                 }
                                 Data = new byte[socket.Available];
                                 socket.Receive(Data);
-                                IoTPack.ReadPack(Name, Data);
+                                IoTPackDo.ReadPack(Name, Data);
                             }
                         }
                         finally

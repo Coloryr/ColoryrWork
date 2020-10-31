@@ -1,7 +1,7 @@
 ﻿using Lib.Build;
 using System.Collections.Generic;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.FileSystem
 {
     public class MainConfig
     {

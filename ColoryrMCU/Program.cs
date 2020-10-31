@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Threading;
+using System;
+using System.Reflection;
 
 namespace ColorMCU
 {
@@ -9,6 +11,8 @@ namespace ColorMCU
         {
             Debug.WriteLine("Hello from nanoFramework!");
 
+            //Assembly assembly = Assembly.Load();
+            
             Thread.Sleep(Timeout.Infinite);
         }
     }
