@@ -47,11 +47,14 @@ namespace ColoryrServer.Http
                 try
                 {
                     JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                    var Json = obj.ToObject<BuildOBJ>();
-                    var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
-                    if (List.Count() != 0)
+                    if (obj.ContainsKey("Mode"))
                     {
-                        return DllBuild.HttpBuildDll(Json, List.First());
+                        var Json = obj.ToObject<BuildOBJ>();
+                        var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
+                        if (List.Count() != 0)
+                        {
+                            return DllBuild.HttpBuild(Json, List.First());
+                        }
                     }
                     isJson = true;
                     foreach (var item in obj)

@@ -471,7 +471,7 @@ namespace ColoryrBuild
         private async void BuildClick(object sender, RoutedEventArgs e)
         {
             CSFileObj Item = null;
-            ReType type = ReType.BuildDll;
+            ReType type = ReType.AddDll;
             switch (Tab.SelectedIndex)
             {
                 case 0:
@@ -479,7 +479,7 @@ namespace ColoryrBuild
                     {
                         Build1.IsEnabled = false;
                         Item = (CSFileObj)CSList.SelectedItem;
-                        type = ReType.BuildDll;
+                        type = ReType.AddDll;
                     }
                     break;
                 case 1:
@@ -487,7 +487,7 @@ namespace ColoryrBuild
                     {
                         Build2.IsEnabled = false;
                         Item = (CSFileObj)ClassList.SelectedItem;
-                        type = ReType.BuildClass;
+                        type = ReType.AddClass;
                     }
                     break;
                 case 2:
@@ -495,7 +495,7 @@ namespace ColoryrBuild
                     {
                         Build3.IsEnabled = false;
                         Item = (CSFileObj)IoTList.SelectedItem;
-                        type = ReType.BuildIoT;
+                        type = ReType.AddIoT;
                     }
                     break;
                 case 3:
@@ -503,7 +503,7 @@ namespace ColoryrBuild
                     {
                         Build3.IsEnabled = false;
                         Item = (CSFileObj)WSList.SelectedItem;
-                        type = ReType.BuildWebSocket;
+                        type = ReType.AddWebSocket;
                     }
                     break;
                 case 4:
@@ -511,7 +511,7 @@ namespace ColoryrBuild
                     {
                         Build3.IsEnabled = false;
                         Item = (CSFileObj)RobotList.SelectedItem;
-                        type = ReType.BuildRobot;
+                        type = ReType.AddRobot;
                     }
                     break;
                 default:

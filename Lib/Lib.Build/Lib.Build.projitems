@@ -9,6 +9,7 @@
     <Import_RootNamespace>Lib.Build</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CodeEditObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfigSave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)logs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Object\APIFileObj.cs" />

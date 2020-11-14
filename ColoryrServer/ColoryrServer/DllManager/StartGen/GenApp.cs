@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,18 +45,24 @@ namespace ColoryrServer.DllManager
             Task.Run(() =>
             {
                 string dir = DllStonge.DllLocal + File.UUID + "\\";
-                using (var FileStream = new FileStream(
-                    DllStonge.ClassLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                using (var FileStream = new FileStream(dir + "app.dll", FileMode.OpenOrCreate))
                 {
-                    FileStream.Write(Res.MS.ToArray());
+                    FileStream.Write(save.Dll);
                     FileStream.Flush();
                 }
 
-                using (var FileStream = new FileStream(
-                    DllStonge.ClassLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                using (var FileStream = new FileStream(dir + "app.pdb", FileMode.OpenOrCreate))
                 {
-                    FileStream.Write(Res.MSPdb.ToArray());
+                    FileStream.Write(save.Pdb);
                     FileStream.Flush();
+                }
+                foreach (var item in File.Xamls)
+                {
+                    using (var FileStream = new FileStream(dir + item.Key, FileMode.OpenOrCreate))
+                    {
+                        FileStream.Write(Encoding.UTF8.GetBytes(item.Value));
+                        FileStream.Flush();
+                    }
                 }
 
                 CSFile.StorageApp(File);

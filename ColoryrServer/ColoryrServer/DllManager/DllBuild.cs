@@ -1,6 +1,8 @@
 ﻿using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
+using Lib.Build;
 using Lib.Build.Object;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +15,7 @@ namespace ColoryrServer.DllManager
     class DllBuild
     {
         public static readonly Dictionary<string, string> Token = new Dictionary<string, string>();
-        public static HttpReturn HttpBuildDll(BuildOBJ Json, User User)
+        public static HttpReturn HttpBuild(BuildOBJ Json, User User)
         {
             object Object = null;
             if (Json.Mode == ReType.Login)
@@ -23,7 +25,7 @@ namespace ColoryrServer.DllManager
                 {
                     Json.UUID = Guid.NewGuid().ToString().Replace("-", "");
                     if (Token.ContainsKey(Json.User))
-                       Token[Json.User] = Json.UUID;
+                        Token[Json.User] = Json.UUID;
                     else
                         Token.Add(Json.User, Json.UUID);
                     Object = new ReMessage
@@ -50,56 +52,32 @@ namespace ColoryrServer.DllManager
                 CSFileCode File;
                 switch (Json.Mode)
                 {
-                    case ReType.BuildDll:
+                    case ReType.AddDll:
                         File = CSFile.GetDll(Json.UUID);
                         if (File == null)
                         {
                             File = new CSFileCode
                             {
                                 UUID = Json.UUID,
-                                Text = Json.Text,
-                                Code = Json.Code,
                                 Type = CodeType.Dll,
                                 Version = 1
                             };
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "已创建" + Json.UUID
+                            };
                         }
-                        //不是他的DLL
-                        else if (!User.Admin && File.User != User.Username)
+                        else
                         {
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "错误请求"
+                                Message = "UUID已存在"
                             };
-                            break;
                         }
-                        else
-                        {
-                            File.Code = Json.Code;
-                            File.Text = Json.Text;
-                            if (File.Version != Json.Version)
-                            {
-                                Object = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "版本号错误"
-                                };
-                                break;
-                            }
-                            File.Version++;
-                        }
-                        SW = new Stopwatch();
-                        SW.Start();
-                        BuildBack = GenDll.StartGen(User, File);
-                        SW.Stop();
-                        Object = new ReMessage
-                        {
-                            Build = BuildBack.Isok,
-                            Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
-                        };
                         break;
-                    case ReType.BuildClass:
+                    case ReType.AddClass:
                         if (!User.Admin)
                         {
                             Object = new ReMessage
@@ -115,39 +93,20 @@ namespace ColoryrServer.DllManager
                             File = new CSFileCode
                             {
                                 UUID = Json.UUID,
-                                Text = Json.Text,
-                                Code = Json.Code,
                                 Type = CodeType.Class,
                                 Version = 1
                             };
                         }
                         else
                         {
-                            File.Code = Json.Code;
-                            File.Text = Json.Text;
-                            if (File.Version != Json.Version)
+                            Object = new ReMessage
                             {
-                                Object = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "版本号错误"
-                                };
-                                break;
-                            }
-                            File.Version++;
+                                Build = false,
+                                Message = "UUID已存在"
+                            };
                         }
-                        SW = new Stopwatch();
-                        SW.Start();
-                        BuildBack = GenClass.StartGen(File);
-                        SW.Stop();
-                        Object = new ReMessage
-                        {
-                            Build = BuildBack.Isok,
-                            Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
-                        };
                         break;
-                    case ReType.BuildIoT:
+                    case ReType.AddIoT:
                         if (!User.Admin)
                         {
                             Object = new ReMessage
@@ -163,39 +122,20 @@ namespace ColoryrServer.DllManager
                             File = new CSFileCode
                             {
                                 UUID = Json.UUID,
-                                Text = Json.Text,
-                                Code = Json.Code,
                                 Type = CodeType.IoT,
                                 Version = 1
                             };
                         }
                         else
                         {
-                            File.Code = Json.Code;
-                            File.Text = Json.Text;
-                            if (File.Version != Json.Version)
+                            Object = new ReMessage
                             {
-                                Object = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "版本号错误"
-                                };
-                                break;
-                            }
-                            File.Version++;
+                                Build = false,
+                                Message = "UUID已存在"
+                            };
                         }
-                        SW = new Stopwatch();
-                        SW.Start();
-                        BuildBack = GenIoT.StartGen(File);
-                        SW.Stop();
-                        Object = new ReMessage
-                        {
-                            Build = BuildBack.Isok,
-                            Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
-                        };
                         break;
-                    case ReType.BuildWebSocket:
+                    case ReType.AddWebSocket:
                         if (!User.Admin)
                         {
                             Object = new ReMessage
@@ -211,39 +151,21 @@ namespace ColoryrServer.DllManager
                             File = new CSFileCode
                             {
                                 UUID = Json.UUID,
-                                Text = Json.Text,
-                                Code = Json.Code,
                                 Type = CodeType.WebSocket,
                                 Version = 1
                             };
                         }
                         else
                         {
-                            File.Code = Json.Code;
-                            File.Text = Json.Text;
-                            if (File.Version != Json.Version)
+                            Object = new ReMessage
                             {
-                                Object = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "版本号错误"
-                                };
-                                break;
-                            }
-                            File.Version++;
+                                Build = false,
+                                Message = "UUID已存在"
+                            };
+                            break;
                         }
-                        SW = new Stopwatch();
-                        SW.Start();
-                        BuildBack = GenWebSocket.StartGen(File);
-                        SW.Stop();
-                        Object = new ReMessage
-                        {
-                            Build = BuildBack.Isok,
-                            Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
-                        };
                         break;
-                    case ReType.BuildRobot:
+                    case ReType.AddRobot:
                         if (!User.Admin)
                         {
                             Object = new ReMessage
@@ -533,6 +455,105 @@ namespace ColoryrServer.DllManager
                         {
                             Build = true,
                             Message = "已删除"
+                        };
+                        break;
+                    case ReType.UpdataDll:
+                        File = CSFile.GetDll(Json.UUID);
+                        if (File == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "没有这个UUID"
+                            };
+                            break;
+                        }
+                        //不是他的DLL
+                        else if (!User.Admin && File.User != User.Username)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "错误请求"
+                            };
+                            break;
+                        }
+                        else
+                        {
+                            if (File.Version != Json.Version)
+                            {
+                                Object = new ReMessage
+                                {
+                                    Build = false,
+                                    Message = "版本号错误"
+                                };
+                                break;
+                            }
+                            File.Version++;
+                        }
+
+                        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenDll.StartGen(User, File);
+                        SW.Stop();
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString()
+                        };
+                        break;
+                    case ReType.UpdataClass:
+                        if (!User.Admin)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "错误请求"
+                            };
+                            break;
+                        }
+                        File = CSFile.GetClass(Json.UUID);
+                        if (File == null)
+                        {
+                            File = new CSFileCode
+                            {
+                                UUID = Json.UUID,
+                                Text = Json.Text,
+                                Code = Json.Code,
+                                Type = CodeType.Class,
+                                Version = 1
+                            };
+                        }
+                        else
+                        {
+                            File.Code = Json.Code;
+                            File.Text = Json.Text;
+                            if (File.Version != Json.Version)
+                            {
+                                Object = new ReMessage
+                                {
+                                    Build = false,
+                                    Message = "版本号错误"
+                                };
+                                break;
+                            }
+                            File.Version++;
+                        }
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenClass.StartGen(File);
+                        SW.Stop();
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString()
                         };
                         break;
                 }

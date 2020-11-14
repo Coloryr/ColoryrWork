@@ -75,23 +75,23 @@ namespace ColoryrBuild
                 KeyB.IsEnabled = false;
                 Obj.Code = Editor.Text;
             });
-            ReType type = ReType.BuildDll;
+            ReType type = ReType.AddDll;
             switch (Obj.Type)
             {
                 case CodeType.Dll:
-                    type = ReType.BuildDll;
+                    type = ReType.AddDll;
                     break;
                 case CodeType.Class:
-                    type = ReType.BuildClass;
+                    type = ReType.AddClass;
                     break;
                 case CodeType.IoT:
-                    type = ReType.BuildIoT;
+                    type = ReType.AddIoT;
                     break;
                 case CodeType.WebSocket:
-                    type = ReType.BuildWebSocket;
+                    type = ReType.AddWebSocket;
                     break;
                 case CodeType.Robot:
-                    type = ReType.BuildRobot;
+                    type = ReType.AddRobot;
                     break;
             }
             var SendData = new BuildOBJ
@@ -257,7 +257,7 @@ namespace ColoryrBuild
             var res = MessageBox.Show("这会覆盖你的代码，你确定要重新获取吗", "重新获取源码", MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                ReType type = ReType.BuildDll;
+                ReType type = ReType.AddDll;
                 switch (Obj.Type)
                 {
                     case CodeType.Dll:
