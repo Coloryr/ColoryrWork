@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.DllManager.GenSave;
 using ColoryrServer.FileSystem;
-using Lib.Build.Object;
 using Lib.Server;
 using System;
 using System.Collections.Generic;
@@ -13,14 +12,14 @@ namespace ColoryrServer.DllManager
 {
     class DllStonge
     {
-        private static readonly Dictionary<string, AssemblySave> DllList = new Dictionary<string, AssemblySave>();
-        private static readonly Dictionary<string, AssemblySave> ClassList = new Dictionary<string, AssemblySave>();
-        private static readonly Dictionary<string, AssemblySave> IoTList = new Dictionary<string, AssemblySave>();
-        private static readonly Dictionary<string, AssemblySave> WebSocketList = new Dictionary<string, AssemblySave>();
-        private static readonly Dictionary<string, AssemblySave> RobotList = new Dictionary<string, AssemblySave>();
+        private static readonly Dictionary<string, AssemblySave> DllList = new();
+        private static readonly Dictionary<string, AssemblySave> ClassList = new();
+        private static readonly Dictionary<string, AssemblySave> IoTList = new();
+        private static readonly Dictionary<string, AssemblySave> WebSocketList = new();
+        private static readonly Dictionary<string, AssemblySave> RobotList = new();
 
-        private static readonly Dictionary<string, AppSave> AppList = new Dictionary<string, AppSave>();
-        private static readonly Dictionary<string, McuSave> McuList = new Dictionary<string, McuSave>();
+        private static readonly Dictionary<string, AppSave> AppList = new();
+        private static readonly Dictionary<string, McuSave> McuList = new();
 
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
@@ -31,13 +30,13 @@ namespace ColoryrServer.DllManager
         public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
         public static readonly string McuLocal = ServerMain.RunLocal + @"Dll/Mcu/";
 
-        private static readonly ReaderWriterLockSlim Lock1 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock2 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock3 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock4 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock5 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock6 = new ReaderWriterLockSlim();
-        private static readonly ReaderWriterLockSlim Lock7 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim Lock1 = new();
+        private static readonly ReaderWriterLockSlim Lock2 = new();
+        private static readonly ReaderWriterLockSlim Lock3 = new();
+        private static readonly ReaderWriterLockSlim Lock4 = new();
+        private static readonly ReaderWriterLockSlim Lock5 = new();
+        private static readonly ReaderWriterLockSlim Lock6 = new();
+        private static readonly ReaderWriterLockSlim Lock7 = new();
 
         private static void RemoveAll(string dir)
         {
