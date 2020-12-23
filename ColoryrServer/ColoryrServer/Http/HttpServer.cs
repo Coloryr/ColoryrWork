@@ -14,6 +14,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace ColoryrServer.Http
 {
@@ -202,8 +203,11 @@ namespace ColoryrServer.Http
 
             Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
                 ServerMain.Config.Http.Port + "/");
-            Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
-            Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
+                Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+            }
             Listener.Start();
 
             // 启动工作线程
