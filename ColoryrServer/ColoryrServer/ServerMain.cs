@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
@@ -166,7 +167,14 @@ namespace ColoryrServer
         {
             try
             {
-                ServiceBase.Run(new ColorServer());
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ServiceBase.Run(new ColorServer());
+                }
+                else
+                {
+                    Start();
+                }
                 Thread.Sleep(2000);
             }
             catch
@@ -175,60 +183,58 @@ namespace ColoryrServer
             }
             if (isGo == false)
             {
-                using (Process myPro = new Process())
-                {
-                    myPro.StartInfo.FileName = "cmd.exe";
-                    myPro.StartInfo.UseShellExecute = false;
-                    myPro.StartInfo.RedirectStandardInput = true;
-                    myPro.StartInfo.RedirectStandardOutput = true;
-                    myPro.StartInfo.RedirectStandardError = true;
-                    myPro.StartInfo.CreateNoWindow = true;
-                    myPro.Start();
-                    string str = "sc create BuildServer binPath= \"" + AppDomain.CurrentDomain.BaseDirectory + "BuildServer.exe\"";
+                using Process myPro = new();
+                myPro.StartInfo.FileName = "cmd.exe";
+                myPro.StartInfo.UseShellExecute = false;
+                myPro.StartInfo.RedirectStandardInput = true;
+                myPro.StartInfo.RedirectStandardOutput = true;
+                myPro.StartInfo.RedirectStandardError = true;
+                myPro.StartInfo.CreateNoWindow = true;
+                myPro.Start();
+                string str = "sc create BuildServer binPath= \"" + AppDomain.CurrentDomain.BaseDirectory + "BuildServer.exe\"";
 
-                    myPro.StandardInput.WriteLine(str);
-                    myPro.StandardInput.WriteLine("exit");
-                    myPro.StandardInput.AutoFlush = true;
-                    string output = myPro.StandardOutput.ReadToEnd();
-                    Console.WriteLine(output);
-                    myPro.WaitForExit();
-                    if (output.Contains("失败"))
+                myPro.StandardInput.WriteLine(str);
+                myPro.StandardInput.WriteLine("exit");
+                myPro.StandardInput.AutoFlush = true;
+                string output = myPro.StandardOutput.ReadToEnd();
+                Console.WriteLine(output);
+                myPro.WaitForExit();
+                if (output.Contains("失败"))
+                {
+                    if (output.Contains("拒绝访问"))
                     {
-                        if (output.Contains("拒绝访问"))
+                        Console.WriteLine("请用管理员启动");
+                        Console.Read();
+                        return;
+                    }
+                    else
+                    {
+                        if (output.Contains("指定的服务已存在"))
                         {
-                            Console.WriteLine("请用管理员启动");
-                            Console.Read();
-                            return;
-                        }
-                        else
-                        {
-                            if (output.Contains("指定的服务已存在"))
+                            myPro.Start();
+                            myPro.StandardInput.WriteLine("sc stop BuildServer");
+                            myPro.StandardInput.WriteLine("sc delete BuildServer");
+                            myPro.StandardInput.WriteLine(str);
+                            myPro.StandardInput.WriteLine("exit");
+                            output = myPro.StandardOutput.ReadToEnd();
+                            Console.WriteLine(output);
+                            if (output.Contains("失败") && !output.Contains("成功"))
                             {
-                                myPro.Start();
-                                myPro.StandardInput.WriteLine("sc stop BuildServer");
-                                myPro.StandardInput.WriteLine("sc delete BuildServer");
-                                myPro.StandardInput.WriteLine(str);
-                                myPro.StandardInput.WriteLine("exit");
-                                output = myPro.StandardOutput.ReadToEnd();
-                                Console.WriteLine(output);
-                                if (output.Contains("失败") && !output.Contains("成功"))
-                                {
-                                    Console.WriteLine("服务安装失败");
-                                    return;
-                                }
+                                Console.WriteLine("服务安装失败");
+                                return;
                             }
                         }
                     }
-                    Console.WriteLine("服务已安装");
-                    myPro.Start();
-                    myPro.StandardInput.WriteLine("sc start BuildServer");
-                    myPro.StandardInput.WriteLine("exit");
-                    myPro.WaitForExit();
-                    Console.WriteLine(myPro.StandardOutput.ReadToEnd());
-                    Console.WriteLine("服务已启动");
-                    Console.WriteLine("按任意键退出");
-                    Console.Read();
                 }
+                Console.WriteLine("服务已安装");
+                myPro.Start();
+                myPro.StandardInput.WriteLine("sc start BuildServer");
+                myPro.StandardInput.WriteLine("exit");
+                myPro.WaitForExit();
+                Console.WriteLine(myPro.StandardOutput.ReadToEnd());
+                Console.WriteLine("服务已启动");
+                Console.WriteLine("按任意键退出");
+                Console.Read();
             }
         }
     }

@@ -1,5 +1,10 @@
 ﻿using ColoryrServer;
 using System;
+using ColoryrSDK;
+using System.Collections.Generic;
+using System.Text;
+using System.Net;
+using System.Threading;
 
 namespace ColorServerRunTest
 {
@@ -7,17 +12,8 @@ namespace ColorServerRunTest
     {
         static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.WriteLine("Hello World!");
-
-            ServerMain.Start();
-            while (true)
-            {
-                if (Console.ReadLine() == "stop")
-                {
-                    ServerMain.Stop();
-                    break;
-                }
-            }
         }
     }
 }
