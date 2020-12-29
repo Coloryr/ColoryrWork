@@ -100,28 +100,25 @@ namespace ColoryrServer
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                 //Mysql链接
-                var state = MysqlCon.Start();
-                if (state)
+                if (MysqlCon.Start())
                 {
-                    LogOut("Mysql服务器已连接");
+                    LogOut("Mysql数据库已连接");
                 }
                 else
                 {
-                    LogError("Mysql连接失败");
+                    LogError("Mysql数据库连接失败");
                 }
                 //MS链接
-                state = MSCon.Start();
-                if (state)
+                if (MSCon.Start())
                 {
-                    LogOut("MSsql服务器已连接");
+                    LogOut("Ms数据库已连接");
                 }
                 else
                 {
-                    LogError("MSsql连接失败");
+                    LogError("Ms数据库连接失败");
                 }
                 //Redis链接
-                state = RedisCon.Start();
-                if (state)
+                if (RedisCon.Start())
                 {
                     LogOut("Redis服务器已连接");
                 }

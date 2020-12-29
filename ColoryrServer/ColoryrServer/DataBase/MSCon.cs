@@ -1,39 +1,99 @@
 ﻿using ColoryrSDK;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
     class MSCon
     {
+        /// <summary>
+        /// 连接状态
+        /// </summary>
         public static bool State { get; private set; }
-        private static SqlConnection[] Conns;
-        private static object LockObj = new object();
+
+        private static ExConn[] Conns;
+        private static readonly object LockObj = new();
         private static int LastIndex = 0;
-        public static SqlConnection GetConn()
+        public static ExConn GetConn()
         {
-            lock (LockObj)
+            ExConn item;
+            while (true)
             {
-                SqlConnection Item;
-                while (true)
+                lock (LockObj)
                 {
-                    Item = Conns[LastIndex];
+                    item = Conns[LastIndex];
                     LastIndex++;
                     if (LastIndex >= ServerMain.Config.MSsql.ConnCount)
                         LastIndex = 0;
-                    if (Item.State == ConnectionState.Closed)
+                }
+                if (item.State ==  SelfState.Ok)
+                {
+                    try
                     {
-                        Item.Open();
-                        return Item;
+                        item.Ms.Open();
+                        item.State = SelfState.Open;
+                        return item;
                     }
-                    Thread.Sleep(10);
+                    catch (SqlException e)
+                    {
+                        ServerMain.LogError(e);
+                        ConnReset(item);
+                    }
+                }
+                Thread.Sleep(10);
+            }
+        }
+        public static void ConnReset(ExConn item)
+        {
+            Task.Run(() =>
+            {
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.MSsql.Password));
+                string ConnectString = string.Format("Server={0};UID={1};PWD={2};",
+                ServerMain.Config.MSsql.IP, ServerMain.Config.MSsql.User, pass);
+                var Conn = new SqlConnection(ConnectString);
+                item.Ms.Dispose();
+                item.Ms = Conn;
+                if (Test(item))
+                {
+                    return;
+                }
+                else
+                {
+                    ServerMain.LogError($"Ms数据库连接失败，连接池第{item.Index}个连接");
+                }
+            });
+        }
+
+        private static bool Test(ExConn item)
+        {
+            try
+            {
+                item.Ms.Open();
+                new SqlCommand("select * from test", item.Ms).ExecuteNonQuery();
+                item.Ms.Close();
+                item.State = SelfState.Ok;
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1146:
+                    case 208:
+                        item.Ms.Close();
+                        item.State = SelfState.Ok;
+                        return true;
+                    default:
+                        ServerMain.LogError(ex);
+                        return false;
                 }
             }
         }
+
         /// <summary>
         /// MSCon初始化
         /// </summary>
@@ -43,35 +103,25 @@ namespace ColoryrServer.DataBase
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.MSsql.Password));
             string ConnectString = string.Format("Server={0};UID={1};PWD={2};",
                 ServerMain.Config.MSsql.IP, ServerMain.Config.MSsql.User, pass);
-            Conns = new SqlConnection[ServerMain.Config.Mysql.ConnCount];
+            Conns = new ExConn[ServerMain.Config.Mysql.ConnCount];
             for (int a = 0; a < ServerMain.Config.Mysql.ConnCount; a++)
             {
                 var Conn = new SqlConnection(ConnectString);
-                try
+                var item = new ExConn
                 {
-                    Conn.Open();
-                    var cmd = new SqlCommand("select * from test", Conn);
-                    cmd.ExecuteNonQuery();
-                    Conn.Close();
-                    Conns[a] = Conn;
+                    State = SelfState.Ok,
+                    Type = ConnType.Ms,
+                    Ms = Conn,
+                    Index = a
+                };
+                if (Test(item))
+                {
+                    Conns[a] = item;
                 }
-                catch (SqlException ex)
+                else
                 {
-                    switch (ex.Number)
-                    {
-                        case 1146:
-                            Conn.Close();
-                            Conns[a] = Conn;
-                            break;
-                        case 208:
-                            Conn.Close();
-                            Conns[a] = Conn;
-                            break;
-                        default:
-                            State = false;
-                            ServerMain.LogError(ex);
-                            return false;
-                    }
+                    State = false;
+                    return false;
                 }
             }
             State = true;
@@ -81,12 +131,15 @@ namespace ColoryrServer.DataBase
         public static void Stop()
         {
             if (State)
+            {
+                State = false;
                 foreach (var a in Conns)
                 {
-                    a.Close();
-                    a.Dispose();
+                    a.State = SelfState.Close;
+                    a.Ms.Dispose();
                 }
-            ServerMain.LogOut("MS数据库已关闭");
+            }
+            ServerMain.LogOut("Ms数据库已断开");
         }
 
         /// <summary>
@@ -99,24 +152,25 @@ namespace ColoryrServer.DataBase
         {
             try
             {
-                Sql.Connection = GetConn();
+                var conn = GetConn();
+                Sql.Connection = conn.Ms;
                 Sql.Connection.ChangeDatabase(Database);
                 SqlDataReader reader = Sql.ExecuteReader();
-                var ReList = new List<List<dynamic>>();
+                var readlist = new List<List<dynamic>>();
                 while (reader.Read())
                 {
-                    var Item = new List<dynamic>();
+                    var item = new List<dynamic>();
                     for (int b = 0; b < reader.FieldCount; b++)
-                        Item.Add(reader[b]);
-                    ReList.Add(Item);
+                        item.Add(reader[b]);
+                    readlist.Add(item);
                 }
                 reader.Close();
                 Sql.Connection.Close();
-                return ReList;
+                conn.State = SelfState.Ok;
+                return readlist;
             }
             catch (SqlException e)
             {
-                ServerMain.LogError(e);
                 throw new VarDump(e);
             }
         }

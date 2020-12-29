@@ -11,29 +11,87 @@ namespace ColoryrServer.DataBase
     class OracleCon
     {
         public static bool State { get; private set; }
-        private static OracleConnection[] Conns;
-        private static object LockObj = new object();
+
+        private static ExConn[] Conns;
+        private readonly static object LockObj = new();
         private static int LastIndex = 0;
-        public static OracleConnection GetConn()
+        public static ExConn GetConn()
         {
-            lock (LockObj)
+            ExConn Item;
+            while (true)
             {
-                OracleConnection Item;
-                while (true)
+                lock (LockObj)
                 {
                     Item = Conns[LastIndex];
                     LastIndex++;
                     if (LastIndex >= ServerMain.Config.MSsql.ConnCount)
                         LastIndex = 0;
-                    if (Item.State == ConnectionState.Closed)
+                }
+                if (Item.State ==  SelfState.Ok)
+                {
+                    try
                     {
-                        Item.Open();
+                        Item.Oracle.Open();
+                        Item.State = SelfState.Open;
                         return Item;
                     }
-                    Thread.Sleep(10);
+                    catch ()
+                    { 
+                        
+                    }
+                    
+                }
+                Thread.Sleep(10);
+            }
+        }
+
+        public static void ConnReset(ExConn item)
+        {
+            Task.Run(() =>
+            {
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.Mysql.Password));
+                string ConnectString = string.Format("SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;",
+                    ServerMain.Config.Mysql.IP, ServerMain.Config.Mysql.Port, ServerMain.Config.Mysql.User, pass);
+                var Conn = new MySqlConnection(ConnectString);
+                item.Mysql.Dispose();
+                item.Mysql = Conn;
+                if (Test(item))
+                {
+                    return;
+                }
+                else
+                {
+                    ServerMain.LogError($"Mysql数据库连接失败，连接池第{item.Index}个连接");
+                }
+            });
+        }
+
+        private static bool Test(ExConn item)
+        {
+            try
+            {
+                item.Mysql.Open();
+                new MySqlCommand("select * from test", item.Mysql).ExecuteNonQuery();
+                item.Mysql.Close();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1146:
+                    case 1046:
+                        item.Mysql.Close();
+                        item.State = SelfState.Ok;
+                        return true;
+                    default:
+                        State = false;
+                        ServerMain.LogError(ex);
+                        return false;
                 }
             }
         }
+
         /// <summary>
         /// Mysql初始化
         /// </summary>

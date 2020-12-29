@@ -1689,7 +1689,7 @@ namespace ColoryrSDK
             catch (Exception e)
             {
                 ServerMain.LogError(e);
-                return "变量输出失败";
+                return "变量输出失败" + e.ToString();
             }
         }
     }
