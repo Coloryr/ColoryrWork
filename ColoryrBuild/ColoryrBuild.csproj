@@ -7,6 +7,14 @@
     <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\build_out\Build</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ColoryrWork.png" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.0-preview1" />
     <PackageReference Include="Costura.Fody" Version="4.1.0" />
@@ -22,6 +30,10 @@
 
   <ItemGroup>
     <Folder Include="Windows\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="ColoryrWork.png" />
   </ItemGroup>
 
   <Import Project="..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />

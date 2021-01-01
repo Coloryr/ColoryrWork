@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild"
         mc:Ignorable="d"
-        Title="ColoryrWork登录" Height="450" Width="800" Icon="/Color_yr.ico" ResizeMode="CanMinimize">
+        Title="ColoryrWork登录" Height="450" Width="800" Icon="/ColoryrWork.png" ResizeMode="CanMinimize">
     <Grid>
         
     </Grid>

@@ -5,6 +5,10 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\build_out\Test</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.6.3" />
   </ItemGroup>
