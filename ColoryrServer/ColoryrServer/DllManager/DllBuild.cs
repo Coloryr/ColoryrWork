@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -67,11 +66,11 @@ namespace ColoryrServer.DllManager
                             };
                         }
                         else
-                        Object = new ReMessage
-                        {
-                            Build = false,
-                            Message = "UUID已存在"
-                        };
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "UUID已存在"
+                            };
                         break;
                     case ReType.AddClass:
                         if (CSFile.GetClass(Json.UUID) == null)
@@ -90,15 +89,15 @@ namespace ColoryrServer.DllManager
                         }
                         else
                             Object = new ReMessage
-                        {
-                            Build = false,
-                            Message = "UUID已存在"
-                        };
+                            {
+                                Build = false,
+                                Message = "UUID已存在"
+                            };
                         break;
                     case ReType.AddIoT:
                         if (CSFile.GetIoT(Json.UUID) == null)
                         {
-                            CSFile.StorageIoT(new ()
+                            CSFile.StorageIoT(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.IoT,

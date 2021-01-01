@@ -1,5 +1,4 @@
-﻿using DiffPlex.DiffBuilder;
-using System;
+﻿using System;
 
 namespace CodeTest
 {

@@ -6,6 +6,7 @@
     <Platforms>AnyCPU;x64</Platforms>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <StartupObject></StartupObject>
+    <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -1,14 +1,13 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+using ColoryrServer.FileSystem;
 using Lib.Build.Object;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using ColoryrServer.DllManager.StartGen.GenUtils;
 
 namespace ColoryrServer.DllManager.StartGen.GenType
 {

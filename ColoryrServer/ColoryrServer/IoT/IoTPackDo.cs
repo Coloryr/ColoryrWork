@@ -1,8 +1,8 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
+using Lib.IoT;
 using System;
 using System.Threading.Tasks;
-using Lib.IoT;
 
 namespace ColoryrServer.IoT
 {

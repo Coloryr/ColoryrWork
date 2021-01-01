@@ -227,7 +227,7 @@ namespace ColoryrServer.DataBase
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
                     var conn = task.Result;
-                    var data  = conn.Redis.GetDatabase().KeyExists(key);
+                    var data = conn.Redis.GetDatabase().KeyExists(key);
                     conn.Redis.Close();
                     conn.State = SelfState.Ok;
                     return data;

@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.DllManager;
-using ColoryrServer;
+using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Lib.Server;
 using Newtonsoft.Json;
@@ -11,11 +11,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using ColoryrServer.SDK;
 
 namespace ColoryrServer.Http
 {

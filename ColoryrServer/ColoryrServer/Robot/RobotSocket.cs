@@ -1,5 +1,4 @@
-﻿using ColoryrServer;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
