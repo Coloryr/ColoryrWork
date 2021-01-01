@@ -32,29 +32,29 @@ namespace ColoryrServer.FileSystem
         /// <summary>
         /// Mysql配置
         /// </summary>
-        public Mysql Mysql { get; set; }
+        public MysqlConfig Mysql { get; set; }
         /// <summary>
         /// MS sql设置
         /// </summary>
-        public MSsql MSsql { get; set; }
+        public MSsqlConfig MSsql { get; set; }
         /// <summary>
         /// Redis设置
         /// </summary>
-        public Redis Redis { get; set; }
+        public RedisConfig Redis { get; set; }
         /// <summary>
         /// Oracle配置
         /// </summary>
-        public Oracle Oracle { get; set; }
+        public OracleConfig Oracle { get; set; }
         /// <summary>
         /// 用户路径
         /// </summary>
-        public List<User> User { get; set; }
+        public List<UserConfig> User { get; set; }
         /// <summary>
         /// ffmpeg
         /// </summary>
         public string MPGE { get; set; }
     }
-    public class Oracle
+    public record OracleConfig
     {
         /// <summary>
         /// IP地址
@@ -80,15 +80,23 @@ namespace ColoryrServer.FileSystem
         /// 服务器名
         /// </summary>
         public string ServerName { get; set; }
+        /// <summary>
+        /// 连接超时
+        /// </summary>
+        public int TimeOut { get; set; }
+        /// <summary>
+        /// 连接字符串
+        /// </summary>
+        public string Conn { get; set; }
     }
-    public class User
+    public record UserConfig
     {
         public string Username { get; set; }
         public string Password { get; set; }
         public bool Admin { get; set; }
     }
 
-    public class SocketConfig
+    public record SocketConfig
     {
         /// <summary>
         /// socket设置的IP
@@ -99,7 +107,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int Port { get; set; }
     }
-    public class Mysql
+    public record MysqlConfig
     {
         /// <summary>
         /// IP地址
@@ -121,8 +129,16 @@ namespace ColoryrServer.FileSystem
         /// 连接数
         /// </summary>
         public int ConnCount { get; set; }
+        /// <summary>
+        /// 连接超时
+        /// </summary>
+        public int TimeOut { get; set; }
+        /// <summary>
+        /// 连接字符串
+        /// </summary>
+        public string Conn { get; set; }
     }
-    public class MSsql
+    public record MSsqlConfig
     {
         /// <summary>
         /// IP地址
@@ -140,8 +156,16 @@ namespace ColoryrServer.FileSystem
         /// 连接数
         /// </summary>
         public int ConnCount { get; set; }
+        /// <summary>
+        /// 连接超时
+        /// </summary>
+        public int TimeOut { get; set; }
+        /// <summary>
+        /// 连接的字符串
+        /// </summary>
+        public string Conn { get; set; }
     }
-    public class Redis
+    public record RedisConfig
     {
         /// <summary>
         /// IP地址
@@ -155,6 +179,14 @@ namespace ColoryrServer.FileSystem
         /// 连接数
         /// </summary>
         public int ConnCount { get; set; }
+        /// <summary>
+        /// 连接超时
+        /// </summary>
+        public int TimeOut { get; set; }
+        /// <summary>
+        /// 连接字符串
+        /// </summary>
+        public string Conn { get; set; }
     }
     class Config
     {
@@ -166,74 +198,83 @@ namespace ColoryrServer.FileSystem
         {
             ServerMain.Config = ConfigSave.Config(new MainConfig
             {
-                Http = new SocketConfig
+                Http = new()
                 {
                     IP = "+",
                     Port = 25555
                 },
-                IoT = new SocketConfig
+                IoT = new()
                 {
                     IP = "0.0.0.0",
                     Port = 25556
                 },
-                WebSocket = new SocketConfig
+                WebSocket = new()
                 {
                     IP = "0.0.0.0",
                     Port = 25557
                 },
-                Robot = new SocketConfig
+                Robot = new()
                 {
                     IP = "127.0.0.1",
                     Port = 23333
                 },
-                Include = new List<string>()
-                    {
-                         "using System;",
-                         "using System.Linq",
-                         "using System.Reflection;",
-                         "using System.Runtime.InteropServices;",
-                         "using System.Collections.Generic;",
-                         "using System.Runtime.CompilerServices;",
-                         "using System.Collections.Specialized;",
-                         "using ColoryrSDK;",
-                         "using Newtonsoft.Json;",
-                         "using Newtonsoft.Json.Linq;",
-                         "using HtmlAgilityPack;"
-                    },
-                NoCode = new List<string>()
-                    {
-                        "System.IO"
-                    },
-                Mysql = new Mysql
+                Include = new()
+                {
+                    "using System;",
+                    "using System.Linq",
+                    "using System.Reflection;",
+                    "using System.Runtime.InteropServices;",
+                    "using System.Collections.Generic;",
+                    "using System.Runtime.CompilerServices;",
+                    "using System.Collections.Specialized;",
+                    "using ColoryrSDK;",
+                    "using Newtonsoft.Json;",
+                    "using Newtonsoft.Json.Linq;",
+                    "using HtmlAgilityPack;"
+                },
+                NoCode = new()
+                {
+                    "System.IO"
+                },
+                Mysql = new()
                 {
                     IP = "127.0.0.1",
                     Port = 3306,
                     User = "Root",
                     Password = "MTIzNDU2",
-                    ConnCount = 100
+                    ConnCount = 50,
+                    TimeOut = 1000,
+                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
                 },
-                MSsql = new MSsql
+                MSsql = new()
                 {
                     IP = "127.0.0.1",
                     User = "Root",
                     Password = "MTIzNDU2",
-                    ConnCount = 100
+                    ConnCount = 50,
+                    TimeOut = 1000,
+                    Conn = "Server={0};UID={1};PWD={2};"
                 },
-                Redis = new Redis
-                {
-                    IP = "",
-                    Port = 0
-                },
-                Oracle = new Oracle
+                Redis = new()
                 {
                     IP = "127.0.0.1",
-                    User = "Root",
-                    Password = "MTIzNDU2",
+                    Port = 6379,
+                    TimeOut = 1000,
+                    Conn = "{0}:{1}",
                     ConnCount = 20
                 },
-                User = new List<User>()
+                Oracle = new()
                 {
-                    new User
+                    IP = "127.0.0.1",
+                    User = "Root",
+                    Password = "MTIzNDU2",
+                    ConnCount = 20,
+                    TimeOut = 1000,
+                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                },
+                User = new()
+                {
+                    new()
                     {
                         Username = "Admin",
                         Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4",

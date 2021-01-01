@@ -1,9 +1,10 @@
 ﻿using ColoryrServer.Http;
-using ColoryrSDK;
+using ColoryrServer;
 using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ColoryrServer.SDK;
 
 namespace ColoryrServer.DllManager
 {

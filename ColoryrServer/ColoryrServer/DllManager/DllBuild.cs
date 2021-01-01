@@ -15,7 +15,7 @@ namespace ColoryrServer.DllManager
     class DllBuild
     {
         public static readonly Dictionary<string, string> Token = new Dictionary<string, string>();
-        public static HttpReturn HttpBuild(BuildOBJ Json, User User)
+        public static HttpReturn HttpBuild(BuildOBJ Json, UserConfig User)
         {
             object Object = null;
             if (Json.Mode == ReType.Login)

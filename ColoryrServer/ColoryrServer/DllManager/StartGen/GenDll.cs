@@ -40,7 +40,7 @@ public class app_{0}
             }
             return true;
         }
-        public static GenReOBJ StartGen(User User, CSFileCode CodeFile)
+        public static GenReOBJ StartGen(UserConfig User, CSFileCode CodeFile)
         {
             SyntaxTree Code;
             if (!User.Admin || CodeFile.User != null)

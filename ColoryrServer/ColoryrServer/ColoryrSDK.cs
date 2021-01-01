@@ -1,5 +1,4 @@
-﻿using ColoryrServer;
-using ColoryrServer.DataBase;
+﻿using ColoryrServer.DataBase;
 using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
@@ -27,7 +26,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrSDK
+namespace ColoryrServer.SDK
 {
     public class HttpRequest
     {

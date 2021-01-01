@@ -1,17 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
     public enum SelfState
-    { 
+    {
         Ok, Error, Restart, Open, Close
     }
     public enum ConnType

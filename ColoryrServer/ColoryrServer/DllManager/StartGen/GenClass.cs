@@ -30,7 +30,7 @@ namespace ColoryrServer.DllManager
             var list = AssemblySave.Assembly.Assemblies.First()
                            .GetTypes().Where(x => x.Name == File.UUID);
 
-            if (list.Count() == 0)
+            if (!list.Any())
                 return new GenReOBJ
                 {
                     Isok = false,

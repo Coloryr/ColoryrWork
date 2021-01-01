@@ -1,4 +1,6 @@
-﻿using ColoryrSDK;
+﻿using ColoryrServer;
+using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,11 +13,23 @@ namespace ColoryrServer.DataBase
 {
     class MysqlCon
     {
+        /// <summary>
+        /// 连接状态
+        /// </summary>
         public static bool State { get; private set; }
-        private static object LockObj = new object();
+
+        /// <summary>
+        /// 连接池
+        /// </summary>
         private static ExConn[] Conns;
+        private static readonly object LockObj = new object();
         private static int LastIndex = 0;
-        public static ExConn GetConn()
+        private static MysqlConfig Config;
+
+        /// <summary>
+        /// 获取连接Task
+        /// </summary>
+        public static Task<ExConn> GetConn = new(() =>
         {
             ExConn item;
             while (true)
@@ -25,7 +39,7 @@ namespace ColoryrServer.DataBase
                     item = Conns[LastIndex];
                     LastIndex++;
                 }
-                if (LastIndex >= ServerMain.Config.Mysql.ConnCount)
+                if (LastIndex >= Config.ConnCount)
                     LastIndex = 0;
                 if (item.State == SelfState.Ok)
                 {
@@ -43,15 +57,20 @@ namespace ColoryrServer.DataBase
                 }
                 Thread.Sleep(10);
             }
-        }
+        });
 
+        /// <summary>
+        /// 开启重连Task
+        /// </summary>
+        /// <param name="item">连接池项目</param>
         public static void ConnReset(ExConn item)
         {
             Task.Run(() =>
             {
-                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.Mysql.Password));
-                string ConnectString = string.Format("SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;",
-                    ServerMain.Config.Mysql.IP, ServerMain.Config.Mysql.Port, ServerMain.Config.Mysql.User, pass);
+                item.State = SelfState.Restart;
+                Config = ServerMain.Config.Mysql;
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
+                string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port, Config.User, pass);
                 var Conn = new MySqlConnection(ConnectString);
                 item.Mysql.Dispose();
                 item.Mysql = Conn;
@@ -66,6 +85,11 @@ namespace ColoryrServer.DataBase
             });
         }
 
+        /// <summary>
+        /// 连接测试
+        /// </summary>
+        /// <param name="item">连接池项目</param>
+        /// <returns>是否测试成功</returns>
         private static bool Test(ExConn item)
         {
             try
@@ -73,6 +97,7 @@ namespace ColoryrServer.DataBase
                 item.Mysql.Open();
                 new MySqlCommand("select * from test", item.Mysql).ExecuteNonQuery();
                 item.Mysql.Close();
+                item.State = SelfState.Ok;
                 return true;
             }
             catch (MySqlException ex)
@@ -98,16 +123,16 @@ namespace ColoryrServer.DataBase
         /// <returns>是否连接成功</returns>
         public static dynamic Start()
         {
-            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.Mysql.Password));
-            string ConnectString = string.Format("SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;",
-                ServerMain.Config.Mysql.IP, ServerMain.Config.Mysql.Port, ServerMain.Config.Mysql.User, pass);
-            Conns = new ExConn[ServerMain.Config.Mysql.ConnCount];
-            for (int a = 0; a < ServerMain.Config.Mysql.ConnCount; a++)
+            Config = ServerMain.Config.Mysql;
+            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
+            string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port, Config.User, pass);
+            Conns = new ExConn[Config.ConnCount];
+            for (int a = 0; a < Config.ConnCount; a++)
             {
                 var Conn = new MySqlConnection(ConnectString);
                 var item = new ExConn
                 {
-                    State = SelfState.Ok,
+                    State = SelfState.Error,
                     Type = ConnType.Mysql,
                     Mysql = Conn,
                     Index = a
@@ -126,6 +151,9 @@ namespace ColoryrServer.DataBase
             return true;
         }
 
+        /// <summary>
+        /// 关闭Mysql数据库连接
+        /// </summary>
         public static void Stop()
         {
             if (State)
@@ -150,22 +178,31 @@ namespace ColoryrServer.DataBase
         {
             try
             {
-                var conn = GetConn();
-                Sql.Connection = conn.Mysql;
-                Sql.Connection.ChangeDatabase(Database);
-                MySqlDataReader reader = Sql.ExecuteReader();
-                var readlist = new List<List<dynamic>>();
-                while (reader.Read())
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var item = new List<dynamic>();
-                    for (int b = 0; b < reader.FieldCount; b++)
-                        item.Add(reader[b]);
-                    readlist.Add(item);
+                    var conn = task.Result;
+                    Sql.Connection = conn.Mysql;
+                    Sql.Connection.ChangeDatabase(Database);
+                    MySqlDataReader reader = Sql.ExecuteReader();
+                    var readlist = new List<List<dynamic>>();
+                    while (reader.Read())
+                    {
+                        var item = new List<dynamic>();
+                        for (int b = 0; b < reader.FieldCount; b++)
+                            item.Add(reader[b]);
+                        readlist.Add(item);
+                    }
+                    reader.Close();
+                    Sql.Connection.Close();
+                    conn.State = SelfState.Ok;
+                    return readlist;
                 }
-                reader.Close();
-                Sql.Connection.Close();
-                conn.State = SelfState.Ok;
-                return readlist;
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Mysql数据库超时");
+                }
             }
             catch (MySqlException e)
             {

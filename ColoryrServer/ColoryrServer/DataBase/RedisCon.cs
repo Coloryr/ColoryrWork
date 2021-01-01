@@ -1,90 +1,181 @@
-﻿using ColoryrSDK;
+﻿using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using StackExchange.Redis;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
     class RedisCon
     {
+        /// <summary>
+        /// 连接状态
+        /// </summary>
         public static bool State { get; private set; }
+
+        /// <summary>
+        /// 连接池
+        /// </summary>
+        private static ExConn[] Conns;
+
         private static object LockObj = new object();
-        private static ConnectionMultiplexer[] Conns;
         private static int LastIndex = 0;
-        private static bool isRun;
-        public static ConnectionMultiplexer GetConn()
+        private static RedisConfig Config;
+
+        /// <summary>
+        /// 获取连接Task
+        /// </summary>
+        private static Task<ExConn> GetConn = new(() =>
         {
-            if (isRun == false)
-                throw new VarDump("Redis服务器错误");
-            lock (LockObj)
+            ExConn item;
+            while (true)
             {
-                ConnectionMultiplexer Item;
-                while (true)
+                lock (LockObj)
                 {
-                    Item = Conns[LastIndex];
-                    if (Item == null)
-                        throw new VarDump("Redis服务器错误");
+                    item = Conns[LastIndex];
                     LastIndex++;
-                    if (LastIndex >= ServerMain.Config.Redis.ConnCount)
+                    if (LastIndex >= Config.ConnCount)
                         LastIndex = 0;
-                    return Item;
                 }
+                if (item.State == SelfState.Ok)
+                {
+                    item.State = SelfState.Open;
+                    return item;
+                }
+                Thread.Sleep(10);
+            }
+        });
+
+        /// <summary>
+        /// 开启重连Task
+        /// </summary>
+        /// <param name="item">连接池项目</param>
+        public static void ConnReset(ExConn item)
+        {
+            Task.Run(() =>
+            {
+                item.State = SelfState.Restart;
+                Config = ServerMain.Config.Redis;
+                string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port);
+                var Conn = ConnectionMultiplexer.Connect(ConnectString);
+                item.Redis.Dispose();
+                item.Redis = Conn;
+                if (Test(item))
+                {
+                    return;
+                }
+                else
+                {
+                    ServerMain.LogError($"Redis数据库重连失败，连接池第{item.Index}个连接");
+                }
+            });
+        }
+
+        /// <summary>
+        /// 连接测试
+        /// </summary>
+        /// <param name="item">连接池项目</param>
+        /// <returns>是否测试成功</returns>
+        private static bool Test(ExConn item)
+        {
+            try
+            {
+                if (item.Redis == null || item.Redis.IsConnected == false)
+                {
+                    return false;
+                }
+                item.Redis.GetDatabase().KeyExists("test");
+                item.Redis.Close();
+                item.State = SelfState.Ok;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ServerMain.LogError(ex);
+                return false;
             }
         }
+
         /// <summary>
         /// Mysql初始化
         /// </summary>
         /// <returns>是否连接成功</returns>
         public static dynamic Start()
         {
-            string ConnStr = "{0}:{1}";
-            ConnStr = string.Format(ConnStr, ServerMain.Config.Redis.IP, ServerMain.Config.Redis.Port);
-            Conns = new ConnectionMultiplexer[ServerMain.Config.Redis.ConnCount];
-            for (int a = 0; a < ServerMain.Config.Redis.ConnCount; a++)
+            Config = ServerMain.Config.Redis;
+            string ConnStr = string.Format(Config.Conn, Config.IP, Config.Port);
+            Conns = new ExConn[Config.ConnCount];
+            for (int a = 0; a < Config.ConnCount; a++)
             {
-                try
+                var Conn = new ExConn
                 {
-                    var Conn = ConnectionMultiplexer.Connect(ConnStr);
-                    if (Conn == null || Conn.IsConnected == false)
-                    {
-                        ServerMain.LogError("Redis连接失败");
-                    }
+                    Redis = ConnectionMultiplexer.Connect(ConnStr),
+                    Index = a,
+                    State = SelfState.Error,
+                    Type = ConnType.Redis
+                };
+                if (Test(Conn))
+                {
                     Conns[a] = Conn;
                 }
-                catch (Exception ex)
+                else
                 {
-                    ServerMain.LogError(ex);
                     State = false;
                     return false;
                 }
             }
             State = true;
-            isRun = true;
             return true;
         }
+
+        /// <summary>
+        /// 关闭Redis数据库连接
+        /// </summary>
         public static void Stop()
         {
             if (State)
-                foreach (var item in Conns)
+            {
+                State = false;
+                foreach (var a in Conns)
                 {
-                    if (item != null)
-                    {
-                        item.Close();
-                        item.Dispose();
-                    }
+                    a.State = SelfState.Close;
+                    a.Redis.Dispose();
                 }
-            ServerMain.LogOut("Redis已关闭");
+            }
+            ServerMain.LogOut("Redis数据库已断开");
         }
 
         /// <summary>
         /// 根据key获取缓存对象
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">键</param>
+        /// <returns>值</returns>
         public static RedisValue Get(string key)
         {
-            var Conn = GetConn();
-            return Conn.GetDatabase().StringGet(key);
+            try
+            {
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                {
+                    var conn = task.Result;
+                    var data = conn.Redis.GetDatabase().StringGet(key);
+                    conn.Redis.Close();
+                    conn.State = SelfState.Ok;
+                    return data;
+                }
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Redis数据库超时");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new VarDump(e);
+            }
         }
+
         /// <summary>
         /// 设置缓存
         /// </summary>
@@ -93,45 +184,122 @@ namespace ColoryrServer.DataBase
         /// <param name="expireMinutes">存在秒</param>
         public static bool Set(string key, string value, int expireMinutes)
         {
-            var Conn = GetConn();
-            if (expireMinutes > 0)
+            try
             {
-                return Conn.GetDatabase().StringSet(key, value, TimeSpan.FromSeconds(expireMinutes));
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                {
+                    var conn = task.Result;
+                    bool data = false;
+                    if (expireMinutes > 0)
+                    {
+                        data = conn.Redis.GetDatabase().StringSet(key, value, TimeSpan.FromSeconds(expireMinutes));
+                    }
+                    else
+                    {
+                        data = conn.Redis.GetDatabase().StringSet(key, value);
+                    }
+                    conn.Redis.Close();
+                    conn.State = SelfState.Ok;
+                    return data;
+                }
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Redis数据库超时");
+                }
             }
-            else
+            catch (Exception e)
             {
-                return Conn.GetDatabase().StringSet(key, value);
+                throw new VarDump(e);
             }
         }
         /// <summary>
         /// 判断在缓存中是否存在该key的缓存数据
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">键</param>
+        /// <returns>是否存在</returns>
         public static bool Exists(string key)
         {
-            var Conn = GetConn();
-            return Conn.GetDatabase().KeyExists(key); //可直接调用
+            try
+            {
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                {
+                    var conn = task.Result;
+                    var data  = conn.Redis.GetDatabase().KeyExists(key);
+                    conn.Redis.Close();
+                    conn.State = SelfState.Ok;
+                    return data;
+                }
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Redis数据库超时");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new VarDump(e);
+            }
         }
         /// <summary>
         /// 移除指定key的缓存
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">键</param>
+        /// <returns>是否移除</returns>
         public static bool Remove(string key)
         {
-            var Conn = GetConn();
-            return Conn.GetDatabase().KeyDelete(key);
+            try
+            {
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                {
+                    var conn = task.Result;
+                    var data = conn.Redis.GetDatabase().KeyDelete(key);
+                    conn.Redis.Close();
+                    conn.State = SelfState.Ok;
+                    return data;
+                }
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Redis数据库超时");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new VarDump(e);
+            }
         }
         /// <summary>
         /// 数据累加
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">键</param>
+        /// <returns>累加后的值</returns>
         public static long Increment(string key, long val = 1)
         {
-            var Conn = GetConn();
-            return Conn.GetDatabase().StringIncrement(key, val);
+            try
+            {
+                var task = GetConn;
+                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                {
+                    var conn = task.Result;
+                    var data = conn.Redis.GetDatabase().StringIncrement(key, val);
+                    conn.Redis.Close();
+                    conn.State = SelfState.Ok;
+                    return data;
+                }
+                else
+                {
+                    ConnReset(task.Result);
+                    throw new VarDump("Redis数据库超时");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new VarDump(e);
+            }
         }
     }
 }

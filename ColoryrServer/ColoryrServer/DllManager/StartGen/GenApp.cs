@@ -17,7 +17,7 @@ namespace ColoryrServer.DllManager
             var list = new List<SyntaxTree>();
             foreach (var item in File.Codes)
             { 
-                list.Add( CSharpSyntaxTree.ParseText(item.Value));
+                list.Add(CSharpSyntaxTree.ParseText(item.Value));
             }
             var Res = GenTask.StartGen(File.UUID, list, GenLib.App);
             if (!Res.Isok)
@@ -28,12 +28,14 @@ namespace ColoryrServer.DllManager
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var save = new AppSave();
-            save.Key = File.Key;
-            save.Xamls = new Dictionary<string, string>(File.Xamls);
-            save.Dll = Res.MS.ToArray();
-            save.Pdb = Res.MSPdb.ToArray();
-            
+            var save = new AppSave
+            {
+                Key = File.Key,
+                Xamls = new Dictionary<string, string>(File.Xamls),
+                Dll = Res.MS.ToArray(),
+                Pdb = Res.MSPdb.ToArray()
+            };
+
             DllStonge.AddApp(File.UUID, save);
 
             Res.MSPdb.Close();
@@ -58,11 +60,9 @@ namespace ColoryrServer.DllManager
                 }
                 foreach (var item in File.Xamls)
                 {
-                    using (var FileStream = new FileStream(dir + item.Key, FileMode.OpenOrCreate))
-                    {
-                        FileStream.Write(Encoding.UTF8.GetBytes(item.Value));
-                        FileStream.Flush();
-                    }
+                    using var FileStream = new FileStream(dir + item.Key, FileMode.OpenOrCreate);
+                    FileStream.Write(Encoding.UTF8.GetBytes(item.Value));
+                    FileStream.Flush();
                 }
 
                 CSFile.StorageApp(File);
