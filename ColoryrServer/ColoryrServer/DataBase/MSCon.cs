@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
-    class MSCon
+    internal class MSCon
     {
         /// <summary>
         /// 连接状态

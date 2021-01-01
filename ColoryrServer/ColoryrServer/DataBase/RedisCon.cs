@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
-    class RedisCon
+    internal class RedisCon
     {
         /// <summary>
         /// 连接状态

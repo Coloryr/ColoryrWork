@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
-    class MysqlCon
+    internal class MysqlCon
     {
         /// <summary>
         /// 连接状态

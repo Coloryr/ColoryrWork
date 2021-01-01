@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DllManager
 {
-    class GenClass
+    internal class GenClass
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {

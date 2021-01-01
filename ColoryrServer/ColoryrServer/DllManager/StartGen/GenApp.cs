@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DllManager
 {
-    class GenApp
+    internal class GenApp
     {
         public static GenReOBJ StartGen(AppFileObj File)
         {

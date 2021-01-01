@@ -5,15 +5,15 @@ using System.Data.SqlClient;
 
 namespace ColoryrServer.DataBase
 {
-    public enum SelfState
+    internal enum SelfState
     {
         Ok, Error, Restart, Open, Close
     }
-    public enum ConnType
+    internal enum ConnType
     {
         Mysql, Ms, Oracle, Redis
     }
-    class ExConn
+    internal class ExConn
     {
         public int Index;
         public SelfState State;
