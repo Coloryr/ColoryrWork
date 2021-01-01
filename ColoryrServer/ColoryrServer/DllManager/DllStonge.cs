@@ -1,4 +1,5 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+using ColoryrServer.FileSystem;
 using Lib.Server;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading;
 
 namespace ColoryrServer.DllManager
 {
-    class DllStonge
+    internal class DllStonge
     {
         private static readonly Dictionary<string, AssemblySave> DllList = new();
         private static readonly Dictionary<string, AssemblySave> ClassList = new();

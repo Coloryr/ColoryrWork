@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
-    record GenReOBJ
+    internal record GenReOBJ
     {
         public bool Isok { get; set; }
         public string Res { get; set; }

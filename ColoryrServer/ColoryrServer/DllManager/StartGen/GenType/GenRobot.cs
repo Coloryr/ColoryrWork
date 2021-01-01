@@ -1,4 +1,5 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+using ColoryrServer.FileSystem;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,9 +10,9 @@ using System.Linq;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenType
 {
-    class GenRobot
+    internal class GenRobot
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {

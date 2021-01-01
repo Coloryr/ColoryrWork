@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace ColoryrServer.FileSystem
 {
-    class FileTemp
+    internal class FileTemp
     {
         public static string Local;
 

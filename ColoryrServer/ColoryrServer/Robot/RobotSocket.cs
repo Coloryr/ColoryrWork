@@ -1,4 +1,5 @@
 ﻿using ColoryrServer;
+using ColoryrServer.SDK;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,7 +12,7 @@ using System.Threading;
 
 namespace ColoryrServer.Robot
 {
-    class RobotSocket
+    internal class RobotSocket
     {
         private static Socket Socket;
         private static Thread ReadThread;
@@ -108,8 +109,8 @@ namespace ColoryrServer.Robot
                         {
                             var data = new byte[Socket.Available];
                             Socket.Receive(data);
-                            var type = data[data.Length - 1];
-                            data[data.Length - 1] = 0;
+                            var type = data[^1];
+                            data[^1] = 0;
                             QueueRead.Add(new RobotTask
                             {
                                 index = type,
@@ -152,7 +153,7 @@ namespace ColoryrServer.Robot
             Socket.Connect(IPAddress.Parse(ServerMain.Config.Robot.IP), ServerMain.Config.Robot.Port);
 
             var data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(PackStart) + " ");
-            data[data.Length - 1] = 0;
+            data[^1] = 0;
 
             Socket.Send(data);
 
@@ -226,10 +227,16 @@ namespace ColoryrServer.Robot
             var data = BuildPack.Build(new LoadFileSendToGroupSoundPack { qq = qq, id = id, file = file, }, 77);
             QueueSend.Add(data);
         }
+        internal static void SendStop()
+        {
+            var data = BuildPack.Build(new object(), 127);
+            Socket.Send(data);
+        }
         internal static void Stop()
         {
             ServerMain.LogOut("机器人正在断开");
             IsRun = false;
+            SendStop();
             if (Socket != null)
                 Socket.Close();
             ServerMain.LogOut("机器人已断开");

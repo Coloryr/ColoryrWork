@@ -2,16 +2,16 @@
 
 namespace ColoryrServer.Robot
 {
-    abstract class PackBase
+    abstract record PackBase
     {
         public long qq { get; set; }
     }
-    class PackStart
+    record PackStart
     {
         public string Name { get; set; }
         public List<byte> Reg { get; set; }
     }
-    class GroupMessageEventPack : PackBase
+    record GroupMessageEventPack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
@@ -19,23 +19,23 @@ namespace ColoryrServer.Robot
         public List<string> message { get; set; }
     }
 
-    class SendGroupMessagePack : PackBase
+    record SendGroupMessagePack : PackBase
     {
         public long id { get; set; }
         public List<string> message { get; set; }
     }
-    class SendFriendMessagePack : PackBase
+    record SendFriendMessagePack : PackBase
     {
         public long id { get; set; }
         public List<string> message { get; set; }
     }
-    class SendGroupPrivateMessagePack : PackBase
+    record SendGroupPrivateMessagePack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
         public List<string> message { get; set; }
     }
-    class TempMessageEventPack : PackBase
+    record TempMessageEventPack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
@@ -43,41 +43,41 @@ namespace ColoryrServer.Robot
         public List<string> message { get; set; }
         public int time { get; set; }
     }
-    class FriendMessageEventPack : PackBase
+    record FriendMessageEventPack : PackBase
     {
         public long id { get; set; }
         public string name { get; set; }
         public List<string> message { get; set; }
         public int time { get; set; }
     }
-    class SendGroupImagePack : PackBase
+    record SendGroupImagePack : PackBase
     {
         public long id { get; set; }
         public string img { get; set; }
     }
-    class SendGroupPrivateImagePack : PackBase
+    record SendGroupPrivateImagePack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
         public string img { get; set; }
     }
-    class SendFriendImagePack : PackBase
+    record SendFriendImagePack : PackBase
     {
         public long id { get; set; }
         public string img { get; set; }
     }
-    class GroupMessagePostSendEventPack : PackBase
+    record GroupMessagePostSendEventPack : PackBase
     {
         public long id { get; set; }
         public bool res { get; set; }
         public List<string> message { get; set; }
         public string error { get; set; }
     }
-    class ReCallMessage
+    record ReCallMessage
     {
         public long id { get; set; }
     }
-    class FriendMessagePostSendEventPack : PackBase
+    record FriendMessagePostSendEventPack : PackBase
     {
         public List<string> message { get; set; }
         public long id { get; set; }
@@ -85,7 +85,7 @@ namespace ColoryrServer.Robot
         public bool res { get; set; }
         public string error { get; set; }
     }
-    class TempMessagePostSendEventPack : PackBase
+    record TempMessagePostSendEventPack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
@@ -93,29 +93,29 @@ namespace ColoryrServer.Robot
         public List<string> message { get; set; }
         public string error { get; set; }
     }
-    class MemberJoinEventAPack : PackBase
+    record MemberJoinEventAPack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
         public string name { get; set; }
     }
-    class LoadFileSendToGroupImagePack : PackBase
+    record LoadFileSendToGroupImagePack : PackBase
     {
         public long id { get; set; }
         public string file { get; set; }
     }
-    class LoadFileSendToGroupPrivateImagePack : PackBase
+    record LoadFileSendToGroupPrivateImagePack : PackBase
     {
         public long id { get; set; }
         public long fid { get; set; }
         public string file { get; set; }
     }
-    class LoadFileSendToFriendImagePack : PackBase
+    record LoadFileSendToFriendImagePack : PackBase
     {
         public long id { get; set; }
         public string file { get; set; }
     }
-    class LoadFileSendToGroupSoundPack : PackBase
+    record LoadFileSendToGroupSoundPack : PackBase
     {
         public long id { get; set; }
         public string file { get; set; }

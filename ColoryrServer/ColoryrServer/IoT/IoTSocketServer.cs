@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.IoT
 {
-    class IoTSocket
+    internal class IoTSocketServer
     {
         private static TcpListener ServerSocket;
-        private static Dictionary<string, Socket> Clients = new Dictionary<string, Socket>();
+        private static readonly Dictionary<string, Socket> Clients = new();
         private static bool RunFlag;
-        private static ReaderWriterLockSlim Lock1 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim Lock1 = new ReaderWriterLockSlim();
 
         public static void Start()
         {
@@ -26,7 +26,7 @@ namespace ColoryrServer.IoT
 
                     RunFlag = true;
 
-                    Task.Factory.StartNew(async () =>
+                    Task.Run(async () =>
                     {
                         while (RunFlag)
                         {
@@ -87,7 +87,7 @@ namespace ColoryrServer.IoT
                     return;
                 }
                 Add(Name, Client);
-                IoTPackDo.SendPack(Name, new byte[0]);
+                IoTPackDo.SendPack(Name, Array.Empty<byte>());
                 while (true)
                 {
                     if (Client == null)
@@ -103,26 +103,11 @@ namespace ColoryrServer.IoT
                     }
                     else if (Client.Available != 0)
                     {
-                        Lock1.EnterReadLock();
-                        try
-                        {
-                            if (Clients.TryGetValue(Name, out var socket))
-                            {
-                                while (socket.Available <= 0)
-                                {
-                                    Thread.Sleep(10);
-                                }
-                                Data = new byte[socket.Available];
-                                socket.Receive(Data);
-                                IoTPackDo.ReadPack(Name, Data);
-                            }
-                        }
-                        finally
-                        {
-                            Lock1.ExitReadLock();
-                        }
+                        Data = new byte[Client.Available];
+                        Client.Receive(Data);
+                        IoTPackDo.ReadPack(Name, Data);
                     }
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
                 }
             }
             catch (Exception e)

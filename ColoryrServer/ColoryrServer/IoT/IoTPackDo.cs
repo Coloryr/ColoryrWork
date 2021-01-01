@@ -1,12 +1,12 @@
 ﻿using ColoryrServer.DllManager;
-using ColoryrServer;
+using ColoryrServer.SDK;
 using System;
 using System.Threading.Tasks;
 using Lib.IoT;
 
 namespace ColoryrServer.IoT
 {
-    class IoTPackDo
+    internal class IoTPackDo
     {
         public static string CheckPack(byte[] pack)
         {
@@ -43,8 +43,8 @@ namespace ColoryrServer.IoT
 
             IoTPack.SendPack.CopyTo(data, 0);
             pack.CopyTo(data, IoTPack.SendPack.Length);
-            data[data.Length - 1] = (byte)'\0';
-            IoTSocket.SendData(name, data);
+            data[^1] = (byte)'\0';
+            IoTSocketServer.SendData(name, data);
         }
 
         public static void ReadPack(string Name, byte[] Data)

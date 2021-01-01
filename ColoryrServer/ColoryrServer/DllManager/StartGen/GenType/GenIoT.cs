@@ -1,23 +1,24 @@
 ﻿using ColoryrServer.FileSystem;
 using Lib.Build.Object;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenType
 {
-    class GenWebSocket
+    internal class GenIoT
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
             var Res = GenTask.StartGen(File.UUID, new()
-            { 
-                CSharpSyntaxTree.ParseText(File.Code) 
+            {
+                CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
             if (!Res.Isok)
             {
@@ -33,6 +34,7 @@ namespace ColoryrServer.DllManager
             AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
             var list = AssemblySave.Assembly.Assemblies.First()
                            .GetTypes().Where(x => x.Name == File.UUID);
+
             if (!list.Any())
                 return new GenReOBJ
                 {
@@ -42,10 +44,10 @@ namespace ColoryrServer.DllManager
 
             AssemblySave.Type = list.First();
 
-            foreach (var item in AssemblySave.Type.GetMethods())
+            foreach (var Item in AssemblySave.Type.GetMethods())
             {
-                if (item.Name == "main" || item.Name == "open" || item.Name == "close")
-                    AssemblySave.MethodInfos.Add(item.Name, item);
+                if (Item.Name == "main")
+                    AssemblySave.MethodInfos.Add(Item.Name, Item);
             }
 
             if (AssemblySave.MethodInfos.Count == 0)
@@ -55,28 +57,28 @@ namespace ColoryrServer.DllManager
                     Res = "没有主方法"
                 };
 
-            DllStonge.AddWebSocket(File.UUID, AssemblySave);
+            DllStonge.AddIoT(File.UUID, AssemblySave);
 
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 Res.MS.Seek(0, SeekOrigin.Begin);
                 Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
                 using (var FileStream = new FileStream(
-                    DllStonge.WebSocketLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                    DllStonge.IoTLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
                 {
                     FileStream.Write(Res.MS.ToArray());
                     FileStream.Flush();
                 }
 
                 using (var FileStream = new FileStream(
-                    DllStonge.WebSocketLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                    DllStonge.IoTLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
                 {
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
                 }
 
-                CSFile.StorageWebSocket(File);
+                CSFile.StorageIoT(File);
                 Config.Save();
 
                 Res.MSPdb.Close();

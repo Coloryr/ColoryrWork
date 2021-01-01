@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    record MAP
+    internal record MAP
     {
         public List<CSFileObj> DllList { get; set; }
         public List<CSFileObj> ClassList { get; set; }
@@ -18,7 +18,7 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> RobotList { get; set; }
         public List<CSFileObj> AppList { get; set; }
     }
-    class CSFile
+    internal class CSFile
     {
         private static readonly string DllFileLocal = ServerMain.RunLocal + @"/CODE/Dll/";
         private static readonly string ClassFileLocal = ServerMain.RunLocal + @"/CODE/Class/";

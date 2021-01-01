@@ -6,12 +6,12 @@ using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
     /// <summary>
     /// App资源存储
     /// </summary>
-    record AppSave
+    internal record AppSave
     {
         public byte[] Dll { get; set; }
         public byte[] Pdb { get; set; }
@@ -21,7 +21,7 @@ namespace ColoryrServer.DllManager
     /// <summary>
     /// 编译后存储
     /// </summary>
-    record AssemblySave
+    internal record AssemblySave
     {
         public AssemblyLoadContext Assembly { get; set; }
         public Type Type { get; set; }

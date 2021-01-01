@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    class FileEdit
+    internal class FileEdit
     {
         public static string StartEdit(string old, List<CodeEditObj> editText)
         {

@@ -19,7 +19,7 @@ using ColoryrServer.SDK;
 
 namespace ColoryrServer.Http
 {
-    class HttpProcessor
+    internal class HttpProcessor
     {
         public static string HaveCookie(NameValueCollection hashtable)
         {

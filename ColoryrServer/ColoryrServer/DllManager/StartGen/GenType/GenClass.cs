@@ -1,4 +1,5 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+using ColoryrServer.FileSystem;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,15 +10,15 @@ using System.Linq;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenType
 {
     internal class GenClass
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
             var Res = GenTask.StartGen(File.UUID, new()
-            { 
-                CSharpSyntaxTree.ParseText(File.Code) 
+            {
+                CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
             if (!Res.Isok)
             {

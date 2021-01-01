@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ColoryrServer.DllManager
+namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
-    public enum GenLib
-    { 
+    internal enum GenLib
+    {
         Dll, App
     }
-    class GenTask
+    internal class GenTask
     {
         public static readonly List<MetadataReference> References = new List<MetadataReference>();
         public static readonly List<MetadataReference> AppReferences = new List<MetadataReference>();

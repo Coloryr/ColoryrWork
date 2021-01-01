@@ -1,4 +1,6 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.DllManager.StartGen.GenType;
+using ColoryrServer.DllManager.StartGen.GenUtils;
+using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using Lib.Build;
 using Lib.Build.Object;
@@ -12,7 +14,7 @@ using System.Text;
 
 namespace ColoryrServer.DllManager
 {
-    class DllBuild
+    internal class DllBuild
     {
         public static readonly Dictionary<string, string> Token = new Dictionary<string, string>();
         public static HttpReturn HttpBuild(BuildOBJ Json, UserConfig User)

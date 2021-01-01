@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ColoryrServer.SDK;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 
 namespace ColoryrServer.DllManager
 {
-    class DllRun
+    internal class DllRun
     {
         public static HttpReturn DllGo(AssemblySave Dll, HttpRequest Arg, string FunName)
         {
@@ -107,9 +108,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     return new HttpReturn
                     {
                         Data = Dump.Get(),
@@ -136,9 +136,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -159,9 +158,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -182,9 +180,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -205,9 +202,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -231,9 +227,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -257,9 +252,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else
@@ -283,9 +277,8 @@ namespace ColoryrServer.DllManager
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump)
+                if (e.InnerException is VarDump Dump)
                 {
-                    VarDump Dump = (VarDump)e.InnerException;
                     ServerMain.LogError(Dump.Get());
                 }
                 else

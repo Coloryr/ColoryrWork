@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.FileSystem
 {
-    public class MainConfig
+    internal record MainConfig
     {
         /// <summary>
         /// Socket配置
@@ -54,7 +54,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string MPGE { get; set; }
     }
-    public record OracleConfig
+    internal record OracleConfig
     {
         /// <summary>
         /// IP地址
@@ -89,7 +89,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    public record UserConfig
+    internal record UserConfig
     {
         /// <summary>
         /// 用户名
@@ -100,8 +100,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Password { get; set; }
     }
-
-    public record SocketConfig
+    internal record SocketConfig
     {
         /// <summary>
         /// socket设置的IP
@@ -112,7 +111,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int Port { get; set; }
     }
-    public record MysqlConfig
+    internal record MysqlConfig
     {
         /// <summary>
         /// IP地址
@@ -143,7 +142,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    public record MSsqlConfig
+    internal record MSsqlConfig
     {
         /// <summary>
         /// IP地址
@@ -170,7 +169,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    public record RedisConfig
+    internal record RedisConfig
     {
         /// <summary>
         /// IP地址
@@ -193,7 +192,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    class Config
+    internal class Config
     {
         public static string FilePath = ServerMain.RunLocal + @"Mainconfig.json";
         /// <summary>

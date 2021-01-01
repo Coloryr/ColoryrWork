@@ -516,7 +516,7 @@ namespace ColoryrServer.SDK
         /// <returns>设备列表</returns>
         public static List<string> GetIoTList()
         {
-            return IoTSocket.GetList();
+            return IoTSocketServer.GetList();
         }
         /// <summary>
         /// 向IoT设备发送字符串
