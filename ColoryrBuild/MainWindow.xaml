@@ -1,0 +1,12 @@
+﻿<Window x:Class="ColoryrBuild.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ColoryrBuild"
+        mc:Ignorable="d"
+        Title="ColoryrWork登录" Height="450" Width="800" Icon="/Color_yr.ico" ResizeMode="CanMinimize">
+    <Grid>
+        
+    </Grid>
+</Window>

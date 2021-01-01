@@ -2,7 +2,7 @@
 
 namespace ColoryrServer.DllManager
 {
-    class GenReOBJ
+    record GenReOBJ
     {
         public bool Isok { get; set; }
         public string Res { get; set; }

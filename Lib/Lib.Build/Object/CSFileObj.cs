@@ -4,9 +4,9 @@ namespace Lib.Build.Object
 {
     public enum CodeType
     {
-        Dll, Class, IoT, WebSocket, Robot, App, Mcu
+        Dll, Class, IoT, WebSocket, Robot, App
     }
-    public class CSFileObj
+    public record CSFileObj
     {
         /// <summary>
         /// 名字
@@ -26,7 +26,7 @@ namespace Lib.Build.Object
         public int Version { get; set; }
 
     }
-    public class CSFileCode : CSFileObj
+    public record CSFileCode : CSFileObj
     {
         public CSFileCode(CSFileObj obj)
         {
@@ -40,16 +40,12 @@ namespace Lib.Build.Object
         public string Code { get; set; }
         public CodeType Type { get; set; }
     }
-    public class CSFileList
+    public record CSFileList
     {
-        public CSFileList()
-        {
-            list = new Dictionary<string, CSFileObj>();
-        }
-        public Dictionary<string, CSFileObj> list { get; set; }
+        public Dictionary<string, CSFileObj> List { get; set; } = new();
     }
 
-    public class AppFileObj : CSFileObj
+    public record AppFileObj : CSFileObj
     {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Xamls { get; set; }
@@ -69,26 +65,6 @@ namespace Lib.Build.Object
             Codes = new Dictionary<string, string>();
             Xamls = new Dictionary<string, string>();
             Type = CodeType.App;
-        }
-    }
-
-    public class McuFileObj : CSFileObj
-    {
-        public Dictionary<string, string> Codes { get; set; }
-        public string Key { get; set; }
-        public CodeType Type { get; }
-        public McuFileObj(CSFileObj obj)
-        {
-            UUID = obj.UUID;
-            Text = obj.Text;
-            User = obj.User;
-            Codes = new Dictionary<string, string>();
-            Type = CodeType.Mcu;
-        }
-        public McuFileObj()
-        {
-            Codes = new Dictionary<string, string>();
-            Type = CodeType.Mcu;
         }
     }
 }

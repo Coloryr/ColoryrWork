@@ -1,5 +1,4 @@
-﻿using ColoryrServer.DllManager.GenSave;
-using ColoryrServer.FileSystem;
+﻿using ColoryrServer.FileSystem;
 using Lib.Server;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,6 @@ namespace ColoryrServer.DllManager
         private static readonly Dictionary<string, AssemblySave> RobotList = new();
 
         private static readonly Dictionary<string, AppSave> AppList = new();
-        private static readonly Dictionary<string, McuSave> McuList = new();
 
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
@@ -28,7 +26,6 @@ namespace ColoryrServer.DllManager
         public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
 
         public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
-        public static readonly string McuLocal = ServerMain.RunLocal + @"Dll/Mcu/";
 
         private static readonly ReaderWriterLockSlim Lock1 = new();
         private static readonly ReaderWriterLockSlim Lock2 = new();
@@ -384,55 +381,6 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddMcu(string uuid, McuSave save)
-        {
-            Lock7.EnterWriteLock();
-            try
-            {
-                if (McuList.ContainsKey(uuid))
-                {
-                    McuList.Remove(uuid);
-                }
-                McuList.Add(uuid, save);
-            }
-            finally
-            {
-                Lock7.ExitWriteLock();
-            }
-        }
-        public static void RemoveMcu(string uuid)
-        {
-            Lock7.EnterWriteLock();
-            try
-            {
-                if (McuList.ContainsKey(uuid))
-                {
-                    McuList.Remove(uuid);
-                }
-            }
-            finally
-            {
-                Lock7.ExitWriteLock();
-            }
-        }
-        public static McuSave GetMcu(string uuid, string key)
-        {
-            Lock7.EnterReadLock();
-            try
-            {
-                if (McuList.TryGetValue(uuid, out var save))
-                {
-                    return save.Key == key ? save : null;
-                }
-                else
-                    return null;
-            }
-            finally
-            {
-                Lock7.ExitReadLock();
-            }
-        }
-
         public void DynamicInit()
         {
             if (!Directory.Exists(DllLocal))
@@ -458,10 +406,6 @@ namespace ColoryrServer.DllManager
             if (!Directory.Exists(AppLocal))
             {
                 Directory.CreateDirectory(AppLocal);
-            }
-            if (!Directory.Exists(McuLocal))
-            {
-                Directory.CreateDirectory(McuLocal);
             }
             var DllName = Function.GetPathFileName(DllLocal);
             foreach (var FileItem in DllName)
@@ -685,33 +629,6 @@ namespace ColoryrServer.DllManager
                         }
                     }
                     AddApp(Name, save);
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                }
-            }
-            Dirs = Function.GetPathName(McuLocal);
-            foreach (var FileItem in DllName)
-            {
-                try
-                {
-                    var save = new McuSave();
-                    string Name = FileItem.Name;
-                    var obj = CSFile.GetMcu(Name);
-                    if (obj == null)
-                        continue;
-                    save.Key = obj.Key;
-                    ServerMain.LogOut("加载Mcu：" + Name);
-                    save.Codes = new Dictionary<string, string>();
-                    foreach (var item in Function.GetPathFileName(FileItem.FullName))
-                    {
-                        if (item.Name.EndsWith(".lua"))
-                        {
-                            save.Codes.Add(item.Name, File.ReadAllText(item.FullName));
-                        }
-                    }
-                    AddMcu(Name, save);
                 }
                 catch (Exception e)
                 {

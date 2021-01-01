@@ -15,7 +15,10 @@ namespace ColoryrServer.DllManager
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
-            var Res = GenTask.StartGen(File.UUID, new List<SyntaxTree> { CSharpSyntaxTree.ParseText(File.Code) }, GenLib.Dll);
+            var Res = GenTask.StartGen(File.UUID, new()
+            {
+                CSharpSyntaxTree.ParseText(File.Code)
+            }, GenLib.Dll);
             if (!Res.Isok)
             {
                 return Res;
@@ -23,13 +26,15 @@ namespace ColoryrServer.DllManager
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var AssemblySave = new AssemblySave();
-            AssemblySave.Assembly = new AssemblyLoadContext(File.UUID, true);
+            var AssemblySave = new AssemblySave
+            {
+                Assembly = new AssemblyLoadContext(File.UUID, true)
+            };
             AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
             var list = AssemblySave.Assembly.Assemblies.First()
                            .GetTypes().Where(x => x.Name == File.UUID);
 
-            if (list.Count() == 0)
+            if (!list.Any())
                 return new GenReOBJ
                 {
                     Isok = false,

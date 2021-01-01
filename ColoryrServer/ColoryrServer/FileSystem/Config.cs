@@ -91,9 +91,14 @@ namespace ColoryrServer.FileSystem
     }
     public record UserConfig
     {
+        /// <summary>
+        /// 用户名
+        /// </summary>
         public string Username { get; set; }
+        /// <summary>
+        /// 密码SHA1
+        /// </summary>
         public string Password { get; set; }
-        public bool Admin { get; set; }
     }
 
     public record SocketConfig
@@ -277,8 +282,7 @@ namespace ColoryrServer.FileSystem
                     new()
                     {
                         Username = "Admin",
-                        Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4",
-                        Admin = true
+                        Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
                     }
                 }
             }, FilePath);

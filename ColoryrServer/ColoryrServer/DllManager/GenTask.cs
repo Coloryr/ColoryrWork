@@ -16,23 +16,16 @@ namespace ColoryrServer.DllManager
     {
         public static readonly List<MetadataReference> References = new List<MetadataReference>();
         public static readonly List<MetadataReference> AppReferences = new List<MetadataReference>();
-        public static readonly List<MetadataReference> McuReferences = new List<MetadataReference>();
 
         private static readonly string AppLibLocal = ServerMain.RunLocal + "Libs/App/";
 
         public static GenReOBJ StartGen(string Name, List<SyntaxTree> Code, GenLib lib)
         {
-            List<MetadataReference> refs;
-            switch (lib)
+            List<MetadataReference> refs = lib switch
             {
-                default:
-                case GenLib.Dll:
-                    refs = References;
-                    break;
-                case GenLib.App:
-                    refs = AppReferences;
-                    break;
-            }
+                GenLib.App => AppReferences,
+                _ => References,
+            };
             CSharpCompilation compilation = CSharpCompilation.Create(
                 Name,
                 syntaxTrees: Code,

@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style x:Key="TabItem"
                TargetType="{x:Type TabItem}">
-        <Setter Property="Header"
-                    Value="{Binding Name}" />
         <Setter Property="FocusVisualStyle"
                     Value="{x:Null}" />
         <Setter Property="Foreground"
@@ -24,6 +22,8 @@
                     Value="0" />
         <Setter Property="BorderThickness"
                     Value="0,0,0,2" />
+        <Setter Property="Background"
+                    Value="#FFFFFF" />
         <Setter Property="UseLayoutRounding"
                     Value="True" />
         <Setter Property="BorderBrush"
@@ -39,16 +39,17 @@
                                 Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                 UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-                        <ContentPresenter x:Name="contentPresenter"
-                                              Margin="{TemplateBinding Padding}"
-                                              HorizontalAlignment="{Binding HorizontalContentAlignment,
+                        <TextBlock x:Name="contentPresenter"
+                                       Margin="{TemplateBinding Margin}"
+                                       Width="70"
+                                       TextWrapping="Wrap"
+                                       Text="{TemplateBinding Header}"
+                                       HorizontalAlignment="{Binding HorizontalContentAlignment,
                                                                         RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                              VerticalAlignment="{Binding VerticalContentAlignment,
+                                       VerticalAlignment="{Binding VerticalContentAlignment,
                                                                       RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                              ContentSource="Header"
-                                              Focusable="False"
-                                              RecognizesAccessKey="True"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                       Focusable="False"
+                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
@@ -57,7 +58,6 @@
                                                Value="true" />
                                 <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
                                                Value="Top" />
-
                             </MultiDataTrigger.Conditions>
                             <Setter TargetName="border"
                                         Property="Cursor"
@@ -78,7 +78,7 @@
                             <Setter Property="BorderBrush"
                                         Value="#FF5EBDD3" />
                             <Setter Property="Foreground"
-                                        Value="White" />
+                                        Value="Black" />
                             <Setter Property="Background"
                                         Value="#FFFFFF" />
                         </MultiDataTrigger>
@@ -93,7 +93,75 @@
                                         Property="Opacity"
                                         Value="0.56" />
                         </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}"
+                                               Value="true" />
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
+                                               Value="Left" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="border"
+                                        Property="Cursor"
+                                        Value="Hand" />
+                            <Setter Property="BorderBrush"
+                                        Value="#FF5EBDD3" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
+                                               Value="true" />
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
+                                               Value="Left" />
+
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Panel.ZIndex"
+                                        Value="1" />
+                            <Setter Property="BorderBrush"
+                                        Value="#FF5EBDD3" />
+                            <Setter Property="Foreground"
+                                        Value="Black" />
+                            <Setter Property="Background"
+                                        Value="#FFFFFF" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}"
+                                               Value="false" />
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}"
+                                               Value="Left" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="contentPresenter"
+                                        Property="Opacity"
+                                        Value="0.56" />
+                        </MultiDataTrigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="TabControl"
+               TargetType="{x:Type TabControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <StackPanel Orientation="Horizontal">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" Style="{StaticResource ScrollViewer}">
+                            <TabPanel x:Name="HeaderPanel"
+                              Panel.ZIndex ="1" 
+                              KeyboardNavigation.TabIndex="1"
+                              Grid.Column="0"
+                              Grid.Row="0"
+                              Margin="2,2,2,0"
+                              IsItemsHost="true"
+                              Background="#FFF4F4F5"/>
+                        </ScrollViewer>
+                        <ContentPresenter x:Name="PART_SelectedContentHost" Margin="2,2,2,2"
+                                          Width="{TemplateBinding Width}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top"
+                                          ContentSource="SelectedContent"/>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

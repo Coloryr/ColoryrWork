@@ -13,58 +13,9 @@ namespace ColoryrServer.DllManager
 {
     class GenDll
     {
-        //private static string GenAppKey(string uuid)
-        //{
-
-        //    SHA1 SHA1 = new SHA1CryptoServiceProvider();//创建SHA1对象
-        //    byte[] sha1Bytes = SHA1.ComputeHash(Encoding.UTF8.GetBytes("Color_yr_APP:" + uuid + "_TEST_"));//Hash运算
-
-        //    SHA1.Dispose();//释放当前实例使用的所有资源
-        //    return BitConverter.ToString(sha1Bytes).Replace("-", "");
-        //}
-
-        private const string CodeBody =
-            @"
-namespace ColoryrSDK {
-public class app_{0}
-{
-{1} 
-}
-}";
-        private static bool CheckCode(string a)
+        public static GenReOBJ StartGen(CSFileCode CodeFile)
         {
-            foreach (string code in ServerMain.Config.NoCode)
-            {
-                if (a.Contains(code))
-                    return false;
-            }
-            return true;
-        }
-        public static GenReOBJ StartGen(UserConfig User, CSFileCode CodeFile)
-        {
-            SyntaxTree Code;
-            if (!User.Admin || CodeFile.User != null)
-            {
-                if (!CheckCode(CodeFile.Code))
-                {
-                    return new GenReOBJ
-                    {
-                        Isok = false,
-                        Res = "非法的代码"
-                    };
-                }
-                string using_ = null;
-                foreach (string Item in ServerMain.Config.Include)
-                {
-                    using_ += Item;
-                }
-                Code = CSharpSyntaxTree.ParseText(using_ + CodeBody.Replace("{0}", CodeFile.UUID).Replace("{1}", CodeFile.Code));
-                CodeFile.User = User.Username;
-            }
-            else
-            {
-                Code = CSharpSyntaxTree.ParseText(CodeFile.Code);
-            }
+            var Code = CSharpSyntaxTree.ParseText(CodeFile.Code);
             var Res = GenTask.StartGen(CodeFile.UUID, new List<SyntaxTree> { Code }, GenLib.Dll);
             if (!Res.Isok)
             {
@@ -74,13 +25,15 @@ public class app_{0}
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var AssemblySave = new AssemblySave();
-            AssemblySave.Assembly = new AssemblyLoadContext(CodeFile.UUID, true);
+            var AssemblySave = new AssemblySave
+            {
+                Assembly = new AssemblyLoadContext(CodeFile.UUID, true)
+            };
             AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
             var list = AssemblySave.Assembly.Assemblies.First().GetTypes()
                            .Where(x => x.Name == "app_" + CodeFile.UUID);
 
-            if (list.Count() == 0)
+            if (!list.Any())
                 return new GenReOBJ
                 {
                     Isok = false,
@@ -88,15 +41,15 @@ public class app_{0}
                 };
 
             AssemblySave.Type = list.First();
-            foreach (var Item in AssemblySave.Type.GetMethods())
+            foreach (var item in AssemblySave.Type.GetMethods())
             {
-                if (Item.Name == "Main" || Item.Name == "GetType" || Item.Name == "ToString"
-                    || Item.Name == "Equals" || Item.Name == "GetHashCode")
+                if (item.Name == "Main" || item.Name == "GetType" || item.Name == "ToString"
+                    || item.Name == "Equals" || item.Name == "GetHashCode")
                     continue;
-                AssemblySave.MethodInfos.Add(Item.Name, Item);
+                AssemblySave.MethodInfos.Add(item.Name, item);
             }
 
-            if (AssemblySave.MethodInfos.Count() == 0)
+            if (AssemblySave.MethodInfos.Count == 0)
                 return new GenReOBJ
                 {
                     Isok = false,
@@ -105,7 +58,7 @@ public class app_{0}
 
             DllStonge.AddDll(CodeFile.UUID, AssemblySave);
 
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 Res.MS.Seek(0, SeekOrigin.Begin);
                 Res.MSPdb.Seek(0, SeekOrigin.Begin);

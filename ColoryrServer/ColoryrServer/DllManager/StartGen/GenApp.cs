@@ -46,7 +46,7 @@ namespace ColoryrServer.DllManager
 
             Task.Run(() =>
             {
-                string dir = DllStonge.DllLocal + File.UUID + "\\";
+                string dir = DllStonge.AppLocal + File.UUID + "\\";
                 using (var FileStream = new FileStream(dir + "app.dll", FileMode.OpenOrCreate))
                 {
                     FileStream.Write(save.Dll);

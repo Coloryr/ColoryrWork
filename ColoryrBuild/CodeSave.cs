@@ -3,14 +3,14 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace ColoryrBuild
 {
     class CodeSave
     {
         public static string FilePath = App.RunLocal + @"/CodeTEMP/";
-        private static ReaderWriterLockSlim lock1 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim lock1 = new ReaderWriterLockSlim();
         public CodeSave()
         {
             if (!Directory.Exists(FilePath))

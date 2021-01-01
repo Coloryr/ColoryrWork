@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.DataBase;
 using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
-using ColoryrServer.Http;
 using ColoryrServer.IoT;
 using ColoryrServer.Robot;
 using ColoryrServer.Utils;
@@ -446,7 +445,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         public void Start()
         {
-            Cookie = SessionCheck.GetCookie(Cookie);
+            Cookie = RamDataBase.GetNewCache(Cookie);
         }
         /// <summary>
         /// 获取值
@@ -455,7 +454,7 @@ namespace ColoryrServer.SDK
         /// <returns>返回值</returns>
         public dynamic Get(string key)
         {
-            return SessionCheck.GetCache(Cookie, key);
+            return RamDataBase.GetCache(Cookie, key);
         }
         /// <summary>
         /// 设置键值
@@ -464,7 +463,7 @@ namespace ColoryrServer.SDK
         /// <param name="value">值</param>
         public void Set(string key, dynamic value)
         {
-            SessionCheck.SetCache(Cookie, key, value);
+            RamDataBase.SetCache(Cookie, key, value);
         }
         /// <summary>
         /// 检查是否有Cookie
@@ -472,7 +471,7 @@ namespace ColoryrServer.SDK
         /// <returns>是否存在</returns>
         public bool HaveCookie()
         {
-            return SessionCheck.HaveCookie(Cookie);
+            return RamDataBase.HaveCache(Cookie);
         }
         /// <summary>
         /// 检查是否有键
@@ -481,14 +480,14 @@ namespace ColoryrServer.SDK
         /// <returns>是否存在</returns>
         public bool HaveKey(string key)
         {
-            return SessionCheck.HaveKey(Cookie, key);
+            return RamDataBase.HaveCacheKey(Cookie, key);
         }
         /// <summary>
         /// 关闭会话
         /// </summary>
         public void Close()
         {
-            SessionCheck.SessionClose(Cookie);
+            RamDataBase.CloseCache(Cookie);
         }
     }
     /// <summary>

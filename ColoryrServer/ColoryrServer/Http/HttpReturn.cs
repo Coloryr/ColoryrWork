@@ -2,7 +2,7 @@
 
 namespace ColoryrServer.Http
 {
-    class HttpReturn
+    record HttpReturn
     {
         public string Cookie;
         public object Data;

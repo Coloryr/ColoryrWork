@@ -9,8 +9,8 @@
         <MenuItem Command="ApplicationCommands.Paste"/>
     </ContextMenu>
     <Style x:Name="TextBox" TargetType="{x:Type TextBox}">
-        <Setter Property="BorderBrush" Value="#CC5EBDD3"/>
-        <Setter Property="Background" Value="#44898989"/>
+        <Setter Property="BorderBrush" Value="#FF5EBDD3"/>
+        <Setter Property="Background" Value="#22898989"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="ContextMenu" Value="{DynamicResource TextBoxContextMenu}"/>
     </Style>

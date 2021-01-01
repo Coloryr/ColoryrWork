@@ -3,13 +3,12 @@
     public enum ReType
     {
         AddDll, AddClass, AddIoT, AddWebSocket, AddRobot,
-        Login, CheckLogin, GetApi,
-        GetDll, GetClass, GetIoT, GetWebSocket, GetRobot,
-        CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot,
+        Login, GetApi,
+        GetDll, GetClass, GetIoT, GetWebSocket, GetRobot, GetApp,
+        CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot, CodeApp,
         RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot,
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot,
-        AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml,
-        AddMcu, RemoveMcu, AddMcuLua, RemoveMcuLua
+        AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml
     }
     abstract class BuildPackBase
     {

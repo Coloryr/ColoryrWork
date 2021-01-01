@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    class MAP
+    record MAP
     {
         public List<CSFileObj> DllList { get; set; }
         public List<CSFileObj> ClassList { get; set; }
@@ -17,7 +17,6 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> WebSocketList { get; set; }
         public List<CSFileObj> RobotList { get; set; }
         public List<CSFileObj> AppList { get; set; }
-        public List<CSFileObj> McuList { get; set; }
     }
     class CSFile
     {
@@ -27,7 +26,6 @@ namespace ColoryrServer.FileSystem
         private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"/CODE/WebScoket/";
         private static readonly string RobotFileLocal = ServerMain.RunLocal + @"/CODE/Robot/";
         private static readonly string AppFileLocal = ServerMain.RunLocal + @"/CODE/App/";
-        private static readonly string McuFileLocal = ServerMain.RunLocal + @"/CODE/Mcu/";
 
         private static readonly string DllMap = ServerMain.RunLocal + @"/DllMap.json";
         private static readonly string RemoveDir = ServerMain.RunLocal + @"/Remove/";
@@ -39,7 +37,6 @@ namespace ColoryrServer.FileSystem
         public static readonly Dictionary<string, CSFileCode> RobotFileList = new Dictionary<string, CSFileCode>();
 
         public static readonly Dictionary<string, AppFileObj> AppFileList = new Dictionary<string, AppFileObj>();
-        public static readonly Dictionary<string, McuFileObj> McuFileList = new Dictionary<string, McuFileObj>();
 
         public CSFile()
         {
@@ -71,25 +68,12 @@ namespace ColoryrServer.FileSystem
             {
                 Directory.CreateDirectory(AppFileLocal);
             }
-            if (!Directory.Exists(McuFileLocal))
-            {
-                Directory.CreateDirectory(McuFileLocal);
-            }
             LoadAll();
-        }
-
-        public static bool CheckPermission(string uuid, string user)
-        {
-            if (DllFileList.ContainsKey(uuid))
-            {
-                return DllFileList[uuid].User == user;
-            }
-            return false;
         }
 
         private static void Storage(string Local, object obj)
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -168,17 +152,6 @@ namespace ColoryrServer.FileSystem
             Storage(url, obj);
             UpdataMAP();
         }
-        public static void StorageMcu(McuFileObj obj)
-        {
-            var url = McuFileLocal + obj.UUID + ".json";
-            if (McuFileList.ContainsKey(obj.UUID))
-            {
-                McuFileList.Remove(obj.UUID);
-            }
-            McuFileList.Add(obj.UUID, obj);
-            Storage(url, obj);
-            UpdataMAP();
-        }
         public static CSFileCode GetDll(string uuid)
         {
             if (DllFileList.TryGetValue(uuid, out var save))
@@ -222,14 +195,6 @@ namespace ColoryrServer.FileSystem
         public static AppFileObj GetApp(string uuid)
         {
             if (AppFileList.TryGetValue(uuid, out var save))
-            {
-                return save;
-            }
-            return null;
-        }
-        public static McuFileObj GetMcu(string uuid)
-        {
-            if (McuFileList.TryGetValue(uuid, out var save))
             {
                 return save;
             }
@@ -279,12 +244,6 @@ namespace ColoryrServer.FileSystem
                         Name = AppFileLocal + uuid + ".json";
                         obj = GetApp(uuid);
                         AppFileList.Remove(uuid);
-                        IsDir = true;
-                        break;
-                    case CodeType.Mcu:
-                        Name = McuFileLocal + uuid + ".json";
-                        obj = GetMcu(uuid);
-                        McuFileList.Remove(uuid);
                         IsDir = true;
                         break;
                 }
@@ -417,19 +376,6 @@ Type:{4}
                     ServerMain.LogError(e);
                 }
             }
-            foreach (var item in Function.GetPathFileName(McuFileLocal))
-            {
-                try
-                {
-                    var obj = JsonConvert.DeserializeObject<McuFileObj>(File.ReadAllText(item.FullName));
-                    string name = item.Name.Replace(".json", "");
-                    McuFileList.Add(name, obj);
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                }
-            }
             UpdataMAP();
         }
         public static void UpdataMAP()
@@ -445,8 +391,7 @@ Type:{4}
                         IoTList = new List<CSFileObj>(IoTFileList.Values),
                         WebSocketList = new List<CSFileObj>(WebSocketFileList.Values),
                         RobotList = new List<CSFileObj>(RobotFileList.Values),
-                        AppList = new List<CSFileObj>(AppFileList.Values),
-                        McuList = new List<CSFileObj>(McuFileList.Values)
+                        AppList = new List<CSFileObj>(AppFileList.Values)
                     };
                     File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));
                 }
