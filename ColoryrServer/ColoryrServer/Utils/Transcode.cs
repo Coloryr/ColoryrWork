@@ -10,7 +10,7 @@ namespace ColoryrServer
     {
         mp3, amr
     }
-    class Transcode
+    internal class Transcode
     {
         public static byte[] Start(TranscodeType InputType, TranscodeType OutputType, byte[] InputData)
         {

@@ -1,11 +1,12 @@
 ﻿using ColoryrServer;
+using ColoryrServer.SDK;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 
 namespace ColoryrServer
 {
-    class Openssl
+    internal class Openssl
     {
         public static RSACryptoServiceProvider CreateRsaProviderFromPrivateKey(string privateKey)
         {
@@ -51,10 +52,9 @@ namespace ColoryrServer
 
         private static int GetIntegerSize(BinaryReader binr)
         {
-            byte bt = 0;
-            byte lowbyte = 0x00;
-            byte highbyte = 0x00;
-            int count = 0;
+            byte bt;
+            byte lowbyte;
+            int count;
             bt = binr.ReadByte();
             if (bt != 0x02)
                 return 0;
@@ -65,7 +65,7 @@ namespace ColoryrServer
             else
                 if (bt == 0x82)
             {
-                highbyte = binr.ReadByte();
+                byte highbyte = binr.ReadByte();
                 lowbyte = binr.ReadByte();
                 byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
                 count = BitConverter.ToInt32(modint, 0);

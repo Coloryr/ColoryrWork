@@ -3,7 +3,7 @@ using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Utils
 {
-    class Css : HtmlCompression.Core.ICompressor
+    internal class Css : HtmlCompression.Core.ICompressor
     {
         public string Compress(string source)
         {
@@ -11,7 +11,7 @@ namespace ColoryrServer.Utils
             return css.Compress(source);
         }
     }
-    class JS : HtmlCompression.Core.ICompressor
+    internal class JS : HtmlCompression.Core.ICompressor
     {
         public string Compress(string source)
         {
@@ -21,9 +21,9 @@ namespace ColoryrServer.Utils
             return css.Compress(source);
         }
     }
-    class CodeCompress
+    internal class CodeCompress
     {
-        private static HtmlCompressor Compress = new HtmlCompressor(new HtmlCompressorSettings
+        private static readonly HtmlCompressor Compress = new HtmlCompressor(new HtmlCompressorSettings
         {
             CompressCss = true,
             CompressJavaScript = true,

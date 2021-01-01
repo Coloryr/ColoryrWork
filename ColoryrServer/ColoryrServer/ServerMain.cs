@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DataBase;
 using ColoryrServer.DllManager;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
@@ -21,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer
 {
-    public class ServerMain
+    internal class ServerMain
     {
         /// <summary>
         /// 配置文件

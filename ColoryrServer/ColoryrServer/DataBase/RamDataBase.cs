@@ -98,5 +98,20 @@ namespace ColoryrServer.DataBase
         {
             return RamCache.ContainsKey(Name);
         }
+
+        /// <summary>
+        /// 检测缓存名是否存在，不存在创建
+        /// </summary>
+        /// <param name="Name">缓存名</param>
+        /// <returns>缓存名</returns>
+        internal static string NewCache(string Name)
+        {
+            if (!RamCache.ContainsKey(Name))
+            {
+                var list = new ConcurrentDictionary<string, dynamic>();
+                RamCache.TryAdd(Name, list);
+            }
+            return Name;
+        }
     }
 }

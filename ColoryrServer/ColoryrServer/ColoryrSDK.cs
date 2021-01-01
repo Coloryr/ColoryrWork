@@ -429,23 +429,16 @@ namespace ColoryrServer.SDK
             return RedisCon.Increment(key, val);
         }
     }
-    public class Session
+    public class RamData
     {
-        public string Cookie { get; private set; }
+        public string Name { get; private set; }
         /// <summary>
-        /// 启用会话
+        /// 启用缓存
         /// </summary>
-        /// <param name="Cookie">会话</param>
-        public Session(string Cookie)
+        /// <param name="Name">缓存名</param>
+        public RamData(string Name)
         {
-            this.Cookie = Cookie;
-        }
-        /// <summary>
-        /// 开始会话
-        /// </summary>
-        public void Start()
-        {
-            Cookie = RamDataBase.GetNewCache(Cookie);
+            this.Name = RamDataBase.NewCache(Name);
         }
         /// <summary>
         /// 获取值
@@ -454,7 +447,7 @@ namespace ColoryrServer.SDK
         /// <returns>返回值</returns>
         public dynamic Get(string key)
         {
-            return RamDataBase.GetCache(Cookie, key);
+            return RamDataBase.GetCache(Name, key);
         }
         /// <summary>
         /// 设置键值
@@ -463,15 +456,7 @@ namespace ColoryrServer.SDK
         /// <param name="value">值</param>
         public void Set(string key, dynamic value)
         {
-            RamDataBase.SetCache(Cookie, key, value);
-        }
-        /// <summary>
-        /// 检查是否有Cookie
-        /// </summary>
-        /// <returns>是否存在</returns>
-        public bool HaveCookie()
-        {
-            return RamDataBase.HaveCache(Cookie);
+            RamDataBase.SetCache(Name, key, value);
         }
         /// <summary>
         /// 检查是否有键
@@ -480,14 +465,14 @@ namespace ColoryrServer.SDK
         /// <returns>是否存在</returns>
         public bool HaveKey(string key)
         {
-            return RamDataBase.HaveCacheKey(Cookie, key);
+            return RamDataBase.HaveCacheKey(Name, key);
         }
         /// <summary>
-        /// 关闭会话
+        /// 清理缓存
         /// </summary>
         public void Close()
         {
-            RamDataBase.CloseCache(Cookie);
+            RamDataBase.CloseCache(Name);
         }
     }
     /// <summary>

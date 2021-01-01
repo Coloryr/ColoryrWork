@@ -1,5 +1,7 @@
 ﻿using ColoryrServer;
+using ColoryrServer.SDK;
 using Fleck;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,17 +9,32 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.WebSocket
 {
-    class ServerWebSocket
+    internal class ServerWebSocket
     {
         private static WebSocketServer Server;
         private static Task PingThread;
         private static CancellationTokenSource source;
         private static bool IsRun;
-        private static readonly List<IWebSocketConnection> Clients = new List<IWebSocketConnection>();
+        private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
         internal static bool IsOnline(string id)
         {
-            var data = Clients.Where(a => a.ConnectionInfo.Id.ToString() == id);
-            return data.Count() != 0;
+            var data = Clients.Where(a => a.Value.ConnectionInfo.Id.ToString() == id);
+            return data.Any();
+        }
+        internal static void Send(Guid uuid, string data)
+        {
+            var list = Clients.Where(a => a.Value.ConnectionInfo.Id == uuid);
+            foreach (var item in list)
+            {
+                item.Value.Send(data);
+            }
+        }
+        internal static void Send(int port, string data)
+        {
+            if (Clients.ContainsKey(port))
+            {
+                Clients[port].Send(data);
+            }
         }
         internal static void Start()
         {
@@ -27,12 +44,12 @@ namespace ColoryrServer.WebSocket
             {
                 Socket.OnOpen = () =>
                 {
-                    Clients.Add(Socket);
+                    Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
                     DllManager.DllRun.WebSocketGo(new WebSocketOpen(Socket));
                 };
                 Socket.OnClose = () =>
                 {
-                    Clients.Remove(Socket);
+                    Clients.Remove(Socket.ConnectionInfo.ClientPort);
                     DllManager.DllRun.WebSocketGo(new WebSocketClose(Socket));
                 };
                 Socket.OnMessage = message =>
@@ -47,7 +64,7 @@ namespace ColoryrServer.WebSocket
                 {
                     foreach (var item in Clients)
                     {
-                        item.Send("{\"type\":\"ping\"}");
+                        item.Value.Send("{\"type\":\"ping\"}");
                     }
                     Thread.Sleep(30000);
                 }
@@ -64,7 +81,7 @@ namespace ColoryrServer.WebSocket
             {
                 try
                 {
-                    item.Close();
+                    item.Value.Close();
                 }
                 catch
                 {
