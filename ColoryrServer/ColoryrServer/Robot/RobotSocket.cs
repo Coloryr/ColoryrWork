@@ -21,6 +21,7 @@ namespace ColoryrServer.Robot
         public static List<long> QQs;
         private static ConcurrentBag<RobotTask> QueueRead;
         private static ConcurrentBag<byte[]> QueueSend;
+        private static bool IsFirst = true;
         private static PackStart PackStart = new PackStart
         {
             Name = "ColoryrSDK",
@@ -135,6 +136,11 @@ namespace ColoryrServer.Robot
                         ServerMain.LogError("机器人连接失败");
                         ServerMain.LogError(e);
                         IsConnect = false;
+                        if (IsFirst)
+                        {
+                            IsRun = false;
+                            return;
+                        }
                         ServerMain.LogOut("机器人10秒后重连");
                         Thread.Sleep(10000);
                     }

@@ -380,7 +380,6 @@ namespace ColoryrServer.SDK
         {
             if (RedisCon.State == false)
                 throw new VarDump("Redis没有链接");
-
         }
         /// <summary>
         /// 获取数据

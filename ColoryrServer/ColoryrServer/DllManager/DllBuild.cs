@@ -8,21 +8,18 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace ColoryrServer.DllManager
 {
     internal class DllBuild
     {
-        public static readonly Dictionary<string, string> Token = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> Token = new();
         public static HttpReturn HttpBuild(BuildOBJ Json, UserConfig User)
         {
             object Object = null;
             if (Json.Mode == ReType.Login)
             {
-                var password = BitConverter.ToString(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Json.Code))).Replace("-", "");
-                if (User.Password.ToLower() == password.ToLower())
+                if (User.Password.ToLower() == Json.Code.ToLower())
                 {
                     Json.UUID = Guid.NewGuid().ToString().Replace("-", "");
                     if (Token.ContainsKey(Json.User))

@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
+using Lib.Build;
 using Lib.Build.Object;
 using Lib.Server;
 using Newtonsoft.Json;
@@ -48,19 +49,33 @@ namespace ColoryrServer.Http
                 try
                 {
                     JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                    if (obj.ContainsKey("Mode"))
+                    if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
                     {
                         var Json = obj.ToObject<BuildOBJ>();
                         var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
-                        if (List.Count() != 0)
+                        if (List.Any())
                         {
                             return DllBuild.HttpBuild(Json, List.First());
                         }
+                        else
+                        {
+                            return new HttpReturn
+                            {
+                                Data = new ReMessage
+                                {
+                                    Build = false,
+                                    Message = "账户错误"
+                                }
+                            };
+                        }
                     }
-                    isJson = true;
-                    foreach (var item in obj)
+                    else
                     {
-                        Temp.Add(item.Key, item.Value);
+                        isJson = true;
+                        foreach (var item in obj)
+                        {
+                            Temp.Add(item.Key, item.Value);
+                        }
                     }
                 }
                 catch (Exception e)
@@ -87,7 +102,7 @@ namespace ColoryrServer.Http
                 if (thr == -1)
                 {
                     UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url.Substring(tow).Remove(0, 1);
+                    FunctionName = Url[tow..].Remove(0, 1);
                 }
                 else if (tow < thr)
                 {

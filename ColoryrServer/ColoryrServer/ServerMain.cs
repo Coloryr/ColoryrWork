@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -22,6 +23,37 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer
 {
+    public class TestRun
+    {
+        public static void Start()
+        {
+            StackTrace st = new(true);
+            StackFrame[] sfs = st.GetFrames();
+            for (int i = 1; i < sfs.Length; ++i)
+            {
+                StackFrame item = sfs[i];
+                var item1 = item.GetMethod();
+                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
+                {
+                    ServerMain.Start();
+                }
+            }
+        }
+        public static void Stop()
+        {
+            StackTrace st = new(true);
+            StackFrame[] sfs = st.GetFrames();
+            for (int i = 1; i < sfs.Length; ++i)
+            {
+                StackFrame item = sfs[i];
+                var item1 = item.GetMethod();
+                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
+                {
+                    ServerMain.Stop();
+                }
+            }
+        }
+    }
     internal class ServerMain
     {
         /// <summary>
@@ -80,6 +112,10 @@ namespace ColoryrServer
                 isGo = true;
                 //初始化运行路径
                 RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer\\";
+                if (!Directory.Exists(RunLocal))
+                {
+                    Directory.CreateDirectory(RunLocal);
+                }
                 //设置编码
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 //创建日志文件

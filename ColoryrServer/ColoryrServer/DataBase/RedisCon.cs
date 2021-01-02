@@ -108,19 +108,28 @@ namespace ColoryrServer.DataBase
             Conns = new ExConn[Config.ConnCount];
             for (int a = 0; a < Config.ConnCount; a++)
             {
-                var Conn = new ExConn
+                try
                 {
-                    Redis = ConnectionMultiplexer.Connect(ConnStr),
-                    Index = a,
-                    State = SelfState.Error,
-                    Type = ConnType.Redis
-                };
-                if (Test(Conn))
-                {
-                    Conns[a] = Conn;
+                    var Conn = new ExConn
+                    {
+                        Redis = ConnectionMultiplexer.Connect(ConnStr),
+                        Index = a,
+                        State = SelfState.Error,
+                        Type = ConnType.Redis
+                    };
+                    if (Test(Conn))
+                    {
+                        Conns[a] = Conn;
+                    }
+                    else
+                    {
+                        State = false;
+                        return false;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
+                    ServerMain.LogError(e);
                     State = false;
                     return false;
                 }

@@ -112,7 +112,6 @@ namespace ColoryrServer.DataBase
                         item.State = SelfState.Ok;
                         return true;
                     default:
-                        State = false;
                         ServerMain.LogError(ex);
                         return false;
                 }

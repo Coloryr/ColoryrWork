@@ -10,14 +10,11 @@
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot,
         AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml
     }
-    abstract class BuildPackBase
+    class BuildOBJ
     {
         public string Token { get; set; }
         public string User { get; set; }
         public ReType Mode { get; set; }
-    }
-    class BuildOBJ : BuildPackBase
-    {
         public string UUID { get; set; }
         public string Code { get; set; }
         public string Text { get; set; }

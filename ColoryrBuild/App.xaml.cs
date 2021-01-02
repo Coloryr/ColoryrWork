@@ -1,4 +1,11 @@
-﻿using System.Windows;
+﻿using ColoryrBuild.Windows;
+using Lib.Build;
+using System;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ColoryrBuild
 {
@@ -10,8 +17,100 @@ namespace ColoryrBuild
         /// <summary>
         /// 运行路径
         /// </summary>
-        public static string RunLocal { get; set; }
+        public static string RunLocal { get; private set; }
 
         public static System.Windows.Forms.NotifyIcon notifyIcon;
+        public static HttpUtils HttpUtils = new();
+        public static bool IsLogin { get; private set; }
+        public static ConfigObj Config { get; private set; }
+        public static MainWindow MainWindow_;
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            RunLocal = AppDomain.CurrentDomain.BaseDirectory;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            Config = ConfigSave.Config(new ConfigObj
+            {
+                Name = "",
+                Token = "",
+                Http = "https://"
+            }, RunLocal + "Config.json");
+
+            notifyIcon = new();
+            notifyIcon.Visible = true;
+            notifyIcon.BalloonTipText = "ColoryrWork编辑器";
+            notifyIcon.Click += NotifyIcon_Click;
+
+            DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            if (!IsLogin)
+            {
+                new Login().ShowDialog();
+            }
+        }
+
+        public static void ShowB(string v1, string v2)
+        {
+            notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Error);
+        }
+
+        public static void ShowA(string v1, string v2)
+        {
+            notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Info);
+        }
+
+        private void NotifyIcon_Click(object sender, EventArgs e)
+        {
+            MainWindow_?.Activate();
+        }
+
+        public static async Task<bool> Login()
+        {
+            var res = await HttpUtils.Login();
+            ConfigSave.Save(Config, RunLocal + "Config.json");
+            return res;
+        }
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                e.Handled = true;
+                MessageBox.Show("捕获未处理异常:" + e.Exception.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("发生错误" + ex.ToString());
+            }
+
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            StringBuilder sbEx = new StringBuilder();
+            if (e.IsTerminating)
+            {
+                sbEx.Append("发生错误，将关闭\n");
+            }
+            sbEx.Append("捕获未处理异常：");
+            if (e.ExceptionObject is Exception)
+            {
+                sbEx.Append(((Exception)e.ExceptionObject).ToString());
+            }
+            else
+            {
+                sbEx.Append(e.ExceptionObject);
+            }
+            MessageBox.Show(sbEx.ToString());
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
+            e.SetObserved();
+        }
     }
 }
