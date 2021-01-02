@@ -53,6 +53,20 @@ namespace ColoryrServer
                 }
             }
         }
+        public static void Robot()
+        {
+            StackTrace st = new(true);
+            StackFrame[] sfs = st.GetFrames();
+            for (int i = 1; i < sfs.Length; ++i)
+            {
+                StackFrame item = sfs[i];
+                var item1 = item.GetMethod();
+                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
+                {
+                    RobotSocket.Start();
+                }
+            }
+        }
     }
     internal class ServerMain
     {
@@ -203,7 +217,7 @@ namespace ColoryrServer
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    ServiceBase.Run(new ColorServer());
+                    ServiceBase.Run(new ColoryrServer());
                 }
                 else
                 {

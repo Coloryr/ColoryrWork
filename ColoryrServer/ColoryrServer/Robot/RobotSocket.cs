@@ -30,12 +30,13 @@ namespace ColoryrServer.Robot
         };
         internal static void Start()
         {
-            QueueRead = new ConcurrentBag<RobotTask>();
-            QueueSend = new ConcurrentBag<byte[]>();
+            if (QueueRead == null)
+                QueueRead = new ConcurrentBag<RobotTask>();
+            if (QueueSend == null)
+                QueueSend = new ConcurrentBag<byte[]>();
             DoThread = new Thread(() =>
             {
                 RobotTask task = new RobotTask();
-                byte[] Send;
                 while (IsRun)
                 {
                     try
@@ -77,7 +78,7 @@ namespace ColoryrServer.Robot
                                     break;
                             }
                         }
-                        if (QueueSend.TryTake(out Send))
+                        if (QueueSend.TryTake(out byte[] Send))
                         {
                             Socket.Send(Send);
                         }

@@ -1,6 +1,8 @@
-﻿namespace ColoryrServer
+﻿using System.Runtime.InteropServices;
+
+namespace ColoryrServer
 {
-    partial class ColorServer
+    partial class ColoryrServer
     {
         /// <summary> 
         /// 必需的设计器变量。
@@ -17,7 +19,11 @@
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                base.Dispose(disposing);
+            }
+            
         }
 
         #region 组件设计器生成的代码
@@ -29,7 +35,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.ServiceName = "BuildServer";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                this.ServiceName = "ColoryrWork";
+            }
         }
 
         #endregion

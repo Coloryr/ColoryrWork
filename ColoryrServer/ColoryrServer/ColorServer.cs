@@ -2,9 +2,9 @@
 
 namespace ColoryrServer
 {
-    partial class ColorServer : ServiceBase
+    partial class ColoryrServer : ServiceBase
     {
-        public ColorServer()
+        public ColoryrServer()
         {
             InitializeComponent();
         }

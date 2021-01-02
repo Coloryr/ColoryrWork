@@ -37,6 +37,7 @@ namespace ColoryrServer.WebSocket
         }
         internal static void Start()
         {
+            ServerMain.LogOut("WebScoket正在启动");
             FleckLog.Level = LogLevel.Error;
             Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
             Server.Start(Socket =>
