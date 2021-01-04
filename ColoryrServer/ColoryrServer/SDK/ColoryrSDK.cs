@@ -13,6 +13,28 @@ using System.Text;
 
 namespace ColoryrServer.SDK
 {
+    public class ServerContentType
+    {
+        public const string JSON = "application/json";
+        public const string XML = "application/xml";
+        public const string HTML = "text/html";
+        public const string JPEG = "image/jpeg";
+        public const string PNG = "application/x-png";
+        public const string EXCEL = "application/vnd.ms-excel";
+        public const string WORD = "application/msword";
+        public const string PPT = "application/x-ppt";
+        public const string MP3 = "audio/mp3";
+        public const string MP4 = "video/mpeg4";
+        public const string GIF = "image/gif";
+    }
+    public enum MyContentType
+    {
+        Json, Form, Other
+    }
+    public enum EncodeType
+    {
+        UTF8, Default, ASCII
+    }
     public class EnCode
     {
         /// <summary>
@@ -41,11 +63,9 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的byte</returns>
         public static byte[] MD5_R(string data)
         {
-            using (MD5 md5 = new MD5CryptoServiceProvider())
-            {
-                byte[] buffer = Encoding.Default.GetBytes(data);
-                return md5.ComputeHash(buffer);
-            }
+            using MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] buffer = Encoding.Default.GetBytes(data);
+            return md5.ComputeHash(buffer);
         }
         /// <summary>
         /// OPENSSL加密
@@ -56,10 +76,9 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的数据</returns>
         public static string OpenSSL(string publicKey, string data, bool fOAEP = false)
         {
-            RSACryptoServiceProvider _publicKeyRsaProvider;
             try
             {
-                _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
+                RSACryptoServiceProvider _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
                 return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(data), fOAEP));
             }
             catch (Exception e)
@@ -134,27 +153,22 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string AES128(byte[] data, string key, byte[] iv)
         {
-            RijndaelManaged rijalg = new RijndaelManaged();
-            rijalg.Padding = PaddingMode.None;
-            rijalg.Mode = CipherMode.CBC;
-
-            rijalg.Key = Encoding.Default.GetBytes(key);
-            rijalg.IV = iv;
+            RijndaelManaged rijalg = new RijndaelManaged
+            {
+                Padding = PaddingMode.None,
+                Mode = CipherMode.CBC,
+                Key = Encoding.Default.GetBytes(key),
+                IV = iv
+            };
 
             ICryptoTransform decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
             try
             {
-                using (MemoryStream msDecrypt = new MemoryStream(data))
-                {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            return srDecrypt.ReadToEnd();
-                        }
-                    }
-                }
+                using MemoryStream msDecrypt = new MemoryStream(data);
+                using CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+                using StreamReader srDecrypt = new StreamReader(csDecrypt);
+                return srDecrypt.ReadToEnd();
             }
             catch (Exception e)
             {
@@ -170,30 +184,25 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string AES256(byte[] data, string key, string iv)
         {
-            RijndaelManaged rijalg = new RijndaelManaged();
-            rijalg.BlockSize = 128;
-            rijalg.KeySize = 256;
-            rijalg.FeedbackSize = 128;
-            rijalg.Padding = PaddingMode.None;
-            rijalg.Mode = CipherMode.CBC;
-
-            rijalg.Key = Encoding.Default.GetBytes(key);
-            rijalg.IV = Encoding.Default.GetBytes(iv);
+            RijndaelManaged rijalg = new RijndaelManaged
+            {
+                BlockSize = 128,
+                KeySize = 256,
+                FeedbackSize = 128,
+                Padding = PaddingMode.None,
+                Mode = CipherMode.CBC,
+                Key = Encoding.Default.GetBytes(key),
+                IV = Encoding.Default.GetBytes(iv)
+            };
 
             ICryptoTransform decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
             try
             {
-                using (MemoryStream msDecrypt = new MemoryStream(data))
-                {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            return srDecrypt.ReadToEnd();
-                        }
-                    }
-                }
+                using MemoryStream msDecrypt = new MemoryStream(data);
+                using CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+                using StreamReader srDecrypt = new StreamReader(csDecrypt);
+                return srDecrypt.ReadToEnd();
             }
             catch (Exception e)
             {
@@ -209,10 +218,9 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string OpenSSL(string privateKey, string data, bool fOAEP = false)
         {
-            RSACryptoServiceProvider _privateKeyRsaProvider;
             try
             {
-                _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
+                RSACryptoServiceProvider _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
                 return Convert.ToBase64String(_privateKeyRsaProvider.Decrypt(Encoding.UTF8.GetBytes(data), fOAEP));
             }
             catch
@@ -263,10 +271,10 @@ namespace ColoryrServer.SDK
                 if (y - x <= 0)
                     return a;
                 else
-                    return a.Substring(x, y - x);
+                    return a[x..y];
             }
             else
-                return a.Substring(x);
+                return a[x..];
         }
         /// <summary>
         /// GBK到UTF-8

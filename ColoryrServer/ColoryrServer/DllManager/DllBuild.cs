@@ -2,6 +2,7 @@
 using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
+using ColoryrServer.Utils;
 using Lib.Build;
 using Lib.Build.Object;
 using Newtonsoft.Json;
@@ -344,7 +345,7 @@ namespace ColoryrServer.DllManager
             }
             return new HttpReturn
             {
-                Data = Object
+                Data = StreamUtils.JsonOBJ(Object)
             };
         }
     }

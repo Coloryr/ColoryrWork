@@ -1,27 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace ColoryrServer.SDK
 {
     public class HttpRequest
     {
-        private Dictionary<string, dynamic> Parameter;
-        public NameValueCollection RowRequest { get; private set; }//原始请求的字符串
-        public string Cookie { get; private set; }
-        /// <summary>
-        /// <summary>
-        /// 请求头结构
-        /// </summary>
-        /// <param name="Parameter">参数</param>
-        /// <param name="RowRequest">原始请求头</param>
-        /// <param name="IsValid">是否验证</param>
-        /// <param name="Cookie">对话</param>
-        public HttpRequest(Dictionary<string, dynamic> Parameter, NameValueCollection RowRequest, string Cookie)
-        {
-            this.Parameter = Parameter;
-            this.RowRequest = RowRequest;
-            this.Cookie = Cookie;
-        }
+        public Dictionary<string, dynamic> Parameter { get; init; }
+        public NameValueCollection RowRequest { get; init; }//原始请求的字符串
+        public string Cookie { get; init; }
+        public MyContentType ContentType { get; init; }
+        public Stream Stream { get; init; }
 
         /// 获取参数
         /// </summary>
@@ -34,27 +23,33 @@ namespace ColoryrServer.SDK
             return null;
         }
     }
-    public class HttpResponse
+    public abstract class HttpResponse
     {
-        public string Response { get; set; }
+        /// <summary>
+        /// 返回码
+        /// </summary>
         public int ReCode { get; set; }
-        public Dictionary<string, string> Head { get; set; } = new Dictionary<string, string>();
         /// <summary>
-        /// 返回头结构体
+        /// Cookie
         /// </summary>
-        /// <param name="ReCode">相应代码</param>
-        public HttpResponse(int ReCode = 200)
-        {
-            this.ReCode = ReCode;
-        }
+        public string Cookie { get; set; }
         /// <summary>
-        /// 往返回的字符串写数据
+        /// 设置Cookie
         /// </summary>
-        /// <param name="str">要写的数据</param>
-        public HttpResponse Write(string str)
+        public bool SetCookie { get; set; }
+        /// <summary>
+        /// 返回头
+        /// </summary>
+        public Dictionary<string, string> Head { get; set; }
+        /// <summary>
+        /// 编码
+        /// </summary>
+        public EncodeType EncodeType { get; set; }
+
+        public HttpResponse()
         {
-            Response += str;
-            return this;
+            if (Head == null)
+                Head = new();
         }
         /// <summary>
         /// 往返回头写数据
@@ -66,30 +61,44 @@ namespace ColoryrServer.SDK
             Head.Add(Key, Value);
         }
     }
-    public class HttpResponseSession : HttpResponse
+
+    public class HttpResponseString : HttpResponse
     {
-        public string Cookie { get; private set; }
         /// <summary>
-        /// 带会话的返回头
+        /// 返回数据
         /// </summary>
-        /// <param name="Cookie">会话</param>
-        public HttpResponseSession(string Cookie) : base()
+        public string Data { get; set; }
+
+        public HttpResponseString() : base() { }
+        /// <summary>
+        /// 写数据
+        /// </summary>
+        /// <param name="data">内容</param>
+        public void Write(string data)
         {
-            this.Cookie = Cookie;
+            Data += data;
+        }
+        /// <summary>
+        /// 写数据后换行
+        /// </summary>
+        /// <param name="data">内容</param>
+        public void WriteNewLine(string data)
+        {
+            Data += data + "\n";
         }
     }
-    public class HttpResponseDictionary
+
+    public class HttpResponseDictionary : HttpResponse
     {
-        public int ReCode { get; set; }
-        public Dictionary<string, object> Response { get; set; } = new Dictionary<string, object>();
-        public Dictionary<string, string> Head { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, object> Data { get; set; }
         /// <summary>
         /// 返回头结构体
         /// </summary>
         /// <param name="ReCode">相应代码</param>
-        public HttpResponseDictionary(int ReCode = 200)
+        public HttpResponseDictionary() : base()
         {
-            this.ReCode = ReCode;
+            if (Data == null)
+                Data = new();
         }
         /// <summary>
         /// 往返回的字符串写数据
@@ -98,16 +107,7 @@ namespace ColoryrServer.SDK
         /// <param name="Value">值</param>
         public void AddResponse(string Key, object Value)
         {
-            Response.Add(Key, Value);
-        }
-        /// <summary>
-        /// 往返回头写数据
-        /// </summary>
-        /// <param name="Key">键</param>
-        /// <param name="Value">值</param>
-        public void AddHead(string Key, string Value)
-        {
-            Head.Add(Key, Value);
+            Data.Add(Key, Value);
         }
         /// <summary>
         /// 写数据
@@ -117,22 +117,22 @@ namespace ColoryrServer.SDK
         /// <param name="data"></param>
         public HttpResponseDictionary Send(int res, string text, dynamic data = null)
         {
-            Response.Add("res", res);
-            Response.Add("text", text);
-            Response.Add("data", data);
+            Data.Add("res", res);
+            Data.Add("text", text);
+            Data.Add("data", data);
             return this;
         }
     }
-    public class HttpResponseDictionarySession : HttpResponseDictionary
+    public class HttpResponseStream : HttpResponse
     {
-        public string Cookie { get; private set; }
         /// <summary>
-        /// 带会话的返回头
+        /// 流
         /// </summary>
-        /// <param name="Cookie">会话</param>
-        public HttpResponseDictionarySession(string Cookie) : base()
+        public Stream Data { get; set; }
+        public HttpResponseStream() : base()
         {
-            this.Cookie = Cookie;
+            if (Data == null)
+                Data = new MemoryStream();
         }
     }
 }

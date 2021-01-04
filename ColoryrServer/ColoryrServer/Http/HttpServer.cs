@@ -1,9 +1,9 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
+using ColoryrServer.Utils;
 using Lib.Build;
 using Lib.Build.Object;
 using Lib.Server;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
@@ -40,59 +40,72 @@ namespace ColoryrServer.Http
             }
             return null;
         }
-        public static HttpReturn HttpPOST(string Str, string Url, NameValueCollection Hashtable)
+
+        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
         {
-            bool isJson = false;
             var Temp = new Dictionary<string, dynamic>();
-            if (Str.StartsWith("{"))
+            switch (type)
             {
-                try
-                {
-                    JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                    if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
+                case MyContentType.Json:
+                    string Str = streamReader.ReadToEnd();
+                    try
                     {
-                        var Json = obj.ToObject<BuildOBJ>();
-                        var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
-                        if (List.Any())
+                        JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+                        if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
                         {
-                            return DllBuild.HttpBuild(Json, List.First());
+                            var Json = obj.ToObject<BuildOBJ>();
+                            var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
+                            if (List.Any())
+                            {
+                                return DllBuild.HttpBuild(Json, List.First());
+                            }
+                            else
+                            {
+                                return new HttpReturn
+                                {
+                                    Data = StreamUtils.JsonOBJ(new ReMessage
+                                    {
+                                        Build = false,
+                                        Message = "账户错误"
+                                    })
+                                };
+                            }
                         }
                         else
                         {
-                            return new HttpReturn
+                            foreach (var item in obj)
                             {
-                                Data = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "账户错误"
-                                }
-                            };
+                                Temp.Add(item.Key, item.Value);
+                            }
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        isJson = true;
-                        foreach (var item in obj)
+                        ServerMain.LogError(e);
+                        return new HttpReturn
                         {
-                            Temp.Add(item.Key, item.Value);
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            {
+                                Res = 123,
+                                Text = "Json解析发生错误",
+                                Data = e
+                            })
+                        };
+                    }
+                    break;
+                case MyContentType.Form:
+                    Str = streamReader.ReadToEnd();
+                    foreach (string Item in Str.Split('&'))
+                    {
+                        if (Item.Contains("="))
+                        {
+                            string[] KV = Item.Split('=');
+                            Temp.Add(KV[0], KV[1]);
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                    return new HttpReturn
-                    {
-                        IsObj = false,
-                        Data = new Dictionary<string, dynamic>()
-                        {
-                            { "res", 123 },
-                            { "text", "Json解析发生错误" },
-                            { "data", e }
-                        }
-                    };
-                }
+                    break;
             }
+            
             string UUID = "0";
             string FunctionName = null;
             int thr = Url.IndexOf('?', 0);
@@ -125,29 +138,25 @@ namespace ColoryrServer.Http
             var Dll = DllStonge.GetDll(UUID);
             if (Dll != null)
             {
-                if (!isJson)
+                var Http = new HttpRequest
                 {
-                    foreach (string Item in Str.Split('&'))
-                    {
-                        if (Item.Contains("="))
-                        {
-                            string[] KV = Item.Split('=');
-                            Temp.Add(KV[0], KV[1]);
-                        }
-                    }
-                }
-                var Http = new HttpRequest(Temp, Hashtable, HaveCookie(Hashtable));
+                    Cookie = HaveCookie(Hashtable),
+                    Parameter = Temp,
+                    RowRequest = Hashtable,
+                    ContentType = type,
+                    Stream = type == MyContentType.Other ? streamReader.BaseStream : null
+                };
                 var Data = DllRun.DllGo(Dll, Http, FunctionName);
                 return Data;
             }
             return new HttpReturn
             {
-                Data = new GetMeesage
+                Data = StreamUtils.JsonOBJ(new GetMeesage
                 {
-                    res = "666",
-                    text = "未找到DLL",
-                    data = Url
-                },
+                    Res = 666,
+                    Text = "未找到DLL",
+                    Data = Url
+                }),
                 ReCode = 404
             };
         }
@@ -187,18 +196,23 @@ namespace ColoryrServer.Http
                 {
                     Temp.Add(a, Data.Get(a));
                 }
-                var Http = new HttpRequest(Temp, Hashtable, HaveCookie(Hashtable));
+                var Http = new HttpRequest
+                {
+                    Cookie = HaveCookie(Hashtable),
+                    RowRequest = Hashtable,
+                    Parameter = Temp
+                };
                 var Data1 = DllRun.DllGo(Dll, Http, FunctionName);
                 return Data1;
             }
             return new HttpReturn
             {
-                Data = new GetMeesage
+                Data = StreamUtils.JsonOBJ(new GetMeesage
                 {
-                    res = "666",
-                    text = "未找到DLL",
-                    data = Url
-                },
+                    Res = 666,
+                    Text = "未找到DLL",
+                    Data = Url
+                }),
                 ReCode = 404
             };
         }
@@ -256,7 +270,7 @@ namespace ColoryrServer.Http
                 Queue.Add(Listener.EndGetContext(ar));
             }
         }
-        
+
         public static void Stop()
         {
             if (IsActive)
@@ -285,72 +299,70 @@ namespace ColoryrServer.Http
                     try
                     {
                         HttpListenerRequest Request = Context.Request;
+                        HttpReturn httpReturn;
                         switch (Request.HttpMethod)
                         {
                             case "POST":
+                                StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
+                                MyContentType type;
+                                if (Context.Request.ContentType == "application/x-www-form-urlencoded")
                                 {
-                                    StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
-                                    Context.Response.ContentType = "application/json;charset=UTF-8";
-                                    Context.Response.ContentEncoding = Encoding.UTF8;
-
-                                    var Temp = HttpProcessor.HttpPOST(Reader.ReadToEnd(), Request.RawUrl, Request.Headers);
-
-                                    if (Temp.Head != null)
-                                        foreach (var Item in Temp.Head)
-                                        {
-                                            Context.Response.AddHeader(Item.Key, Item.Value);
-                                        }
-                                    if (Temp.Cookie != null)
-                                        Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
-                                    string Message;
-                                    if (Temp.IsObj)
-                                    {
-                                        Message = JsonConvert.SerializeObject(Temp.Data);
-                                    }
-                                    else
-                                    {
-                                        Message = (string)Temp.Data;
-                                    }
-                                    var data1 = Encoding.UTF8.GetBytes(Message);
-                                    using (Stream stream = Context.Response.OutputStream)
-                                        stream.Write(data1, 0, data1.Length);
-                                    Context.Response.StatusCode = Temp.ReCode;
-                                    Context.Response.Close();
+                                    type = MyContentType.Form;
                                 }
+                                else if (Context.Request.ContentType == "application/json")
+                                {
+                                    type = MyContentType.Json;
+                                }
+                                else
+                                {
+                                    type = MyContentType.Other;
+                                }
+                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type);
+                                Context.Response.ContentType = httpReturn.ContentType;
+                                Context.Response.ContentEncoding = httpReturn.Encoding;
+                                if (httpReturn.Head != null)
+                                    foreach (var Item in httpReturn.Head)
+                                    {
+                                        Context.Response.AddHeader(Item.Key, Item.Value);
+                                    }
+                                if (httpReturn.Cookie != null)
+                                    Context.Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
+                                if (httpReturn.Data1 == null)
+                                    Context.Response.OutputStream.Write(httpReturn.Data);
+                                else
+                                {
+                                    httpReturn.Data1.Seek(0, SeekOrigin.Begin);
+                                    httpReturn.Data1.CopyTo(Context.Response.OutputStream);
+                                }
+                                Context.Response.OutputStream.Flush();
+                                Context.Response.StatusCode = httpReturn.ReCode;
+                                Context.Response.Close();
                                 break;
                             case "GET":
+                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
+                                Context.Response.ContentType = httpReturn.ContentType;
+                                Context.Response.ContentEncoding = httpReturn.Encoding;
+                                if (httpReturn.Head != null)
+                                    foreach (var Item in httpReturn.Head)
+                                    {
+                                        Context.Response.AddHeader(Item.Key, Item.Value);
+                                    }
+                                if (httpReturn.Cookie != null)
+                                    Context.Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
+                                if (httpReturn.Data1 == null)
+                                    Context.Response.OutputStream.Write(httpReturn.Data);
+                                else
                                 {
-                                    Context.Response.ContentType = "application/json;charset=UTF-8";
-                                    Context.Response.ContentEncoding = Encoding.UTF8;
-
-                                    var Temp = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
-
-                                    if (Temp.Head != null)
-                                        foreach (var Item in Temp.Head)
-                                        {
-                                            Context.Response.AddHeader(Item.Key, Item.Value);
-                                        }
-                                    if (Temp.Cookie != null)
-                                        Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
-                                    string Message;
-                                    if (Temp.IsObj)
-                                    {
-                                        Message = JsonConvert.SerializeObject(Temp.Data);
-                                    }
-                                    else
-                                    {
-                                        Message = (string)Temp.Data;
-                                    }
-                                    var data1 = Encoding.UTF8.GetBytes(Message);
-                                    using (Stream stream = Context.Response.OutputStream)
-                                        stream.Write(data1, 0, data1.Length);
-                                    Context.Response.StatusCode = Temp.ReCode;
-                                    Context.Response.Close();
+                                    httpReturn.Data1.Seek(0, SeekOrigin.Begin);
+                                    httpReturn.Data1.CopyTo(Context.Response.OutputStream);
                                 }
+                                Context.Response.OutputStream.Flush();
+                                Context.Response.StatusCode = httpReturn.ReCode;
+                                Context.Response.Close();
                                 break;
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         ServerMain.LogError(e);
                     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColoryrServer.Robot;
+using System;
 using System.Collections.Generic;
 
 namespace ColoryrServer.SDK

@@ -1,6 +1,6 @@
 ﻿namespace Lib.Build.Object
 {
-    public class ReMessage
+    public record ReMessage
     {
         /// <summary>
         /// 编译结果
@@ -15,7 +15,7 @@
         /// </summary>
         public string UseTime { get; set; }
     }
-    public class ReBuild
+    public record ReBuild
     {
         /// <summary>
         /// 应用名字
@@ -26,7 +26,7 @@
         /// </summary>
         public string Code { get; set; }
     }
-    public class GetOBJ
+    public record GetOBJ
     {
         /// <summary>
         /// 应用名字
@@ -37,19 +37,19 @@
         /// </summary>
         public object Get { get; set; }
     }
-    public class GetMeesage
+    public record GetMeesage
     {
         /// <summary>
         /// 结果
         /// </summary>
-        public string res { get; set; }
+        public int Res { get; set; }
         /// <summary>
         /// 文本
         /// </summary>
-        public string text { get; set; }
+        public string Text { get; set; }
         /// <summary>
         /// 数据
         /// </summary>
-        public object data { get; set; }
+        public object Data { get; set; }
     }
 }

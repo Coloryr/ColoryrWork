@@ -1,4 +1,6 @@
-﻿namespace ColoryrServer.SDK
+﻿using Fleck;
+
+namespace ColoryrServer.SDK
 {
     public class WebSocketMessage
     {

@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
+using ColoryrServer.Utils;
 using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,12 @@ namespace ColoryrServer.DllManager
                     {
                         return new HttpReturn
                         {
-                            Data = new GetMeesage
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
                             {
-                                res = "90",
-                                text = "找不到方法",
-                                data = null
-                            },
+                                Res = 90,
+                                Text = "找不到方法",
+                                Data = null
+                            }),
                             ReCode = 404
                         };
                     }
@@ -41,67 +42,56 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = DllReturn
+                        Data = StreamUtils.JsonOBJ(DllReturn)
                     };
                 }
                 else if (DllReturn is string)
                 {
                     return new HttpReturn
                     {
-                        Data = DllReturn,
-                        IsObj = false
+                        Data = StreamUtils.StringOBJ(DllReturn)
                     };
                 }
-                else if (DllReturn is HttpResponse)
+                else if (DllReturn is HttpResponseString)
                 {
                     return new HttpReturn
                     {
-                        Data = DllReturn.Response,
+                        Data = StreamUtils.StringOBJ(DllReturn.Data),
                         Head = DllReturn.Head,
                         ReCode = DllReturn.ReCode,
-                        IsObj = false
-                    };
-                }
-                else if (DllReturn is HttpResponseSession)
-                {
-                    return new HttpReturn
-                    {
-                        Data = DllReturn.Response,
-                        Head = DllReturn.Head,
-                        Cookie = DllReturn.Cookie,
-                        ReCode = DllReturn.ReCode,
-                        IsObj = false
+                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
                     };
                 }
                 else if (DllReturn is HttpResponseDictionary)
                 {
                     return new HttpReturn
                     {
-                        Data = DllReturn.Response,
+                        Data = StreamUtils.JsonOBJ(DllReturn.Data),
                         Head = DllReturn.Head,
-                        ReCode = DllReturn.ReCode
+                        ReCode = DllReturn.ReCode,
+                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
                     };
                 }
-                else if (DllReturn is HttpResponseDictionarySession)
+                else if (DllReturn is HttpResponseStream)
                 {
                     return new HttpReturn
                     {
-                        Data = DllReturn.Response,
+                        Data1 = DllReturn.Data,
                         Head = DllReturn.Head,
-                        Cookie = DllReturn.Cookie,
-                        ReCode = DllReturn.ReCode
+                        ReCode = DllReturn.ReCode,
+                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
                     };
                 }
                 else
                 {
                     return new HttpReturn
                     {
-                        Data = new GetMeesage
+                        Data = StreamUtils.JsonOBJ(new GetMeesage
                         {
-                            res = "80",
-                            text = "DLL返回错误",
-                            data = DllReturn
-                        }
+                            Res = 80,
+                            Text = "DLL返回错误",
+                            Data = DllReturn
+                        })
                     };
                 }
             }
@@ -111,16 +101,14 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = Dump.Get(),
-                        ReCode = 200,
-                        IsObj = false
+                        Data = StreamUtils.JsonOBJ(Dump.Get()),
+                        ReCode = 200
                     };
                 }
                 return new HttpReturn
                 {
-                    Data = e.ToString(),
-                    ReCode = 400,
-                    IsObj = false
+                    Data = StreamUtils.StringOBJ(e.ToString()),
+                    ReCode = 400
                 };
             }
         }

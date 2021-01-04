@@ -179,7 +179,7 @@ namespace ColoryrServer
                 }
 
                 //服务器启动
-                HttpControl.Start();
+                HttpServer.Start();
                 IoTSocketServer.Start();
                 ServerWebSocket.Start();
                 RobotSocket.Start();
@@ -201,7 +201,7 @@ namespace ColoryrServer
         public static void Stop()
         {
             LogOut("正在关闭");
-            HttpControl.Stop();
+            HttpServer.Stop();
             MysqlCon.Stop();
             MSCon.Stop();
             IoTSocketServer.Stop();
