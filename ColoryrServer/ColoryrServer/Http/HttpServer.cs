@@ -163,7 +163,7 @@ namespace ColoryrServer.Http
                 if (thr == -1)
                 {
                     UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url.Substring(tow).Remove(0, 1);
+                    FunctionName = Url[tow..].Remove(0, 1);
                 }
                 else if (tow < thr)
                 {
@@ -207,32 +207,45 @@ namespace ColoryrServer.Http
     {
         public static HttpListener Listener;//http服务器
         private static Thread[] Workers;                             // 工作线程组
-        private static ConcurrentBag<HttpListenerContext> Queue;   // 请求队列
+        public static ConcurrentBag<HttpListenerContext> Queue;   // 请求队列
         public static bool IsActive { get; set; }//是否在运行
-        public HttpServer()
+
+        public static void Start()
         {
-            Listener = new HttpListener();
-            Workers = new Thread[200];
-            Queue = new ConcurrentBag<HttpListenerContext>();
-            IsActive = false;
-
-            Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
-                ServerMain.Config.Http.Port + "/");
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Task.Run(() =>
             {
-                Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
-                Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
-            }
-            Listener.Start();
+                try
+                {
+                    ServerMain.LogOut("Http服务器正在启动");
+                    Listener = new HttpListener();
+                    Workers = new Thread[200];
+                    Queue = new ConcurrentBag<HttpListenerContext>();
+                    IsActive = false;
 
-            // 启动工作线程
-            for (int i = 0; i < Workers.Length; i++)
-            {
-                Workers[i] = new Thread(Worker);
-                Workers[i].Start();
-            }
-            IsActive = true;
-            Listener.BeginGetContext(ContextReady, null);
+                    Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
+                        ServerMain.Config.Http.Port + "/");
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
+                        Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+                    }
+                    Listener.Start();
+
+                    // 启动工作线程
+                    for (int i = 0; i < Workers.Length; i++)
+                    {
+                        Workers[i] = new Thread(new HttpWork().Worker);
+                        Workers[i].Start();
+                    }
+                    IsActive = true;
+                    Listener.BeginGetContext(ContextReady, null);
+                    ServerMain.LogOut("Http服务器已启动");
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            });
         }
 
         private static void ContextReady(IAsyncResult ar)
@@ -243,129 +256,106 @@ namespace ColoryrServer.Http
                 Queue.Add(Listener.EndGetContext(ar));
             }
         }
-        // 处理一个任务
-        private void Worker()
+        
+        public static void Stop()
         {
-            while (!IsActive)
+            if (IsActive)
+            {
+                ServerMain.LogOut("Http服务器正在关闭");
+                IsActive = false;
+                Listener.Stop();
+                ServerMain.LogOut("Http服务器已关闭");
+            }
+        }
+    }
+
+    class HttpWork
+    {
+        // 处理一个任务
+        public void Worker()
+        {
+            while (!HttpServer.IsActive)
             {
                 Thread.Sleep(200);
             }
-            while (IsActive)
+            while (HttpServer.IsActive)
             {
-                if (Queue.TryTake(out HttpListenerContext context))
+                if (HttpServer.Queue.TryTake(out HttpListenerContext Context))
                 {
-                    AcceptAsync(context);
+                    try
+                    {
+                        HttpListenerRequest Request = Context.Request;
+                        switch (Request.HttpMethod)
+                        {
+                            case "POST":
+                                {
+                                    StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
+                                    Context.Response.ContentType = "application/json;charset=UTF-8";
+                                    Context.Response.ContentEncoding = Encoding.UTF8;
+
+                                    var Temp = HttpProcessor.HttpPOST(Reader.ReadToEnd(), Request.RawUrl, Request.Headers);
+
+                                    if (Temp.Head != null)
+                                        foreach (var Item in Temp.Head)
+                                        {
+                                            Context.Response.AddHeader(Item.Key, Item.Value);
+                                        }
+                                    if (Temp.Cookie != null)
+                                        Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
+                                    string Message;
+                                    if (Temp.IsObj)
+                                    {
+                                        Message = JsonConvert.SerializeObject(Temp.Data);
+                                    }
+                                    else
+                                    {
+                                        Message = (string)Temp.Data;
+                                    }
+                                    var data1 = Encoding.UTF8.GetBytes(Message);
+                                    using (Stream stream = Context.Response.OutputStream)
+                                        stream.Write(data1, 0, data1.Length);
+                                    Context.Response.StatusCode = Temp.ReCode;
+                                    Context.Response.Close();
+                                }
+                                break;
+                            case "GET":
+                                {
+                                    Context.Response.ContentType = "application/json;charset=UTF-8";
+                                    Context.Response.ContentEncoding = Encoding.UTF8;
+
+                                    var Temp = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
+
+                                    if (Temp.Head != null)
+                                        foreach (var Item in Temp.Head)
+                                        {
+                                            Context.Response.AddHeader(Item.Key, Item.Value);
+                                        }
+                                    if (Temp.Cookie != null)
+                                        Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
+                                    string Message;
+                                    if (Temp.IsObj)
+                                    {
+                                        Message = JsonConvert.SerializeObject(Temp.Data);
+                                    }
+                                    else
+                                    {
+                                        Message = (string)Temp.Data;
+                                    }
+                                    var data1 = Encoding.UTF8.GetBytes(Message);
+                                    using (Stream stream = Context.Response.OutputStream)
+                                        stream.Write(data1, 0, data1.Length);
+                                    Context.Response.StatusCode = Temp.ReCode;
+                                    Context.Response.Close();
+                                }
+                                break;
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        ServerMain.LogError(e);
+                    }
                 }
                 Thread.Sleep(1);
-            }
-        }
-
-        private static void AcceptAsync(HttpListenerContext Context)
-        {
-            try
-            {
-                HttpListenerRequest Request = Context.Request;
-                switch (Request.HttpMethod)
-                {
-                    case "POST":
-                        {
-                            StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
-                            Context.Response.ContentType = "application/json;charset=UTF-8";
-                            Context.Response.ContentEncoding = Encoding.UTF8;
-
-                            var Temp = HttpProcessor.HttpPOST(Reader.ReadToEnd(), Request.RawUrl, Request.Headers);
-
-                            if (Temp.Head != null)
-                                foreach (var Item in Temp.Head)
-                                {
-                                    Context.Response.AddHeader(Item.Key, Item.Value);
-                                }
-                            if (Temp.Cookie != null)
-                                Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
-                            string Message;
-                            if (Temp.IsObj)
-                            {
-                                Message = JsonConvert.SerializeObject(Temp.Data);
-                            }
-                            else
-                            {
-                                Message = (string)Temp.Data;
-                            }
-                            var data1 = Encoding.UTF8.GetBytes(Message);
-                            using (Stream stream = Context.Response.OutputStream)
-                                stream.Write(data1, 0, data1.Length);
-                            Context.Response.StatusCode = Temp.ReCode;
-                            //Response.Close();
-                        }
-                        break;
-                    case "GET":
-                        {
-                            Context.Response.ContentType = "application/json;charset=UTF-8";
-                            Context.Response.ContentEncoding = Encoding.UTF8;
-
-                            var Temp = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
-
-                            if (Temp.Head != null)
-                                foreach (var Item in Temp.Head)
-                                {
-                                    Context.Response.AddHeader(Item.Key, Item.Value);
-                                }
-                            if (Temp.Cookie != null)
-                                Context.Response.AppendCookie(new Cookie("cs", Temp.Cookie));
-                            string Message;
-                            if (Temp.IsObj)
-                            {
-                                Message = JsonConvert.SerializeObject(Temp.Data);
-                            }
-                            else
-                            {
-                                Message = (string)Temp.Data;
-                            }
-                            var data1 = Encoding.UTF8.GetBytes(Message);
-                            using (Stream stream = Context.Response.OutputStream)
-                                stream.Write(data1, 0, data1.Length);
-                            Context.Response.StatusCode = Temp.ReCode;
-                            //Response.Close();
-                        }
-                        break;
-                }
-            }
-            catch
-            {
-
-            }
-        }
-        public static void Stop()
-        {
-            IsActive = false;
-            Listener.Stop();
-        }
-    }
-    class HttpControl
-    {
-        public static void Start()
-        {
-            Task.Run(() =>
-            {
-                try
-                {
-                    ServerMain.LogOut("Http服务器正在启动");
-                    new HttpServer();
-                    ServerMain.LogOut("Http服务器已启动");
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                }
-            });
-        }
-        public static void Stop()
-        {
-            if (HttpServer.IsActive)
-            {
-                ServerMain.LogOut("Http服务器正在关闭");
-                HttpServer.Stop();
-                ServerMain.LogOut("Http服务器已关闭");
             }
         }
     }

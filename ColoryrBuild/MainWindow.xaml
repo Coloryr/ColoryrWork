@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="ColoryrWork编辑器" Height="450" Width="800" Icon="/ColoryrWork.png" ResizeMode="CanMinimize">
     <Grid>
+        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         
     </Grid>
 </Window>
