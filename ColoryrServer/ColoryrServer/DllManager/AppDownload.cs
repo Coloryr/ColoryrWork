@@ -28,9 +28,14 @@ namespace ColoryrServer.DllManager
                 switch (obj.Type)
                 {
                     case FileType.List:
+                        var list = new Dictionary<string, string>(save.Xamls);
+                        foreach (var item1 in save.Files)
+                        {
+                            list.Add(item1.Key, item1.Value);
+                        }
                         return new HttpReturn
                         {
-                            Data = StreamUtils.JsonOBJ(save.Xamls)
+                            Data = StreamUtils.JsonOBJ(list)
                         };
                     case FileType.File:
                         if (obj.Name == "app.dll")
@@ -60,7 +65,7 @@ namespace ColoryrServer.DllManager
                             {
                                 return new HttpReturn
                                 {
-                                    Data1 = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name);
+                                    Data1 = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name)
                                 };
                             }
                             else

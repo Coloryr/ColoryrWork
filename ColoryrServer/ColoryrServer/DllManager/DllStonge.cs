@@ -606,7 +606,6 @@ namespace ColoryrServer.DllManager
                     var obj = CSFile.GetApp(Name);
                     if (obj == null)
                         continue;
-                    save.Key = obj.Key;
                     ServerMain.LogOut("加载App：" + Name);
                     using (var FileStream = new FileStream(FileItem.FullName + "\\app.dll", FileMode.Open, FileAccess.Read))
                     {
@@ -620,14 +619,6 @@ namespace ColoryrServer.DllManager
                             }
                         else
                             FileStream.Read(save.Dll);
-                    }
-                    save.Xamls = new Dictionary<string, string>();
-                    foreach (var item in Function.GetPathFileName(FileItem.FullName))
-                    {
-                        if (item.Name.EndsWith(".xaml"))
-                        {
-                            save.Xamls.Add(item.Name, File.ReadAllText(item.FullName));
-                        }
                     }
                     AddApp(Name, save);
                 }
