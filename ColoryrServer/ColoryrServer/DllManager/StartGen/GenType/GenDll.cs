@@ -26,7 +26,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var AssemblySave = new AssemblySave
+            var AssemblySave = new DllBuildSave
             {
                 Assembly = new AssemblyLoadContext(CodeFile.UUID, true)
             };
@@ -58,7 +58,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             DllStonge.AddDll(CodeFile.UUID, AssemblySave);
-
+            var time = string.Format("{0:s}", DateTime.Now);
+            CodeFile.UpdataTime = time;
             Task.Run(() =>
             {
                 Res.MS.Seek(0, SeekOrigin.Begin);
@@ -92,7 +93,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成"
+                Res = "编译完成",
+                Time = CodeFile.UpdataTime
             };
         }
     }

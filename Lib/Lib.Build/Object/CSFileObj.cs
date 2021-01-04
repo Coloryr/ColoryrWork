@@ -24,6 +24,14 @@ namespace Lib.Build.Object
         /// 版本
         /// </summary>
         public int Version { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public string CreateTime { get; set; }
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        public string UpdataTime { get; set; }
 
     }
     public record CSFileCode : CSFileObj
@@ -49,21 +57,23 @@ namespace Lib.Build.Object
     {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Xamls { get; set; }
+        public Dictionary<string, string> Files { get; set; }
         public string Key { get; set; }
-        public CodeType Type { get; }
+        public CodeType Type { get; set; }
         public AppFileObj(CSFileObj obj)
         {
             UUID = obj.UUID;
             Text = obj.Text;
             User = obj.User;
-            Codes = new Dictionary<string, string>();
-            Xamls = new Dictionary<string, string>();
+            Codes = new();
+            Xamls = new();
+            Files = new();
             Type = CodeType.App;
         }
         public AppFileObj()
         {
-            Codes = new Dictionary<string, string>();
-            Xamls = new Dictionary<string, string>();
+            Codes = new();
+            Xamls = new();
             Type = CodeType.App;
         }
     }

@@ -41,9 +41,10 @@
                                 UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
                         <TextBlock x:Name="contentPresenter"
                                        Margin="{TemplateBinding Margin}"
-                                       Width="70"
+                                       Width="90"
                                        TextWrapping="Wrap"
                                        Text="{TemplateBinding Header}"
+                                       TextAlignment="Center"
                                        HorizontalAlignment="{Binding HorizontalContentAlignment,
                                                                         RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                        VerticalAlignment="{Binding VerticalContentAlignment,

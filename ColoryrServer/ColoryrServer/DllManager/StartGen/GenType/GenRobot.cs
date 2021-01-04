@@ -26,7 +26,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var AssemblySave = new AssemblySave
+            var AssemblySave = new DllBuildSave
             {
                 Assembly = new AssemblyLoadContext(File.UUID, true)
             };

@@ -8,17 +8,15 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
     /// <summary>
     /// App资源存储
     /// </summary>
-    internal record AppSave
+    internal record AppBuildSave
     {
         public byte[] Dll { get; set; }
         public byte[] Pdb { get; set; }
-        public string Key { get; set; }
-        public Dictionary<string, string> Xamls { get; set; } = new();
     }
     /// <summary>
     /// 编译后存储
     /// </summary>
-    internal record AssemblySave
+    internal record DllBuildSave
     {
         public AssemblyLoadContext Assembly { get; set; }
         public Type Type { get; set; }

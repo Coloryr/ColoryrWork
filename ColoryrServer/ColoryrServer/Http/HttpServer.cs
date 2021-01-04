@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
+using Lib.App;
 using Lib.Build;
 using Lib.Build.Object;
 using Lib.Server;
@@ -57,7 +58,7 @@ namespace ColoryrServer.Http
                             var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
                             if (List.Any())
                             {
-                                return DllBuild.HttpBuild(Json, List.First());
+                                return DllBuild.StartBuild(Json, List.First());
                             }
                             else
                             {
@@ -70,6 +71,11 @@ namespace ColoryrServer.Http
                                     })
                                 };
                             }
+                        }
+                        else if (Hashtable[APPKV.APPK] == APPKV.APPV)
+                        {
+                            var Json = obj.ToObject<DownloadObj>();
+                            return AppDownload.Download(Json);
                         }
                         else
                         {

@@ -18,4 +18,6 @@
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1821" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
   </ItemGroup>
+
+  <Import Project="..\..\Lib.App\Lib.App.projitems" Label="Shared" />
 </Project>

@@ -21,17 +21,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp.iOS", "ColoryrAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest", "CodeTest\CodeTest.csproj", "{44A0EB6C-080A-47FC-AB2F-5D214768DED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.App", "Lib.App\Lib.App.shproj", "{870CB400-24DF-4510-9797-7B1965848BC8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
 		Lib\Lib.Build\Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
 		Lib\Lib.Build\Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
+		Lib.App\Lib.App.projitems*{870cb400-24df-4510-9797-7b1965848bc8}*SharedItemsImports = 13
 		Lib\Lib.IoT\Lib.IoT.projitems*{db16bd52-51ee-43c3-b9a0-e0ba0cc0c2a0}*SharedItemsImports = 13
+		Lib.App\Lib.App.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.Build\Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.IoT\Lib.IoT.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.Server\Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
+		Lib.App\Lib.App.projitems*{fe29b42b-d2be-4e1b-b9a7-fccf1c9b119c}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

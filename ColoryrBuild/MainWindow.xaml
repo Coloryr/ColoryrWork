@@ -8,6 +8,47 @@
         Title="ColoryrWork编辑器" Height="450" Width="800" Icon="/ColoryrWork.png" ResizeMode="CanMinimize">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        
+        <TabControl Margin="2,2,2,2">
+            <TabItem Header="接口" Style="{DynamicResource TabItem}">
+                <Grid>
+                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+                    <ListView Margin="2,2,2,50">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="UUID" Width="340"/>
+                                <GridViewColumn Header="说明" Width="260"/>
+                                <GridViewColumn Header="创建时间" Width="80"/>
+                                <GridViewColumn Header="修改时间" Width="80"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="添加" Click="AddShow"/>
+                                <MenuItem Header="修改" Click="ChangeShow"/>
+                                <MenuItem Header="删除" Click="DeleteShow"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="类" Style="{DynamicResource TabItem}">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="IoT" Style="{DynamicResource TabItem}">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="机器人" Style="{DynamicResource TabItem}">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="WebSocket" Style="{DynamicResource TabItem}">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="手机APP" Style="{DynamicResource TabItem}">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
+
     </Grid>
 </Window>

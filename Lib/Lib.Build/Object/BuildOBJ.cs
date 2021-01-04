@@ -8,6 +8,7 @@
         CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot, CodeApp,
         RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot,
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot,
+        AppUploadFile,
         AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml
     }
     class BuildOBJ

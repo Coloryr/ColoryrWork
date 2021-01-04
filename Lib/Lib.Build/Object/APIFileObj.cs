@@ -2,8 +2,8 @@
 
 namespace Lib.Build.Object
 {
-    class APIFileObj
+    record APIFileObj
     {
-        public Dictionary<string, string> list { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> list { get; init; } = new();
     }
 }

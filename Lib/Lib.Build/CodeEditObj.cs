@@ -4,7 +4,7 @@
     {
         Add, Remove, Edit
     }
-    class CodeEditObj
+    record CodeEditObj
     {
         public EditFun Fun { get; set; }
         public int Line { get; set; }

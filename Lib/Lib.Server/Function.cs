@@ -18,10 +18,10 @@ namespace Lib.Server
                 if (y - x <= 0)
                     return a;
                 else
-                    return a.Substring(x, y - x);
+                    return a[x..y];
             }
             else
-                return a.Substring(x);
+                return a[x..];
         }
         public static List<FileInfo> GetPathFileName(string path)
         {

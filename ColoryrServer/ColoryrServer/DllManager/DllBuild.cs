@@ -15,7 +15,7 @@ namespace ColoryrServer.DllManager
     internal class DllBuild
     {
         public static readonly Dictionary<string, string> Token = new();
-        public static HttpReturn HttpBuild(BuildOBJ Json, UserConfig User)
+        public static HttpReturn StartBuild(BuildOBJ Json, UserConfig User)
         {
             object Object = null;
             if (Json.Mode == ReType.Login)
@@ -51,12 +51,15 @@ namespace ColoryrServer.DllManager
                     case ReType.AddDll:
                         if (CSFile.GetDll(Json.UUID) == null)
                         {
+                            var time = string.Format("{0:s}", DateTime.Now);
                             CSFile.StorageDll(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.Dll,
-                                Version = 1
-                            });
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time
+                            }); ;
                             Object = new ReMessage
                             {
                                 Build = true,
@@ -73,11 +76,14 @@ namespace ColoryrServer.DllManager
                     case ReType.AddClass:
                         if (CSFile.GetClass(Json.UUID) == null)
                         {
+                            var time = string.Format("{0:s}", DateTime.Now);
                             CSFile.StorageClass(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.Class,
-                                Version = 1
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time
                             });
                             Object = new ReMessage
                             {
@@ -95,11 +101,14 @@ namespace ColoryrServer.DllManager
                     case ReType.AddIoT:
                         if (CSFile.GetIoT(Json.UUID) == null)
                         {
+                            var time = string.Format("{0:s}", DateTime.Now);
                             CSFile.StorageIoT(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.IoT,
-                                Version = 1
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time
                             });
                             Object = new ReMessage
                             {
@@ -117,11 +126,14 @@ namespace ColoryrServer.DllManager
                     case ReType.AddWebSocket:
                         if (CSFile.GetWebSocket(Json.UUID) == null)
                         {
+                            var time = string.Format("{0:s}", DateTime.Now);
                             CSFile.StorageWebSocket(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.WebSocket,
-                                Version = 1
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time
                             });
                             Object = new ReMessage
                             {
@@ -139,11 +151,14 @@ namespace ColoryrServer.DllManager
                     case ReType.AddRobot:
                         if (CSFile.GetRobot(Json.UUID) == null)
                         {
+                            var time = string.Format("{0:s}", DateTime.Now);
                             CSFile.StorageRobot(new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.Robot,
-                                Version = 1
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time
                             });
                             Object = new ReMessage
                             {
@@ -290,7 +305,8 @@ namespace ColoryrServer.DllManager
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
                         };
                         break;
                     case ReType.UpdataClass:
@@ -329,7 +345,8 @@ namespace ColoryrServer.DllManager
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
-                            UseTime = SW.ElapsedMilliseconds.ToString()
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
                         };
                         break;
                 }

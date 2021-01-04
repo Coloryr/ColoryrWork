@@ -56,5 +56,6 @@
   <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.IoT\Lib.IoT.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
+  <Import Project="..\..\Lib.App\Lib.App.projitems" Label="Shared" />
 
 </Project>

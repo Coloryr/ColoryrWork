@@ -12,13 +12,13 @@ namespace ColoryrServer.DllManager
 {
     internal class DllStonge
     {
-        private static readonly Dictionary<string, AssemblySave> DllList = new();
-        private static readonly Dictionary<string, AssemblySave> ClassList = new();
-        private static readonly Dictionary<string, AssemblySave> IoTList = new();
-        private static readonly Dictionary<string, AssemblySave> WebSocketList = new();
-        private static readonly Dictionary<string, AssemblySave> RobotList = new();
+        private static readonly Dictionary<string, DllBuildSave> DllList = new();
+        private static readonly Dictionary<string, DllBuildSave> ClassList = new();
+        private static readonly Dictionary<string, DllBuildSave> IoTList = new();
+        private static readonly Dictionary<string, DllBuildSave> WebSocketList = new();
+        private static readonly Dictionary<string, DllBuildSave> RobotList = new();
 
-        private static readonly Dictionary<string, AppSave> AppList = new();
+        private static readonly Dictionary<string, AppBuildSave> AppList = new();
 
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
@@ -48,7 +48,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddDll(string uuid, AssemblySave save)
+        public static void AddDll(string uuid, DllBuildSave save)
         {
             Lock1.EnterWriteLock();
             try
@@ -89,7 +89,7 @@ namespace ColoryrServer.DllManager
                 Lock1.ExitReadLock();
             }
         }
-        public static AssemblySave GetDll(string uuid)
+        public static DllBuildSave GetDll(string uuid)
         {
             Lock1.EnterReadLock();
             try
@@ -107,7 +107,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddClass(string uuid, AssemblySave save)
+        public static void AddClass(string uuid, DllBuildSave save)
         {
             Lock2.EnterWriteLock();
             try
@@ -148,7 +148,7 @@ namespace ColoryrServer.DllManager
                 Lock2.ExitReadLock();
             }
         }
-        public static AssemblySave GetClass(string uuid)
+        public static DllBuildSave GetClass(string uuid)
         {
             Lock2.EnterReadLock();
             try
@@ -166,7 +166,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddIoT(string uuid, AssemblySave save)
+        public static void AddIoT(string uuid, DllBuildSave save)
         {
             Lock3.EnterWriteLock();
             try
@@ -207,7 +207,7 @@ namespace ColoryrServer.DllManager
                 Lock3.ExitReadLock();
             }
         }
-        public static AssemblySave GetIoT(string uuid)
+        public static DllBuildSave GetIoT(string uuid)
         {
             Lock3.EnterReadLock();
             try
@@ -225,7 +225,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddWebSocket(string uuid, AssemblySave save)
+        public static void AddWebSocket(string uuid, DllBuildSave save)
         {
             Lock4.EnterWriteLock();
             try
@@ -266,12 +266,12 @@ namespace ColoryrServer.DllManager
                 Lock4.ExitReadLock();
             }
         }
-        public static List<AssemblySave> GetWebSocket()
+        public static List<DllBuildSave> GetWebSocket()
         {
             Lock4.EnterReadLock();
             try
             {
-                return new List<AssemblySave>(WebSocketList.Values);
+                return new List<DllBuildSave>(WebSocketList.Values);
             }
             finally
             {
@@ -279,7 +279,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddRobot(string uuid, AssemblySave save)
+        public static void AddRobot(string uuid, DllBuildSave save)
         {
             Lock5.EnterWriteLock();
             try
@@ -320,12 +320,12 @@ namespace ColoryrServer.DllManager
                 Lock5.ExitReadLock();
             }
         }
-        public static List<AssemblySave> GetRobot()
+        public static List<DllBuildSave> GetRobot()
         {
             Lock5.EnterReadLock();
             try
             {
-                return new List<AssemblySave>(RobotList.Values);
+                return new List<DllBuildSave>(RobotList.Values);
             }
             finally
             {
@@ -333,7 +333,7 @@ namespace ColoryrServer.DllManager
             }
         }
 
-        public static void AddApp(string uuid, AppSave save)
+        public static void AddApp(string uuid, AppBuildSave save)
         {
             Lock6.EnterWriteLock();
             try
@@ -364,14 +364,14 @@ namespace ColoryrServer.DllManager
                 Lock6.ExitWriteLock();
             }
         }
-        public static AppSave GetApp(string uuid, string key)
+        public static AppBuildSave GetApp(string uuid)
         {
             Lock6.EnterReadLock();
             try
             {
                 if (AppList.TryGetValue(uuid, out var save))
                 {
-                    return save.Key == key ? save : null;
+                    return save;
                 }
                 else
                     return null;
@@ -419,7 +419,7 @@ namespace ColoryrServer.DllManager
                     {
                         string uuid = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载DLL：" + uuid);
-                        var AssemblySave = new AssemblySave();
+                        var AssemblySave = new DllBuildSave();
                         AssemblySave.Assembly = new AssemblyLoadContext(uuid, true);
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
@@ -460,7 +460,7 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载Class：" + Name);
-                        var AssemblySave = new AssemblySave();
+                        var AssemblySave = new DllBuildSave();
                         AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
@@ -493,7 +493,7 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载IoT：" + Name);
-                        var AssemblySave = new AssemblySave();
+                        var AssemblySave = new DllBuildSave();
                         AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
@@ -531,7 +531,7 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载WebSocket：" + Name);
-                        var AssemblySave = new AssemblySave();
+                        var AssemblySave = new DllBuildSave();
                         AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
@@ -569,7 +569,7 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载Robot：" + Name);
-                        var AssemblySave = new AssemblySave();
+                        var AssemblySave = new DllBuildSave();
                         AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
@@ -601,7 +601,7 @@ namespace ColoryrServer.DllManager
             {
                 try
                 {
-                    var save = new AppSave();
+                    var save = new AppBuildSave();
                     string Name = FileItem.Name;
                     var obj = CSFile.GetApp(Name);
                     if (obj == null)

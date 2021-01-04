@@ -11,7 +11,7 @@ namespace ColoryrServer.DllManager
 {
     internal class DllRun
     {
-        public static HttpReturn DllGo(AssemblySave Dll, HttpRequest Arg, string FunName)
+        public static HttpReturn DllGo(DllBuildSave Dll, HttpRequest Arg, string FunName)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace ColoryrServer.DllManager
                 };
             }
         }
-        public static void IoTGo(AssemblySave Dll, IoTRequest Head)
+        public static void IoTGo(DllBuildSave Dll, IoTRequest Head)
         {
             try
             {

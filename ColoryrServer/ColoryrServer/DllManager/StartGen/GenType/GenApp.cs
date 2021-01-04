@@ -29,15 +29,15 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            var save = new AppSave
+            var save = new AppBuildSave
             {
-                Key = File.Key,
-                Xamls = new Dictionary<string, string>(File.Xamls),
                 Dll = Res.MS.ToArray(),
                 Pdb = Res.MSPdb.ToArray()
             };
 
             DllStonge.AddApp(File.UUID, save);
+            var time = string.Format("{0:s}", DateTime.Now);
+            File.UpdataTime = time;
 
             Res.MSPdb.Close();
             Res.MSPdb.Dispose();
@@ -48,22 +48,19 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             Task.Run(() =>
             {
                 string dir = DllStonge.AppLocal + File.UUID + "\\";
-                using (var FileStream = new FileStream(dir + "app.dll", FileMode.OpenOrCreate))
-                {
-                    FileStream.Write(save.Dll);
-                    FileStream.Flush();
-                }
+                using FileStream FileStream = new FileStream(dir + "app.dll", FileMode.OpenOrCreate);
+                FileStream.Write(save.Dll);
+                FileStream.Flush();
 
-                using (var FileStream = new FileStream(dir + "app.pdb", FileMode.OpenOrCreate))
-                {
-                    FileStream.Write(save.Pdb);
-                    FileStream.Flush();
-                }
+                using FileStream FileStream1 = new FileStream(dir + "app.pdb", FileMode.OpenOrCreate);
+                FileStream1.Write(save.Pdb);
+                FileStream1.Flush();
+
                 foreach (var item in File.Xamls)
                 {
-                    using var FileStream = new FileStream(dir + item.Key, FileMode.OpenOrCreate);
-                    FileStream.Write(Encoding.UTF8.GetBytes(item.Value));
-                    FileStream.Flush();
+                    using var FileStream2 = new FileStream(dir + item.Key, FileMode.OpenOrCreate);
+                    FileStream2.Write(Encoding.UTF8.GetBytes(item.Value));
+                    FileStream2.Flush();
                 }
 
                 CSFile.StorageApp(File);
@@ -75,7 +72,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成"
+                Res = "编译完成",
+                Time = File.UpdataTime
             };
         }
     }

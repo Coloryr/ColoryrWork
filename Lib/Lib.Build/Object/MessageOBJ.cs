@@ -14,6 +14,10 @@
         /// 编译用时
         /// </summary>
         public string UseTime { get; set; }
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public string Time { get; set; }
     }
     public record ReBuild
     {
