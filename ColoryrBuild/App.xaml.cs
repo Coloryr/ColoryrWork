@@ -27,6 +27,7 @@ namespace ColoryrBuild
         public static ConfigObj Config { get; private set; }
         public static MainWindow MainWindow_;
         public static ContrastWindow ContrastWindow_;
+        public static LogWindow LogWindow_;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -48,11 +49,29 @@ namespace ColoryrBuild
             DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            Log("启动");
+            ContrastWindow_ = new();
+            ContrastWindow_.Show();
+            if (!IsLogin)
+            {
+                Login();
+            }
+        }
 
-            //if (!IsLogin)
-            //{
-            //    new Login().ShowDialog();
-            //}
+        public static void Login()
+        {
+            IsLogin = false;
+            new Login().ShowDialog();
+        }
+
+        public static void Log(string data)
+        {
+            if (LogWindow_ == null)
+            {
+                LogWindow_ = new();
+                LogWindow_.Show();
+            }
+            LogWindow_.Log(data);
         }
 
         public static DiffPaneModel StartContrast(CSFileCode obj, string old)
@@ -69,11 +88,13 @@ namespace ColoryrBuild
         public static void ShowB(string v1, string v2)
         {
             notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Error);
+            Log(v1 + "|" + v2);
         }
 
         public static void ShowA(string v1, string v2)
         {
             notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Info);
+            Log(v1 + "|" + v2);
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
@@ -81,7 +102,7 @@ namespace ColoryrBuild
             MainWindow_?.Activate();
         }
 
-        public static async Task<bool> Login()
+        public static async Task<bool> StartLogin()
         {
             var res = await HttpUtils.Login();
             ConfigSave.Save(Config, RunLocal + "Config.json");

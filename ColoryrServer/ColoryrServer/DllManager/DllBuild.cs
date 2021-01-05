@@ -379,8 +379,7 @@ namespace ColoryrServer.DllManager
                 Object = new ReMessage
                 {
                     Build = false,
-                    Message = "233",
-                    UseTime = "0"
+                    Message = "233"
                 };
             }
             return new HttpReturn

@@ -1,6 +1,7 @@
 ﻿using Lib.Build;
 using Lib.Build.Object;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -20,6 +21,23 @@ namespace ColoryrBuild
                 Timeout = TimeSpan.FromSeconds(30)
             };
             httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK, BuildKV.BuildV);
+        }
+
+        public bool CheckLogin(string data)
+        {
+            var obj = new JObject(data);
+            if (obj.ContainsKey("Build") && obj.ContainsKey("Message"))
+            {
+                var item1 = obj["Build"].ToString();
+                var item2 = obj["Message"].ToString();
+                if (item1 == "False" && item2 == "233")
+                {
+                    App.ShowB("'登录", "登录失效");
+                    App.Login();
+                    return false;
+                }
+            }
+            return true;
         }
 
         public async Task<CSFileList> GetList(CodeType type)
@@ -45,7 +63,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                { 
+                    await GetList(type);
+                }
                 return JsonConvert.DeserializeObject<CSFileList>(data);
             }
             catch
@@ -78,7 +99,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                {
+                    await Add(type, name);
+                }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch
@@ -111,7 +135,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                {
+                    await Remove(type, obj);
+                }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch
@@ -179,7 +206,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                {
+                    await GetCode(type, name);
+                }
                 return JsonConvert.DeserializeObject<CSFileCode>(data);
             }
             catch
@@ -203,7 +233,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                {
+                    await GetAppCode(name);
+                }
                 return JsonConvert.DeserializeObject<CSFileCode>(data);
             }
             catch
@@ -212,15 +245,23 @@ namespace ColoryrBuild
             }
         }
 
-        public async Task<ReMessage> Build(CSFileObj obj, List<CodeEditObj> list)
+        public async Task<ReMessage> Build(CSFileObj obj, CodeType type, List<CodeEditObj> list)
         {
             try
             {
+                var reType = type switch
+                {
+                    CodeType.Class => ReType.UpdataClass,
+                    CodeType.IoT => ReType.UpdataIoT,
+                    CodeType.Robot => ReType.UpdataRobot,
+                    CodeType.WebSocket => ReType.UpdataWebSocket,
+                    _ => ReType.UpdataDll,
+                };
                 var pack = new BuildOBJ
                 {
                     User = App.Config.Name,
                     Token = App.Config.Token,
-                    Mode = ReType.CodeApp,
+                    Mode = reType,
                     UUID = obj.UUID,
                     Code = JsonConvert.SerializeObject(list)
                 };
@@ -228,7 +269,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-
+                if (!CheckLogin(data))
+                {
+                    await Build(obj, type, list);
+                }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch

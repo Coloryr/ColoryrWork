@@ -25,12 +25,12 @@ namespace ColoryrBuild.Windows
     public partial class EditWindow : Window
     {
         private string old;
-        private CSFileObj obj;
-        private CodeType type;
+        private readonly CSFileObj obj;
+        private readonly CodeType type;
         private CSFileCode obj1;
         private DiffPaneModel Model;
-        private FileSystemWatcher FileSystemWatcher;
-        private string Local;
+        private readonly FileSystemWatcher FileSystemWatcher;
+        private readonly string Local;
         private bool Write;
 
         public EditWindow(CSFileObj obj, CodeType type)
@@ -94,7 +94,12 @@ namespace ColoryrBuild.Windows
             else
             {
                 var data = App.HttpUtils.GetAppCode(obj.UUID);
-
+                if (data == null)
+                {
+                    App.ShowB("获取错误", "代码获取错误");
+                    Write = false;
+                    return;
+                }
             }
             Write = false;
         }
@@ -133,7 +138,11 @@ namespace ColoryrBuild.Windows
                       Fun = type
                 });
             }
-            var data = await App.HttpUtils.Build(obj1, list);
+            var data = await App.HttpUtils.Build(obj1, type, list);
+            if (data == null)
+            {
+                App.ShowB("编译错误", "服务器返回错误");
+            }
             if (data.Build)
             {
                 App.ShowA("编译", data.Message);

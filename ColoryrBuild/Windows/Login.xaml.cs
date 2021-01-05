@@ -20,7 +20,7 @@ namespace ColoryrBuild.Windows
             App.Config.Http = Addr.Text;
             App.Config.Name = User.Text;
             App.Config.SaveToken = Token.IsChecked == true;
-            var res = await App.Login();
+            var res = await App.StartLogin();
             if (res)
             {
                 Close();

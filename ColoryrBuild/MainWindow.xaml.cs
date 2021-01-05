@@ -2,9 +2,9 @@
 using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -46,14 +46,12 @@ namespace ColoryrBuild
 
         private void ReList()
         {
-            /*
             ReDll();
             ReClass();
             ReIoT();
             ReRobot();
             ReWebSocket();
             ReApp();
-            */
         }
 
         private async void ReDll()
@@ -153,6 +151,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.Dll, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -171,6 +173,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.Dll, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -196,6 +202,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.Class, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -214,6 +224,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.Class, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -239,6 +253,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.IoT, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -257,6 +275,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.IoT, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -282,6 +304,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.Robot, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -300,6 +326,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.Robot, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -325,6 +355,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.WebSocket, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -343,6 +377,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.WebSocket, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -368,6 +406,10 @@ namespace ColoryrBuild
             if (string.IsNullOrWhiteSpace(data))
                 return;
             var list = await App.HttpUtils.Add(CodeType.App, data);
+            if (list == null)
+            {
+                App.ShowB("添加", "服务器返回错误");
+            }
             if (list.Build)
             {
                 App.ShowA("创建", list.Message);
@@ -386,6 +428,10 @@ namespace ColoryrBuild
             if (res)
             {
                 var data = await App.HttpUtils.Remove(CodeType.App, item);
+                if (data == null)
+                {
+                    App.ShowB("删除", "服务器返回错误");
+                }
                 if (data.Build)
                 {
                     App.ShowA("删除", data.Message);
@@ -535,6 +581,18 @@ namespace ColoryrBuild
                         ListApp.Items.Add(item.Value);
                     }
                 }
+            }
+        }
+
+        private void Window_Closed(object sender, CancelEventArgs e)
+        {
+            if (new ChoseWindow("关闭", "你确定要关闭编辑器吗").Set())
+            {
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }
