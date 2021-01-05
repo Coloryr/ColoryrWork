@@ -63,14 +63,14 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "已创建" + Json.UUID
+                                Message = "Dll已创建" + Json.UUID
                             };
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "UUID已存在"
+                                Message = "Dll已存在"
                             };
                         break;
                     case ReType.AddClass:
@@ -88,14 +88,14 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "已创建" + Json.UUID
+                                Message = "Class已创建" + Json.UUID
                             };
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "UUID已存在"
+                                Message = "Class已存在"
                             };
                         break;
                     case ReType.AddIoT:
@@ -113,14 +113,14 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "已创建" + Json.UUID
+                                Message = "IoT已创建" + Json.UUID
                             };
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "UUID已存在"
+                                Message = "IoT已存在"
                             };
                         break;
                     case ReType.AddWebSocket:
@@ -138,14 +138,14 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "已创建" + Json.UUID
+                                Message = "WebSocket已创建" + Json.UUID
                             };
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "UUID已存在"
+                                Message = "WebSocket已存在"
                             };
                         break;
                     case ReType.AddRobot:
@@ -163,14 +163,14 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "已创建" + Json.UUID
+                                Message = "Robot已创建" + Json.UUID
                             };
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "UUID已存在"
+                                Message = "Robot已存在"
                             };
                         break;
                     case ReType.GetDll:
@@ -213,6 +213,14 @@ namespace ColoryrServer.DllManager
                         }
                         Object = List;
                         break;
+                    case ReType.GetApp:
+                        List = new CSFileList();
+                        foreach (var item in CSFile.AppFileList)
+                        {
+                            List.List.Add(item.Key, item.Value);
+                        }
+                        Object = List;
+                        break;
                     case ReType.CodeDll:
                         Object = CSFile.GetDll(Json.UUID);
                         break;
@@ -236,7 +244,7 @@ namespace ColoryrServer.DllManager
                         Object = new ReMessage
                         {
                             Build = true,
-                            Message = "已删除"
+                            Message = "Dll已删除:" + Json.UUID
                         };
                         break;
                     case ReType.RemoveClass:
@@ -244,7 +252,7 @@ namespace ColoryrServer.DllManager
                         Object = new ReMessage
                         {
                             Build = true,
-                            Message = "已删除"
+                            Message = "Class已删除:" + Json.UUID
                         };
                         break;
                     case ReType.RemoveIoT:
@@ -252,7 +260,7 @@ namespace ColoryrServer.DllManager
                         Object = new ReMessage
                         {
                             Build = true,
-                            Message = "已删除"
+                            Message = "IoT已删除:" + Json.UUID
                         };
                         break;
                     case ReType.RemoveWebSocket:
@@ -260,7 +268,7 @@ namespace ColoryrServer.DllManager
                         Object = new ReMessage
                         {
                             Build = true,
-                            Message = "已删除"
+                            Message = "WebSocket已删除:" + Json.UUID
                         };
                         break;
                     case ReType.RemoveRobot:
@@ -268,7 +276,7 @@ namespace ColoryrServer.DllManager
                         Object = new ReMessage
                         {
                             Build = true,
-                            Message = "已删除"
+                            Message = "Robot已删除:" + Json.UUID
                         };
                         break;
                     case ReType.UpdataDll:
@@ -291,9 +299,8 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        File.Version++;
+                        
                         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
-
                         File.Code = FileEdit.StartEdit(File.Code, list);
                         File.Text = Json.Text;
 
@@ -301,6 +308,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenDll.StartGen(File);
                         SW.Stop();
+                        File.Version++;
                         Object = new ReMessage
                         {
                             Build = BuildBack.Isok,

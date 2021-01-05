@@ -34,7 +34,6 @@ namespace ColoryrServer.DllManager
         private static readonly ReaderWriterLockSlim Lock4 = new();
         private static readonly ReaderWriterLockSlim Lock5 = new();
         private static readonly ReaderWriterLockSlim Lock6 = new();
-        private static readonly ReaderWriterLockSlim Lock7 = new();
 
         private static void RemoveAll(string dir)
         {

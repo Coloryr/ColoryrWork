@@ -1,0 +1,14 @@
+﻿<Window x:Class="ColoryrBuild.Windows.ContrastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ColoryrBuild.Windows"
+        xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
+        mc:Ignorable="d"
+        Title="代码对比" Height="450" Width="800" Closing="Window_Closing">
+    <Grid>
+        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+        <diffplex:DiffViewer x:Name="DiffView" Margin="2,2,2,2" />
+    </Grid>
+</Window>

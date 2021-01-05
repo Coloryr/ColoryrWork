@@ -17,10 +17,6 @@ namespace Lib.Build.Object
         /// </summary>
         public string Text { get; set; }
         /// <summary>
-        /// 用户
-        /// </summary>
-        public string User { get; set; }
-        /// <summary>
         /// 版本
         /// </summary>
         public int Version { get; set; }
@@ -40,7 +36,6 @@ namespace Lib.Build.Object
         {
             UUID = obj.UUID;
             Text = obj.Text;
-            User = obj.User;
         }
         public CSFileCode()
         {
@@ -64,7 +59,6 @@ namespace Lib.Build.Object
         {
             UUID = obj.UUID;
             Text = obj.Text;
-            User = obj.User;
             Codes = new();
             Xamls = new();
             Files = new();

@@ -1,5 +1,7 @@
 ﻿using ColoryrBuild.Windows;
+using DiffPlex.DiffBuilder.Model;
 using Lib.Build;
+using Lib.Build.Object;
 using System;
 using System.Net;
 using System.Text;
@@ -24,6 +26,7 @@ namespace ColoryrBuild
         public static bool IsLogin { get; private set; }
         public static ConfigObj Config { get; private set; }
         public static MainWindow MainWindow_;
+        public static ContrastWindow ContrastWindow_;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -46,10 +49,21 @@ namespace ColoryrBuild
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            if (!IsLogin)
+            //if (!IsLogin)
+            //{
+            //    new Login().ShowDialog();
+            //}
+        }
+
+        public static DiffPaneModel StartContrast(CSFileCode obj, string old)
+        {
+            if (ContrastWindow_ == null)
             {
-                new Login().ShowDialog();
+                ContrastWindow_ = new();
+                ContrastWindow_.Show();
             }
+
+            return ContrastWindow_.Start(obj, old);
         }
 
         public static void ShowB(string v1, string v2)
@@ -111,6 +125,11 @@ namespace ColoryrBuild
         {
             MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
             e.SetObserved();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            notifyIcon.Dispose();
         }
     }
 }
