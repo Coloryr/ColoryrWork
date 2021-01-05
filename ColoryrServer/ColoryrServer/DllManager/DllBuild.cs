@@ -349,6 +349,21 @@ namespace ColoryrServer.DllManager
                             Time = BuildBack.Time
                         };
                         break;
+                    case ReType.AppRemoveFile:
+                        var file = CSFile.GetApp(Json.UUID);
+                        if (file == null)
+                        {
+                            Object = CSFile.RemoveAppFile(Json.UUID, Json.Text);
+                        }
+                        else
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = "文件未找到"
+                            };
+                        }
+                        break;
                 }
             }
             else

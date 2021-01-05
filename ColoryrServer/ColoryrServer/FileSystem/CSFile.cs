@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.DllManager;
+using Lib.Build;
 using Lib.Build.Object;
 using Lib.Server;
 using Newtonsoft.Json;
@@ -16,7 +17,7 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> IoTList { get; set; }
         public List<CSFileObj> WebSocketList { get; set; }
         public List<CSFileObj> RobotList { get; set; }
-        public List<CSFileObj> AppList { get; set; }
+        public List<AppFileObj> AppList { get; set; }
     }
     internal class CSFile
     {
@@ -35,7 +36,6 @@ namespace ColoryrServer.FileSystem
         public static readonly Dictionary<string, CSFileCode> IoTFileList = new Dictionary<string, CSFileCode>();
         public static readonly Dictionary<string, CSFileCode> WebSocketFileList = new Dictionary<string, CSFileCode>();
         public static readonly Dictionary<string, CSFileCode> RobotFileList = new Dictionary<string, CSFileCode>();
-
         public static readonly Dictionary<string, AppFileObj> AppFileList = new Dictionary<string, AppFileObj>();
 
         public CSFile()
@@ -140,6 +140,24 @@ namespace ColoryrServer.FileSystem
             RobotFileList.Add(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
+        }
+
+        public static bool AddFileApp(AppFileObj item, UploadObj obj, Stream baseStream)
+        {
+            var file = DllStonge.AppLocal + obj.UUID + "\\" + obj.FileName;
+            if (File.Exists(file))
+            {
+                return false;
+            }
+            else
+            {
+                using FileStream data = File.Open(file, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+                baseStream.CopyTo(data);
+                data.Flush();
+                item.Files.Add(obj.FileName, obj.FileName);
+                StorageApp(item);
+                return true;
+            }
         }
         public static void StorageApp(AppFileObj obj)
         {
@@ -386,12 +404,12 @@ Type:{4}
                 {
                     var MAP = new MAP
                     {
-                        ClassList = new List<CSFileObj>(ClassFileList.Values),
-                        DllList = new List<CSFileObj>(DllFileList.Values),
-                        IoTList = new List<CSFileObj>(IoTFileList.Values),
-                        WebSocketList = new List<CSFileObj>(WebSocketFileList.Values),
-                        RobotList = new List<CSFileObj>(RobotFileList.Values),
-                        AppList = new List<CSFileObj>(AppFileList.Values)
+                        ClassList = new(ClassFileList.Values),
+                        DllList = new(DllFileList.Values),
+                        IoTList = new(IoTFileList.Values),
+                        WebSocketList = new(WebSocketFileList.Values),
+                        RobotList = new(RobotFileList.Values),
+                        AppList = new(AppFileList.Values)
                     };
                     File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));
                 }
@@ -400,6 +418,28 @@ Type:{4}
                     ServerMain.LogError(e);
                 }
             });
+        }
+
+        internal static ReMessage RemoveAppFile(string uuid, string text)
+        {
+            var file = DllStonge.AppLocal + uuid + "\\" + text;
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+                return new ReMessage
+                {
+                    Build = true,
+                    Message = "删除"
+                };
+            }
+            else
+            {
+                return new ReMessage
+                {
+                    Build = true,
+                    Message = "不存在文件"
+                };
+            }
         }
     }
 }

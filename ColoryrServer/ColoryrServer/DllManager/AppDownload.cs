@@ -2,12 +2,8 @@
 using ColoryrServer.Http;
 using ColoryrServer.Utils;
 using Lib.App;
-using System.IO;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace ColoryrServer.DllManager
 {
@@ -16,7 +12,7 @@ namespace ColoryrServer.DllManager
         public static HttpReturn Download(DownloadObj obj)
         {
             var save = CSFile.GetApp(obj.UUID);
-            if(save.Key != obj.Key)
+            if (save.Key != obj.Key)
                 return new HttpReturn
                 {
                     Data = StreamUtils.StringOBJ("Key或UUID错误"),
@@ -63,10 +59,19 @@ namespace ColoryrServer.DllManager
                             }
                             else if (save.Files.ContainsKey(obj.Name))
                             {
-                                return new HttpReturn
+                                if (File.Exists(DllStonge.AppLocal + save.UUID + "\\" + obj.Name))
+                                    return new HttpReturn
+                                    {
+                                        Data1 = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name)
+                                    };
+                                else
                                 {
-                                    Data1 = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name)
-                                };
+                                    return new HttpReturn
+                                    {
+                                        ReCode = 400,
+                                        Data = StreamUtils.StringOBJ("文件被删除")
+                                    };
+                                }
                             }
                             else
                             {

@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.DllManager;
+using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
 using Lib.App;
@@ -110,8 +111,66 @@ namespace ColoryrServer.Http
                         }
                     }
                     break;
+                case MyContentType.Other:
+                    if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
+                    {
+                        if (Hashtable[UploadKV.UploadK] != null)
+                        {
+                            string data = Hashtable[UploadKV.UploadK];
+                            var item = Tools.ToObject<UploadObj>(data);
+                            var app = CSFile.GetApp(item.UUID);
+                            if (app == null)
+                            {
+                                return new HttpReturn
+                                {
+                                    Data = StreamUtils.JsonOBJ(new GetMeesage
+                                    {
+                                        Res = 123,
+                                        Text = "UUID未找到"
+                                    })
+                                };
+                            }
+                            else
+                            {
+                                if (CSFile.AddFileApp(app, item, streamReader.BaseStream))
+                                {
+                                    return new HttpReturn
+                                    {
+                                        Data = StreamUtils.JsonOBJ(new GetMeesage
+                                        {
+                                            Res = 100,
+                                            Text = "上传成功"
+                                        })
+                                    };
+                                }
+                                else
+                                {
+                                    return new HttpReturn
+                                    {
+                                        Data = StreamUtils.JsonOBJ(new GetMeesage
+                                        {
+                                            Res = 200,
+                                            Text = "上传失败"
+                                        })
+                                    };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return new HttpReturn
+                            {
+                                Data = StreamUtils.JsonOBJ(new GetMeesage
+                                {
+                                    Res = 123,
+                                    Text = "上传错误"
+                                })
+                            };
+                        }
+                    }
+                    break;
             }
-            
+
             string UUID = "0";
             string FunctionName = null;
             int thr = Url.IndexOf('?', 0);

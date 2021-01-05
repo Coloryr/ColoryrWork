@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lib.App
+﻿namespace Lib.App
 {
     public enum FileType
-    { 
+    {
         List, File
     }
     public class DownloadObj

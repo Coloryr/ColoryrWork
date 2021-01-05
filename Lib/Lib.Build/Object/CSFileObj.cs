@@ -74,6 +74,7 @@ namespace Lib.Build.Object
         {
             Codes = new();
             Xamls = new();
+            Files = new();
             Type = CodeType.App;
         }
     }
