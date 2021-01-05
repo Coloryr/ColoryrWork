@@ -23,5 +23,10 @@ namespace ColoryrBuild.Windows
         {
             InitializeComponent();
         }
+
+        public void Log(string data)
+        { 
+            
+        }
     }
 }
