@@ -112,14 +112,39 @@ namespace ColoryrServer.DllManager
                 };
             }
         }
-        public static void IoTGo(DllBuildSave Dll, IoTRequest Head)
+        public static void IoTGo(TcpIoTRequest Head)
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos["main"];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                foreach (var Dll in DllStonge.GetWebSocket())
+                {
+                    MethodInfo MI = Dll.MethodInfos["tcpmessage"];
+                    var Tran = new object[1] { Head };
+                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    MI.Invoke(Assembly, Tran);
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is VarDump Dump)
+                {
+                    ServerMain.LogError(Dump.Get());
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+        }
+        public static void IoTGo(UdpIoTRequest Head)
+        {
+            try
+            {
+                foreach (var Dll in DllStonge.GetWebSocket())
+                {
+                    MethodInfo MI = Dll.MethodInfos["udpmessage"];
+                    var Tran = new object[1] { Head };
+                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    MI.Invoke(Assembly, Tran);
+                }
             }
             catch (Exception e)
             {

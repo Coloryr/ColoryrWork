@@ -4,49 +4,94 @@ using System.Text;
 
 namespace ColoryrServer.SDK
 {
-    public class IoTRequest
+    public class TcpIoTRequest
     {
-        public string Name { get; private set; }
+        public int Port { get; private set; }
         public byte[] Data { get; private set; }
         /// <summary>
         /// 构造方法
         /// </summary>
-        /// <param name="Name">IoT设备注册的名字</param>
+        /// <param name="Port">IoT端口</param>
         /// <param name="Data">IoT发送的数据</param>
-        public IoTRequest(string Name, byte[] Data)
+        public TcpIoTRequest(int Port, byte[] Data)
         {
-            this.Name = Name;
+            this.Port = Port;
+            this.Data = Data;
+        }
+    }
+    public class UdpIoTRequest
+    {
+        public int Port { get; private set; }
+        public byte[] Data { get; private set; }
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="Port">IoT端口</param>
+        /// <param name="Data">IoT发送的数据</param>
+        public UdpIoTRequest(int Port, byte[] Data)
+        {
+            this.Port = Port;
             this.Data = Data;
         }
     }
 
-    public class IoT
+    public class TcpIoT
     {
         /// <summary>
         /// 获取IoT设备列表
         /// </summary>
         /// <returns>设备列表</returns>
-        public static List<string> GetIoTList()
+        public static List<int> GetList()
         {
-            return IoTSocketServer.GetList();
+            return IoTSocketServer.GetTcpList();
         }
         /// <summary>
         /// 向IoT设备发送字符串
         /// </summary>
         /// <param name="Name">设备名</param>
         /// <param name="Data">字符串</param>
-        public static void Send(string Name, string Data)
+        public static void Send(int Port, string Data)
         {
-            IoTPackDo.SendPack(Name, Encoding.UTF8.GetBytes(Data));
+            IoTPackDo.SendTcpPack(Port, Encoding.UTF8.GetBytes(Data));
         }
         /// <summary>
         /// 向IoT设备发送数据
         /// </summary>
         /// <param name="Name">设备名</param>
         /// <param name="Data">数据</param>
-        public static void Send(string Name, byte[] Data)
+        public static void Send(int Port, byte[] Data)
         {
-            IoTPackDo.SendPack(Name, Data);
+            IoTPackDo.SendTcpPack(Port, Data);
+        }
+    }
+
+    public class UdpIoT
+    {
+        /// <summary>
+        /// 获取IoT设备列表
+        /// </summary>
+        /// <returns>设备列表</returns>
+        public static List<int> GetList()
+        {
+            return IoTSocketServer.GetUdpList();
+        }
+        /// <summary>
+        /// 向IoT设备发送字符串
+        /// </summary>
+        /// <param name="Name">设备名</param>
+        /// <param name="Data">字符串</param>
+        public static void Send(int Port, string Data)
+        {
+            IoTPackDo.SendUdpPack(Port, Encoding.UTF8.GetBytes(Data));
+        }
+        /// <summary>
+        /// 向IoT设备发送数据
+        /// </summary>
+        /// <param name="Name">设备名</param>
+        /// <param name="Data">数据</param>
+        public static void Send(int Port, byte[] Data)
+        {
+            IoTPackDo.SendUdpPack(Port, Data);
         }
     }
 }

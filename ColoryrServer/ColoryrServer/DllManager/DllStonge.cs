@@ -206,23 +206,6 @@ namespace ColoryrServer.DllManager
                 Lock3.ExitReadLock();
             }
         }
-        public static DllBuildSave GetIoT(string uuid)
-        {
-            Lock3.EnterReadLock();
-            try
-            {
-                if (IoTList.TryGetValue(uuid, out var save))
-                {
-                    return save;
-                }
-                else
-                    return null;
-            }
-            finally
-            {
-                Lock3.ExitReadLock();
-            }
-        }
 
         public static void AddWebSocket(string uuid, DllBuildSave save)
         {
@@ -418,8 +401,10 @@ namespace ColoryrServer.DllManager
                     {
                         string uuid = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载DLL：" + uuid);
-                        var AssemblySave = new DllBuildSave();
-                        AssemblySave.Assembly = new AssemblyLoadContext(uuid, true);
+                        var AssemblySave = new DllBuildSave
+                        {
+                            Assembly = new AssemblyLoadContext(uuid, true)
+                        };
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
                         if (File.Exists(pdb))
@@ -459,8 +444,10 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载Class：" + Name);
-                        var AssemblySave = new DllBuildSave();
-                        AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
+                        var AssemblySave = new DllBuildSave
+                        {
+                            Assembly = new AssemblyLoadContext(Name, true)
+                        };
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
                         if (File.Exists(pdb))
@@ -492,8 +479,10 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载IoT：" + Name);
-                        var AssemblySave = new DllBuildSave();
-                        AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
+                        var AssemblySave = new DllBuildSave
+                        {
+                            Assembly = new AssemblyLoadContext(Name, true)
+                        };
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
                         if (File.Exists(pdb))
@@ -508,7 +497,7 @@ namespace ColoryrServer.DllManager
                             .GetTypes().Where(x => x.Name == Name).First();
                         foreach (var Item in AssemblySave.Type.GetMethods())
                         {
-                            if (Item.Name == "main")
+                            if (Item.Name == "tcpmessage" || Item.Name == "udpmessage")
                                 AssemblySave.MethodInfos.Add(Item.Name, Item);
                         }
                         AddIoT(Name, AssemblySave);
@@ -530,8 +519,10 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载WebSocket：" + Name);
-                        var AssemblySave = new DllBuildSave();
-                        AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
+                        var AssemblySave = new DllBuildSave
+                        {
+                            Assembly = new AssemblyLoadContext(Name, true)
+                        };
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
                         if (File.Exists(pdb))
@@ -568,8 +559,10 @@ namespace ColoryrServer.DllManager
                     {
                         string Name = FileItem.Name.Replace(".dll", "");
                         ServerMain.LogOut("加载Robot：" + Name);
-                        var AssemblySave = new DllBuildSave();
-                        AssemblySave.Assembly = new AssemblyLoadContext(Name, true);
+                        var AssemblySave = new DllBuildSave
+                        {
+                            Assembly = new AssemblyLoadContext(Name, true)
+                        };
 
                         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
                         if (File.Exists(pdb))

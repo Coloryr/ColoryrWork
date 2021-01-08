@@ -9,10 +9,13 @@ namespace ColoryrServer.IoT
 {
     internal class IoTSocketServer
     {
-        private static TcpListener ServerSocket;
-        private static readonly Dictionary<string, Socket> Clients = new();
+        private static TcpListener TcpServer;
+        private static Socket UdpServer;
+        private static readonly Dictionary<int, Socket> TcpClients = new();
+        private static readonly Dictionary<int, EndPoint> UdpClients = new();
         private static bool RunFlag;
-        private static readonly ReaderWriterLockSlim Lock1 = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim Lock1 = new();
+        private static readonly ReaderWriterLockSlim Lock2 = new();
 
         public static void Start()
         {
@@ -21,8 +24,12 @@ namespace ColoryrServer.IoT
                 try
                 {
                     ServerMain.LogOut("IoT服务器正在启动");
-                    ServerSocket = new TcpListener(IPAddress.Parse(ServerMain.Config.IoT.IP), ServerMain.Config.IoT.Port);
-                    ServerSocket.Start();
+                    var ip = IPAddress.Parse(ServerMain.Config.IoT.IP);
+                    TcpServer = new TcpListener(ip, ServerMain.Config.IoT.Port);
+                    TcpServer.Start();
+
+                    UdpServer = new Socket(SocketType.Dgram, ProtocolType.Udp);
+                    UdpServer.Bind(new IPEndPoint(ip, ServerMain.Config.IoT.Port));
 
                     RunFlag = true;
 
@@ -30,8 +37,22 @@ namespace ColoryrServer.IoT
                     {
                         while (RunFlag)
                         {
-                            var socket = await ServerSocket.AcceptSocketAsync();
+                            var socket = await TcpServer.AcceptSocketAsync();
                             ThreadPool.UnsafeQueueUserWorkItem(OnConnectRequest, socket);
+                        }
+                    });
+                    Task.Run(() =>
+                    {
+                        while (RunFlag)
+                        {
+                            EndPoint point = new IPEndPoint(IPAddress.Any, 0);//用来保存发送方的ip和端口号
+                            byte[] buffer = new byte[2048];
+                            int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
+                            if (point is IPEndPoint temp)
+                            {
+                                UdpClients.Add(temp.Port, temp);
+                                IoTPackDo.ReadUdpPack(temp.Port, buffer);
+                            }
                         }
                     });
                     ServerMain.LogOut("IoT服务器已启动");
@@ -48,64 +69,58 @@ namespace ColoryrServer.IoT
         {
             ServerMain.LogOut("IoT服务器正在停止");
             RunFlag = false;
-            ServerSocket.Stop();
-            foreach (var item in Clients.Values)
+            UdpServer.Close();
+            TcpServer.Stop();
+            UdpServer.Dispose();
+            foreach (var item in TcpClients.Values)
             {
                 if (item != null)
                 {
                     item.Dispose();
                 }
             }
-            Clients.Clear();
+            UdpClients.Clear();
+            TcpClients.Clear();
             ServerMain.LogOut("IoT服务器已停止");
         }
 
-        //当有客户端连接时的处理
         public static void OnConnectRequest(object temp)
         {
             try
             {
                 byte[] Data;
-                string Name = "";
                 var Client = (Socket)temp;
+                int Port = 0;
                 if (Client == null || !Client.Connected)
                 {
                     Client.Dispose();
-                    Remove(Name);
+                    var ip = (IPEndPoint)Client.RemoteEndPoint;
+                    Port = ip.Port;
+                    Remove(Port);
                     return;
                 }
-                while (Client.Available <= 0)
+                while (Client.Available == 0)
                 {
-                    Thread.Sleep(10);
-                }
-                Data = new byte[Client.Available];
-                Client.Receive(Data);
-                Name = IoTPackDo.CheckPack(Data);
-                if (Name == null)
-                {
-                    ServerMain.LogOut("非法的IoT设备连接");
-                    return;
-                }
-                Add(Name, Client);
-                IoTPackDo.SendPack(Name, Array.Empty<byte>());
-                while (true)
-                {
-                    if (Client == null)
+                    var pack = new byte[Client.Available];
+                    if (IoTPackDo.CheckPack(pack))
                     {
-                        Remove(Name);
                         return;
                     }
-                    else if (!RunFlag || Client.Available == -1)
+                }
+                Add(Port, Client);
+                while (true)
+                {
+                    if (!RunFlag || Client == null || Client.Available == -1)
                     {
                         Client.Dispose();
-                        Remove(Name);
+                        Remove(Port);
                         return;
                     }
                     else if (Client.Available != 0)
                     {
                         Data = new byte[Client.Available];
                         Client.Receive(Data);
-                        IoTPackDo.ReadPack(Name, Data);
+                        IoTPackDo.ReadTcpPack(Port, Data);
                     }
                     Thread.Sleep(100);
                 }
@@ -116,36 +131,60 @@ namespace ColoryrServer.IoT
             }
         }
 
-        private static void Add(string Name, Socket Client)
+        private static void Add(int Port, Socket Client)
         {
-            Lock1.EnterWriteLock();
-            try
+            if (Client.ProtocolType == ProtocolType.Tcp)
             {
-                if (Name != null)
+                Lock1.EnterWriteLock();
+                try
                 {
-                    if (Clients.ContainsKey(Name))
+                    if (Port != 0)
                     {
-                        Clients[Name].Dispose();
-                        Clients.Remove(Name);
+                        if (TcpClients.ContainsKey(Port))
+                        {
+                            TcpClients[Port].Dispose();
+                            TcpClients.Remove(Port);
+                        }
+                        ServerMain.LogOut("IoT|Tcp:" + Port + " is connected");
                     }
-                    ServerMain.LogOut("IoT:" + Name + " is connected");
+                    TcpClients.Add(Port, Client);
                 }
-                Clients.Add(Name, Client);
+                finally
+                {
+                    Lock1.ExitWriteLock();
+                }
             }
-            finally
+            else if (Client.ProtocolType == ProtocolType.Udp)
             {
-                Lock1.ExitWriteLock();
+                Lock2.EnterWriteLock();
+                try
+                {
+                    if (Port != 0)
+                    {
+                        if (TcpClients.ContainsKey(Port))
+                        {
+                            TcpClients[Port].Dispose();
+                            TcpClients.Remove(Port);
+                        }
+                        ServerMain.LogOut("IoT|Udp:" + Port + " is connected");
+                    }
+                    TcpClients.Add(Port, Client);
+                }
+                finally
+                {
+                    Lock2.ExitWriteLock();
+                }
             }
         }
-        private static void Remove(string Name)
+        private static void Remove(int port)
         {
             Lock1.EnterWriteLock();
             try
             {
-                if (Name != null)
+                if (port != 0)
                 {
-                    Clients.Remove(Name);
-                    ServerMain.LogOut("IoT:" + Name + " is disconnect");
+                    TcpClients.Remove(port);
+                    ServerMain.LogOut("IoT|Tcp:" + port + " is disconnect");
                 }
             }
             finally
@@ -154,9 +193,9 @@ namespace ColoryrServer.IoT
             }
         }
 
-        public static void SendData(string Name, byte[] data)
+        public static void TcpSendData(int port, byte[] data)
         {
-            if (Clients.TryGetValue(Name, out var socket))
+            if (TcpClients.TryGetValue(port, out var socket))
             {
                 if (socket.Connected)
                 {
@@ -165,14 +204,26 @@ namespace ColoryrServer.IoT
                 else
                 {
                     socket.Dispose();
-                    Remove(Name);
+                    Remove(port);
                 }
             }
         }
-
-        public static List<string> GetList()
+        public static void UdpSendData(int port, byte[] data)
         {
-            return new List<string>(Clients.Keys);
+            if (UdpClients.TryGetValue(port, out var socket))
+            {
+                UdpServer.SendTo(data, socket);
+            }
+        }
+
+        public static List<int> GetTcpList()
+        {
+            return new List<int>(TcpClients.Keys);
+        }
+
+        public static List<int> GetUdpList()
+        {
+            return new List<int>(UdpClients.Keys);
         }
     }
 }

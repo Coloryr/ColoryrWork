@@ -11,7 +11,7 @@ namespace ColoryrBuild
     {
         public static string FilePath = App.RunLocal + @"/CodeTEMP/";
         private static readonly ReaderWriterLockSlim lock1 = new ReaderWriterLockSlim();
-        public CodeSave()
+        public static void Start()
         {
             if (!Directory.Exists(FilePath))
             {

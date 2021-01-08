@@ -45,7 +45,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
             foreach (var Item in AssemblySave.Type.GetMethods())
             {
-                if (Item.Name == "main")
+                if (Item.Name == "tcpmessage" || Item.Name == "ucpmessage")
                     AssemblySave.MethodInfos.Add(Item.Name, Item);
             }
 

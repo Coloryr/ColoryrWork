@@ -32,6 +32,7 @@ namespace ColoryrBuild
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             RunLocal = AppDomain.CurrentDomain.BaseDirectory;
+            CodeSave.Start();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             Config = ConfigSave.Config(new ConfigObj
@@ -50,12 +51,13 @@ namespace ColoryrBuild
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Log("启动");
-            ContrastWindow_ = new();
-            ContrastWindow_.Show();
-            if (!IsLogin)
+            ShowA("登录", "账户未登录");
+            while (!IsLogin)
             {
                 Login();
             }
+            ContrastWindow_ = new();
+            ContrastWindow_.Show();
         }
 
         public static void Login()
