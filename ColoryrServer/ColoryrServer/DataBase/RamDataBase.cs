@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using ColoryrServer.FileSystem;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace ColoryrServer.DataBase
 {
@@ -10,13 +12,41 @@ namespace ColoryrServer.DataBase
         /// </summary>
         private static ConcurrentDictionary<string, ConcurrentDictionary<string, dynamic>> RamCache;
 
+        private static ConcurrentBag<string> QueueSave;
+        private static ConcurrentBag<string> QueueRemove;
+        private static Thread SaveThread;
+
         /// <summary>
         /// 初始化缓存
         /// </summary>
         internal static void Start()
         {
             RamCache = new();
+            QueueSave = new();
+            QueueRemove = new();
             State = true;
+            var list = FileRam.GetAll();
+            foreach (var item in list)
+            {
+                var data = FileRam.Load(item);
+                RamCache.TryAdd(item, data);
+            }
+            SaveThread = new Thread(() =>
+            {
+                while (State)
+                {
+                    Thread.Sleep(100);
+                    if (QueueSave.TryTake(out var temp))
+                    {
+                        FileRam.Save(temp, RamCache[temp]);
+                    }
+                    if (QueueRemove.TryTake(out var temp1))
+                    {
+                        FileRam.Remove(temp1);
+                    }
+                }
+            });
+            SaveThread.Start();
         }
 
         internal static void Stop()
@@ -47,6 +77,15 @@ namespace ColoryrServer.DataBase
             return temp1;
         }
         /// <summary>
+        /// 检测是否有缓存名
+        /// </summary>
+        /// <param name="Name">缓存名</param>
+        /// <returns>是否存在</returns>
+        internal static bool HaveCache(string Name)
+        {
+            return RamCache.ContainsKey(Name);
+        }
+        /// <summary>
         /// 检测是否有缓存名的键
         /// </summary>
         /// <param name="Name">缓存名</param>
@@ -75,28 +114,8 @@ namespace ColoryrServer.DataBase
             if (!RamCache[Name].ContainsKey(key))
                 RamCache[Name].TryAdd(key, Value);
             RamCache[Name][key] = Value;
+            QueueSave.Add(Name);
         }
-        /// <summary>
-        /// 清空缓存
-        /// </summary>
-        /// <param name="Name">缓存名</param>
-        internal static void CloseCache(string Name)
-        {
-            if (!RamCache.ContainsKey(Name))
-                return;
-            RamCache.TryRemove(Name, out var temp);
-            temp.Clear();
-        }
-        /// <summary>
-        /// 检测是否有缓存名
-        /// </summary>
-        /// <param name="Name">缓存名</param>
-        /// <returns>是否存在</returns>
-        internal static bool HaveCache(string Name)
-        {
-            return RamCache.ContainsKey(Name);
-        }
-
         /// <summary>
         /// 检测缓存名是否存在，不存在创建
         /// </summary>
@@ -109,7 +128,20 @@ namespace ColoryrServer.DataBase
                 var list = new ConcurrentDictionary<string, dynamic>();
                 RamCache.TryAdd(Name, list);
             }
+            QueueSave.Add(Name);
             return Name;
+        }
+        /// <summary>
+        /// 清空缓存
+        /// </summary>
+        /// <param name="Name">缓存名</param>
+        internal static void CloseCache(string Name)
+        {
+            if (!RamCache.ContainsKey(Name))
+                return;
+            RamCache.TryRemove(Name, out var temp);
+            temp.Clear();
+            QueueRemove.Add(Name);
         }
     }
 }

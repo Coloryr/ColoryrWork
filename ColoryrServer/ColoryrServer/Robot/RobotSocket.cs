@@ -241,8 +241,9 @@ namespace ColoryrServer.Robot
         internal static void Stop()
         {
             ServerMain.LogOut("机器人正在断开");
+            if (IsConnect)
+                SendStop();
             IsRun = false;
-            SendStop();
             if (Socket != null)
                 Socket.Close();
             ServerMain.LogOut("机器人已断开");

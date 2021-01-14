@@ -140,6 +140,7 @@ namespace ColoryrServer
 
                 new APIFile();
                 new FileTemp();
+                new FileRam();
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
@@ -177,6 +178,8 @@ namespace ColoryrServer
                 {
                     LogError("Redis连接失败");
                 }
+                //内存数据库
+                RamDataBase.Start();
 
                 //服务器启动
                 HttpServer.Start();

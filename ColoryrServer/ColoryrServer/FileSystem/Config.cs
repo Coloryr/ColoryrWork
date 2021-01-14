@@ -57,6 +57,10 @@ namespace ColoryrServer.FileSystem
     internal record OracleConfig
     {
         /// <summary>
+        /// 启用
+        /// </summary>
+        public bool Enable { get; set; }
+        /// <summary>
         /// IP地址
         /// </summary>
         public string IP { get; set; }
@@ -114,6 +118,10 @@ namespace ColoryrServer.FileSystem
     internal record MysqlConfig
     {
         /// <summary>
+        /// 启用
+        /// </summary>
+        public bool Enable { get; set; }
+        /// <summary>
         /// IP地址
         /// </summary>
         public string IP { get; set; }
@@ -145,6 +153,10 @@ namespace ColoryrServer.FileSystem
     internal record MSsqlConfig
     {
         /// <summary>
+        /// 启用
+        /// </summary>
+        public bool Enable { get; set; }
+        /// <summary>
         /// IP地址
         /// </summary>
         public string IP { get; set; }
@@ -171,6 +183,10 @@ namespace ColoryrServer.FileSystem
     }
     internal record RedisConfig
     {
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public bool Enable { get; set; }
         /// <summary>
         /// IP地址
         /// </summary>
