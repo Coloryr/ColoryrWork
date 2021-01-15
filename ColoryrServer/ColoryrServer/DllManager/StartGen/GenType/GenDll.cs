@@ -80,7 +80,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 }
 
                 CSFile.StorageDll(CodeFile);
-                Config.Save();
+                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

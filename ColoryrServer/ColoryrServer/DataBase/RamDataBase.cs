@@ -54,11 +54,10 @@ namespace ColoryrServer.DataBase
             State = false;
             if (RamCache != null)
             {
-                foreach (var item in RamCache.Values)
+                foreach (var item in RamCache)
                 {
-                    item.Clear();
+                    FileRam.Save(item.Key, item.Value);
                 }
-                RamCache.Clear();
             }
         }
 

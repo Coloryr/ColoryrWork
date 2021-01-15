@@ -66,7 +66,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 }
 
                 CSFile.StorageClass(File);
-                Config.Save();
+                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

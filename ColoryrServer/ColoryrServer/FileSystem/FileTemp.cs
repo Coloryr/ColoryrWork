@@ -9,7 +9,7 @@ namespace ColoryrServer.FileSystem
     {
         public static string Local;
 
-        public FileTemp()
+        public static void Start()
         {
             Local = ServerMain.RunLocal + @"/TEMP/";
             if (!Directory.Exists(Local))

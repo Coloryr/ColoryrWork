@@ -78,7 +78,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 }
 
                 CSFile.StorageRobot(File);
-                Config.Save();
+                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

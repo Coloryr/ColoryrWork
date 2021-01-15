@@ -2,6 +2,7 @@
 using ColoryrServer.FileSystem;
 using Lib.Server;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,13 +13,13 @@ namespace ColoryrServer.DllManager
 {
     internal class DllStonge
     {
-        private static readonly Dictionary<string, DllBuildSave> DllList = new();
-        private static readonly Dictionary<string, DllBuildSave> ClassList = new();
-        private static readonly Dictionary<string, DllBuildSave> IoTList = new();
-        private static readonly Dictionary<string, DllBuildSave> WebSocketList = new();
-        private static readonly Dictionary<string, DllBuildSave> RobotList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> DllList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> ClassList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> IoTList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> WebSocketList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> RobotList = new();
 
-        private static readonly Dictionary<string, AppBuildSave> AppList = new();
+        private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
 
         public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
         public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
@@ -27,13 +28,6 @@ namespace ColoryrServer.DllManager
         public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
 
         public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
-
-        private static readonly ReaderWriterLockSlim Lock1 = new();
-        private static readonly ReaderWriterLockSlim Lock2 = new();
-        private static readonly ReaderWriterLockSlim Lock3 = new();
-        private static readonly ReaderWriterLockSlim Lock4 = new();
-        private static readonly ReaderWriterLockSlim Lock5 = new();
-        private static readonly ReaderWriterLockSlim Lock6 = new();
 
         private static void RemoveAll(string dir)
         {
@@ -49,322 +43,186 @@ namespace ColoryrServer.DllManager
 
         public static void AddDll(string uuid, DllBuildSave save)
         {
-            Lock1.EnterWriteLock();
-            try
+            if (DllList.ContainsKey(uuid))
             {
-                if (DllList.ContainsKey(uuid))
-                {
-                    DllList[uuid].Assembly.Unload();
-                    DllList[uuid].Type = null;
-                    DllList[uuid].MethodInfos.Clear();
-                    DllList[uuid] = save;
-                }
-                else
-                {
-                    DllList.Add(uuid, save);
-                }
+                DllList[uuid].Assembly.Unload();
+                DllList[uuid].Type = null;
+                DllList[uuid].MethodInfos.Clear();
+                DllList[uuid] = save;
             }
-            finally
+            else
             {
-                Lock1.ExitWriteLock();
+                DllList.TryAdd(uuid, save);
             }
         }
         public static void RemoveDll(string uuid)
         {
-            Lock1.EnterReadLock();
-            try
+            if (DllList.ContainsKey(uuid))
             {
-                if (DllList.ContainsKey(uuid))
-                {
-                    DllList[uuid].Assembly.Unload();
-                    DllList[uuid].Type = null;
-                    DllList[uuid].MethodInfos.Clear();
-                    DllList.Remove(uuid);
-                }
-                RemoveAll(DllLocal + uuid);
+                DllList[uuid].Assembly.Unload();
+                DllList[uuid].Type = null;
+                DllList[uuid].MethodInfos.Clear();
+                DllList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock1.ExitReadLock();
-            }
+            RemoveAll(DllLocal + uuid);
         }
         public static DllBuildSave GetDll(string uuid)
         {
-            Lock1.EnterReadLock();
-            try
+            if (DllList.TryGetValue(uuid, out var save))
             {
-                if (DllList.TryGetValue(uuid, out var save))
-                {
-                    return save;
-                }
-                else
-                    return null;
+                return save;
             }
-            finally
-            {
-                Lock1.ExitReadLock();
-            }
+            else
+                return null;
         }
 
         public static void AddClass(string uuid, DllBuildSave save)
         {
-            Lock2.EnterWriteLock();
-            try
+            if (ClassList.ContainsKey(uuid))
             {
-                if (ClassList.ContainsKey(uuid))
-                {
-                    ClassList[uuid].Assembly.Unload();
-                    ClassList[uuid].Type = null;
-                    ClassList[uuid].MethodInfos.Clear();
-                    ClassList[uuid] = save;
-                }
-                else
-                {
-                    ClassList.Add(uuid, save);
-                }
+                ClassList[uuid].Assembly.Unload();
+                ClassList[uuid].Type = null;
+                ClassList[uuid].MethodInfos.Clear();
+                ClassList[uuid] = save;
             }
-            finally
+            else
             {
-                Lock2.ExitWriteLock();
+                ClassList.TryAdd(uuid, save);
             }
         }
         public static void RemoveClass(string uuid)
         {
-            Lock2.EnterReadLock();
-            try
+            if (ClassList.ContainsKey(uuid))
             {
-                if (ClassList.ContainsKey(uuid))
-                {
-                    ClassList[uuid].Assembly.Unload();
-                    ClassList[uuid].Type = null;
-                    ClassList[uuid].MethodInfos.Clear();
-                    ClassList.Remove(uuid);
-                }
-                RemoveAll(ClassLocal + uuid);
+                ClassList[uuid].Assembly.Unload();
+                ClassList[uuid].Type = null;
+                ClassList[uuid].MethodInfos.Clear();
+                ClassList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock2.ExitReadLock();
-            }
+            RemoveAll(ClassLocal + uuid);
         }
         public static DllBuildSave GetClass(string uuid)
         {
-            Lock2.EnterReadLock();
-            try
+            if (ClassList.TryGetValue(uuid, out var save))
             {
-                if (ClassList.TryGetValue(uuid, out var save))
-                {
-                    return save;
-                }
-                else
-                    return null;
+                return save;
             }
-            finally
-            {
-                Lock2.ExitReadLock();
-            }
+            else
+                return null;
         }
 
         public static void AddIoT(string uuid, DllBuildSave save)
         {
-            Lock3.EnterWriteLock();
-            try
+            if (IoTList.ContainsKey(uuid))
             {
-                if (IoTList.ContainsKey(uuid))
-                {
-                    IoTList[uuid].Assembly.Unload();
-                    IoTList[uuid].Type = null;
-                    IoTList[uuid].MethodInfos.Clear();
-                    IoTList[uuid] = save;
-                }
-                else
-                {
-                    IoTList.Add(uuid, save);
-                }
+                IoTList[uuid].Assembly.Unload();
+                IoTList[uuid].Type = null;
+                IoTList[uuid].MethodInfos.Clear();
+                IoTList[uuid] = save;
             }
-            finally
+            else
             {
-                Lock3.ExitWriteLock();
+                IoTList.TryAdd(uuid, save);
             }
         }
         public static void RemoveIoT(string uuid)
         {
-            Lock3.EnterReadLock();
-            try
+            if (IoTList.ContainsKey(uuid))
             {
-                if (IoTList.ContainsKey(uuid))
-                {
-                    IoTList[uuid].Assembly.Unload();
-                    IoTList[uuid].Type = null;
-                    IoTList[uuid].MethodInfos.Clear();
-                    IoTList.Remove(uuid);
-                }
-                RemoveAll(IoTLocal + uuid);
+                IoTList[uuid].Assembly.Unload();
+                IoTList[uuid].Type = null;
+                IoTList[uuid].MethodInfos.Clear();
+                IoTList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock3.ExitReadLock();
-            }
+            RemoveAll(IoTLocal + uuid);
         }
 
         public static void AddWebSocket(string uuid, DllBuildSave save)
         {
-            Lock4.EnterWriteLock();
-            try
+            if (WebSocketList.ContainsKey(uuid))
             {
-                if (WebSocketList.ContainsKey(uuid))
-                {
-                    WebSocketList[uuid].Assembly.Unload();
-                    WebSocketList[uuid].Type = null;
-                    WebSocketList[uuid].MethodInfos.Clear();
-                    WebSocketList[uuid] = save;
-                }
-                else
-                {
-                    WebSocketList.Add(uuid, save);
-                }
+                WebSocketList[uuid].Assembly.Unload();
+                WebSocketList[uuid].Type = null;
+                WebSocketList[uuid].MethodInfos.Clear();
+                WebSocketList[uuid] = save;
             }
-            finally
+            else
             {
-                Lock4.ExitWriteLock();
+                WebSocketList.TryAdd(uuid, save);
             }
         }
         public static void RemoveWebSocket(string uuid)
         {
-            Lock4.EnterReadLock();
-            try
+            if (WebSocketList.ContainsKey(uuid))
             {
-                if (WebSocketList.ContainsKey(uuid))
-                {
-                    WebSocketList[uuid].Assembly.Unload();
-                    WebSocketList[uuid].Type = null;
-                    WebSocketList[uuid].MethodInfos.Clear();
-                    WebSocketList.Remove(uuid);
-                }
-                RemoveAll(WebSocketLocal + uuid);
+                WebSocketList[uuid].Assembly.Unload();
+                WebSocketList[uuid].Type = null;
+                WebSocketList[uuid].MethodInfos.Clear();
+                WebSocketList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock4.ExitReadLock();
-            }
+            RemoveAll(WebSocketLocal + uuid);
         }
         public static List<DllBuildSave> GetWebSocket()
         {
-            Lock4.EnterReadLock();
-            try
-            {
-                return new List<DllBuildSave>(WebSocketList.Values);
-            }
-            finally
-            {
-                Lock4.ExitReadLock();
-            }
+            return new List<DllBuildSave>(WebSocketList.Values);
         }
 
         public static void AddRobot(string uuid, DllBuildSave save)
         {
-            Lock5.EnterWriteLock();
-            try
+            if (RobotList.ContainsKey(uuid))
             {
-                if (RobotList.ContainsKey(uuid))
-                {
-                    RobotList[uuid].Assembly.Unload();
-                    RobotList[uuid].Type = null;
-                    RobotList[uuid].MethodInfos.Clear();
-                    RobotList[uuid] = save;
-                }
-                else
-                {
-                    RobotList.Add(uuid, save);
-                }
+                RobotList[uuid].Assembly.Unload();
+                RobotList[uuid].Type = null;
+                RobotList[uuid].MethodInfos.Clear();
+                RobotList[uuid] = save;
             }
-            finally
+            else
             {
-                Lock5.ExitWriteLock();
+                RobotList.TryAdd(uuid, save);
             }
         }
         public static void RemoveRobot(string uuid)
         {
-            Lock5.EnterReadLock();
-            try
+            if (RobotList.ContainsKey(uuid))
             {
-                if (RobotList.ContainsKey(uuid))
-                {
-                    RobotList[uuid].Assembly.Unload();
-                    RobotList[uuid].Type = null;
-                    RobotList[uuid].MethodInfos.Clear();
-                    RobotList.Remove(uuid);
-                }
-                RemoveAll(RobotLocal + uuid);
+                RobotList[uuid].Assembly.Unload();
+                RobotList[uuid].Type = null;
+                RobotList[uuid].MethodInfos.Clear();
+                RobotList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock5.ExitReadLock();
-            }
+            RemoveAll(RobotLocal + uuid);
         }
         public static List<DllBuildSave> GetRobot()
         {
-            Lock5.EnterReadLock();
-            try
-            {
-                return new List<DllBuildSave>(RobotList.Values);
-            }
-            finally
-            {
-                Lock5.ExitReadLock();
-            }
+            return new List<DllBuildSave>(RobotList.Values);
         }
 
         public static void AddApp(string uuid, AppBuildSave save)
         {
-            Lock6.EnterWriteLock();
-            try
+            if (AppList.ContainsKey(uuid))
             {
-                if (AppList.ContainsKey(uuid))
-                {
-                    AppList.Remove(uuid);
-                }
-                AppList.Add(uuid, save);
+                AppList.TryRemove(uuid, out var item);
             }
-            finally
-            {
-                Lock6.ExitWriteLock();
-            }
+            AppList.TryAdd(uuid, save);
         }
         public static void RemoveApp(string uuid)
         {
-            Lock6.EnterWriteLock();
-            try
+            if (AppList.ContainsKey(uuid))
             {
-                if (AppList.ContainsKey(uuid))
-                {
-                    AppList.Remove(uuid);
-                }
-            }
-            finally
-            {
-                Lock6.ExitWriteLock();
+                AppList.TryRemove(uuid, out var item);
             }
         }
         public static AppBuildSave GetApp(string uuid)
         {
-            Lock6.EnterReadLock();
-            try
+            if (AppList.TryGetValue(uuid, out var save))
             {
-                if (AppList.TryGetValue(uuid, out var save))
-                {
-                    return save;
-                }
-                else
-                    return null;
+                return save;
             }
-            finally
-            {
-                Lock6.ExitReadLock();
-            }
+            else
+                return null;
         }
 
-        public void DynamicInit()
+        public static void Start()
         {
             if (!Directory.Exists(DllLocal))
             {

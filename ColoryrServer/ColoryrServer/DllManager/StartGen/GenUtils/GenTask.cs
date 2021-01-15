@@ -14,8 +14,8 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
     }
     internal class GenTask
     {
-        public static readonly List<MetadataReference> References = new List<MetadataReference>();
-        public static readonly List<MetadataReference> AppReferences = new List<MetadataReference>();
+        public static readonly List<MetadataReference> References = new();
+        public static readonly List<MetadataReference> AppReferences = new();
 
         private static readonly string AppLibLocal = ServerMain.RunLocal + "Libs/App/";
 
@@ -61,7 +61,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
                 };
             }
         }
-        public GenTask()
+        public static void Start()
         {
             var list = AppDomain.CurrentDomain.GetAssemblies();
             //导入DLL

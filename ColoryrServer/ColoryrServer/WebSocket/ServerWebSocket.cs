@@ -91,5 +91,10 @@ namespace ColoryrServer.WebSocket
             Server.Dispose();
             ServerMain.LogOut("WebScoket已停止");
         }
+
+        internal static void StartPipe()
+        {
+            
+        }
     }
 }

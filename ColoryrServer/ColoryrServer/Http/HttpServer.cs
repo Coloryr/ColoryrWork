@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
+using ColoryrServer.Pipe;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
 using Lib.App;
@@ -43,7 +44,7 @@ namespace ColoryrServer.Http
             return null;
         }
 
-        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
+        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type, int Port)
         {
             var Temp = new Dictionary<string, dynamic>();
             switch (type)
@@ -225,8 +226,102 @@ namespace ColoryrServer.Http
                 ReCode = 404
             };
         }
+        public static dynamic PipeHttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type, int Port)
+        {
+            var Temp = new Dictionary<string, dynamic>();
+            switch (type)
+            {
+                case MyContentType.Json:
+                    string Str = streamReader.ReadToEnd();
+                    try
+                    {
+                        JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+                        if (Hashtable[APPKV.APPK] == APPKV.APPV)
+                        {
+                            var Json = obj.ToObject<DownloadObj>();
+                            return AppDownload.Download(Json);
+                        }
+                        else
+                        {
+                            foreach (var item in obj)
+                            {
+                                Temp.Add(item.Key, item.Value);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ServerMain.LogError(e);
+                        return new HttpReturn
+                        {
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            {
+                                Res = 123,
+                                Text = "Json解析发生错误",
+                                Data = e
+                            })
+                        };
+                    }
+                    break;
+                case MyContentType.Form:
+                    Str = streamReader.ReadToEnd();
+                    foreach (string Item in Str.Split('&'))
+                    {
+                        if (Item.Contains("="))
+                        {
+                            string[] KV = Item.Split('=');
+                            Temp.Add(KV[0], KV[1]);
+                        }
+                    }
+                    break;
+            }
 
-        public static HttpReturn HttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data)
+            string UUID = "0";
+            string FunctionName = null;
+            int thr = Url.IndexOf('?', 0);
+            if (Function.Constr(Url, '/') >= 2)
+            {
+                int tow = Url.IndexOf('/', 2);
+                if (thr == -1)
+                {
+                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                    FunctionName = Url[tow..].Remove(0, 1);
+                }
+                else if (tow < thr)
+                {
+                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                    FunctionName = Url[tow..thr];
+                }
+                else
+                {
+                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                }
+            }
+            else
+            {
+                if (thr != -1)
+                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                else
+                    UUID = Function.GetSrings(Url, "/").Remove(0, 1);
+            }
+            return new PipeHttpData
+            {
+                Request = new HttpRequest
+                {
+                    Cookie = HaveCookie(Hashtable),
+                    Parameter = Temp,
+                    RowRequest = Hashtable,
+                    ContentType = type,
+                    Stream = type == MyContentType.Other ? streamReader.BaseStream : null
+                },
+                FunctionName = FunctionName,
+                UUID = UUID,
+                Port = Port,
+                Url = Url
+            };
+        }
+
+        public static HttpReturn HttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data, int Port)
         {
             string UUID = "0";
             string FunctionName = null;
@@ -289,42 +384,63 @@ namespace ColoryrServer.Http
         public static ConcurrentBag<HttpListenerContext> Queue;   // 请求队列
         public static bool IsActive { get; set; }//是否在运行
 
+        private static void Init()
+        {
+            ServerMain.LogOut("Http服务器正在启动");
+            Listener = new HttpListener();
+            Workers = new Thread[200];
+            Queue = new ConcurrentBag<HttpListenerContext>();
+            IsActive = false;
+
+            Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
+                ServerMain.Config.Http.Port + "/");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
+                Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+            }
+            Listener.Start();
+            Listener.BeginGetContext(ContextReady, null);
+        }
+
         public static void Start()
         {
-            Task.Run(() =>
+            try
             {
-                try
+                Init();
+                // 启动工作线程
+                for (int i = 0; i < Workers.Length; i++)
                 {
-                    ServerMain.LogOut("Http服务器正在启动");
-                    Listener = new HttpListener();
-                    Workers = new Thread[200];
-                    Queue = new ConcurrentBag<HttpListenerContext>();
-                    IsActive = false;
-
-                    Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
-                        ServerMain.Config.Http.Port + "/");
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
-                        Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
-                    }
-                    Listener.Start();
-
-                    // 启动工作线程
-                    for (int i = 0; i < Workers.Length; i++)
-                    {
-                        Workers[i] = new Thread(new HttpWork().Worker);
-                        Workers[i].Start();
-                    }
-                    IsActive = true;
-                    Listener.BeginGetContext(ContextReady, null);
-                    ServerMain.LogOut("Http服务器已启动");
+                    Workers[i] = new Thread(HttpWork.Worker);
+                    Workers[i].Start();
                 }
-                catch (Exception e)
+                IsActive = true;
+                ServerMain.LogOut("Http服务器已启动");
+            }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
+            }
+        }
+
+        public static void StartPipe()
+        {
+            try
+            {
+                Init();
+                // 启动工作线程
+                for (int i = 0; i < Workers.Length; i++)
                 {
-                    ServerMain.LogError(e);
+                    Workers[i] = new Thread(HttpWork.PipeWorker);
+                    Workers[i].Start();
                 }
-            });
+                IsActive = true;
+                ServerMain.LogOut("Http服务器已启动");
+            }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
+            }
         }
 
         private static void ContextReady(IAsyncResult ar)
@@ -351,7 +467,7 @@ namespace ColoryrServer.Http
     class HttpWork
     {
         // 处理一个任务
-        public void Worker()
+        public static void Worker()
         {
             while (!HttpServer.IsActive)
             {
@@ -364,6 +480,7 @@ namespace ColoryrServer.Http
                     try
                     {
                         HttpListenerRequest Request = Context.Request;
+                        HttpListenerResponse Response = Context.Response;
                         HttpReturn httpReturn;
                         switch (Request.HttpMethod)
                         {
@@ -382,48 +499,126 @@ namespace ColoryrServer.Http
                                 {
                                     type = MyContentType.Other;
                                 }
-                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type);
-                                Context.Response.ContentType = httpReturn.ContentType;
-                                Context.Response.ContentEncoding = httpReturn.Encoding;
+                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type, Request.RemoteEndPoint.Port);
+                                Response.ContentType = httpReturn.ContentType;
+                                Response.ContentEncoding = httpReturn.Encoding;
                                 if (httpReturn.Head != null)
                                     foreach (var Item in httpReturn.Head)
                                     {
-                                        Context.Response.AddHeader(Item.Key, Item.Value);
+                                        Response.AddHeader(Item.Key, Item.Value);
                                     }
                                 if (httpReturn.Cookie != null)
-                                    Context.Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
+                                    Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
                                 if (httpReturn.Data1 == null)
-                                    Context.Response.OutputStream.Write(httpReturn.Data);
+                                    Response.OutputStream.Write(httpReturn.Data);
                                 else
                                 {
                                     httpReturn.Data1.Seek(0, SeekOrigin.Begin);
-                                    httpReturn.Data1.CopyTo(Context.Response.OutputStream);
+                                    httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
-                                Context.Response.OutputStream.Flush();
-                                Context.Response.StatusCode = httpReturn.ReCode;
-                                Context.Response.Close();
+                                Response.OutputStream.Flush();
+                                Response.StatusCode = httpReturn.ReCode;
+                                Response.Close();
                                 break;
                             case "GET":
-                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
-                                Context.Response.ContentType = httpReturn.ContentType;
-                                Context.Response.ContentEncoding = httpReturn.Encoding;
+                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString, Request.RemoteEndPoint.Port);
+                                Response.ContentType = httpReturn.ContentType;
+                                Response.ContentEncoding = httpReturn.Encoding;
                                 if (httpReturn.Head != null)
                                     foreach (var Item in httpReturn.Head)
                                     {
-                                        Context.Response.AddHeader(Item.Key, Item.Value);
+                                        Response.AddHeader(Item.Key, Item.Value);
                                     }
                                 if (httpReturn.Cookie != null)
-                                    Context.Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
+                                    Response.AppendCookie(new Cookie("cs", httpReturn.Cookie));
                                 if (httpReturn.Data1 == null)
-                                    Context.Response.OutputStream.Write(httpReturn.Data);
+                                    Response.OutputStream.Write(httpReturn.Data);
                                 else
                                 {
                                     httpReturn.Data1.Seek(0, SeekOrigin.Begin);
-                                    httpReturn.Data1.CopyTo(Context.Response.OutputStream);
+                                    httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
-                                Context.Response.OutputStream.Flush();
-                                Context.Response.StatusCode = httpReturn.ReCode;
-                                Context.Response.Close();
+                                Response.OutputStream.Flush();
+                                Response.StatusCode = httpReturn.ReCode;
+                                Response.Close();
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ServerMain.LogError(e);
+                    }
+                }
+                Thread.Sleep(1);
+            }
+        }
+        public static void PipeWorker()
+        {
+            while (!HttpServer.IsActive)
+            {
+                Thread.Sleep(200);
+            }
+            while (HttpServer.IsActive)
+            {
+                if (HttpServer.Queue.TryTake(out HttpListenerContext Context))
+                {
+                    try
+                    {
+                        HttpListenerRequest Request = Context.Request;
+                        HttpListenerResponse Response = Context.Response;
+                        switch (Request.HttpMethod)
+                        {
+                            case "POST":
+                                StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
+                                MyContentType type;
+                                if (Context.Request.ContentType == "application/x-www-form-urlencoded")
+                                {
+                                    type = MyContentType.Form;
+                                }
+                                else if (Context.Request.ContentType == "application/json")
+                                {
+                                    type = MyContentType.Json;
+                                }
+                                else
+                                {
+                                    Response.OutputStream.Write(Encoding.UTF8.GetBytes($"不支持{Context.Request.ContentType}"));
+                                    Response.OutputStream.Flush();
+                                    Response.StatusCode = 400;
+                                    Response.Close();
+                                    break;
+                                }
+                                dynamic httpReturn = HttpProcessor.PipeHttpPOST(Reader, Request.RawUrl, Request.Headers, type, Request.RemoteEndPoint.Port);
+                                if (httpReturn is HttpReturn)
+                                {
+                                    Response.ContentType = httpReturn.ContentType;
+                                    Response.ContentEncoding = httpReturn.Encoding;
+                                    Response.OutputStream.Write(httpReturn.Data);
+                                    Response.OutputStream.Flush();
+                                    Response.StatusCode = httpReturn.ReCode;
+                                    Response.Close();
+                                    break;
+                                }
+                                else
+                                {
+                                    PipeClient.Http(httpReturn, Response);
+                                }
+                                break;
+                            case "GET":
+                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString, Request.RemoteEndPoint.Port);
+                                if (httpReturn is HttpReturn)
+                                {
+                                    Response.ContentType = httpReturn.ContentType;
+                                    Response.ContentEncoding = httpReturn.Encoding;
+                                    Response.OutputStream.Write(httpReturn.Data);
+                                    Response.OutputStream.Flush();
+                                    Response.StatusCode = httpReturn.ReCode;
+                                    Response.Close();
+                                    break;
+                                }
+                                else
+                                {
+                                    PipeClient.Http(httpReturn, Response);
+                                }
                                 break;
                         }
                     }

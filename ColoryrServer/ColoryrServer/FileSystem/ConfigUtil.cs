@@ -50,6 +50,10 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public List<UserConfig> User { get; set; }
         /// <summary>
+        /// 分离管道设置
+        /// </summary>
+        public Pipe Pipe { get; set; }
+        /// <summary>
         /// ffmpeg
         /// </summary>
         public string MPGE { get; set; }
@@ -208,13 +212,40 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    internal class Config
+    internal record Pipe
+    {
+        /// <summary>
+        /// 管道端口
+        /// </summary>
+        public SocketConfig Socket { get; set; }
+        /// <summary>
+        /// 启用管道
+        /// </summary>
+        public bool Enable { get; set; }
+        /// <summary>
+        /// 服务器核心
+        /// </summary>
+        public bool ServerCore { get; set; }
+        /// <summary>
+        /// Http服务器
+        /// </summary>
+        public bool HttpServer { get; set; }
+        /// <summary>
+        /// WebSocket服务器
+        /// </summary>
+        public bool WebSocketServer { get; set; }
+        /// <summary>
+        /// Iot服务器
+        /// </summary>
+        public bool IotServer { get; set; }
+    }
+    internal class ConfigUtil
     {
         public static string FilePath = ServerMain.RunLocal + @"Mainconfig.json";
         /// <summary>
         /// 读配置文件
         /// </summary>
-        public Config()
+        public static void Start()
         {
             ServerMain.Config = ConfigSave.Config(new MainConfig
             {
@@ -258,6 +289,7 @@ namespace ColoryrServer.FileSystem
                 },
                 Mysql = new()
                 {
+                    Enable = false,
                     IP = "127.0.0.1",
                     Port = 3306,
                     User = "Root",
@@ -268,6 +300,7 @@ namespace ColoryrServer.FileSystem
                 },
                 MSsql = new()
                 {
+                    Enable = false,
                     IP = "127.0.0.1",
                     User = "Root",
                     Password = "MTIzNDU2",
@@ -277,6 +310,7 @@ namespace ColoryrServer.FileSystem
                 },
                 Redis = new()
                 {
+                    Enable = false,
                     IP = "127.0.0.1",
                     Port = 6379,
                     TimeOut = 1000,
@@ -285,12 +319,26 @@ namespace ColoryrServer.FileSystem
                 },
                 Oracle = new()
                 {
+                    Enable = false,
                     IP = "127.0.0.1",
                     User = "Root",
                     Password = "MTIzNDU2",
                     ConnCount = 20,
                     TimeOut = 1000,
                     Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                },
+                Pipe = new()
+                {
+                    Enable = false,
+                    ServerCore = true,
+                    HttpServer = false,
+                    IotServer = false,
+                    WebSocketServer = false,
+                    Socket = new()
+                    {
+                        IP = "127.0.0.1",
+                        Port = 23334
+                    }
                 },
                 User = new()
                 {

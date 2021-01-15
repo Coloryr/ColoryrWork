@@ -64,7 +64,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 }
 
                 CSFile.StorageApp(File);
-                Config.Save();
+                ConfigUtil.Save();
 
                 GC.Collect();
             });

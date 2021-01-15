@@ -4,6 +4,7 @@ using Lib.Build.Object;
 using Lib.Server;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -31,14 +32,14 @@ namespace ColoryrServer.FileSystem
         private static readonly string DllMap = ServerMain.RunLocal + @"/DllMap.json";
         private static readonly string RemoveDir = ServerMain.RunLocal + @"/Remove/";
 
-        public static readonly Dictionary<string, CSFileCode> DllFileList = new Dictionary<string, CSFileCode>();
-        public static readonly Dictionary<string, CSFileCode> ClassFileList = new Dictionary<string, CSFileCode>();
-        public static readonly Dictionary<string, CSFileCode> IoTFileList = new Dictionary<string, CSFileCode>();
-        public static readonly Dictionary<string, CSFileCode> WebSocketFileList = new Dictionary<string, CSFileCode>();
-        public static readonly Dictionary<string, CSFileCode> RobotFileList = new Dictionary<string, CSFileCode>();
-        public static readonly Dictionary<string, AppFileObj> AppFileList = new Dictionary<string, AppFileObj>();
+        public static readonly ConcurrentDictionary<string, CSFileCode> DllFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> ClassFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> IoTFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> WebSocketFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> RobotFileList = new();
+        public static readonly ConcurrentDictionary<string, AppFileObj> AppFileList = new();
 
-        public CSFile()
+        public static void Start()
         {
             if (!Directory.Exists(DllFileLocal))
             {
@@ -90,10 +91,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = DllFileLocal + obj.UUID + ".json";
             if (DllFileList.ContainsKey(obj.UUID))
-            {
-                DllFileList.Remove(obj.UUID);
-            }
-            DllFileList.Add(obj.UUID, obj);
+                DllFileList[obj.UUID] = obj;
+            else
+                DllFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -101,10 +101,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = ClassFileLocal + obj.UUID + ".json";
             if (ClassFileList.ContainsKey(obj.UUID))
-            {
-                ClassFileList.Remove(obj.UUID);
-            }
-            ClassFileList.Add(obj.UUID, obj);
+                ClassFileList[obj.UUID] = obj;
+            else
+                ClassFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -112,10 +111,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = IoTFileLocal + obj.UUID + ".json";
             if (IoTFileList.ContainsKey(obj.UUID))
-            {
-                IoTFileList.Remove(obj.UUID);
-            }
-            IoTFileList.Add(obj.UUID, obj);
+                IoTFileList[obj.UUID] = obj;
+            else
+                IoTFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -123,10 +121,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = WebSocketFileLocal + obj.UUID + ".json";
             if (WebSocketFileList.ContainsKey(obj.UUID))
-            {
-                WebSocketFileList.Remove(obj.UUID);
-            }
-            WebSocketFileList.Add(obj.UUID, obj);
+                WebSocketFileList[obj.UUID] = obj;
+            else
+                WebSocketFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -134,10 +131,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = RobotFileLocal + obj.UUID + ".json";
             if (RobotFileList.ContainsKey(obj.UUID))
-            {
-                RobotFileList.Remove(obj.UUID);
-            }
-            RobotFileList.Add(obj.UUID, obj);
+                RobotFileList[obj.UUID] = obj;
+            else
+                RobotFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -163,10 +159,9 @@ namespace ColoryrServer.FileSystem
         {
             var url = AppFileLocal + obj.UUID + ".json";
             if (AppFileList.ContainsKey(obj.UUID))
-            {
-                AppFileList.Remove(obj.UUID);
-            }
-            AppFileList.Add(obj.UUID, obj);
+                AppFileList[obj.UUID] = obj;
+            else
+                AppFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -231,37 +226,37 @@ namespace ColoryrServer.FileSystem
                     case CodeType.Dll:
                         Name = DllFileLocal + uuid + ".json";
                         obj = GetDll(uuid);
-                        DllFileList.Remove(uuid);
+                        DllFileList.TryRemove(uuid, out var item);
                         DllStonge.RemoveDll(uuid);
                         break;
                     case CodeType.Class:
                         Name = ClassFileLocal + uuid + ".json";
                         obj = GetClass(uuid);
-                        ClassFileList.Remove(uuid);
+                        ClassFileList.TryRemove(uuid, out var item1);
                         DllStonge.RemoveClass(uuid);
                         break;
                     case CodeType.IoT:
                         Name = IoTFileLocal + uuid + ".json";
                         obj = GetIoT(uuid);
-                        IoTFileList.Remove(uuid);
+                        IoTFileList.TryRemove(uuid, out var item2);
                         DllStonge.RemoveIoT(uuid);
                         break;
                     case CodeType.WebSocket:
                         Name = WebSocketFileLocal + uuid + ".json";
                         obj = GetWebSocket(uuid);
-                        WebSocketFileList.Remove(uuid);
+                        WebSocketFileList.TryRemove(uuid, out var item3);
                         DllStonge.RemoveWebSocket(uuid);
                         break;
                     case CodeType.Robot:
                         Name = RobotFileLocal + uuid + ".json";
                         obj = GetRobot(uuid);
-                        RobotFileList.Remove(uuid);
+                        RobotFileList.TryRemove(uuid, out var item4);
                         DllStonge.RemoveRobot(uuid);
                         break;
                     case CodeType.App:
                         Name = AppFileLocal + uuid + ".json";
                         obj = GetApp(uuid);
-                        AppFileList.Remove(uuid);
+                        AppFileList.TryRemove(uuid, out var item5);
                         IsDir = true;
                         break;
                 }
@@ -277,15 +272,14 @@ namespace ColoryrServer.FileSystem
                 }
 
                 string info =
-@"/*
-UUID:{0},
-Text:{1},
-User:{2},
-Version:{3},
-Type:{4}
+$@"/*
+UUID:{obj.UUID},
+Text:{obj.Text},
+User:{obj.User},
+Version:{obj.Version},
+Type:{obj.Type.ToString()}
 */
 ";
-                info = string.Format(info, obj.UUID, obj.Text, obj.User, obj.Version, obj.Type.ToString());
                 if (!IsDir)
                 {
                     File.WriteAllText(RemoveDir + uuid + "-" +
@@ -322,7 +316,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    DllFileList.Add(name, obj);
+                    DllFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {
@@ -335,7 +329,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    ClassFileList.Add(name, obj);
+                    ClassFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {
@@ -348,7 +342,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    IoTFileList.Add(name, obj);
+                    IoTFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {
@@ -361,7 +355,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    WebSocketFileList.Add(name, obj);
+                    WebSocketFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {
@@ -374,7 +368,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    RobotFileList.Add(name, obj);
+                    RobotFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {
@@ -387,7 +381,7 @@ Type:{4}
                 {
                     var obj = JsonConvert.DeserializeObject<AppFileObj>(File.ReadAllText(item.FullName));
                     string name = item.Name.Replace(".json", "");
-                    AppFileList.Add(name, obj);
+                    AppFileList.TryAdd(name, obj);
                 }
                 catch (Exception e)
                 {

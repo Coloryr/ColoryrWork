@@ -12,7 +12,7 @@ namespace ColoryrServer.FileSystem
     {
         public static string Local;
 
-        public FileRam()
+        public static void Start()
         {
             Local = ServerMain.RunLocal + @"/FileRam/";
             if (!Directory.Exists(Local))

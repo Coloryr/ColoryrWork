@@ -119,6 +119,52 @@ namespace ColoryrServer
             Console.WriteLine(a);
         }
 
+        private static void DatabaseRun()
+        {
+            //Mysql链接
+            if (Config.Mysql.Enable)
+                if (MysqlCon.Start())
+                {
+                    LogOut("Mysql数据库已连接");
+                }
+                else
+                {
+                    LogError("Mysql数据库连接失败");
+                }
+            //MS链接
+            if (Config.MSsql.Enable)
+                if (MSCon.Start())
+                {
+                    LogOut("Ms数据库已连接");
+                }
+                else
+                {
+                    LogError("Ms数据库连接失败");
+                }
+            //Redis链接
+            if (Config.Redis.Enable)
+                if (RedisCon.Start())
+                {
+                    LogOut("Redis服务器已连接");
+                }
+                else
+                {
+                    LogError("Redis连接失败");
+                }
+            //Oracle链接
+            if (Config.Oracle.Enable)
+                if (OracleCon.Start())
+                {
+                    LogOut("Oracle服务器已连接");
+                }
+                else
+                {
+                    LogError("Oracle连接失败");
+                }
+            //内存数据库
+            RamDataBase.Start();
+        }
+
         public static void Start()
         {
             try
@@ -135,12 +181,12 @@ namespace ColoryrServer
                 //创建日志文件
                 Logs = new Logs(RunLocal);
                 //配置文件
-                new Config();
-                new CSFile();
+                ConfigUtil.Start();
+                CSFile.Start();
 
-                new APIFile();
-                new FileTemp();
-                new FileRam();
+                APIFile.Start();
+                FileTemp.Start();
+                FileRam.Start();
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
@@ -151,45 +197,44 @@ namespace ColoryrServer
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-                //Mysql链接
-                if (MysqlCon.Start())
+                if (Config.Pipe.Enable)
                 {
-                    LogOut("Mysql数据库已连接");
+                    if (!Config.Pipe.ServerCore)
+                    {
+                        if (Config.Pipe.HttpServer)
+                        {
+                            HttpServer.StartPipe();
+                        }
+                        if (Config.Pipe.WebSocketServer)
+                        {
+                            ServerWebSocket.StartPipe();
+                        }
+                        if (Config.Pipe.IotServer)
+                        {
+                            IoTSocketServer.StartPipe();
+                        }
+                    }
+                    else
+                    {
+                        RobotSocket.Start();
+                        DatabaseRun();
+                        //初始化动态编译
+                        GenTask.Start();
+                        DllStonge.Start();
+                    }
                 }
                 else
                 {
-                    LogError("Mysql数据库连接失败");
+                    RobotSocket.Start();
+                    DatabaseRun();
+                    //服务器启动
+                    HttpServer.Start();
+                    IoTSocketServer.Start();
+                    ServerWebSocket.Start();
+                    //初始化动态编译
+                    GenTask.Start();
+                    DllStonge.Start();
                 }
-                //MS链接
-                if (MSCon.Start())
-                {
-                    LogOut("Ms数据库已连接");
-                }
-                else
-                {
-                    LogError("Ms数据库连接失败");
-                }
-                //Redis链接
-                if (RedisCon.Start())
-                {
-                    LogOut("Redis服务器已连接");
-                }
-                else
-                {
-                    LogError("Redis连接失败");
-                }
-                //内存数据库
-                RamDataBase.Start();
-
-                //服务器启动
-                HttpServer.Start();
-                IoTSocketServer.Start();
-                ServerWebSocket.Start();
-                RobotSocket.Start();
-
-                //初始化动态编译
-                new GenTask();
-                new DllStonge().DynamicInit();
 
                 //等待初始化完成
                 Thread.Sleep(2000);
@@ -211,6 +256,7 @@ namespace ColoryrServer
             ServerWebSocket.Stop();
             RobotSocket.Stop();
             RedisCon.Stop();
+            RamDataBase.Stop();
             LogOut("已关闭");
         }
 

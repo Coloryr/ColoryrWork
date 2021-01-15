@@ -77,7 +77,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 }
 
                 CSFile.StorageWebSocket(File);
-                Config.Save();
+                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

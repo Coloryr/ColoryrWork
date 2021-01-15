@@ -208,6 +208,12 @@ namespace ColoryrServer.IoT
                 }
             }
         }
+
+        internal static void StartPipe()
+        {
+            
+        }
+
         public static void UdpSendData(int port, byte[] data)
         {
             if (UdpClients.TryGetValue(port, out var socket))
