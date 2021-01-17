@@ -20,7 +20,15 @@ namespace ColoryrServer.DllManager
             object Object = null;
             if (Json.Mode == ReType.Login)
             {
-                if (User.Password.ToLower() == Json.Code.ToLower())
+                if (Json.Code == null)
+                {
+                    Object = new ReMessage
+                    {
+                        Build = false,
+                        Message = "密码错误"
+                    };
+                }
+                else if (User.Password.ToLower() == Json.Code.ToLower())
                 {
                     Json.UUID = Guid.NewGuid().ToString().Replace("-", "");
                     if (Token.ContainsKey(Json.User))
@@ -39,6 +47,14 @@ namespace ColoryrServer.DllManager
                         Build = false,
                         Message = "密码错误"
                     };
+            }
+            else if (Json.Mode == ReType.Check)
+            {
+                Object = new ReMessage
+                {
+                    Build = Token.ContainsKey(Json.User) && Token[Json.User] == Json.Token,
+                    Message = "自动登录"
+                };
             }
             else if (Token.ContainsKey(Json.User) && Token[Json.User] == Json.Token)
             {
@@ -59,12 +75,13 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time
-                            }); ;
+                            });
                             Object = new ReMessage
                             {
                                 Build = true,
                                 Message = "Dll已创建" + Json.UUID
                             };
+                            ServerMain.LogOut($"Dll创建{Json.UUID}");
                         }
                         else
                             Object = new ReMessage
@@ -90,6 +107,7 @@ namespace ColoryrServer.DllManager
                                 Build = true,
                                 Message = "Class已创建" + Json.UUID
                             };
+                            ServerMain.LogOut($"Class创建{Json.UUID}");
                         }
                         else
                             Object = new ReMessage
@@ -115,6 +133,7 @@ namespace ColoryrServer.DllManager
                                 Build = true,
                                 Message = "IoT已创建" + Json.UUID
                             };
+                            ServerMain.LogOut($"IoT创建{Json.UUID}");
                         }
                         else
                             Object = new ReMessage
@@ -140,6 +159,7 @@ namespace ColoryrServer.DllManager
                                 Build = true,
                                 Message = "WebSocket已创建" + Json.UUID
                             };
+                            ServerMain.LogOut($"WebSocket创建{Json.UUID}");
                         }
                         else
                             Object = new ReMessage
@@ -165,6 +185,7 @@ namespace ColoryrServer.DllManager
                                 Build = true,
                                 Message = "Robot已创建" + Json.UUID
                             };
+                            ServerMain.LogOut($"Robot创建{Json.UUID}");
                         }
                         else
                             Object = new ReMessage
@@ -299,7 +320,7 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        
+
                         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
                         File.Text = Json.Text;

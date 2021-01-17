@@ -18,7 +18,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Http
 {
@@ -387,9 +386,9 @@ namespace ColoryrServer.Http
         private static void Init()
         {
             ServerMain.LogOut("Http服务器正在启动");
-            Listener = new HttpListener();
-            Workers = new Thread[200];
-            Queue = new ConcurrentBag<HttpListenerContext>();
+            Listener = new();
+            Workers = new Thread[ServerMain.Config.Http.ThreadNumber];
+            Queue = new();
             IsActive = false;
 
             Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +

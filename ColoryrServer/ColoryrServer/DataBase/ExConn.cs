@@ -8,7 +8,7 @@ namespace ColoryrServer.DataBase
     /// <summary>
     /// 状态
     /// </summary>
-    internal enum SelfState
+    internal enum ConnState
     {
         Ok, Error, Restart, Open, Close
     }
@@ -25,7 +25,7 @@ namespace ColoryrServer.DataBase
     internal record ExConn
     {
         public int Index;
-        public SelfState State;
+        public ConnState State;
         public ConnType Type;
         public MySqlConnection Mysql;
         public SqlConnection Ms;

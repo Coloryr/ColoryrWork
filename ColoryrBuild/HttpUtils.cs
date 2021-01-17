@@ -18,7 +18,7 @@ namespace ColoryrBuild
             var Handler = new HttpClientHandler();
             httpClient = new(Handler)
             {
-                Timeout = TimeSpan.FromSeconds(30)
+                Timeout = TimeSpan.FromSeconds(10)
             };
             httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK, BuildKV.BuildV);
         }
@@ -38,6 +38,37 @@ namespace ColoryrBuild
                 }
             }
             return true;
+        }
+
+        public async Task<bool> AutoLogin()
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.Check
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
+                if (res.Build == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    App.ShowB("登录", "登录失效");
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<CSFileList> GetList(CodeType type)
@@ -63,10 +94,6 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                { 
-                    await GetList(type);
-                }
                 return JsonConvert.DeserializeObject<CSFileList>(data);
             }
             catch
@@ -147,14 +174,14 @@ namespace ColoryrBuild
             }
         }
 
-        public async Task<bool> Login()
+        public async Task<bool> Login(string Pass)
         {
             try
             {
                 var pack = new BuildOBJ
                 {
                     User = App.Config.Name,
-                    Token = App.Config.Token,
+                    Code = Pass,
                     Mode = ReType.Login
                 };
                 HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));

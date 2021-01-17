@@ -26,8 +26,11 @@ namespace ColoryrBuild.Windows
 
         public void Log(string data)
         {
-            Text.AppendText(data + "\n");
-            Text.ScrollToEnd();
+            Dispatcher.Invoke(() =>
+            {
+                Text.AppendText(data + "\n");
+                Text.ScrollToEnd();
+            });
         }
     }
 }

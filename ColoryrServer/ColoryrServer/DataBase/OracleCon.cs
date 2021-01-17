@@ -39,12 +39,12 @@ namespace ColoryrServer.DataBase
                     if (LastIndex >= ServerMain.Config.MSsql.ConnCount)
                         LastIndex = 0;
                 }
-                if (item.State == SelfState.Ok)
+                if (item.State == ConnState.Ok)
                 {
                     try
                     {
                         item.Oracle.Open();
-                        item.State = SelfState.Open;
+                        item.State = ConnState.Open;
                         return item;
                     }
                     catch (OracleException e)
@@ -54,7 +54,7 @@ namespace ColoryrServer.DataBase
                     }
 
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         });
 
@@ -66,7 +66,7 @@ namespace ColoryrServer.DataBase
         {
             Task.Run(() =>
             {
-                item.State = SelfState.Restart;
+                item.State = ConnState.Restart;
                 Config = ServerMain.Config.Oracle;
                 var pass = Encoding.UTF8.GetString(Convert.FromBase64String(ServerMain.Config.Mysql.Password));
                 string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port, Config.User, pass);
@@ -96,7 +96,7 @@ namespace ColoryrServer.DataBase
                 item.Mysql.Open();
                 new OracleCommand("select * from test", item.Oracle).ExecuteNonQuery();
                 item.Mysql.Close();
-                item.State = SelfState.Ok;
+                item.State = ConnState.Ok;
                 return true;
             }
             catch (OracleException ex)
@@ -105,11 +105,11 @@ namespace ColoryrServer.DataBase
                 {
                     case 1146:
                         item.Oracle.Close();
-                        item.State = SelfState.Ok;
+                        item.State = ConnState.Ok;
                         return true;
                     case 208:
                         item.Oracle.Close();
-                        item.State = SelfState.Ok;
+                        item.State = ConnState.Ok;
                         return true;
                     default:
                         ServerMain.LogError(ex);
@@ -133,7 +133,7 @@ namespace ColoryrServer.DataBase
                 var Conn = new OracleConnection(ConnectString);
                 var item = new ExConn
                 {
-                    State = SelfState.Error,
+                    State = ConnState.Error,
                     Type = ConnType.Oracle,
                     Oracle = Conn,
                     Index = a
@@ -162,7 +162,7 @@ namespace ColoryrServer.DataBase
                 State = false;
                 foreach (var a in Conns)
                 {
-                    a.State = SelfState.Close;
+                    a.State = ConnState.Close;
                     a.Oracle.Dispose();
                 }
             }
@@ -196,7 +196,7 @@ namespace ColoryrServer.DataBase
                     }
                     reader.Close();
                     Sql.Connection.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return readlist;
                 }
                 else

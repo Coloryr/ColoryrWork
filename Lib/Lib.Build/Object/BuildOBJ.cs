@@ -9,7 +9,8 @@
         RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot,
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot,
         AppRemoveFile,
-        AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml
+        AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml,
+        Check
     }
     class BuildOBJ
     {

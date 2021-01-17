@@ -22,6 +22,7 @@ namespace ColoryrBuild
         public static string RunLocal { get; private set; }
 
         public static System.Windows.Forms.NotifyIcon notifyIcon;
+
         public static HttpUtils HttpUtils = new();
         public static bool IsLogin { get; private set; }
         public static ConfigObj Config { get; private set; }
@@ -51,13 +52,18 @@ namespace ColoryrBuild
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Log("启动");
-            ShowA("登录", "账户未登录");
+
             while (!IsLogin)
             {
                 Login();
             }
             ContrastWindow_ = new();
             ContrastWindow_.Show();
+        }
+        public static async Task<bool> AutoLogin()
+        {
+            IsLogin = await HttpUtils.AutoLogin();
+            return IsLogin;
         }
 
         public static void Login()
@@ -104,11 +110,11 @@ namespace ColoryrBuild
             MainWindow_?.Activate();
         }
 
-        public static async Task<bool> StartLogin()
+        public static async Task<bool> StartLogin(string Pass)
         {
-            var res = await HttpUtils.Login();
+            IsLogin = await HttpUtils.Login(Pass);
             ConfigSave.Save(Config, RunLocal + "Config.json");
-            return res;
+            return IsLogin;
         }
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

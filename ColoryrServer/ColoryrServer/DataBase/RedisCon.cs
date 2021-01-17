@@ -38,12 +38,12 @@ namespace ColoryrServer.DataBase
                     if (LastIndex >= Config.ConnCount)
                         LastIndex = 0;
                 }
-                if (item.State == SelfState.Ok)
+                if (item.State == ConnState.Ok)
                 {
-                    item.State = SelfState.Open;
+                    item.State = ConnState.Open;
                     return item;
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         });
 
@@ -55,7 +55,7 @@ namespace ColoryrServer.DataBase
         {
             Task.Run(() =>
             {
-                item.State = SelfState.Restart;
+                item.State = ConnState.Restart;
                 Config = ServerMain.Config.Redis;
                 string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port);
                 var Conn = ConnectionMultiplexer.Connect(ConnectString);
@@ -87,7 +87,7 @@ namespace ColoryrServer.DataBase
                 }
                 item.Redis.GetDatabase().KeyExists("test");
                 item.Redis.Close();
-                item.State = SelfState.Ok;
+                item.State = ConnState.Ok;
                 return true;
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace ColoryrServer.DataBase
                     {
                         Redis = ConnectionMultiplexer.Connect(ConnStr),
                         Index = a,
-                        State = SelfState.Error,
+                        State = ConnState.Error,
                         Type = ConnType.Redis
                     };
                     if (Test(Conn))
@@ -148,7 +148,7 @@ namespace ColoryrServer.DataBase
                 State = false;
                 foreach (var a in Conns)
                 {
-                    a.State = SelfState.Close;
+                    a.State = ConnState.Close;
                     a.Redis.Dispose();
                 }
             }
@@ -170,7 +170,7 @@ namespace ColoryrServer.DataBase
                     var conn = task.Result;
                     var data = conn.Redis.GetDatabase().StringGet(key);
                     conn.Redis.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return data;
                 }
                 else
@@ -209,7 +209,7 @@ namespace ColoryrServer.DataBase
                         data = conn.Redis.GetDatabase().StringSet(key, value);
                     }
                     conn.Redis.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return data;
                 }
                 else
@@ -238,7 +238,7 @@ namespace ColoryrServer.DataBase
                     var conn = task.Result;
                     var data = conn.Redis.GetDatabase().KeyExists(key);
                     conn.Redis.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return data;
                 }
                 else
@@ -267,7 +267,7 @@ namespace ColoryrServer.DataBase
                     var conn = task.Result;
                     var data = conn.Redis.GetDatabase().KeyDelete(key);
                     conn.Redis.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return data;
                 }
                 else
@@ -296,7 +296,7 @@ namespace ColoryrServer.DataBase
                     var conn = task.Result;
                     var data = conn.Redis.GetDatabase().StringIncrement(key, val);
                     conn.Redis.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return data;
                 }
                 else

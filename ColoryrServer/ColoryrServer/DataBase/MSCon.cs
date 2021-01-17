@@ -40,12 +40,12 @@ namespace ColoryrServer.DataBase
                     if (LastIndex >= Config.ConnCount)
                         LastIndex = 0;
                 }
-                if (item.State == SelfState.Ok)
+                if (item.State == ConnState.Ok)
                 {
                     try
                     {
                         item.Ms.Open();
-                        item.State = SelfState.Open;
+                        item.State = ConnState.Open;
                         return item;
                     }
                     catch (SqlException e)
@@ -54,7 +54,7 @@ namespace ColoryrServer.DataBase
                         ConnReset(item);
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         });
 
@@ -66,7 +66,7 @@ namespace ColoryrServer.DataBase
         {
             Task.Run(() =>
             {
-                item.State = SelfState.Restart;
+                item.State = ConnState.Restart;
                 Config = ServerMain.Config.MSsql;
                 var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
                 string ConnectString = string.Format(Config.Conn, Config.IP, Config.User, pass);
@@ -96,7 +96,7 @@ namespace ColoryrServer.DataBase
                 item.Ms.Open();
                 new SqlCommand("select * from test", item.Ms).ExecuteNonQuery();
                 item.Ms.Close();
-                item.State = SelfState.Ok;
+                item.State = ConnState.Ok;
                 return true;
             }
             catch (SqlException ex)
@@ -106,7 +106,7 @@ namespace ColoryrServer.DataBase
                     case 1146:
                     case 208:
                         item.Ms.Close();
-                        item.State = SelfState.Ok;
+                        item.State = ConnState.Ok;
                         return true;
                     default:
                         ServerMain.LogError(ex);
@@ -130,7 +130,7 @@ namespace ColoryrServer.DataBase
                 var Conn = new SqlConnection(ConnectString);
                 var item = new ExConn
                 {
-                    State = SelfState.Error,
+                    State = ConnState.Error,
                     Type = ConnType.Ms,
                     Ms = Conn,
                     Index = a
@@ -159,7 +159,7 @@ namespace ColoryrServer.DataBase
                 State = false;
                 foreach (var a in Conns)
                 {
-                    a.State = SelfState.Close;
+                    a.State = ConnState.Close;
                     a.Ms.Dispose();
                 }
             }
@@ -193,7 +193,7 @@ namespace ColoryrServer.DataBase
                     }
                     reader.Close();
                     Sql.Connection.Close();
-                    conn.State = SelfState.Ok;
+                    conn.State = ConnState.Ok;
                     return readlist;
                 }
                 else

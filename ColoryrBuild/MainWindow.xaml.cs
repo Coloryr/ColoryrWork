@@ -59,7 +59,8 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.GetList(CodeType.Dll);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新DLL失败");
+                App.ShowB("刷新", "DLL刷新失败");
+                return;
             }
             DllList = list.List;
             ListDll.Items.Clear();
@@ -67,14 +68,15 @@ namespace ColoryrBuild
             {
                 ListDll.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "DLL刷新成功");
         }
         private async void ReClass()
         {
             var list = await App.HttpUtils.GetList(CodeType.Class);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新Class失败");
+                App.ShowB("刷新", "Class刷新失败");
+                return;
             }
             ClassList = list.List;
             ListClass.Items.Clear();
@@ -82,14 +84,15 @@ namespace ColoryrBuild
             {
                 ListClass.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "Class刷新成功");
         }
         private async void ReIoT()
         {
             var list = await App.HttpUtils.GetList(CodeType.IoT);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新IoT失败");
+                App.ShowB("刷新", "IoT刷新失败");
+                return;
             }
             IoTList = list.List;
             ListIoT.Items.Clear();
@@ -97,14 +100,15 @@ namespace ColoryrBuild
             {
                 ListIoT.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "IoT刷新成功");
         }
         private async void ReRobot()
         {
             var list = await App.HttpUtils.GetList(CodeType.Robot);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新Robot失败");
+                App.ShowB("刷新", "Robot刷新失败");
+                return;
             }
             RobotList = list.List;
             ListRobot.Items.Clear();
@@ -112,14 +116,15 @@ namespace ColoryrBuild
             {
                 ListRobot.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "Robot刷新成功");
         }
         private async void ReWebSocket()
         {
             var list = await App.HttpUtils.GetList(CodeType.WebSocket);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新WebSocket失败");
+                App.ShowB("刷新", "WebSocket刷新失败");
+                return;
             }
             WebSocketList = list.List;
             ListWebSocket.Items.Clear();
@@ -127,14 +132,15 @@ namespace ColoryrBuild
             {
                 ListWebSocket.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "WebSocket刷新成功");
         }
         private async void ReApp()
         {
             var list = await App.HttpUtils.GetList(CodeType.App);
             if (list == null)
             {
-                App.ShowB("刷新", "刷新App失败");
+                App.ShowB("刷新", "App刷新失败");
+                return;
             }
             AppList = list.List;
             ListApp.Items.Clear();
@@ -142,7 +148,7 @@ namespace ColoryrBuild
             {
                 ListApp.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "刷新成功");
+            App.ShowA("刷新", "App刷新成功");
         }
 
         private async void Add_Dll_Click(object sender, RoutedEventArgs e)

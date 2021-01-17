@@ -8,7 +8,7 @@ namespace ColoryrServer.FileSystem
         /// <summary>
         /// Socket配置
         /// </summary>
-        public SocketConfig Http { get; set; }
+        public HttpConfig Http { get; set; }
         /// <summary>
         /// IoT配置
         /// </summary>
@@ -57,6 +57,10 @@ namespace ColoryrServer.FileSystem
         /// ffmpeg
         /// </summary>
         public string MPGE { get; set; }
+        /// <summary>
+        /// HttpClient数量
+        /// </summary>
+        public int HttpClientNumber { get; set; }
     }
     internal record OracleConfig
     {
@@ -118,6 +122,13 @@ namespace ColoryrServer.FileSystem
         /// 端口
         /// </summary>
         public int Port { get; set; }
+    }
+    internal record HttpConfig : SocketConfig
+    { 
+        /// <summary>
+        /// 线程数量
+        /// </summary>
+        public int ThreadNumber { get; set; }
     }
     internal record MysqlConfig
     {
@@ -252,7 +263,8 @@ namespace ColoryrServer.FileSystem
                 Http = new()
                 {
                     IP = "127.0.0.1",
-                    Port = 25555
+                    Port = 25555,
+                    ThreadNumber = 200
                 },
                 IoT = new()
                 {
