@@ -161,9 +161,10 @@ namespace ColoryrBuild
             {
                 App.ShowB("添加", "服务器返回错误");
             }
+            App.ShowA("创建", list.Message);
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                ReDll();
             }
         }
         private async void Change_Dll_Click(object sender, RoutedEventArgs e)

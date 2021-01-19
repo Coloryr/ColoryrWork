@@ -21,8 +21,6 @@ namespace ColoryrBuild
         /// </summary>
         public static string RunLocal { get; private set; }
 
-        public static System.Windows.Forms.NotifyIcon notifyIcon;
-
         public static HttpUtils HttpUtils = new();
         public static bool IsLogin { get; private set; }
         public static ConfigObj Config { get; private set; }
@@ -42,11 +40,6 @@ namespace ColoryrBuild
                 Token = "",
                 Http = "https://"
             }, RunLocal + "Config.json");
-
-            notifyIcon = new();
-            notifyIcon.Visible = true;
-            notifyIcon.BalloonTipText = "ColoryrWork编辑器";
-            notifyIcon.Click += NotifyIcon_Click;
 
             DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -99,15 +92,13 @@ namespace ColoryrBuild
             return ContrastWindow_.Start(obj, old);
         }
 
-        public static void ShowB(string v1, string v2)
+        public static void ShowB(string v1, string v2, bool bar = false)
         {
-            notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Error);
             Log(v1 + "|" + v2);
         }
 
-        public static void ShowA(string v1, string v2)
+        public static void ShowA(string v1, string v2, bool bar = false)
         {
-            notifyIcon.ShowBalloonTip(100, v1, v2, System.Windows.Forms.ToolTipIcon.Info);
             Log(v1 + "|" + v2);
         }
 

@@ -15,11 +15,11 @@
                     <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListDll">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="UUID" Width="320" DisplayMemberBinding="{Binding UUID}"/>
+                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
                                 <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
                                 <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="80" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="80" DisplayMemberBinding="{Binding UpdataTime}"/>
+                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
+                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
                             </GridView>
                         </ListView.View>
                         <ListView.ContextMenu>

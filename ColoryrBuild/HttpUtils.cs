@@ -26,7 +26,7 @@ namespace ColoryrBuild
 
         public bool CheckLogin(string data)
         {
-            var obj = new JObject(data);
+            var obj = JObject.Parse(data);
             if (obj.ContainsKey("Build") && obj.ContainsKey("Message"))
             {
                 var item1 = obj["Build"].ToString();
@@ -96,6 +96,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    await GetList(type);
+                }
                 return JsonConvert.DeserializeObject<CSFileList>(data);
             }
             catch
@@ -197,12 +201,12 @@ namespace ColoryrBuild
                     {
                         App.Config.Token = res.Message;
                     }
-                    App.ShowA("登录", "登录成功");
+                    App.ShowA("登录", "登录成功", true);
                     return true;
                 }
                 else
                 {
-                    App.ShowB("登录", res.Message);
+                    App.ShowB("登录", res.Message, true);
                 }
                 return false;
             }
