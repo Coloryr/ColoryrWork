@@ -22,11 +22,11 @@ namespace ColoryrBuild.Windows
             {
                 if (App.Config.SaveToken)
                 {
-                    Dispatcher.Invoke(() => App.ShowA("登录", "检查登录"));
+                    Dispatcher.Invoke(() => App.LogShow("登录", "检查登录"));
                     var res = await App.AutoLogin();
                     if (res)
                     {
-                        App.ShowA("登录", "已自动登录");
+                        App.LogShow("登录", "已自动登录");
                         Dispatcher.Invoke(() => Close());
                     }
                 }

@@ -16,7 +16,7 @@ namespace ColoryrServer.Pipe
 {
     class PipeClient
     {
-        private static ConcurrentDictionary<int, HttpListenerResponse> Requests;
+        private static ConcurrentDictionary<string, HttpListenerResponse> Requests;
         private static Socket ClientSocket;
         private static Thread ClientThread;
         private static bool IsRun;
@@ -60,7 +60,7 @@ namespace ColoryrServer.Pipe
                 if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
                 {
                     var data = JsonConvert.DeserializeObject<HttpReturn>(Encoding.UTF8.GetString(e.Buffer));
-                    if (Requests.TryRemove(data.Port, out var item))
+                    if (Requests.TryRemove(data.UID, out var item))
                     {
                         item.ContentType = data.ContentType;
                         item.ContentEncoding = data.Encoding;
@@ -85,7 +85,7 @@ namespace ColoryrServer.Pipe
         {
             if (ClientSocket?.Connected == true)
             {
-                Requests.TryAdd(data.Port, request);
+                Requests.TryAdd(data.UID, request);
                 var temp = JsonConvert.SerializeObject(data);
                 var temp1 = Encoding.UTF8.GetBytes(temp);
                 ClientSocket.Send(temp1);

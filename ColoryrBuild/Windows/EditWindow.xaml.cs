@@ -78,7 +78,7 @@ namespace ColoryrBuild.Windows
                 var data = await App.HttpUtils.GetCode(type, obj.UUID);
                 if (data == null)
                 {
-                    App.ShowB("获取错误", "代码获取错误");
+                    App.LogShow("获取错误", "代码获取错误");
                     Write = false;
                     return;
                 }
@@ -96,7 +96,7 @@ namespace ColoryrBuild.Windows
                 var data = App.HttpUtils.GetAppCode(obj.UUID);
                 if (data == null)
                 {
-                    App.ShowB("获取错误", "代码获取错误");
+                    App.LogShow("获取错误", "代码获取错误");
                     Write = false;
                     return;
                 }
@@ -141,16 +141,16 @@ namespace ColoryrBuild.Windows
             var data = await App.HttpUtils.Build(obj1, type, list);
             if (data == null)
             {
-                App.ShowB("编译错误", "服务器返回错误");
+                App.LogShow("编译错误", "服务器返回错误");
             }
             if (data.Build)
             {
-                App.ShowA("编译", data.Message);
+                App.LogShow("编译", data.Message);
                 CodeSave.Save(Local + "main.cs", obj1.Code);
             }
             else
             {
-                App.ShowB("编译错误", data.Message);
+                App.LogShow("编译错误", data.Message);
             }
         }
 

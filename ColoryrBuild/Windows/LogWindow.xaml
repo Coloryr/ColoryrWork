@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         mc:Ignorable="d"
-        Title="日志窗口" MinHeight="208" MinWidth="290" Height="208" Width="290">
+        Title="日志窗口" MinHeight="208" MinWidth="400" Height="208" Width="290">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <TextBox TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Margin="3,3,3,3" Name="Text"/>

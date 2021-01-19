@@ -43,7 +43,7 @@ namespace ColoryrServer.Http
             return null;
         }
 
-        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type, int Port)
+        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
         {
             var Temp = new Dictionary<string, dynamic>();
             switch (type)
@@ -225,7 +225,7 @@ namespace ColoryrServer.Http
                 ReCode = 404
             };
         }
-        public static dynamic PipeHttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type, int Port)
+        public static dynamic PipeHttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
         {
             var Temp = new Dictionary<string, dynamic>();
             switch (type)
@@ -315,12 +315,12 @@ namespace ColoryrServer.Http
                 },
                 FunctionName = FunctionName,
                 UUID = UUID,
-                Port = Port,
+                UID = Guid.NewGuid().ToString().Replace("-", ""),
                 Url = Url
             };
         }
 
-        public static HttpReturn HttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data, int Port)
+        public static HttpReturn HttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data)
         {
             string UUID = "0";
             string FunctionName = null;
@@ -359,7 +359,8 @@ namespace ColoryrServer.Http
                 {
                     Cookie = HaveCookie(Hashtable),
                     RowRequest = Hashtable,
-                    Parameter = Temp
+                    Parameter = Temp,
+                    ContentType = MyContentType.Form
                 };
                 var Data1 = DllRun.DllGo(Dll, Http, FunctionName);
                 return Data1;
@@ -373,6 +374,53 @@ namespace ColoryrServer.Http
                     Data = Url
                 }),
                 ReCode = 404
+            };
+        }
+        public static PipeHttpData PipeHttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data)
+        {
+            string UUID = "0";
+            string FunctionName = null;
+            if (Function.Constr(Url, '/') >= 2)
+            {
+                int tow = Url.IndexOf('/', 2);
+                int thr = Url.IndexOf('?', 2);
+                if (thr == -1)
+                {
+                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                    FunctionName = Url[tow..].Remove(0, 1);
+                }
+                else if (tow < thr)
+                {
+                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                    FunctionName = Url[tow..thr];
+                }
+                else
+                {
+                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                }
+            }
+            else
+            {
+                UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+            }
+            var Temp = new Dictionary<string, dynamic>();
+            foreach (string a in Data.AllKeys)
+            {
+                Temp.Add(a, Data.Get(a));
+            }
+            return new PipeHttpData
+            {
+                Request = new HttpRequest
+                {
+                    Cookie = HaveCookie(Hashtable),
+                    Parameter = Temp,
+                    RowRequest = Hashtable,
+                    ContentType = MyContentType.Form
+                },
+                FunctionName = FunctionName,
+                UUID = UUID,
+                UID = Guid.NewGuid().ToString().Replace("-", ""),
+                Url = Url
             };
         }
     }
@@ -498,7 +546,7 @@ namespace ColoryrServer.Http
                                 {
                                     type = MyContentType.Other;
                                 }
-                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type, Request.RemoteEndPoint.Port);
+                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type);
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
                                 if (httpReturn.Head != null)
@@ -520,7 +568,7 @@ namespace ColoryrServer.Http
                                 Response.Close();
                                 break;
                             case "GET":
-                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString, Request.RemoteEndPoint.Port);
+                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
                                 if (httpReturn.Head != null)
@@ -586,7 +634,7 @@ namespace ColoryrServer.Http
                                     Response.Close();
                                     break;
                                 }
-                                dynamic httpReturn = HttpProcessor.PipeHttpPOST(Reader, Request.RawUrl, Request.Headers, type, Request.RemoteEndPoint.Port);
+                                dynamic httpReturn = HttpProcessor.PipeHttpPOST(Reader, Request.RawUrl, Request.Headers, type);
                                 if (httpReturn is HttpReturn)
                                 {
                                     Response.ContentType = httpReturn.ContentType;
@@ -603,21 +651,8 @@ namespace ColoryrServer.Http
                                 }
                                 break;
                             case "GET":
-                                httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString, Request.RemoteEndPoint.Port);
-                                if (httpReturn is HttpReturn)
-                                {
-                                    Response.ContentType = httpReturn.ContentType;
-                                    Response.ContentEncoding = httpReturn.Encoding;
-                                    Response.OutputStream.Write(httpReturn.Data);
-                                    Response.OutputStream.Flush();
-                                    Response.StatusCode = httpReturn.ReCode;
-                                    Response.Close();
-                                    break;
-                                }
-                                else
-                                {
-                                    PipeClient.Http(httpReturn, Response);
-                                }
+                                httpReturn = HttpProcessor.PipeHttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
+                                PipeClient.Http(httpReturn, Response);
                                 break;
                         }
                     }

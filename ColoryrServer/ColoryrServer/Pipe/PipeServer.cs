@@ -133,6 +133,7 @@ namespace ColoryrServer.Pipe
                     if (Dll != null)
                     {
                         var Data1 = DllRun.DllGo(Dll, data.Request, data.FunctionName);
+                        Data1.UID = data.UID;
                         var temp1 = JsonConvert.SerializeObject(Data1);
                         Res = Encoding.UTF8.GetBytes(temp1);
                     }
@@ -146,7 +147,8 @@ namespace ColoryrServer.Pipe
                                 Text = "未找到DLL",
                                 Data = data.Url
                             }),
-                            ReCode = 404
+                            ReCode = 404,
+                            UID = data.UID
                         };
                         var temp1 = JsonConvert.SerializeObject(HttpRes);
                         Res = Encoding.UTF8.GetBytes(temp1);

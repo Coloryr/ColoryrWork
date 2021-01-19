@@ -26,21 +26,6 @@ namespace ColoryrBuild
         {
             InitializeComponent();
             App.MainWindow_ = this;
-
-            BitmapSource m = (BitmapSource)Icon;
-            Bitmap bmp = new Bitmap(m.PixelWidth, m.PixelHeight, PixelFormat.Format32bppPArgb);
-            BitmapData data = bmp.LockBits(
-            new Rectangle(System.Drawing.Point.Empty, bmp.Size),
-                ImageLockMode.WriteOnly,
-                PixelFormat.Format32bppPArgb);
-
-            m.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
-            bmp.UnlockBits(data);
-
-            IntPtr iconHandle = bmp.GetHicon();
-            Icon icon = System.Drawing.Icon.FromHandle(iconHandle);
-
-            App.notifyIcon.Icon = icon;
             ReList();
         }
 
@@ -59,7 +44,7 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.GetList(CodeType.Dll);
             if (list == null)
             {
-                App.ShowB("刷新", "DLL刷新失败");
+                App.LogShow("刷新", "DLL刷新失败");
                 return;
             }
             DllList = list.List;
@@ -68,14 +53,14 @@ namespace ColoryrBuild
             {
                 ListDll.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "DLL刷新成功");
+            App.LogShow("刷新", "DLL刷新成功");
         }
         private async void ReClass()
         {
             var list = await App.HttpUtils.GetList(CodeType.Class);
             if (list == null)
             {
-                App.ShowB("刷新", "Class刷新失败");
+                App.LogShow("刷新", "Class刷新失败");
                 return;
             }
             ClassList = list.List;
@@ -84,14 +69,14 @@ namespace ColoryrBuild
             {
                 ListClass.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "Class刷新成功");
+            App.LogShow("刷新", "Class刷新成功");
         }
         private async void ReIoT()
         {
             var list = await App.HttpUtils.GetList(CodeType.IoT);
             if (list == null)
             {
-                App.ShowB("刷新", "IoT刷新失败");
+                App.LogShow("刷新", "IoT刷新失败");
                 return;
             }
             IoTList = list.List;
@@ -100,14 +85,14 @@ namespace ColoryrBuild
             {
                 ListIoT.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "IoT刷新成功");
+            App.LogShow("刷新", "IoT刷新成功");
         }
         private async void ReRobot()
         {
             var list = await App.HttpUtils.GetList(CodeType.Robot);
             if (list == null)
             {
-                App.ShowB("刷新", "Robot刷新失败");
+                App.LogShow("刷新", "Robot刷新失败");
                 return;
             }
             RobotList = list.List;
@@ -116,14 +101,14 @@ namespace ColoryrBuild
             {
                 ListRobot.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "Robot刷新成功");
+            App.LogShow("刷新", "Robot刷新成功");
         }
         private async void ReWebSocket()
         {
             var list = await App.HttpUtils.GetList(CodeType.WebSocket);
             if (list == null)
             {
-                App.ShowB("刷新", "WebSocket刷新失败");
+                App.LogShow("刷新", "WebSocket刷新失败");
                 return;
             }
             WebSocketList = list.List;
@@ -132,14 +117,14 @@ namespace ColoryrBuild
             {
                 ListWebSocket.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "WebSocket刷新成功");
+            App.LogShow("刷新", "WebSocket刷新成功");
         }
         private async void ReApp()
         {
             var list = await App.HttpUtils.GetList(CodeType.App);
             if (list == null)
             {
-                App.ShowB("刷新", "App刷新失败");
+                App.LogShow("刷新", "App刷新失败");
                 return;
             }
             AppList = list.List;
@@ -148,7 +133,7 @@ namespace ColoryrBuild
             {
                 ListApp.Items.Add(item.Value);
             }
-            App.ShowA("刷新", "App刷新成功");
+            App.LogShow("刷新", "App刷新成功");
         }
 
         private async void Add_Dll_Click(object sender, RoutedEventArgs e)
@@ -159,9 +144,9 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.Dll, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
-            App.ShowA("创建", list.Message);
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
                 ReDll();
@@ -182,15 +167,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.Dll, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }
@@ -211,11 +196,11 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.Class, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                App.LogShow("创建", list.Message);
             }
         }
         private async void Change_Class_Click(object sender, RoutedEventArgs e)
@@ -233,15 +218,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.Class, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }
@@ -262,11 +247,11 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.IoT, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                App.LogShow("创建", list.Message);
             }
         }
         private async void Change_IoT_Click(object sender, RoutedEventArgs e)
@@ -284,15 +269,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.IoT, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }
@@ -313,11 +298,11 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.Robot, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                App.LogShow("创建", list.Message);
             }
         }
         private async void Change_Robot_Click(object sender, RoutedEventArgs e)
@@ -335,15 +320,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.Robot, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }
@@ -364,11 +349,11 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.WebSocket, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                App.LogShow("创建", list.Message);
             }
         }
         private async void Change_WebSocket_Click(object sender, RoutedEventArgs e)
@@ -386,15 +371,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.WebSocket, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }
@@ -415,11 +400,11 @@ namespace ColoryrBuild
             var list = await App.HttpUtils.Add(CodeType.App, data);
             if (list == null)
             {
-                App.ShowB("添加", "服务器返回错误");
+                App.LogShow("添加", "服务器返回错误");
             }
             if (list.Build)
             {
-                App.ShowA("创建", list.Message);
+                App.LogShow("创建", list.Message);
             }
         }
         private async void Change_App_Click(object sender, RoutedEventArgs e)
@@ -437,15 +422,15 @@ namespace ColoryrBuild
                 var data = await App.HttpUtils.Remove(CodeType.App, item);
                 if (data == null)
                 {
-                    App.ShowB("删除", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                 }
                 if (data.Build)
                 {
-                    App.ShowA("删除", data.Message);
+                    App.LogShow("删除", data.Message);
                 }
                 else
                 {
-                    App.ShowB("删除", "删除失败");
+                    App.LogShow("删除", "删除失败");
                 }
             }
         }

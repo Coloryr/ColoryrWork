@@ -33,7 +33,7 @@ namespace ColoryrBuild
                 var item2 = obj["Message"].ToString();
                 if (item1 == "False" && item2 == "233")
                 {
-                    App.ShowB("'登录", "登录失效");
+                    App.LogShow("'登录", "登录失效");
                     App.Login();
                     return false;
                 }
@@ -62,7 +62,7 @@ namespace ColoryrBuild
                 }
                 else
                 {
-                    App.ShowB("登录", "自动登录失败");
+                    App.LogShow("登录", "自动登录失败");
                 }
                 return false;
             }
@@ -201,12 +201,12 @@ namespace ColoryrBuild
                     {
                         App.Config.Token = res.Message;
                     }
-                    App.ShowA("登录", "登录成功", true);
+                    App.LogShow("登录", "登录成功");
                     return true;
                 }
                 else
                 {
-                    App.ShowB("登录", res.Message, true);
+                    App.LogShow("登录", res.Message);
                 }
                 return false;
             }

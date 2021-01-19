@@ -28,6 +28,8 @@ namespace ColoryrBuild
         public static ContrastWindow ContrastWindow_;
         public static LogWindow LogWindow_;
 
+        private static Logs Logs;
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             RunLocal = AppDomain.CurrentDomain.BaseDirectory;
@@ -40,11 +42,11 @@ namespace ColoryrBuild
                 Token = "",
                 Http = "https://"
             }, RunLocal + "Config.json");
-
+            Logs = new Logs(RunLocal);
             DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            Log("启动");
+            LogShow("启动", "初始化");
 
             while (!IsLogin)
             {
@@ -71,16 +73,6 @@ namespace ColoryrBuild
             new Login().ShowDialog();
         }
 
-        public static void Log(string data)
-        {
-            if (LogWindow_ == null)
-            {
-                LogWindow_ = new();
-                LogWindow_.Show();
-            }
-            LogWindow_.Log(data);
-        }
-
         public static DiffPaneModel StartContrast(CSFileCode obj, string old)
         {
             if (ContrastWindow_ == null)
@@ -92,14 +84,18 @@ namespace ColoryrBuild
             return ContrastWindow_.Start(obj, old);
         }
 
-        public static void ShowB(string v1, string v2, bool bar = false)
+        public static void LogShow(string v1, string v2)
         {
-            Log(v1 + "|" + v2);
-        }
-
-        public static void ShowA(string v1, string v2, bool bar = false)
-        {
-            Log(v1 + "|" + v2);
+            string data = v1 + "|" + v2;
+            Logs.LogWrite(data);
+            if (LogWindow_ == null)
+            {
+                LogWindow_ = new();
+                LogWindow_.Show();
+            }
+            var date = DateTime.Now;
+            string time = date.ToLongTimeString().ToString();
+            LogWindow_.Log($"[{time}]{data}");
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
@@ -151,11 +147,6 @@ namespace ColoryrBuild
         {
             MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
             e.SetObserved();
-        }
-
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            notifyIcon.Dispose();
         }
     }
 }

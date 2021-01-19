@@ -79,15 +79,15 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = true,
-                                Message = "Dll已创建" + Json.UUID
+                                Message = $"Dll已创建[{Json.UUID}]"
                             };
-                            ServerMain.LogOut($"Dll创建{Json.UUID}");
+                            ServerMain.LogOut($"Dll创建[{Json.UUID}]");
                         }
                         else
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "Dll已存在"
+                                Message = $"Dll[{Json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddClass:
@@ -113,7 +113,7 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "Class已存在"
+                                Message = $"Class[{Json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddIoT:
