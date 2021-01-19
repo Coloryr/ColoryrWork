@@ -3,6 +3,7 @@ using DiffPlex.DiffBuilder.Model;
 using Lib.Build;
 using Lib.Build.Object;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace ColoryrBuild
         public static ContrastWindow ContrastWindow_;
         public static LogWindow LogWindow_;
 
+        private static Dictionary<string, EditWindow> EditWindows = new();
         private static Logs Logs;
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -52,8 +54,6 @@ namespace ColoryrBuild
             {
                 Login();
             }
-            ContrastWindow_ = new();
-            ContrastWindow_.Show();
         }
 
         public static void Close()
@@ -110,6 +110,32 @@ namespace ColoryrBuild
             return IsLogin;
         }
 
+        public static void AddEdit(CSFileObj code, CodeType type)
+        {
+            string name = type.ToString() + code.UUID;
+            if (EditWindows.ContainsKey(name))
+            {
+                var temp = EditWindows[name];
+                temp.Show();
+                temp.GetCode();
+            }
+            else
+            {
+                var window = new EditWindow(code, type);
+                EditWindows.Add(name, window);
+                window.Show();
+            }
+        }
+
+        public static void CloseEdit(CSFileObj code, CodeType type)
+        {
+            string name = type.ToString() + code.UUID;
+            if (EditWindows.ContainsKey(name))
+            {
+                EditWindows.Remove(name);
+            }
+        }
+
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             try
@@ -147,6 +173,11 @@ namespace ColoryrBuild
         {
             MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
             e.SetObserved();
+        }
+
+        public static void ClearContrast()
+        {
+            ContrastWindow_?.Clear();
         }
     }
 }

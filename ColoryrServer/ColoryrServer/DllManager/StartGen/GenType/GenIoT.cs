@@ -45,7 +45,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
             foreach (var Item in AssemblySave.Type.GetMethods())
             {
-                if (Item.Name == "tcpmessage" || Item.Name == "ucpmessage")
+                if (Item.Name is CodeDemo.IoTTcp or CodeDemo.IoTUdp)
                     AssemblySave.MethodInfos.Add(Item.Name, Item);
             }
 

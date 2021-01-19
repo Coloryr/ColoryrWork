@@ -124,7 +124,7 @@ namespace ColoryrServer.FileSystem
         public int Port { get; set; }
     }
     internal record HttpConfig : SocketConfig
-    { 
+    {
         /// <summary>
         /// 线程数量
         /// </summary>

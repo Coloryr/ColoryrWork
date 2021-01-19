@@ -33,7 +33,7 @@ namespace ColoryrBuild
                 var item2 = obj["Message"].ToString();
                 if (item1 == "False" && item2 == "233")
                 {
-                    App.LogShow("'登录", "登录失效");
+                    App.LogShow("登录", "登录失效");
                     App.Login();
                     return false;
                 }
@@ -66,7 +66,7 @@ namespace ColoryrBuild
                 }
                 return false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
                 return false;
@@ -98,7 +98,7 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await GetList(type);
+                    return await GetList(type);
                 }
                 return JsonConvert.DeserializeObject<CSFileList>(data);
             }
@@ -134,7 +134,7 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await Add(type, name);
+                    return await Add(type, name);
                 }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }
@@ -170,7 +170,7 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await Remove(type, obj);
+                    return await Remove(type, obj);
                 }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }
@@ -241,7 +241,7 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await GetCode(type, name);
+                    return await GetCode(type, name);
                 }
                 return JsonConvert.DeserializeObject<CSFileCode>(data);
             }
@@ -251,7 +251,7 @@ namespace ColoryrBuild
             }
         }
 
-        public async Task<CSFileCode> GetAppCode(string name)
+        public async Task<AppFileObj> GetAppCode(string name)
         {
             try
             {
@@ -268,9 +268,9 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await GetAppCode(name);
+                    return await GetAppCode(name);
                 }
-                return JsonConvert.DeserializeObject<CSFileCode>(data);
+                return JsonConvert.DeserializeObject<AppFileObj>(data);
             }
             catch
             {
@@ -296,6 +296,7 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = reType,
                     UUID = obj.UUID,
+                    Version = obj.Version,
                     Code = JsonConvert.SerializeObject(list)
                 };
                 HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
@@ -304,7 +305,7 @@ namespace ColoryrBuild
                 var data = await temp.Content.ReadAsStringAsync();
                 if (!CheckLogin(data))
                 {
-                    await Build(obj, type, list);
+                    return await Build(obj, type, list);
                 }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }

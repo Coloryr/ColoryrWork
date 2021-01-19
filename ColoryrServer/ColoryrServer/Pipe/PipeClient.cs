@@ -3,14 +3,10 @@ using ColoryrServer.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Pipe
 {
@@ -99,12 +95,12 @@ namespace ColoryrServer.Pipe
             }
         }
         public static void WebSocket(int Port)
-        { 
-        
+        {
+
         }
         public static void IoT(int Port)
-        { 
-            
+        {
+
         }
     }
 }

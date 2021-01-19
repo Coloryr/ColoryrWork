@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
-using System.Threading;
 
 namespace ColoryrServer.DllManager
 {
@@ -21,13 +20,13 @@ namespace ColoryrServer.DllManager
 
         private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
 
-        public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
-        public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
-        public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll/IoT/";
-        public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll/WebSocket/";
-        public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
+        public static readonly string DllLocal = ServerMain.RunLocal + @"Dll\Dll\";
+        public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll\Class\";
+        public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll\IoT\";
+        public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll\WebSocket\";
+        public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll\Robot\";
 
-        public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
+        public static readonly string AppLocal = ServerMain.RunLocal + @"Dll\App\";
 
         private static void RemoveAll(string dir)
         {

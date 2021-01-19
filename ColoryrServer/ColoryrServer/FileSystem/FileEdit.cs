@@ -8,19 +8,21 @@ namespace ColoryrServer.FileSystem
         public static string StartEdit(string old, List<CodeEditObj> editText)
         {
             var temp = old.Split("\n");
+            int arg = 0;
             var list = new List<string>(temp);
             foreach (var item in editText)
             {
                 switch (item.Fun)
                 {
                     case EditFun.Add:
-                        list.Insert(item.Line, item.Code);
+                        list.Insert(item.Line + arg, item.Code);
                         break;
                     case EditFun.Edit:
-                        list[item.Line] = item.Code;
+                        list[item.Line + arg] = item.Code;
                         break;
                     case EditFun.Remove:
-                        list.RemoveAt(item.Line);
+                        list.RemoveAt(item.Line + arg);
+                        arg--;
                         break;
                 }
             }
@@ -29,7 +31,7 @@ namespace ColoryrServer.FileSystem
             {
                 old += item + "\n";
             }
-            return old;
+            return old.Remove(old.Length - 1);
         }
     }
 }

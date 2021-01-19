@@ -5,17 +5,7 @@ using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ColoryrBuild.Windows
 {
@@ -28,6 +18,7 @@ namespace ColoryrBuild.Windows
         private readonly CSFileObj obj;
         private readonly CodeType type;
         private CSFileCode obj1;
+        private AppFileObj obj2;
         private DiffPaneModel Model;
         private readonly FileSystemWatcher FileSystemWatcher;
         private readonly string Local;
@@ -47,6 +38,10 @@ namespace ColoryrBuild.Windows
             if (type != CodeType.App)
                 CodeA.IsEnabled = false;
             Local = CodeSave.FilePath + "\\" + type.ToString() + "\\" + obj.UUID + "\\";
+            if (!Directory.Exists(Local))
+            {
+                Directory.CreateDirectory(Local);
+            }
             GetCode();
             FileSystemWatcher = new FileSystemWatcher();
             try
@@ -93,13 +88,16 @@ namespace ColoryrBuild.Windows
             }
             else
             {
-                var data = App.HttpUtils.GetAppCode(obj.UUID);
+                var data = await App.HttpUtils.GetAppCode(obj.UUID);
                 if (data == null)
                 {
                     App.LogShow("获取错误", "代码获取错误");
                     Write = false;
                     return;
                 }
+                else
+                    obj2 = data;
+
             }
             Write = false;
         }
@@ -121,8 +119,13 @@ namespace ColoryrBuild.Windows
             old = obj1.Code;
             obj.Text = Text.Text;
             List<CodeEditObj> list = new();
-            foreach (var item in Model.Lines)
+            if (Model == null)
             {
+                Updata_Click(null, null);
+            }
+            for (int pos = 0; pos < Model.Lines.Count; pos++)
+            {
+                var item = Model.Lines[pos];
                 if (item.Type == ChangeType.Unchanged)
                     continue;
                 EditFun type = item.Type switch
@@ -134,29 +137,33 @@ namespace ColoryrBuild.Windows
                 };
                 list.Add(new()
                 {
-                     Code = item.Text,
-                      Fun = type
+                    Code = item.Text,
+                    Fun = type,
+                    Line = pos
                 });
             }
             var data = await App.HttpUtils.Build(obj1, type, list);
             if (data == null)
             {
                 App.LogShow("编译错误", "服务器返回错误");
+                return;
             }
             if (data.Build)
             {
                 App.LogShow("编译", data.Message);
-                CodeSave.Save(Local + "main.cs", obj1.Code);
+                obj1.Version++;
             }
             else
             {
                 App.LogShow("编译错误", data.Message);
             }
+            CodeSave.Save(Local + "main.cs", obj1.Code);
+            App.ClearContrast();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
-        { 
-            
+        {
+
         }
         private void Change_Click(object sender, RoutedEventArgs e)
         {
@@ -165,6 +172,11 @@ namespace ColoryrBuild.Windows
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            App.CloseEdit(obj, type);
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using ColoryrBuild.Windows;
 using Lib.Build.Object;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace ColoryrBuild
 {
@@ -145,6 +141,7 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
             App.LogShow("创建", list.Message);
             if (list.Build)
@@ -152,9 +149,12 @@ namespace ColoryrBuild
                 ReDll();
             }
         }
-        private async void Change_Dll_Click(object sender, RoutedEventArgs e)
+        private void Change_Dll_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListDll.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListDll.SelectedItem;
+            App.AddEdit(item, CodeType.Dll);
         }
         private async void Delete_Dll_Click(object sender, RoutedEventArgs e)
         {
@@ -168,14 +168,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReDll();
                 }
             }
         }
@@ -197,10 +195,12 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                App.LogShow("创建", list.Message);
+                ReClass();
             }
         }
         private async void Change_Class_Click(object sender, RoutedEventArgs e)
@@ -219,14 +219,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReClass();
                 }
             }
         }
@@ -248,10 +246,12 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                App.LogShow("创建", list.Message);
+                ReIoT();
             }
         }
         private async void Change_IoT_Click(object sender, RoutedEventArgs e)
@@ -270,14 +270,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReIoT();
                 }
             }
         }
@@ -299,10 +297,12 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                App.LogShow("创建", list.Message);
+                ReRobot();
             }
         }
         private async void Change_Robot_Click(object sender, RoutedEventArgs e)
@@ -321,14 +321,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReRobot();
                 }
             }
         }
@@ -350,10 +348,12 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                App.LogShow("创建", list.Message);
+                ReWebSocket();
             }
         }
         private async void Change_WebSocket_Click(object sender, RoutedEventArgs e)
@@ -372,14 +372,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReWebSocket();
                 }
             }
         }
@@ -401,10 +399,12 @@ namespace ColoryrBuild
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
+                return;
             }
+            App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                App.LogShow("创建", list.Message);
+                ReApp();
             }
         }
         private async void Change_App_Click(object sender, RoutedEventArgs e)
@@ -423,14 +423,12 @@ namespace ColoryrBuild
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
+                    return;
                 }
+                App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    App.LogShow("删除", data.Message);
-                }
-                else
-                {
-                    App.LogShow("删除", "删除失败");
+                    ReApp();
                 }
             }
         }

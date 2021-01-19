@@ -1,20 +1,7 @@
-﻿using DiffPlex.DiffBuilder;
-using DiffPlex.DiffBuilder.Model;
+﻿using DiffPlex.DiffBuilder.Model;
 using Lib.Build.Object;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ColoryrBuild.Windows
 {
@@ -34,13 +21,22 @@ namespace ColoryrBuild.Windows
             DiffView.OldText = oldText;
             DiffView.NewText = obj.Code;
             DiffView.Refresh();
-
+            DiffView.ShowSideBySide();
+            Activate();
             return DiffView.GetInlineDiffModel();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             App.ContrastWindow_ = null;
+        }
+
+        public void Clear()
+        {
+            Title = "代码对比";
+            DiffView.OldText = "";
+            DiffView.NewText = "";
+            DiffView.Refresh();
         }
     }
 }

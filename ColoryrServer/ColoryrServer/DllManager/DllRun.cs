@@ -32,7 +32,7 @@ namespace ColoryrServer.DllManager
                     }
                 }
                 else
-                    FunName = "main";
+                    FunName = CodeDemo.DllMain;
 
                 MethodInfo MI = Dll.MethodInfos[FunName];
                 var Tran = new object[1] { Arg };
@@ -118,7 +118,7 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetWebSocket())
                 {
-                    MethodInfo MI = Dll.MethodInfos["tcpmessage"];
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.IoTTcp];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                     MI.Invoke(Assembly, Tran);
@@ -140,7 +140,7 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetWebSocket())
                 {
-                    MethodInfo MI = Dll.MethodInfos["udpmessage"];
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.IoTUdp];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                     MI.Invoke(Assembly, Tran);
@@ -162,7 +162,7 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetWebSocket())
                 {
-                    MethodInfo MI = Dll.MethodInfos["main"];
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketMessage];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                     MI.Invoke(Assembly, Tran);
@@ -184,7 +184,7 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetWebSocket())
                 {
-                    MethodInfo MI = Dll.MethodInfos["open"];
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketOpen];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                     MI.Invoke(Assembly, Tran);
@@ -206,7 +206,7 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetWebSocket())
                 {
-                    MethodInfo MI = Dll.MethodInfos["close"];
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketClose];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                     MI.Invoke(Assembly, Tran);
@@ -228,9 +228,9 @@ namespace ColoryrServer.DllManager
             {
                 foreach (var Dll in DllStonge.GetRobot())
                 {
-                    if (Dll.MethodInfos.ContainsKey("main"))
+                    if (Dll.MethodInfos.ContainsKey(CodeDemo.RobotMessage))
                     {
-                        MethodInfo MI = Dll.MethodInfos["main"];
+                        MethodInfo MI = Dll.MethodInfos[CodeDemo.RobotMessage];
                         var Tran = new object[1] { Head };
                         var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                         MI.Invoke(Assembly, Tran);

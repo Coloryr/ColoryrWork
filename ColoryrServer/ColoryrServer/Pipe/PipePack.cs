@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ColoryrServer.Pipe
+﻿namespace ColoryrServer.Pipe
 {
     internal class PipePack
     {
@@ -15,7 +9,7 @@ namespace ColoryrServer.Pipe
     }
 
     internal record PipeDataPack
-    { 
+    {
         public string UUID { get; set; }
         public int Port { get; set; }
     }

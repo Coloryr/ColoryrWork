@@ -94,7 +94,7 @@ namespace ColoryrServer.WebSocket
 
         internal static void StartPipe()
         {
-            
+
         }
     }
 }

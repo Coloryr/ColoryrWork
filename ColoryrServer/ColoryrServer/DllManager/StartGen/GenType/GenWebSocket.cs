@@ -44,7 +44,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
             foreach (var item in AssemblySave.Type.GetMethods())
             {
-                if (item.Name == "main" || item.Name == "open" || item.Name == "close")
+                if (item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
                     AssemblySave.MethodInfos.Add(item.Name, item);
             }
 

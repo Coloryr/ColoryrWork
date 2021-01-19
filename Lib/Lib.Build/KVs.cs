@@ -11,7 +11,7 @@
         public const string UploadV = "";
     }
     record UploadObj
-    { 
+    {
         public string UUID { get; set; }
         public string FileName { get; set; }
     }

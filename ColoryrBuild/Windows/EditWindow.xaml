@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         mc:Ignorable="d"
-        Title="编辑窗口" Height="450" Width="680">
+        Title="编辑窗口" Height="450" Width="680" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="代码编辑" Margin="10,27,0,10" HorizontalAlignment="Left" Width="505">
             <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-                                   Name="textEditor" FontFamily="Consolas" SyntaxHighlighting="C#" FontSize="10px"
+                                   Name="textEditor" FontFamily="Consolas" SyntaxHighlighting="C#" FontSize="12px"
                                    Background="#55DADADA" ShowLineNumbers="True"/>
         </GroupBox>
         <Label Content="说明" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>

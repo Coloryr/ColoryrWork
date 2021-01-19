@@ -45,7 +45,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
             foreach (var Item in AssemblySave.Type.GetMethods())
             {
-                if (Item.Name == "main" || Item.Name == "after" || Item.Name == "robot")
+                if (Item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend)
                     AssemblySave.MethodInfos.Add(Item.Name, Item);
             }
 
