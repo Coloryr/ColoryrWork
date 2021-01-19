@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ColoryrBuild.Windows
@@ -8,13 +9,16 @@ namespace ColoryrBuild.Windows
     /// </summary>
     public partial class Login : Window
     {
+        private Task LoginTask;
+        private CancellationTokenSource cancel;
         public Login()
         {
             InitializeComponent();
+            cancel = new();
             Addr.Text = App.Config.Http;
             User.Text = App.Config.Name;
             Token.IsChecked = App.Config.SaveToken;
-            Task.Run(async () =>
+            LoginTask = Task.Run(async () =>
             {
                 if (App.Config.SaveToken)
                 {
@@ -26,7 +30,7 @@ namespace ColoryrBuild.Windows
                         Dispatcher.Invoke(() => Close());
                     }
                 }
-            });
+            }, cancel.Token);
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -37,7 +41,19 @@ namespace ColoryrBuild.Windows
             var res = await App.StartLogin(Utils.GetSHA1(Pass.Password));
             if (res)
             {
+                if (LoginTask.Status == TaskStatus.Running)
+                {
+                    cancel.Cancel(false);
+                }
                 Close();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!App.IsLogin)
+            {
+                App.Close();
             }
         }
     }

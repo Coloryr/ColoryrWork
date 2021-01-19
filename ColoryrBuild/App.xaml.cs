@@ -60,6 +60,12 @@ namespace ColoryrBuild
             ContrastWindow_ = new();
             ContrastWindow_.Show();
         }
+
+        public static void Close()
+        {
+            Current.Shutdown();
+        }
+
         public static async Task<bool> AutoLogin()
         {
             IsLogin = await HttpUtils.AutoLogin();

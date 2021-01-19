@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ColoryrBuild
 {
@@ -61,12 +62,13 @@ namespace ColoryrBuild
                 }
                 else
                 {
-                    App.ShowB("登录", "登录失效");
+                    App.ShowB("登录", "自动登录失败");
                 }
                 return false;
             }
-            catch
+            catch(Exception e)
             {
+                MessageBox.Show(e.ToString());
                 return false;
             }
         }
