@@ -151,8 +151,8 @@ namespace ColoryrServer.DataBase
                     a.State = ConnState.Close;
                     a.Redis.Dispose();
                 }
+                ServerMain.LogOut("Redis数据库已断开");
             }
-            ServerMain.LogOut("Redis数据库已断开");
         }
 
         /// <summary>

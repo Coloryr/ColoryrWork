@@ -256,6 +256,7 @@ namespace ColoryrServer
             ServerWebSocket.Stop();
             RobotSocket.Stop();
             RedisCon.Stop();
+            OracleCon.Stop();
             RamDataBase.Stop();
             LogOut("已关闭");
         }

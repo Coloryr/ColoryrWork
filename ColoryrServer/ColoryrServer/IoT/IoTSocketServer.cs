@@ -71,7 +71,6 @@ namespace ColoryrServer.IoT
             RunFlag = false;
             UdpServer.Close();
             TcpServer.Stop();
-            UdpServer.Dispose();
             foreach (var item in TcpClients.Values)
             {
                 if (item != null)

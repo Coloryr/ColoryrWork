@@ -162,8 +162,8 @@ namespace ColoryrServer.DataBase
                     a.State = ConnState.Close;
                     a.Ms.Dispose();
                 }
+                ServerMain.LogOut("Ms数据库已断开");
             }
-            ServerMain.LogOut("Ms数据库已断开");
         }
 
         /// <summary>

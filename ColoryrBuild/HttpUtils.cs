@@ -297,6 +297,7 @@ namespace ColoryrBuild
                     Mode = reType,
                     UUID = obj.UUID,
                     Version = obj.Version,
+                    Text = obj.Text,
                     Code = JsonConvert.SerializeObject(list)
                 };
                 HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));

@@ -131,7 +131,27 @@ namespace ColoryrBuild
             }
             App.LogShow("刷新", "App刷新成功");
         }
-
+        public void Re(CodeType type)
+        {
+            switch (type)
+            {
+                case CodeType.Dll:
+                    ReDll();
+                    break;
+                case CodeType.Class:
+                    ReClass();
+                    break;
+                case CodeType.IoT:
+                    ReIoT();
+                    break;
+                case CodeType.WebSocket:
+                    ReWebSocket();
+                    break;
+                case CodeType.Robot:
+                    ReRobot();
+                    break;
+            }
+        }
         private async void Add_Dll_Click(object sender, RoutedEventArgs e)
         {
             var data = new InputWindow("UUID设置").Set();
@@ -177,6 +197,7 @@ namespace ColoryrBuild
                 }
             }
         }
+
         private void Re_Dll_Click(object sender, RoutedEventArgs e)
         {
             ReDll();
@@ -203,9 +224,12 @@ namespace ColoryrBuild
                 ReClass();
             }
         }
-        private async void Change_Class_Click(object sender, RoutedEventArgs e)
+        private void Change_Class_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListClass.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListClass.SelectedItem;
+            App.AddEdit(item, CodeType.Class);
         }
         private async void Delete_Class_Click(object sender, RoutedEventArgs e)
         {
@@ -254,9 +278,12 @@ namespace ColoryrBuild
                 ReIoT();
             }
         }
-        private async void Change_IoT_Click(object sender, RoutedEventArgs e)
+        private void Change_IoT_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListIoT.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListIoT.SelectedItem;
+            App.AddEdit(item, CodeType.IoT);
         }
         private async void Delete_IoT_Click(object sender, RoutedEventArgs e)
         {
@@ -305,9 +332,12 @@ namespace ColoryrBuild
                 ReRobot();
             }
         }
-        private async void Change_Robot_Click(object sender, RoutedEventArgs e)
+        private void Change_Robot_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListRobot.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListRobot.SelectedItem;
+            App.AddEdit(item, CodeType.Robot);
         }
         private async void Delete_Robot_Click(object sender, RoutedEventArgs e)
         {

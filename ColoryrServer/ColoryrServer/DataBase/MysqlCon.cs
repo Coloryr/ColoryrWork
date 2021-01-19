@@ -161,8 +161,8 @@ namespace ColoryrServer.DataBase
                     item.State = ConnState.Close;
                     item.Mysql.Dispose();
                 }
+                ServerMain.LogOut("Mysql已断开");
             }
-            ServerMain.LogOut("Mysql已断开");
         }
 
         /// <summary>

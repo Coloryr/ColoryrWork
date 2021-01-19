@@ -446,8 +446,6 @@ namespace ColoryrServer.Http
                 Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
                 Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
             }
-            Listener.Start();
-            Listener.BeginGetContext(ContextReady, null);
         }
 
         public static void Start()
@@ -462,6 +460,8 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
+                Listener.Start();
+                Listener.BeginGetContext(ContextReady, null);
                 ServerMain.LogOut("Http服务器已启动");
             }
             catch (Exception e)
@@ -482,6 +482,8 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
+                Listener.Start();
+                Listener.BeginGetContext(ContextReady, null);
                 ServerMain.LogOut("Http服务器已启动");
             }
             catch (Exception e)

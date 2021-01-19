@@ -116,8 +116,11 @@ namespace ColoryrBuild.Windows
 
         private async void Build_Click(object sender, RoutedEventArgs e)
         {
+            if (Write)
+                return;
+            Write = true;
             old = obj1.Code;
-            obj.Text = Text.Text;
+            obj1.Text = Text.Text;
             List<CodeEditObj> list = new();
             if (Model == null)
             {
@@ -150,8 +153,10 @@ namespace ColoryrBuild.Windows
             }
             App.LogShow("编译", data.Message);
             obj1.Version++;
+            App.MainWindow_.Re(type);
             CodeSave.Save(Local + "main.cs", obj1.Code);
             App.ClearContrast();
+            Write = false;
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)

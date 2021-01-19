@@ -16,6 +16,7 @@ namespace ColoryrServer.RunTest
                 if (data == "stop")
                 {
                     TestRun.Stop();
+                    return;
                 }
             }
         }

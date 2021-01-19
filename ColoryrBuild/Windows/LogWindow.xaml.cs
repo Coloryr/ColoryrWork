@@ -21,5 +21,10 @@ namespace ColoryrBuild.Windows
                 Activate();
             });
         }
+
+        private void Window_Closed(object sender, System.EventArgs e)
+        {
+            App.LogWindow_ = null;
+        }
     }
 }

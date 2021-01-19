@@ -165,8 +165,8 @@ namespace ColoryrServer.DataBase
                     a.State = ConnState.Close;
                     a.Oracle.Dispose();
                 }
+                ServerMain.LogOut("Oracle数据库已断开");
             }
-            ServerMain.LogOut("Oracle数据库已断开");
         }
 
         /// <summary>
