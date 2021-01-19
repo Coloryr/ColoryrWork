@@ -16,8 +16,11 @@ namespace ColoryrServer.DllManager.StartGen.GenType
     {
         public static GenReOBJ StartGen(CSFileCode CodeFile)
         {
-            var Code = CSharpSyntaxTree.ParseText(CodeFile.Code);
-            var Res = GenTask.StartGen(CodeFile.UUID, new List<SyntaxTree> { Code }, GenLib.Dll);
+            var Res = GenTask.StartGen(CodeFile.UUID, new List<SyntaxTree> 
+            {
+                CSharpSyntaxTree.ParseText(CodeFile.Code) 
+            }, GenLib.Dll);
+            Task.Run(() => CSFile.StorageDll(CodeFile));
             if (!Res.Isok)
             {
                 Res.Res = $"Dll[{CodeFile.UUID}]" + Res.Res;
@@ -79,9 +82,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
                 }
-
-                CSFile.StorageDll(CodeFile);
-                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

@@ -19,6 +19,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             {
                 CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
+            Task.Run(() => CSFile.StorageRobot(File));
             if (!Res.Isok)
             {
                 Res.Res = $"Robot[{File.UUID}]" + Res.Res;
@@ -77,9 +78,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
                 }
-
-                CSFile.StorageRobot(File);
-                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

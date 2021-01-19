@@ -21,6 +21,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 list.Add(CSharpSyntaxTree.ParseText(item.Value));
             }
             var Res = GenTask.StartGen(File.UUID, list, GenLib.App);
+            Task.Run(() => CSFile.StorageApp(File));
             if (!Res.Isok)
             {
                 Res.Res = $"App[{File.UUID}]" + Res.Res;
@@ -63,10 +64,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     FileStream2.Write(Encoding.UTF8.GetBytes(item.Value));
                     FileStream2.Flush();
                 }
-
-                CSFile.StorageApp(File);
-                ConfigUtil.Save();
-
                 GC.Collect();
             });
 

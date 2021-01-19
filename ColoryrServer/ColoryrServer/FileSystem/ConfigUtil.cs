@@ -362,9 +362,5 @@ namespace ColoryrServer.FileSystem
                 }
             }, FilePath);
         }
-        public static void Save()
-        {
-            ConfigSave.Save(ServerMain.Config, FilePath);
-        }
     }
 }

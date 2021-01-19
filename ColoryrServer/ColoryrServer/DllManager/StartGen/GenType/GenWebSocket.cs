@@ -19,6 +19,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             {
                 CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
+            Task.Run(() => CSFile.StorageWebSocket(File));
             if (!Res.Isok)
             {
                 Res.Res = $"WebSocket[{ File.UUID }]" + Res.Res;
@@ -76,9 +77,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
                 }
-
-                CSFile.StorageWebSocket(File);
-                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();

@@ -19,6 +19,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             {
                 CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
+            Task.Run(() => CSFile.StorageClass(File));
             if (!Res.Isok)
             {
                 Res.Res = $"Class[{File.UUID}]" + Res.Res;
@@ -65,9 +66,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
                 }
-
-                CSFile.StorageClass(File);
-                ConfigUtil.Save();
 
                 Res.MSPdb.Close();
                 Res.MSPdb.Dispose();
