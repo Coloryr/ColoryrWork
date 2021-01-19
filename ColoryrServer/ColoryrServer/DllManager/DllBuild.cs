@@ -310,7 +310,7 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "没有这个UUID"
+                                Message = $"没有这个Dll[{Json.UUID}]"
                             };
                             break;
                         }
@@ -319,7 +319,7 @@ namespace ColoryrServer.DllManager
                             Object = new ReMessage
                             {
                                 Build = false,
-                                Message = "版本号错误"
+                                Message = $"Dll[{Json.UUID}]版本号错误"
                             };
                             break;
                         }
@@ -332,10 +332,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenDll.StartGen(File);
                         SW.Stop();
-                        if (BuildBack.Isok)
-                        {
-                            File.Version++;
-                        }
+                        File.Version++;
                         Object = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -348,34 +345,146 @@ namespace ColoryrServer.DllManager
                         File = CSFile.GetClass(Json.UUID);
                         if (File == null)
                         {
-                            File = new CSFileCode
+                            Object = new ReMessage
                             {
-                                UUID = Json.UUID,
-                                Text = Json.Text,
-                                Code = Json.Code,
-                                Type = CodeType.Class,
-                                Version = 1
+                                Build = false,
+                                Message = $"没有这个Class[{Json.UUID}]"
                             };
+                            break;
                         }
-                        else
+                        if (File.Version != Json.Version)
                         {
-                            File.Code = Json.Code;
-                            File.Text = Json.Text;
-                            if (File.Version != Json.Version)
+                            Object = new ReMessage
                             {
-                                Object = new ReMessage
-                                {
-                                    Build = false,
-                                    Message = "版本号错误"
-                                };
-                                break;
-                            }
-                            File.Version++;
+                                Build = false,
+                                Message = $"Class[{Json.UUID}]版本号错误"
+                            };
+                            break;
                         }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenClass.StartGen(File);
                         SW.Stop();
+                        File.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataIoT:
+                        File = CSFile.GetIoT(Json.UUID);
+                        if (File == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个IoT[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"IoT[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenIoT.StartGen(File);
+                        SW.Stop();
+                        File.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataRobot:
+                        File = CSFile.GetRobot(Json.UUID);
+                        if (File == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个Robot[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Robot[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenRobot.StartGen(File);
+                        SW.Stop();
+                        File.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataWebSocket:
+                        File = CSFile.GetWebSocket(Json.UUID);
+                        if (File == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个WebSocket[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"WebSocket[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenWebSocket.StartGen(File);
+                        SW.Stop();
+                        File.Version++;
                         Object = new ReMessage
                         {
                             Build = BuildBack.Isok,

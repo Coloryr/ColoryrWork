@@ -23,6 +23,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             var Res = GenTask.StartGen(File.UUID, list, GenLib.App);
             if (!Res.Isok)
             {
+                Res.Res = $"App[{File.UUID}]" + Res.Res;
                 return Res;
             }
 
@@ -72,7 +73,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成",
+                Res = $"App[{File.UUID}]编译完成",
                 Time = File.UpdataTime
             };
         }

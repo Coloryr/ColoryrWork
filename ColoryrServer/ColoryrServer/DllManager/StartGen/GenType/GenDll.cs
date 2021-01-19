@@ -20,6 +20,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             var Res = GenTask.StartGen(CodeFile.UUID, new List<SyntaxTree> { Code }, GenLib.Dll);
             if (!Res.Isok)
             {
+                Res.Res = $"Dll[{CodeFile.UUID}]" + Res.Res;
                 return Res;
             }
 
@@ -38,7 +39,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = "UUID错误"
+                    Res = $"Dll[{CodeFile.UUID}]没有主类"
                 };
 
             AssemblySave.Type = list.First();
@@ -54,7 +55,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = "没有方法"
+                    Res = $"Dll[{CodeFile.UUID}]没有方法"
                 };
 
             DllStonge.AddDll(CodeFile.UUID, AssemblySave);
@@ -93,7 +94,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成",
+                Res = $"Dll[{CodeFile.UUID}]编译完成",
                 Time = CodeFile.UpdataTime
             };
         }

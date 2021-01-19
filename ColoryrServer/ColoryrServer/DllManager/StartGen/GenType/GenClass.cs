@@ -21,6 +21,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             }, GenLib.Dll);
             if (!Res.Isok)
             {
+                Res.Res = $"Class[{File.UUID}]" + Res.Res;
                 return Res;
             }
 
@@ -39,7 +40,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = "类名错误"
+                    Res = $"Class[{File.UUID}]类名错误"
                 };
 
             AssemblySave.Type = list.First();
@@ -79,7 +80,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成"
+                Res = $"Class[{File.UUID}]编译完成"
             };
         }
     }

@@ -34,7 +34,7 @@ namespace ColoryrBuild.Windows
             textEditor.Options.ShowSpaces = true;
             textEditor.Options.ShowTabs = true;
             this.type = type;
-            Title = "代码编辑" + obj.UUID;
+            Title = $"编辑窗口{type}[{obj.UUID}]";
             if (type != CodeType.App)
                 CodeA.IsEnabled = false;
             Local = CodeSave.FilePath + "\\" + type.ToString() + "\\" + obj.UUID + "\\";
@@ -145,18 +145,11 @@ namespace ColoryrBuild.Windows
             var data = await App.HttpUtils.Build(obj1, type, list);
             if (data == null)
             {
-                App.LogShow("编译错误", "服务器返回错误");
+                App.LogShow("编译", "服务器返回错误");
                 return;
             }
-            if (data.Build)
-            {
-                App.LogShow("编译", data.Message);
-                obj1.Version++;
-            }
-            else
-            {
-                App.LogShow("编译错误", data.Message);
-            }
+            App.LogShow("编译", data.Message);
+            obj1.Version++;
             CodeSave.Save(Local + "main.cs", obj1.Code);
             App.ClearContrast();
         }

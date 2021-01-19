@@ -21,6 +21,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             }, GenLib.Dll);
             if (!Res.Isok)
             {
+                Res.Res = $"Robot[{File.UUID}]" + Res.Res;
                 return Res;
             }
             Res.MS.Seek(0, SeekOrigin.Begin);
@@ -38,7 +39,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = "类名错误"
+                    Res = $"Robot[{ File.UUID }]类名错误"
                 };
 
             AssemblySave.Type = list.First();
@@ -53,7 +54,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = "没有主方法"
+                    Res = $"Robot[{ File.UUID }]没有主方法"
                 };
 
             DllStonge.AddRobot(File.UUID, AssemblySave);
@@ -91,7 +92,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = "编译完成"
+                Res = $"Robot[{ File.UUID }]编译完成"
             };
         }
     }

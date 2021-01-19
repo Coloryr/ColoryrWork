@@ -17,7 +17,7 @@ namespace ColoryrBuild.Windows
 
         public DiffPaneModel Start(CSFileCode obj, string oldText)
         {
-            Title = "代码对比:" + obj.UUID;
+            Title = $"代码对比{obj.Type}[{obj.UUID}]";
             DiffView.OldText = oldText;
             DiffView.NewText = obj.Code;
             DiffView.Refresh();

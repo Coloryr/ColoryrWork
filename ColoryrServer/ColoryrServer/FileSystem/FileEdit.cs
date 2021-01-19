@@ -31,7 +31,7 @@ namespace ColoryrServer.FileSystem
             {
                 old += item + "\n";
             }
-            return old.Remove(old.Length - 1);
+            return old[0..^1];
         }
     }
 }

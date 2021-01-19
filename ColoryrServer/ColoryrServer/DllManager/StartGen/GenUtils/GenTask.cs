@@ -36,7 +36,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
             EmitResult Result = compilation.Emit(MS, MSPdb);
             if (Result.Success == false)
             {
-                string Res = "编译错误\n";
+                string Res = "编译错误";
                 foreach (var Item in Result.Diagnostics)
                 {
                     Res += "\n" + Item.ToString();
