@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         mc:Ignorable="d"
-        Title="编辑窗口" Height="450" Width="680" Closed="Window_Closed">
+        Title="编辑窗口" Height="470" Width="690" MinHeight="470" MinWidth="690" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <GroupBox Header="代码编辑" Margin="10,27,0,10" HorizontalAlignment="Left" Width="505">
+        <GroupBox Header="代码编辑" Margin="10,27,165,10">
             <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
                                    Name="textEditor" FontFamily="Consolas" SyntaxHighlighting="C#" FontSize="12px"
                                    Background="#55DADADA" ShowLineNumbers="True"/>
@@ -18,7 +18,7 @@
         <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="465,6,0,0" Width="50" Click="ReCode_Click"/>
         <Button Content="更新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="355,6,0,0" Width="50" Click="Updata_Click"/>
         <Button Content="编译" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,6,0,0" Width="50" Click="Build_Click"/>
-        <GroupBox Header="代码选择" Margin="520,6,10,10" Name="CodeA">
+        <GroupBox Header="代码选择" Margin="0,6,10,10" Name="CodeA" HorizontalAlignment="Right" Width="150">
             <ListView>
                 <ListView.View>
                     <GridView>

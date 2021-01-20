@@ -31,7 +31,7 @@ namespace ColoryrServer
 {
     public class {name}
     {
-        public {name}
+        public {name}()
         {
              
         }

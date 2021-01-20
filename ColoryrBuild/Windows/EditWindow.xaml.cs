@@ -62,7 +62,14 @@ namespace ColoryrBuild.Windows
         {
             if (Write)
                 return;
-            CodeSave.Load(Local + "main.cs");
+            Write = true;
+            obj1.Code = CodeSave.Load(Local + "main.cs");
+            Dispatcher.Invoke(() =>
+            {
+                Model = App.StartContrast(obj1, old);
+                textEditor.Text = obj1.Code;
+            });
+            Write = false;
         }
 
         public async void GetCode()
@@ -73,7 +80,7 @@ namespace ColoryrBuild.Windows
                 var data = await App.HttpUtils.GetCode(type, obj.UUID);
                 if (data == null)
                 {
-                    App.LogShow("获取错误", "代码获取错误");
+                    App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取错误");
                     Write = false;
                     return;
                 }
@@ -91,7 +98,7 @@ namespace ColoryrBuild.Windows
                 var data = await App.HttpUtils.GetAppCode(obj.UUID);
                 if (data == null)
                 {
-                    App.LogShow("获取错误", "代码获取错误");
+                    App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取错误");
                     Write = false;
                     return;
                 }
@@ -99,6 +106,7 @@ namespace ColoryrBuild.Windows
                     obj2 = data;
 
             }
+            App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取成功");
             Write = false;
         }
 
@@ -131,13 +139,20 @@ namespace ColoryrBuild.Windows
                 var item = Model.Lines[pos];
                 if (item.Type == ChangeType.Unchanged)
                     continue;
-                EditFun type = item.Type switch
+                EditFun type = EditFun.Edit;
+                switch (item.Type)
                 {
-                    ChangeType.Deleted => EditFun.Remove,
-                    ChangeType.Inserted => EditFun.Add,
-                    ChangeType.Modified => EditFun.Edit,
-                    ChangeType.Imaginary => EditFun.Edit
-                };
+                    case ChangeType.Deleted:
+                        type = EditFun.Remove;
+                        break;
+                    case ChangeType.Inserted:
+                        type = EditFun.Add;
+                        break;
+                    case ChangeType.Modified:
+                    case ChangeType.Imaginary:
+                        type = EditFun.Edit;
+                        break;
+                }
                 list.Add(new()
                 {
                     Code = item.Text,

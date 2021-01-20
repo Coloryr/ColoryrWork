@@ -97,19 +97,22 @@ namespace ColoryrServer.DllManager
                         if (CSFile.GetClass(Json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
-                            CSFile.StorageClass(new()
+                            File = new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.Class,
                                 Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time
-                            });
+                                UpdataTime = time,
+                                Code = CodeDemo.class_.Replace("{name}", Json.UUID)
+                            };
+                            CSFile.StorageClass(File);
                             Object = new ReMessage
                             {
                                 Build = true,
                                 Message = $"Class[{Json.UUID}]已创建"
                             };
+                            GenClass.StartGen(File);
                             ServerMain.LogOut($"Class[{Json.UUID}]创建");
                         }
                         else
@@ -123,19 +126,22 @@ namespace ColoryrServer.DllManager
                         if (CSFile.GetIoT(Json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
-                            CSFile.StorageIoT(new()
+                            File = new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.IoT,
                                 Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time
-                            });
+                                UpdataTime = time,
+                                Code = CodeDemo.iot_.Replace("{name}", Json.UUID)
+                            };
+                            CSFile.StorageIoT(File);
                             Object = new ReMessage
                             {
                                 Build = true,
                                 Message = $"IoT[{Json.UUID}]已创建"
                             };
+                            GenIoT.StartGen(File);
                             ServerMain.LogOut($"IoT[{Json.UUID}]创建");
                         }
                         else
@@ -149,19 +155,22 @@ namespace ColoryrServer.DllManager
                         if (CSFile.GetWebSocket(Json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
-                            CSFile.StorageWebSocket(new()
+                            File = new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.WebSocket,
                                 Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time
-                            });
+                                UpdataTime = time,
+                                Code = CodeDemo.websocket_.Replace("{name}", Json.UUID)
+                            };
+                            CSFile.StorageWebSocket(File);
                             Object = new ReMessage
                             {
                                 Build = true,
                                 Message = $"WebSocket[{Json.UUID}]已创建"
                             };
+                            GenWebSocket.StartGen(File);
                             ServerMain.LogOut($"WebSocket[{Json.UUID}]创建");
                         }
                         else
@@ -175,19 +184,22 @@ namespace ColoryrServer.DllManager
                         if (CSFile.GetRobot(Json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
-                            CSFile.StorageRobot(new()
+                            File = new()
                             {
                                 UUID = Json.UUID,
                                 Type = CodeType.Robot,
                                 Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time
-                            });
+                                UpdataTime = time,
+                                Code = CodeDemo.robot_.Replace("{name}", Json.UUID)
+                            };
+                            CSFile.StorageRobot(File);
                             Object = new ReMessage
                             {
                                 Build = true,
                                 Message = $"Robot[{Json.UUID}]已创建"
                             };
+                            GenRobot.StartGen(File);
                             ServerMain.LogOut($"Robot[{Json.UUID}]创建");
                         }
                         else
@@ -493,6 +505,8 @@ namespace ColoryrServer.DllManager
                             Time = BuildBack.Time
                         };
                         break;
+
+
                     case ReType.AppRemoveFile:
                         var file = CSFile.GetApp(Json.UUID);
                         if (file == null)

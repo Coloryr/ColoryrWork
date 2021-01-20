@@ -386,9 +386,12 @@ namespace ColoryrBuild
                 ReWebSocket();
             }
         }
-        private async void Change_WebSocket_Click(object sender, RoutedEventArgs e)
+        private void Change_WebSocket_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListWebSocket.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListWebSocket.SelectedItem;
+            App.AddEdit(item, CodeType.WebSocket);
         }
         private async void Delete_WebSocket_Click(object sender, RoutedEventArgs e)
         {
@@ -437,7 +440,7 @@ namespace ColoryrBuild
                 ReApp();
             }
         }
-        private async void Change_App_Click(object sender, RoutedEventArgs e)
+        private void Change_App_Click(object sender, RoutedEventArgs e)
         {
 
         }
