@@ -3,6 +3,7 @@ using Lib.Build.Object;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 
 namespace ColoryrBuild
@@ -22,7 +23,26 @@ namespace ColoryrBuild
         {
             InitializeComponent();
             App.MainWindow_ = this;
+            GetApi();
             ReList();
+        }
+
+        private async void GetApi()
+        {
+            string dir = App.RunLocal + "CodeTEMP\\Api\\";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            foreach (var item in Directory.GetFiles(dir))
+            {
+                File.Delete(item);
+            }
+            var list = await App.HttpUtils.GetApi();
+            foreach (var item in list.List)
+            {
+                File.WriteAllText(dir + item.Key + ".cs", item.Value);
+            }
         }
 
         private void ReList()
@@ -442,7 +462,10 @@ namespace ColoryrBuild
         }
         private void Change_App_Click(object sender, RoutedEventArgs e)
         {
-
+            if (ListApp.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListApp.SelectedItem;
+            App.AddEdit(item, CodeType.App);
         }
         private async void Delete_App_Click(object sender, RoutedEventArgs e)
         {

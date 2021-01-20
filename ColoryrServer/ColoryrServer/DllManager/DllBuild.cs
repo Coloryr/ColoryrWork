@@ -505,8 +505,28 @@ namespace ColoryrServer.DllManager
                             Time = BuildBack.Time
                         };
                         break;
-
-
+                    case ReType.AddApp:
+                        var File1 = CSFile.GetApp(Json.UUID);
+                        if (File1 == null)
+                        {
+                            var time = string.Format("{0:s}", DateTime.Now);
+                            File1 = new AppFileObj()
+                            {
+                                UUID = Json.UUID,
+                                Type = CodeType.WebSocket,
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time,
+                            };
+                            //File1.Codes.Add("main", );
+                        }
+                        else
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]已存在"
+                            };
+                        break;
                     case ReType.AppRemoveFile:
                         var file = CSFile.GetApp(Json.UUID);
                         if (file == null)

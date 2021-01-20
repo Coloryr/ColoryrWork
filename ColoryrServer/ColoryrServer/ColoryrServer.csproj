@@ -40,17 +40,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ColoryrServerResource.Designer.cs">
+    <Compile Update="ColoryrServer.Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ColoryrServerResource.resx</DependentUpon>
+      <DependentUpon>ColoryrServer.Resource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="ColoryrServerResource.resx">
+    <EmbeddedResource Update="ColoryrServer.Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ColoryrServerResource.Designer.cs</LastGenOutput>
+      <LastGenOutput>ColoryrServer.Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />

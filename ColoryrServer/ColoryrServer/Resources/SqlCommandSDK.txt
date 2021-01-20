@@ -1,0 +1,1259 @@
+#region 程序集 System.Data.SqlClient, Version=4.6.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+// C:\Users\40206\.nuget\packages\system.data.sqlclient\4.8.2\ref\netcoreapp2.1\System.Data.SqlClient.dll
+#endregion
+
+using System.Data.Common;
+using System.Data.Sql;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+
+namespace System.Data.SqlClient
+{
+    //
+    // 摘要:
+    //     Represents a Transact-SQL statement or stored procedure to execute against a
+    //     SQL Server database. This class cannot be inherited.
+    public sealed class SqlCommand : DbCommand, ICloneable
+    {
+        //
+        // 摘要:
+        //     Initializes a new instance of the System.Data.SqlClient.SqlCommand class.
+        public SqlCommand();
+        //
+        // 摘要:
+        //     Initializes a new instance of the System.Data.SqlClient.SqlCommand class with
+        //     the text of the query.
+        //
+        // 参数:
+        //   cmdText:
+        //     The text of the query.
+        public SqlCommand(string cmdText);
+        //
+        // 摘要:
+        //     Initializes a new instance of the System.Data.SqlClient.SqlCommand class with
+        //     the text of the query and a System.Data.SqlClient.SqlConnection.
+        //
+        // 参数:
+        //   cmdText:
+        //     The text of the query.
+        //
+        //   connection:
+        //     A System.Data.SqlClient.SqlConnection that represents the connection to an instance
+        //     of SQL Server.
+        public SqlCommand(string cmdText, SqlConnection connection);
+        //
+        // 摘要:
+        //     Initializes a new instance of the System.Data.SqlClient.SqlCommand class with
+        //     the text of the query, a System.Data.SqlClient.SqlConnection, and the System.Data.SqlClient.SqlTransaction.
+        //
+        // 参数:
+        //   cmdText:
+        //     The text of the query.
+        //
+        //   connection:
+        //     A System.Data.SqlClient.SqlConnection that represents the connection to an instance
+        //     of SQL Server.
+        //
+        //   transaction:
+        //     The System.Data.SqlClient.SqlTransaction in which the System.Data.SqlClient.SqlCommand
+        //     executes.
+        public SqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction);
+
+        //
+        // 摘要:
+        //     Gets or sets the System.Data.SqlClient.SqlTransaction within which the System.Data.SqlClient.SqlCommand
+        //     executes.
+        //
+        // 返回结果:
+        //     The System.Data.SqlClient.SqlTransaction. The default value is null.
+        public SqlTransaction Transaction { get; set; }
+        //
+        // 摘要:
+        //     Gets the System.Data.SqlClient.SqlParameterCollection.
+        //
+        // 返回结果:
+        //     The parameters of the Transact-SQL statement or stored procedure. The default
+        //     is an empty collection.
+        public SqlParameterCollection Parameters { get; }
+        //
+        // 摘要:
+        //     Gets or sets a value that specifies the System.Data.Sql.SqlNotificationRequest
+        //     object bound to this command.
+        //
+        // 返回结果:
+        //     When set to null (default), no notification should be requested.
+        public SqlNotificationRequest Notification { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets a value indicating whether the command object should be visible
+        //     in a Windows Form Designer control.
+        //
+        // 返回结果:
+        //     A value indicating whether the command object should be visible in a control.
+        //     The default is true.
+        public override bool DesignTimeVisible { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the System.Data.SqlClient.SqlConnection used by this instance of
+        //     the System.Data.SqlClient.SqlCommand.
+        //
+        // 返回结果:
+        //     The connection to a data source. The default value is null.
+        //
+        // 异常:
+        //   T:System.InvalidOperationException:
+        //     The System.Data.SqlClient.SqlCommand.Connection property was changed while the
+        //     command was enlisted in a transaction.
+        public SqlConnection Connection { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets a value indicating how the System.Data.SqlClient.SqlCommand.CommandText
+        //     property is to be interpreted.
+        //
+        // 返回结果:
+        //     One of the System.Data.CommandType values. The default is Text.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     The value was not a valid System.Data.CommandType.
+        public override CommandType CommandType { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the wait time before terminating the attempt to execute a command
+        //     and generating an error.
+        //
+        // 返回结果:
+        //     The time in seconds to wait for the command to execute. The default is 30 seconds.
+        public override int CommandTimeout { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the Transact-SQL statement, table name or stored procedure to execute
+        //     at the data source.
+        //
+        // 返回结果:
+        //     The Transact-SQL statement or stored procedure to execute. The default is an
+        //     empty string.
+        public override string CommandText { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets how command results are applied to the System.Data.DataRow when
+        //     used by the Update method of the System.Data.Common.DbDataAdapter.
+        //
+        // 返回结果:
+        //     One of the System.Data.UpdateRowSource values.
+        public override UpdateRowSource UpdatedRowSource { get; set; }
+        protected override DbTransaction DbTransaction { get; set; }
+        protected override DbParameterCollection DbParameterCollection { get; }
+        protected override DbConnection DbConnection { get; set; }
+
+        //
+        // 摘要:
+        //     Occurs when the execution of a Transact-SQL statement completes.
+        public event StatementCompletedEventHandler StatementCompleted;
+
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll or wait for results, or both;
+        //     this value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(System.IAsyncResult),
+        //     which returns the number of affected rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteNonQuery();
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand, given a
+        //     callback procedure and state information.
+        //
+        // 参数:
+        //   callback:
+        //     An System.AsyncCallback delegate that is invoked when the command's execution
+        //     has completed. Pass null (Nothing in Microsoft Visual Basic) to indicate that
+        //     no callback is required.
+        //
+        //   stateObject:
+        //     A user-defined state object that is passed to the callback procedure. Retrieve
+        //     this object from within the callback procedure using the System.IAsyncResult.AsyncState
+        //     property.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll or wait for results, or both;
+        //     this value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(System.IAsyncResult),
+        //     which returns the number of affected rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteNonQuery(AsyncCallback callback, object stateObject);
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand, and retrieves
+        //     one or more result sets from the server.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll or wait for results, or both;
+        //     this value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult),
+        //     which returns a System.Data.SqlClient.SqlDataReader instance that can be used
+        //     to retrieve the returned rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteReader();
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand and retrieves
+        //     one or more result sets from the server, given a callback procedure and state
+        //     information.
+        //
+        // 参数:
+        //   callback:
+        //     An System.AsyncCallback delegate that is invoked when the command's execution
+        //     has completed. Pass null (Nothing in Microsoft Visual Basic) to indicate that
+        //     no callback is required.
+        //
+        //   stateObject:
+        //     A user-defined state object that is passed to the callback procedure. Retrieve
+        //     this object from within the callback procedure using the System.IAsyncResult.AsyncState
+        //     property.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll, wait for results, or both; this
+        //     value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult),
+        //     which returns a System.Data.SqlClient.SqlDataReader instance which can be used
+        //     to retrieve the returned rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteReader(AsyncCallback callback, object stateObject);
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand, using one
+        //     of the CommandBehavior values, and retrieving one or more result sets from the
+        //     server, given a callback procedure and state information.
+        //
+        // 参数:
+        //   callback:
+        //     An System.AsyncCallback delegate that is invoked when the command's execution
+        //     has completed. Pass null (Nothing in Microsoft Visual Basic) to indicate that
+        //     no callback is required.
+        //
+        //   stateObject:
+        //     A user-defined state object that is passed to the callback procedure. Retrieve
+        //     this object from within the callback procedure using the System.IAsyncResult.AsyncState
+        //     property.
+        //
+        //   behavior:
+        //     One of the System.Data.CommandBehavior values, indicating options for statement
+        //     execution and data retrieval.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll or wait for results, or both;
+        //     this value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult),
+        //     which returns a System.Data.SqlClient.SqlDataReader instance which can be used
+        //     to retrieve the returned rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteReader(AsyncCallback callback, object stateObject, CommandBehavior behavior);
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand using one
+        //     of the System.Data.CommandBehavior values.
+        //
+        // 参数:
+        //   behavior:
+        //     One of the System.Data.CommandBehavior values, indicating options for statement
+        //     execution and data retrieval.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll, wait for results, or both; this
+        //     value is also needed when invoking System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult),
+        //     which returns a System.Data.SqlClient.SqlDataReader instance that can be used
+        //     to retrieve the returned rows.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteReader(CommandBehavior behavior);
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand and returns
+        //     results as an System.Xml.XmlReader object.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll or wait for results, or both;
+        //     this value is also needed when invoking EndExecuteXmlReader, which returns a
+        //     single XML value.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteXmlReader();
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of the Transact-SQL statement or stored
+        //     procedure that is described by this System.Data.SqlClient.SqlCommand and returns
+        //     results as an System.Xml.XmlReader object, using a callback procedure.
+        //
+        // 参数:
+        //   callback:
+        //     An System.AsyncCallback delegate that is invoked when the command's execution
+        //     has completed. Pass null (Nothing in Microsoft Visual Basic) to indicate that
+        //     no callback is required.
+        //
+        //   stateObject:
+        //     A user-defined state object that is passed to the callback procedure. Retrieve
+        //     this object from within the callback procedure using the System.IAsyncResult.AsyncState
+        //     property.
+        //
+        // 返回结果:
+        //     An System.IAsyncResult that can be used to poll, wait for results, or both; this
+        //     value is also needed when the System.Data.SqlClient.SqlCommand.EndExecuteXmlReader(System.IAsyncResult)
+        //     is called, which returns the results of the command as XML.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     Any error that occurred while executing the command text. -or- A timeout occurred
+        //     during a streaming operation. For more information about streaming, see SqlClient
+        //     Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The name/value pair "Asynchronous Processing=true" was not included within the
+        //     connection string defining the connection for this System.Data.SqlClient.SqlCommand.
+        //     -or- The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public IAsyncResult BeginExecuteXmlReader(AsyncCallback callback, object stateObject);
+        //
+        // 摘要:
+        //     Tries to cancel the execution of a System.Data.SqlClient.SqlCommand.
+        public override void Cancel();
+        //
+        // 摘要:
+        //     Creates a new System.Data.SqlClient.SqlCommand object that is a copy of the current
+        //     instance.
+        //
+        // 返回结果:
+        //     A new System.Data.SqlClient.SqlCommand object that is a copy of this instance.
+        public SqlCommand Clone();
+        //
+        // 摘要:
+        //     Creates a new instance of a System.Data.SqlClient.SqlParameter object.
+        //
+        // 返回结果:
+        //     A System.Data.SqlClient.SqlParameter object.
+        public SqlParameter CreateParameter();
+        //
+        // 摘要:
+        //     Finishes asynchronous execution of a Transact-SQL statement.
+        //
+        // 参数:
+        //   asyncResult:
+        //     The System.IAsyncResult returned by the call to System.Data.SqlClient.SqlCommand.BeginExecuteNonQuery.
+        //
+        // 返回结果:
+        //     The number of rows affected (the same behavior as System.Data.SqlClient.SqlCommand.ExecuteNonQuery).
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     asyncResult parameter is null (Nothing in Microsoft Visual Basic)
+        //
+        //   T:System.InvalidOperationException:
+        //     System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(System.IAsyncResult) was
+        //     called more than once for a single command execution, or the method was mismatched
+        //     against its execution method (for example, the code called System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(System.IAsyncResult)
+        //     to complete execution of a call to System.Data.SqlClient.SqlCommand.BeginExecuteXmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     The amount of time specified in System.Data.SqlClient.SqlCommand.CommandTimeout
+        //     elapsed and the asynchronous operation specified with Overload:System.Data.SqlClient.SqlCommand.BeginExecuteNonQuery
+        //     is not complete. -or- In some situations, System.IAsyncResult can be set to IsCompleted
+        //     incorrectly. If this occurs and System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(System.IAsyncResult)
+        //     is called, EndExecuteNonQuery could raise a SqlException error if the amount
+        //     of time specified in System.Data.SqlClient.SqlCommand.CommandTimeout elapsed
+        //     and the asynchronous operation specified with Overload:System.Data.SqlClient.SqlCommand.BeginExecuteNonQuery
+        //     is not complete. To correct this situation, you should either increase the value
+        //     of CommandTimeout or reduce the work being done by the asynchronous operation.
+        public int EndExecuteNonQuery(IAsyncResult asyncResult);
+        //
+        // 摘要:
+        //     Finishes asynchronous execution of a Transact-SQL statement, returning the requested
+        //     System.Data.SqlClient.SqlDataReader.
+        //
+        // 参数:
+        //   asyncResult:
+        //     The System.IAsyncResult returned by the call to System.Data.SqlClient.SqlCommand.BeginExecuteReader.
+        //
+        // 返回结果:
+        //     A System.Data.SqlClient.SqlDataReader object that can be used to retrieve the
+        //     requested rows.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     asyncResult parameter is null (Nothing in Microsoft Visual Basic)
+        //
+        //   T:System.InvalidOperationException:
+        //     System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult) was called
+        //     more than once for a single command execution, or the method was mismatched against
+        //     its execution method (for example, the code called System.Data.SqlClient.SqlCommand.EndExecuteReader(System.IAsyncResult)
+        //     to complete execution of a call to System.Data.SqlClient.SqlCommand.BeginExecuteXmlReader.
+        public SqlDataReader EndExecuteReader(IAsyncResult asyncResult);
+        //
+        // 摘要:
+        //     Finishes asynchronous execution of a Transact-SQL statement, returning the requested
+        //     data as XML.
+        //
+        // 参数:
+        //   asyncResult:
+        //     The System.IAsyncResult returned by the call to System.Data.SqlClient.SqlCommand.BeginExecuteXmlReader.
+        //
+        // 返回结果:
+        //     An System.Xml.XmlReader object that can be used to fetch the resulting XML data.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     asyncResult parameter is null (Nothing in Microsoft Visual Basic)
+        //
+        //   T:System.InvalidOperationException:
+        //     System.Data.SqlClient.SqlCommand.EndExecuteXmlReader(System.IAsyncResult) was
+        //     called more than once for a single command execution, or the method was mismatched
+        //     against its execution method (for example, the code called System.Data.SqlClient.SqlCommand.EndExecuteXmlReader(System.IAsyncResult)
+        //     to complete execution of a call to System.Data.SqlClient.SqlCommand.BeginExecuteNonQuery.
+        public XmlReader EndExecuteXmlReader(IAsyncResult asyncResult);
+        //
+        // 摘要:
+        //     Executes a Transact-SQL statement against the connection and returns the number
+        //     of rows affected.
+        //
+        // 返回结果:
+        //     The number of rows affected.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     An exception occurred while executing the command against a locked row. This
+        //     exception is not generated when you are using Microsoft .NET Framework version
+        //     1.0. -or- A timeout occurred during a streaming operation. For more information
+        //     about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public override int ExecuteNonQuery();
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteNonQuery,
+        //     which executes a Transact-SQL statement against the connection and returns the
+        //     number of rows affected. The cancellation token can be used to request that the
+        //     operation be abandoned before the command timeout elapses. Exceptions will be
+        //     reported via the returned Task object.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation instruction.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection,
+        //     and builds a System.Data.SqlClient.SqlDataReader using one of the System.Data.CommandBehavior
+        //     values.
+        //
+        // 参数:
+        //   behavior:
+        //     One of the System.Data.CommandBehavior values.
+        //
+        // 返回结果:
+        //     A System.Data.SqlClient.SqlDataReader object.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     A timeout occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public SqlDataReader ExecuteReader(CommandBehavior behavior);
+        //
+        // 摘要:
+        //     Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds a System.Data.SqlClient.SqlDataReader.
+        //
+        // 返回结果:
+        //     A System.Data.SqlClient.SqlDataReader object.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     An exception occurred while executing the command against a locked row. This
+        //     exception is not generated when you are using Microsoft .NET Framework version
+        //     1.0. -or- A timeout occurred during a streaming operation. For more information
+        //     about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The current state of the connection is closed. System.Data.SqlClient.SqlCommand.ExecuteReader
+        //     requires an open System.Data.SqlClient.SqlConnection. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public SqlDataReader ExecuteReader();
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteReader, which
+        //     sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds a System.Data.SqlClient.SqlDataReader. The cancellation token can
+        //     be used to request that the operation be abandoned before the command timeout
+        //     elapses. Exceptions will be reported via the returned Task object.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation instruction.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.ArgumentException:
+        //     An invalid System.Data.CommandBehavior value.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<SqlDataReader> ExecuteReaderAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteReader(System.Data.CommandBehavior),
+        //     which sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection,
+        //     and builds a System.Data.SqlClient.SqlDataReader The cancellation token can be
+        //     used to request that the operation be abandoned before the command timeout elapses.
+        //     Exceptions will be reported via the returned Task object.
+        //
+        // 参数:
+        //   behavior:
+        //     Options for statement execution and data retrieval. When is set to Default, System.Data.SqlClient.SqlDataReader.ReadAsync(System.Threading.CancellationToken)
+        //     reads the entire row before returning a complete Task.
+        //
+        //   cancellationToken:
+        //     The cancellation instruction.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.ArgumentException:
+        //     An invalid System.Data.CommandBehavior value.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<SqlDataReader> ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteReader(System.Data.CommandBehavior),
+        //     which sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection,
+        //     and builds a System.Data.SqlClient.SqlDataReader. Exceptions will be reported
+        //     via the returned Task object.
+        //
+        // 参数:
+        //   behavior:
+        //     Options for statement execution and data retrieval. When is set to Default, System.Data.SqlClient.SqlDataReader.ReadAsync(System.Threading.CancellationToken)
+        //     reads the entire row before returning a complete Task.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.ArgumentException:
+        //     An invalid System.Data.CommandBehavior value.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteReaderAsync(System.Data.CommandBehavior)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<SqlDataReader> ExecuteReaderAsync(CommandBehavior behavior);
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteReader, which
+        //     sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds a System.Data.SqlClient.SqlDataReader. Exceptions will be reported
+        //     via the returned Task object.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.ArgumentException:
+        //     An invalid System.Data.CommandBehavior value.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteReaderAsync more than once for
+        //     the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<SqlDataReader> ExecuteReaderAsync();
+        //
+        // 摘要:
+        //     Executes the query, and returns the first column of the first row in the result
+        //     set returned by the query. Additional columns or rows are ignored.
+        //
+        // 返回结果:
+        //     The first column of the first row in the result set, or a null reference (Nothing
+        //     in Visual Basic) if the result set is empty. Returns a maximum of 2033 characters.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     An exception occurred while executing the command against a locked row. This
+        //     exception is not generated when you are using Microsoft .NET Framework version
+        //     1.0. -or- A timeout occurred during a streaming operation. For more information
+        //     about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public override object ExecuteScalar();
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteScalar, which
+        //     executes the query asynchronously and returns the first column of the first row
+        //     in the result set returned by the query. Additional columns or rows are ignored.
+        //     The cancellation token can be used to request that the operation be abandoned
+        //     before the command timeout elapses. Exceptions will be reported via the returned
+        //     Task object.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation instruction.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteScalarAsync(System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds an System.Xml.XmlReader object.
+        //
+        // 返回结果:
+        //     An System.Xml.XmlReader object.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     An exception occurred while executing the command against a locked row. This
+        //     exception is not generated when you are using Microsoft .NET Framework version
+        //     1.0. -or- A timeout occurred during a streaming operation. For more information
+        //     about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.InvalidOperationException:
+        //     The System.Data.SqlClient.SqlConnection closed or dropped during a streaming
+        //     operation. For more information about streaming, see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public XmlReader ExecuteXmlReader();
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteXmlReader,
+        //     which sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds an System.Xml.XmlReader object. Exceptions will be reported via the
+        //     returned Task object.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteScalarAsync(System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<XmlReader> ExecuteXmlReaderAsync();
+        //
+        // 摘要:
+        //     An asynchronous version of System.Data.SqlClient.SqlCommand.ExecuteXmlReader,
+        //     which sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection
+        //     and builds an System.Xml.XmlReader object. The cancellation token can be used
+        //     to request that the operation be abandoned before the command timeout elapses.
+        //     Exceptions will be reported via the returned Task object.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation instruction.
+        //
+        // 返回结果:
+        //     A task representing the asynchronous operation.
+        //
+        // 异常:
+        //   T:System.InvalidCastException:
+        //     A System.Data.SqlClient.SqlParameter.SqlDbType other than Binary or VarBinary
+        //     was used when System.Data.SqlClient.SqlParameter.Value was set to System.IO.Stream.
+        //     For more information about streaming, see SqlClient Streaming Support. -or- A
+        //     System.Data.SqlClient.SqlParameter.SqlDbType other than Char, NChar, NVarChar,
+        //     VarChar, or Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.IO.TextReader. -or- A System.Data.SqlClient.SqlParameter.SqlDbType
+        //     other than Xml was used when System.Data.SqlClient.SqlParameter.Value was set
+        //     to System.Xml.XmlReader.
+        //
+        //   T:System.InvalidOperationException:
+        //     Calling System.Data.SqlClient.SqlCommand.ExecuteScalarAsync(System.Threading.CancellationToken)
+        //     more than once for the same instance before task completion. -or- The System.Data.SqlClient.SqlConnection
+        //     closed or dropped during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support. -or- Context Connection=true is specified in
+        //     the connection string.
+        //
+        //   T:System.Data.SqlClient.SqlException:
+        //     SQL Server returned an error while executing the command text. -or- A timeout
+        //     occurred during a streaming operation. For more information about streaming,
+        //     see SqlClient Streaming Support.
+        //
+        //   T:System.IO.IOException:
+        //     An error occurred in a System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader
+        //     object during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        //
+        //   T:System.ObjectDisposedException:
+        //     The System.IO.Stream, System.Xml.XmlReader or System.IO.TextReader object was
+        //     closed during a streaming operation. For more information about streaming, see
+        //     SqlClient Streaming Support.
+        public Task<XmlReader> ExecuteXmlReaderAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Creates a prepared version of the command on an instance of SQL Server.
+        public override void Prepare();
+        //
+        // 摘要:
+        //     Resets the System.Data.SqlClient.SqlCommand.CommandTimeout property to its default
+        //     value.
+        public void ResetCommandTimeout();
+        protected override DbParameter CreateDbParameter();
+        protected override void Dispose(bool disposing);
+        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior);
+        protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken);
+    }
+}

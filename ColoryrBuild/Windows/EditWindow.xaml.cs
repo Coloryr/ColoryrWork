@@ -90,7 +90,11 @@ namespace ColoryrBuild.Windows
                 textEditor.Text = obj1.Code;
                 old = obj1.Code;
                 Text.Text = obj1.Text;
-
+                if (File.Exists(Local + "main.cs"))
+                {
+                    string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
+                    File.Move(Local + "main.cs", Local + time + "-main.cs");
+                }
                 CodeSave.Save(Local + "main.cs", obj1.Code);
             }
             else
@@ -122,11 +126,8 @@ namespace ColoryrBuild.Windows
             GetCode();
         }
 
-        private async void Build_Click(object sender, RoutedEventArgs e)
+        private async void BuildOther()
         {
-            if (Write)
-                return;
-            Write = true;
             old = obj1.Code;
             obj1.Text = Text.Text;
             List<CodeEditObj> list = new();
@@ -171,6 +172,26 @@ namespace ColoryrBuild.Windows
             App.MainWindow_.Re(type);
             CodeSave.Save(Local + "main.cs", obj1.Code);
             App.ClearContrast();
+        }
+
+        private async void BuildApp()
+        { 
+            
+        }
+
+        private void Build_Click(object sender, RoutedEventArgs e)
+        {
+            if (Write)
+                return;
+            Write = true;
+            if (type != CodeType.App)
+            {
+                BuildOther();
+            }
+            else
+            {
+                BuildApp();
+            }
             Write = false;
         }
 

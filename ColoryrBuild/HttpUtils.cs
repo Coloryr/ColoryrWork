@@ -315,5 +315,31 @@ namespace ColoryrBuild
                 return null;
             }
         }
+
+        public async Task<APIFileObj> GetApi()
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.GetApi
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await GetApi();
+                }
+                return JsonConvert.DeserializeObject<APIFileObj>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

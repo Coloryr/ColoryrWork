@@ -1,0 +1,120 @@
+#region ³ÌÐò¼¯ Oracle.ManagedDataAccess, Version=2.0.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342
+// C:\Users\40206\.nuget\packages\oracle.manageddataaccess.core\2.19.101\lib\netstandard2.0\Oracle.ManagedDataAccess.dll
+#endregion
+
+using Oracle.ManagedDataAccess.Types;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Data;
+using System.Data.Common;
+using System.IO;
+using System.Xml;
+
+namespace Oracle.ManagedDataAccess.Client
+{
+    [Designer("Oracle.VsDevTools.OracleVSGCommandDesigner, Oracle.VsDevTools, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=X86", typeof(IDesigner))]
+    public sealed class OracleCommand : DbCommand, ICloneable
+    {
+        public OracleCommand();
+        public OracleCommand(string cmdText);
+        public OracleCommand(string cmdText, OracleConnection conn);
+
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public override string CommandText { get; set; }
+        [Browsable(false)]
+        [DefaultValue(0)]
+        public override int CommandTimeout { get; set; }
+        [Category("Data")]
+        [DefaultValue(CommandType.Text)]
+        [Description("")]
+        public override CommandType CommandType { get; set; }
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public OracleRefCursor[] ImplicitRefCursors { get; }
+        [Category("Data")]
+        [DefaultValue(OracleXmlCommandType.None)]
+        [Description("")]
+        public OracleXmlCommandType XmlCommandType { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public OracleXmlQueryProperties XmlQueryProperties { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public OracleXmlSaveProperties XmlSaveProperties { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(null)]
+        [Description("")]
+        public OracleConnection Connection { get; set; }
+        [Browsable(false)]
+        public OracleTransaction Transaction { get; set; }
+        [Browsable(false)]
+        [DefaultValue(true)]
+        [DesignOnly(true)]
+        public override bool DesignTimeVisible { get; set; }
+        [DefaultValue(131072)]
+        [Description("")]
+        public long FetchSize { get; set; }
+        [Browsable(false)]
+        [DefaultValue(0)]
+        public long RowSize { get; }
+        [DefaultValue(0)]
+        [Description("")]
+        public int InitialLOBFetchSize { get; set; }
+        [DefaultValue(0)]
+        [Description("")]
+        public int InitialLONGFetchSize { get; set; }
+        public override UpdateRowSource UpdatedRowSource { get; set; }
+        [Category("Data")]
+        [Description("")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public OracleParameterCollection Parameters { get; }
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool UseEdmMapping { get; set; }
+        [Browsable(false)]
+        [DefaultValue(null)]
+        public OracleNotificationRequest Notification { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool BindByName { get; set; }
+        [Browsable(false)]
+        [DefaultValue(0)]
+        public int ArrayBindCount { get; set; }
+        [Browsable(false)]
+        [DefaultValue(null)]
+        public long[] ArrayBindRowsAffected { get; }
+        [Browsable(false)]
+        [DefaultValue(true)]
+        public bool NotificationAutoEnlist { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool AddRowid { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(true)]
+        [Description("")]
+        public bool AddToStatementCache { get; set; }
+        protected override DbTransaction DbTransaction { get; set; }
+        protected override DbParameterCollection DbParameterCollection { get; }
+        protected override DbConnection DbConnection { get; set; }
+
+        public override void Cancel();
+        public object Clone();
+        public OracleParameter CreateParameter();
+        public override int ExecuteNonQuery();
+        public OracleDataReader ExecuteReader(CommandBehavior behavior);
+        public OracleDataReader ExecuteReader();
+        public override object ExecuteScalar();
+        public Stream ExecuteStream();
+        public void ExecuteToStream(Stream outputStream);
+        public XmlReader ExecuteXmlReader();
+        public override void Prepare();
+        protected override DbParameter CreateDbParameter();
+        protected override void Dispose(bool disposing);
+        protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior);
+    }
+}

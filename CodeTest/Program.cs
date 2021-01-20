@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace CodeTest
 {
@@ -9,6 +10,7 @@ namespace CodeTest
             Console.WriteLine("Hello World!");
             //var diff = InlineDiffBuilder.Diff(before, after);
             //diff.Lines;
+            
         }
     }
 }
