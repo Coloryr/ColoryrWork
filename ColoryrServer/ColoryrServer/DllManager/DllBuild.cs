@@ -641,6 +641,83 @@ namespace ColoryrServer.DllManager
                             Time = BuildBack.Time
                         };
                         break;
+                    case ReType.AppAddCS:
+                        File1 = CSFile.GetApp(Json.UUID);
+                        if (File1 == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个App[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File1.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+                        if (File1.Codes.ContainsKey(Json.Code))
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]文件{Json.Code}.cs已存在"
+                            };
+                            break;
+                        }
+                        string class_ = CodeDemo.class_.Replace("{name}", Json.Code);
+                        File1.Codes.Add(Json.Code, class_);
+                        CSFile.StorageApp(File1);
+                        File1.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"App[{Json.UUID}]文件{Json.Code}.cs已添加"
+                        };
+                        break;
+                    case ReType.AppAddXaml:
+                        File1 = CSFile.GetApp(Json.UUID);
+                        if (File1 == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个App[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File1.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+                        if (File1.Codes.ContainsKey(Json.Code))
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]文件{Json.Code}.xaml已存在"
+                            };
+                            break;
+                        }
+                        File1.Xamls.Add(Json.Code, ColoryrServer_Resource.AppDemoXAML);
+                        CSFile.StorageApp(File1);
+                        File1.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"App[{Json.UUID}]文件{Json.Code}.xaml已添加"
+                        };
+                        break;
                     case ReType.AppRemoveFile:
                         var file = CSFile.GetApp(Json.UUID);
                         if (file == null)

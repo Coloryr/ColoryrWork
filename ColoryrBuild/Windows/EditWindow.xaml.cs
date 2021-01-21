@@ -85,6 +85,8 @@ namespace ColoryrBuild.Windows
 
         public async void GetCode()
         {
+            if (Write)
+                return;
             Write = true;
             if (type != CodeType.App)
             {
@@ -336,9 +338,28 @@ namespace ColoryrBuild.Windows
             Write = false;
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private async void Add_Click(object sender, RoutedEventArgs e)
         {
-
+            var data = new InputWindow("添加文件").Set();
+            if (string.IsNullOrWhiteSpace(data))
+                return;
+            ReType type = ReType.Check;
+            if (data.EndsWith(".cs"))
+            {
+                data = data.Replace(".cs", "");
+                type = ReType.AppAddCS;
+            }
+            else if (data.EndsWith(".xaml"))
+            {
+                data = data.Replace(".xaml", "");
+                type = ReType.AppAddXaml;
+            }
+            var res = await App.HttpUtils.AddAppFile(obj2, type, data);
+            App.LogShow("添加", res.Message);
+            if (res.Build)
+            {
+                GetCode();
+            }
         }
         private void Change_Click(object sender, RoutedEventArgs e)
         {

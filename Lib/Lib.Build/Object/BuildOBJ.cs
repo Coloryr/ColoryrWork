@@ -9,7 +9,7 @@
         RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot,
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot,
         AppRemoveFile,
-        AddApp, RemoveApp, AddAppCS, AddAppXaml, RemoveAppCS, RemoveAppXaml,
+        AddApp, RemoveApp, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
         AppCsUpdata, AppXamlUpdata, AppUpdata,
         Check
     }

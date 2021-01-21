@@ -313,6 +313,35 @@ namespace ColoryrBuild
             }
         }
 
+        public async Task<ReMessage> AddAppFile(AppFileObj obj, ReType type, string file)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.AppAddCS,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Code = file
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await AddAppFile(obj, type, file);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<ReMessage> Build(CSFileObj obj, CodeType type, List<CodeEditObj> list)
         {
             try
