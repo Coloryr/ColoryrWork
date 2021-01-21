@@ -257,6 +257,7 @@ namespace ColoryrServer.FileSystem
                         Name = AppFileLocal + uuid + ".json";
                         obj = GetApp(uuid);
                         AppFileList.TryRemove(uuid, out var item5);
+                        DllStonge.RemoveApp(uuid);
                         IsDir = true;
                         break;
                 }
@@ -271,7 +272,10 @@ namespace ColoryrServer.FileSystem
                     File.Delete(Name);
                 }
 
-                string info =
+                string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
+                if (!IsDir)
+                {
+                    string info =
 $@"/*
 UUID:{obj.UUID},
 Text:{obj.Text},
@@ -279,25 +283,33 @@ Version:{obj.Version},
 Type:{obj.Type.ToString()}
 */
 ";
-                if (!IsDir)
-                {
-                    File.WriteAllText(RemoveDir + uuid + "-" +
-                        string.Format("{0:s}", DateTime.Now).Replace(":", ".") + ".cs", info + obj.Code);
+                    File.WriteAllText(RemoveDir + $"{obj.Type.ToString()}[{uuid}]-{time}.cs", info + obj.Code);
                 }
                 else
                 {
-                    string dir = RemoveDir + uuid + "-" +
-                        string.Format("{0:s}", DateTime.Now).Replace(":", ".") + "/";
+                    string dir = RemoveDir + $"{obj.Type.ToString()}[{uuid}]-{time}" + "\\";
                     Directory.CreateDirectory(dir);
-                    File.WriteAllText(dir + "info.txt", info + obj.Code);
-                    if (type == CodeType.App)
-                        foreach (var item in obj.Xamls)
-                        {
-                            File.WriteAllText(dir + item.Key + ".xaml", item.Value);
-                        }
+                    string info =
+$@"/*
+UUID:{obj.UUID},
+Text:{obj.Text},
+Version:{obj.Version},
+Type:{obj.Type.ToString()},
+Key:{obj.Key}
+*/
+";
+                    File.WriteAllText(dir + "info.txt", info);
+                    foreach (var item in obj.Xamls)
+                    {
+                        File.WriteAllText(dir + item.Key + ".xaml", item.Value);
+                    }
                     foreach (var item in obj.Codes)
                     {
                         File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                    }
+                    foreach (var item in obj.Files)
+                    {
+                        File.Move(DllStonge.AppLocal + obj.uuid + "\\" + item, dir + item);
                     }
                 }
             }

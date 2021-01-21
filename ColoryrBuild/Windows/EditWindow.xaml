@@ -19,10 +19,10 @@
         <Button Content="更新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="355,6,0,0" Width="50" Click="Updata_Click"/>
         <Button Content="编译" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,6,0,0" Width="50" Click="Build_Click"/>
         <GroupBox Header="代码选择" Margin="0,6,10,10" Name="CodeA" HorizontalAlignment="Right" Width="150">
-            <ListView>
+            <ListView x:Name="FileList">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="代码" Width="120"/>
+                        <GridViewColumn Header="名字" Width="120"/>
                     </GridView>
                 </ListView.View>
                 <ListView.ContextMenu>

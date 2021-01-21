@@ -239,6 +239,10 @@ namespace ColoryrBuild
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
+                if (data == "null")
+                {
+                    return null;
+                }
                 if (!CheckLogin(data))
                 {
                     return await GetCode(type, name);
@@ -271,6 +275,37 @@ namespace ColoryrBuild
                     return await GetAppCode(name);
                 }
                 return JsonConvert.DeserializeObject<AppFileObj>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ReMessage> BuildApp(AppFileObj obj, ReType type, string file, List<CodeEditObj> list)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.AppCsUpdata,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Text = obj.Text,
+                    Temp = file,
+                    Code = JsonConvert.SerializeObject(list)
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await BuildApp(obj, type, file, list);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch
             {

@@ -84,6 +84,17 @@ namespace ColoryrBuild
             return ContrastWindow_.Start(obj, old);
         }
 
+        public static DiffPaneModel StartContrast(CodeType type, string uuid, string new_, string old)
+        {
+            if (ContrastWindow_ == null)
+            {
+                ContrastWindow_ = new();
+                ContrastWindow_.Show();
+            }
+
+            return ContrastWindow_.Start(type, uuid, new_, old);
+        }
+
         public static void LogShow(string v1, string v2)
         {
             string data = v1 + "|" + v2;

@@ -210,6 +210,15 @@ namespace ColoryrServer.DllManager
             {
                 AppList.TryRemove(uuid, out var item);
             }
+            string local = AppLocal + uuid + "\\";
+            if (File.Exists(local + "app.dll"))
+            {
+                File.Delete(local + "app.dll");
+            }
+            if (File.Exists(local + "app.pdb"))
+            {
+                File.Delete(local + "app.pdb");
+            }
         }
         public static AppBuildSave GetApp(string uuid)
         {

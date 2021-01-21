@@ -61,11 +61,48 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 ﻿using System;
+        ///using System.IO;
+        ///using Xamarin.Forms;
+        ///using Xamarin.Forms.Xaml;
+        ///
+        ///namespace ColoryrApp
+        ///{
+        ///    class test
+        ///    {
+        ///        public ContentPage Page { get; private set; }
+        ///        private string Local;
+        ///
+        ///        private Button Button;
+        ///        private Label Label;
+        ///        private Entry Entry;
+        ///        public bool Init(string local)
+        ///        {
+        ///            Local = local;
+        ///            string pageXAML = &quot;&quot;;
+        ///            var XamlFile = Path.Combine(local, &quot;main.xaml&quot;);
+        ///            if (File.Exists(XamlFile))
+        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppDemoCS {
             get {
                 return ResourceManager.GetString("AppDemoCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;ContentPage xmlns=&quot;http://xamarin.com/schemas/2014/forms&quot; xmlns:x=&quot;http://schemas.microsoft.com/winfx/2009/xaml&quot; x:Class=&quot;App2.MainPage&quot;&gt;
+        ///	&lt;StackLayout HorizontalOptions=&quot;Center&quot;&gt;
+        ///		&lt;Label Text=&quot;Hello World&quot; FontSize=&quot;Title&quot; Padding=&quot;30,10,30,10&quot; HorizontalOptions=&quot;Center&quot; HorizontalTextAlignment=&quot;Center&quot; x:Name=&quot;Label&quot; WidthRequest=&quot;500&quot;/&gt;
+        ///		&lt;Button Text=&quot;Load&quot; x:Name=&quot;Button&quot; /&gt;
+        ///		&lt;Entry Placeholder=&quot;Enter text&quot; x:Name=&quot;Entry&quot; /&gt;
+        ///	&lt;/StackLayout&gt;
+        ///&lt;/ContentPage&gt; 的本地化字符串。
+        /// </summary>
+        internal static string AppDemoXAML {
+            get {
+                return ResourceManager.GetString("AppDemoXAML", resourceCulture);
             }
         }
         

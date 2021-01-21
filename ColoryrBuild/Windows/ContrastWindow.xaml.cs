@@ -26,6 +26,17 @@ namespace ColoryrBuild.Windows
             return DiffView.GetInlineDiffModel();
         }
 
+        public DiffPaneModel Start(CodeType type, string uuid, string new_, string oldText)
+        {
+            Title = $"代码对比{type}[{uuid}]";
+            DiffView.OldText = oldText;
+            DiffView.NewText = new_;
+            DiffView.Refresh();
+            DiffView.ShowSideBySide();
+            Activate();
+            return DiffView.GetInlineDiffModel();
+        }
+
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             App.ContrastWindow_ = null;
@@ -34,8 +45,8 @@ namespace ColoryrBuild.Windows
         public void Clear()
         {
             Title = "代码对比";
-            DiffView.OldText = "";
-            DiffView.NewText = "";
+            DiffView.OldText = " ";
+            DiffView.NewText = " ";
             DiffView.Refresh();
         }
     }

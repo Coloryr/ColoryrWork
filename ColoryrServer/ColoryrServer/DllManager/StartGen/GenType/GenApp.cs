@@ -50,6 +50,10 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             Task.Run(() =>
             {
                 string dir = DllStonge.AppLocal + File.UUID + "\\";
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
                 using FileStream FileStream = new FileStream(dir + "app.dll", FileMode.OpenOrCreate);
                 FileStream.Write(save.Dll);
                 FileStream.Flush();
@@ -60,7 +64,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
                 foreach (var item in File.Xamls)
                 {
-                    using var FileStream2 = new FileStream(dir + item.Key, FileMode.OpenOrCreate);
+                    using var FileStream2 = new FileStream(dir + item.Key + ".xaml", FileMode.OpenOrCreate);
                     FileStream2.Write(Encoding.UTF8.GetBytes(item.Value));
                     FileStream2.Flush();
                 }

@@ -315,6 +315,14 @@ namespace ColoryrServer.DllManager
                             Message = $"Robot[{Json.UUID}]已删除"
                         };
                         break;
+                    case ReType.RemoveApp:
+                        CSFile.RemoveFile(CodeType.App, Json.UUID);
+                        Object = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"App[{Json.UUID}]已删除"
+                        };
+                        break;
                     case ReType.UpdataDll:
                         File = CSFile.GetDll(Json.UUID);
                         if (File == null)
@@ -513,12 +521,21 @@ namespace ColoryrServer.DllManager
                             File1 = new AppFileObj()
                             {
                                 UUID = Json.UUID,
-                                Type = CodeType.WebSocket,
+                                Type = CodeType.App,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                             };
-                            //File1.Codes.Add("main", );
+                            File1.Codes.Add("main", ColoryrServer_Resource.AppDemoCS);
+                            File1.Xamls.Add("main", ColoryrServer_Resource.AppDemoXAML);
+                            CSFile.StorageApp(File1);
+                            Object = new ReMessage
+                            {
+                                Build = true,
+                                Message = $"App[{Json.UUID}]已创建"
+                            };
+                            ServerMain.LogOut($"App[{Json.UUID}]创建");
+                            GenApp.StartGen(File1);
                         }
                         else
                             Object = new ReMessage
@@ -526,6 +543,103 @@ namespace ColoryrServer.DllManager
                                 Build = false,
                                 Message = $"App[{Json.UUID}]已存在"
                             };
+                        break;
+                    case ReType.CodeApp:
+                        Object = CSFile.GetApp(Json.UUID);
+                        break;
+                    case ReType.AppCsUpdata:
+                        File1 = CSFile.GetApp(Json.UUID);
+                        if (File1 == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个App[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File1.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        if (!File1.Codes.ContainsKey(Json.Temp))
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]没有文件{Json.Temp}.cs"
+                            };
+                            break;
+                        }
+                        File1.Codes[Json.Temp] = FileEdit.StartEdit(File1.Codes[Json.Temp], list);
+                        File1.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenApp.StartGen(File1);
+                        SW.Stop();
+                        File1.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.AppXamlUpdata:
+                        File1 = CSFile.GetApp(Json.UUID);
+                        if (File1 == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个App[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File1.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        if (!File1.Codes.ContainsKey(Json.Temp))
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{Json.UUID}]没有文件{Json.Temp}.xaml"
+                            };
+                            break;
+                        }
+                        File1.Xamls[Json.Temp] = FileEdit.StartEdit(File1.Xamls[Json.Temp], list);
+                        File1.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenApp.StartGen(File1);
+                        SW.Stop();
+                        File1.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
                         break;
                     case ReType.AppRemoveFile:
                         var file = CSFile.GetApp(Json.UUID);
