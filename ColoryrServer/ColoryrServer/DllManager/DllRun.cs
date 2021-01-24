@@ -298,7 +298,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(MqttConnectionValidatorContext Head)
+        public static void MqttGo(ServerMqttConnectionValidator Head)
         {
             try
             {
@@ -323,7 +323,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(MqttApplicationMessageInterceptorContext Head)
+        public static void MqttGo(ServerMqttMessage Head)
         {
             try
             {
@@ -348,7 +348,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(MqttSubscriptionInterceptorContext Head)
+        public static void MqttGo(ServerMqttSubscription Head)
         {
             try
             {
