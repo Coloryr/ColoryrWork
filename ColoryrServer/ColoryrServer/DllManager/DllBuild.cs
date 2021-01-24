@@ -209,6 +209,35 @@ namespace ColoryrServer.DllManager
                                 Message = $"Robot[{Json.UUID}]已存在"
                             };
                         break;
+                    case ReType.AddMqtt:
+                        if (CSFile.GetRobot(Json.UUID) == null)
+                        {
+                            var time = string.Format("{0:s}", DateTime.Now);
+                            File = new()
+                            {
+                                UUID = Json.UUID,
+                                Type = CodeType.Robot,
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time,
+                                Code = CodeDemo.robot_.Replace("{name}", Json.UUID)
+                            };
+                            CSFile.StorageMqtt(File);
+                            Object = new ReMessage
+                            {
+                                Build = true,
+                                Message = $"Mqtt[{Json.UUID}]已创建"
+                            };
+                            GenMqtt.StartGen(File);
+                            ServerMain.LogOut($"Mqtt[{Json.UUID}]创建");
+                        }
+                        else
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Mqtt[{Json.UUID}]已存在"
+                            };
+                        break;
                     case ReType.GetDll:
                         List = new CSFileList();
                         foreach (var item in CSFile.DllFileList)
@@ -249,6 +278,14 @@ namespace ColoryrServer.DllManager
                         }
                         Object = List;
                         break;
+                    case ReType.GetMqtt:
+                        List = new CSFileList();
+                        foreach (var item in CSFile.MqttFileList)
+                        {
+                            List.List.Add(item.Key, item.Value);
+                        }
+                        Object = List;
+                        break;
                     case ReType.GetApp:
                         List = new CSFileList();
                         foreach (var item in CSFile.AppFileList)
@@ -271,6 +308,9 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.CodeRobot:
                         Object = CSFile.GetRobot(Json.UUID);
+                        break;
+                    case ReType.CodeMqtt:
+                        Object = CSFile.GetMqtt(Json.UUID);
                         break;
                     case ReType.GetApi:
                         Object = APIFile.list;
@@ -313,6 +353,14 @@ namespace ColoryrServer.DllManager
                         {
                             Build = true,
                             Message = $"Robot[{Json.UUID}]已删除"
+                        };
+                        break;
+                    case ReType.RemoveMqtt:
+                        CSFile.RemoveFile(CodeType.Mqtt, Json.UUID);
+                        Object = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Mqtt[{Json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveApp:
@@ -503,6 +551,44 @@ namespace ColoryrServer.DllManager
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenWebSocket.StartGen(File);
+                        SW.Stop();
+                        File.Version++;
+                        Object = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataMqtt:
+                        File = CSFile.GetMqtt(Json.UUID);
+                        if (File == null)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个Mqtt[{Json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File.Version != Json.Version)
+                        {
+                            Object = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Mqtt[{Json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = Json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenMqtt.StartGen(File);
                         SW.Stop();
                         File.Version++;
                         Object = new ReMessage

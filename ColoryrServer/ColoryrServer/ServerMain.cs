@@ -4,6 +4,8 @@ using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
+using ColoryrServer.MQTT;
+using ColoryrServer.Pipe;
 using ColoryrServer.Robot;
 using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
@@ -213,6 +215,10 @@ namespace ColoryrServer
                         {
                             IoTSocketServer.StartPipe();
                         }
+                        if (Config.Pipe.MqttServer)
+                        {
+                            MQTTServer.StartPipe();
+                        }
                     }
                     else
                     {
@@ -225,6 +231,7 @@ namespace ColoryrServer
                 }
                 else
                 {
+                    MQTTServer.Start();
                     RobotSocket.Start();
                     DatabaseRun();
                     //服务器启动
@@ -249,6 +256,10 @@ namespace ColoryrServer
         public static void Stop()
         {
             LogOut("正在关闭");
+            if (Config.Pipe.Enable)
+            {
+                PipeServer.Stop();
+            }
             HttpServer.Stop();
             MysqlCon.Stop();
             MSCon.Stop();
@@ -258,6 +269,7 @@ namespace ColoryrServer
             RedisCon.Stop();
             OracleCon.Stop();
             RamDataBase.Stop();
+            MQTTServer.Stop();
             LogOut("已关闭");
         }
 

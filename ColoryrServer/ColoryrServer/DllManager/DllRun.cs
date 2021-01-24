@@ -3,6 +3,7 @@ using ColoryrServer.Http;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
 using Lib.Build.Object;
+using MQTTnet.Server;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -281,6 +282,81 @@ namespace ColoryrServer.DllManager
                     if (Dll.MethodInfos.ContainsKey("after"))
                     {
                         MethodInfo MI = Dll.MethodInfos["after"];
+                        var Tran = new object[1] { Head };
+                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        MI.Invoke(Assembly, Tran);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is VarDump Dump)
+                {
+                    ServerMain.LogError(Dump.Get());
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+        }
+        public static void MqttGo(MqttConnectionValidatorContext Head)
+        {
+            try
+            {
+                foreach (var Dll in DllStonge.GetMqtt())
+                {
+                    if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTValidator))
+                    {
+                        MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTValidator];
+                        var Tran = new object[1] { Head };
+                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        MI.Invoke(Assembly, Tran);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is VarDump Dump)
+                {
+                    ServerMain.LogError(Dump.Get());
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+        }
+        public static void MqttGo(MqttApplicationMessageInterceptorContext Head)
+        {
+            try
+            {
+                foreach (var Dll in DllStonge.GetMqtt())
+                {
+                    if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTMessage))
+                    {
+                        MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTMessage];
+                        var Tran = new object[1] { Head };
+                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        MI.Invoke(Assembly, Tran);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is VarDump Dump)
+                {
+                    ServerMain.LogError(Dump.Get());
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+        }
+        public static void MqttGo(MqttSubscriptionInterceptorContext Head)
+        {
+            try
+            {
+                foreach (var Dll in DllStonge.GetMqtt())
+                {
+                    if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTSubscription))
+                    {
+                        MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTSubscription];
                         var Tran = new object[1] { Head };
                         var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
                         MI.Invoke(Assembly, Tran);

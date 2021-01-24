@@ -14,14 +14,5 @@ namespace ColoryrServer.Http
         public Stream Data1;
         public Dictionary<string, string> Head;
         public int ReCode = 200;
-        public string UID;
-    }
-    internal record PipeHttpData
-    {
-        public HttpRequest Request { get; set; }
-        public string Url { get; set; }
-        public string UUID { get; set; }
-        public string FunctionName { get; set; }
-        public string UID { get; set; }
     }
 }

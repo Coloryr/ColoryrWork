@@ -260,6 +260,10 @@ namespace ColoryrServer.FileSystem
         /// Iot服务器
         /// </summary>
         public bool IotServer { get; set; }
+        /// <summary>
+        /// Mqtt服务器
+        /// </summary>
+        public bool MqttServer { get; set; }
     }
     internal class ConfigUtil
     {
@@ -357,6 +361,7 @@ namespace ColoryrServer.FileSystem
                     HttpServer = false,
                     IotServer = false,
                     WebSocketServer = false,
+                    MqttServer = false,
                     Socket = new()
                     {
                         IP = "127.0.0.1",

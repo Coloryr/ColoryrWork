@@ -144,7 +144,7 @@ namespace ColoryrServer.FileSystem
             Storage(url, obj);
             UpdataMAP();
         }
-        public static void StorageMQTT(CSFileCode obj)
+        public static void StorageMqtt(CSFileCode obj)
         {
             var url = MqttFileLocal + obj.UUID + ".json";
             if (MqttFileList.ContainsKey(obj.UUID))

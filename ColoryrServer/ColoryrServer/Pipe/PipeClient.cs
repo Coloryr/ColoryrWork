@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
+using ColoryrServer.WebSocket;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -12,14 +13,15 @@ namespace ColoryrServer.Pipe
 {
     class PipeClient
     {
-        private static ConcurrentDictionary<string, HttpListenerResponse> Requests;
+        private static ConcurrentDictionary<string, HttpListenerResponse> HttpRequests;
         private static Socket ClientSocket;
         private static Thread ClientThread;
+        private static int ClientPort;
         private static bool IsRun;
 
         public static void Start(SocketConfig Config)
         {
-            Requests = new();
+            HttpRequests = new();
             IsRun = true;
             ClientThread = new Thread(() =>
             {
@@ -35,6 +37,7 @@ namespace ColoryrServer.Pipe
                         {
                             ClientSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
                             ClientSocket.Connect(Config.IP, Config.Port);
+                            ClientPort = ((IPEndPoint)ClientSocket.LocalEndPoint).Port;
                             SocketAsyncEventArgs call = new();
                             call.Completed += new EventHandler<SocketAsyncEventArgs>(Call);
                             ClientSocket.ReceiveAsync(call);
@@ -55,23 +58,48 @@ namespace ColoryrServer.Pipe
             {
                 if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
                 {
-                    var data = JsonConvert.DeserializeObject<HttpReturn>(Encoding.UTF8.GetString(e.Buffer));
-                    if (Requests.TryRemove(data.UID, out var item))
+                    var data = JsonConvert.DeserializeObject<PipeReData>(Encoding.UTF8.GetString(e.Buffer));
+                    switch (data.Type)
                     {
-                        item.ContentType = data.ContentType;
-                        item.ContentEncoding = data.Encoding;
-                        if (data.Head != null)
-                            foreach (var Item in data.Head)
+                        case PipiPackType.Http:
+                            HttpReturn obj = (HttpReturn)data.Data;
+                            if (HttpRequests.TryRemove(data.UID, out var item))
                             {
-                                item.AddHeader(Item.Key, Item.Value);
+                                item.ContentType = obj.ContentType;
+                                item.ContentEncoding = obj.Encoding;
+                                if (obj.Head != null)
+                                    foreach (var Item in obj.Head)
+                                    {
+                                        item.AddHeader(Item.Key, Item.Value);
+                                    }
+                                if (obj.Cookie != null)
+                                    item.AppendCookie(new Cookie("cs", obj.Cookie));
+                                if (obj.Data1 == null)
+                                    item.OutputStream.Write(obj.Data);
+                                item.OutputStream.Flush();
+                                item.StatusCode = obj.ReCode;
+                                item.Close();
                             }
-                        if (data.Cookie != null)
-                            item.AppendCookie(new Cookie("cs", data.Cookie));
-                        if (data.Data1 == null)
-                            item.OutputStream.Write(data.Data);
-                        item.OutputStream.Flush();
-                        item.StatusCode = data.ReCode;
-                        item.Close();
+                            break;
+                        case PipiPackType.WebSocket:
+                            PipeWebSocketData obj1 = (PipeWebSocketData)data.Data;
+                            switch (obj1.State)
+                            {
+                                case WebSocketState.Message:
+                                    if (obj1.Base)
+                                    {
+                                        ServerWebSocket.Send(obj1.Port, Convert.FromBase64String(obj1.Data), 0);
+                                    }
+                                    else
+                                    {
+                                        ServerWebSocket.Send(obj1.Port, obj1.Data, 0);
+                                    }
+                                    break;
+                                case WebSocketState.Close:
+                                    ServerWebSocket.Close(obj1.Port, 0);
+                                    break;
+                            }
+                            break;
                     }
                 }
             }
@@ -81,7 +109,7 @@ namespace ColoryrServer.Pipe
         {
             if (ClientSocket?.Connected == true)
             {
-                Requests.TryAdd(data.UID, request);
+                HttpRequests.TryAdd(data.UID, request);
                 var temp = JsonConvert.SerializeObject(data);
                 var temp1 = Encoding.UTF8.GetBytes(temp);
                 ClientSocket.Send(temp1);
@@ -94,13 +122,37 @@ namespace ColoryrServer.Pipe
                 request.Close();
             }
         }
-        public static void WebSocket(int Port)
+        public static void WebSocket(int Port, PipeWebSocketData data)
         {
-
+            if (ClientSocket?.Connected == true)
+            {
+                data.Server = ClientPort;
+                data.Port = Port;
+                var temp = JsonConvert.SerializeObject(data);
+                var temp1 = Encoding.UTF8.GetBytes(temp);
+                ClientSocket.Send(temp1);
+            }
         }
-        public static void IoT(int Port)
+        public static void IoT(int Port, PipeIoTData data)
         {
+            if (ClientSocket?.Connected == true)
+            {
+                data.Server = ClientPort;
+                var temp = JsonConvert.SerializeObject(data);
+                var temp1 = Encoding.UTF8.GetBytes(temp);
+                ClientSocket.Send(temp1);
+            }
+        }
 
+        public static void Mqtt(int Port, PipeMqttData data)
+        {
+            if (ClientSocket?.Connected == true)
+            {
+                data.Server = ClientPort;
+                var temp = JsonConvert.SerializeObject(data);
+                var temp1 = Encoding.UTF8.GetBytes(temp);
+                ClientSocket.Send(temp1);
+            }
         }
     }
 }

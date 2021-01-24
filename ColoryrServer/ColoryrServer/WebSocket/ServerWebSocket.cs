@@ -1,4 +1,6 @@
-﻿using ColoryrServer.SDK;
+﻿using ColoryrServer.DllManager;
+using ColoryrServer.Pipe;
+using ColoryrServer.SDK;
 using Fleck;
 using System;
 using System.Collections.Generic;
@@ -14,27 +16,47 @@ namespace ColoryrServer.WebSocket
         private static Task PingThread;
         private static CancellationTokenSource source;
         private static bool IsRun;
+        private static bool IsPipe;
         private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
         internal static bool IsOnline(string id)
         {
             var data = Clients.Where(a => a.Value.ConnectionInfo.Id.ToString() == id);
             return data.Any();
         }
-        internal static void Send(Guid uuid, string data)
+        internal static void Send(int port, string data, int Server)
         {
-            var list = Clients.Where(a => a.Value.ConnectionInfo.Id == uuid);
-            foreach (var item in list)
+            if (IsPipe)
             {
-                item.Value.Send(data);
+                PipeServer.WebSocketSendMessage(port, Server, data, false);
             }
-        }
-        internal static void Send(int port, string data)
-        {
-            if (Clients.ContainsKey(port))
+            else if (Clients.ContainsKey(port))
             {
                 Clients[port].Send(data);
             }
         }
+        internal static void Send(int port, byte[] data, int Server)
+        {
+            if (IsPipe)
+            {
+                PipeServer.WebSocketSendMessage(port, Server, Convert.ToBase64String(data), true);
+            }
+            else if (Clients.ContainsKey(port))
+            {
+                Clients[port].Send(data);
+            }
+        }
+        internal static void Close(int port, int Server)
+        {
+            if (IsPipe)
+            {
+                PipeServer.WebSocketSendClose(port, Server);
+            }
+            else if (Clients.ContainsKey(port))
+            {
+                Clients[port].Close();
+            }
+        }
+
         internal static void Start()
         {
             ServerMain.LogOut("WebScoket正在启动");
@@ -45,16 +67,16 @@ namespace ColoryrServer.WebSocket
                 Socket.OnOpen = () =>
                 {
                     Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
-                    DllManager.DllRun.WebSocketGo(new WebSocketOpen(Socket));
+                    DllRun.WebSocketGo(new WebSocketOpen(Socket));
                 };
                 Socket.OnClose = () =>
                 {
                     Clients.Remove(Socket.ConnectionInfo.ClientPort);
-                    DllManager.DllRun.WebSocketGo(new WebSocketClose(Socket));
+                    DllRun.WebSocketGo(new WebSocketClose(Socket));
                 };
                 Socket.OnMessage = message =>
                 {
-                    DllManager.DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
+                    DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
                 };
             });
             source = new CancellationTokenSource();
@@ -94,7 +116,60 @@ namespace ColoryrServer.WebSocket
 
         internal static void StartPipe()
         {
-
+            ServerMain.LogOut("WebScoket正在启动");
+            IsPipe = true;
+            FleckLog.Level = LogLevel.Error;
+            Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
+            Server.Start(Socket =>
+            {
+                Socket.OnOpen = () =>
+                {
+                    Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
+                    Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
+                    {
+                        State = WebSocketState.Open,
+                        Info = Socket.ConnectionInfo,
+                        IsAvailable = Socket.IsAvailable,
+                    }));
+                };
+                Socket.OnClose = () =>
+                {
+                    Clients.Remove(Socket.ConnectionInfo.ClientPort);
+                    Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
+                    Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
+                    {
+                        State = WebSocketState.Close,
+                        Info = Socket.ConnectionInfo,
+                        IsAvailable = Socket.IsAvailable,
+                    }));
+                };
+                Socket.OnMessage = message =>
+                {
+                    Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
+                    Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
+                    {
+                        State = WebSocketState.Message,
+                        Info = Socket.ConnectionInfo,
+                        IsAvailable = Socket.IsAvailable,
+                        Data = message
+                    }));
+                };
+            });
+            source = new CancellationTokenSource();
+            PingThread = new Task(() =>
+            {
+                while (IsRun)
+                {
+                    foreach (var item in Clients)
+                    {
+                        item.Value.Send("{\"type\":\"ping\"}");
+                    }
+                    Thread.Sleep(30000);
+                }
+            }, source.Token);
+            IsRun = true;
+            PingThread.Start();
+            ServerMain.LogOut("WebScoket已启动");
         }
     }
 }
