@@ -2,6 +2,7 @@
 using ColoryrServer.SDK;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
@@ -39,9 +40,27 @@ namespace ColoryrServer.MQTT
                 .WithCredentials(UUID, "")
                 .WithCleanSession()
                 .Build();
-            await MqttClient.ConnectAsync(options, CancellationToken.None);
-            await MqttClient.SubscribeAsync(new MqttTopicFilterBuilder().Build());
+            await MqttClient.UseDisconnectedHandler(DisConnect).ConnectAsync(options, CancellationToken.None);
+            //await MqttClient.SubscribeAsync(new MqttTopicFilterBuilder().Build());
             ServerMain.LogOut("已启动Mqtt");
+        }
+
+        private static async void DisConnect(MqttClientDisconnectedEventArgs arg)
+        {
+            try
+            {
+                var options = new MqttClientOptionsBuilder()
+                .WithClientId("ColoryrServer")
+                .WithTcpServer("127.0.0.1", ServerMain.Config.MQTTConfig.Port)
+                .WithCredentials(UUID, "")
+                .WithCleanSession()
+                .Build();
+                await MqttClient.ConnectAsync(options, CancellationToken.None);
+            }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
+            }
         }
 
         public static async void Send(string Topic, string data)
@@ -87,16 +106,16 @@ namespace ColoryrServer.MQTT
 
         private static void PipeConnectionValidator(MqttConnectionValidatorContext data)
         {
-            
+
         }
 
         private static void PipeApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
         {
-            
+
         }
         private static void PipeSubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
         {
-            
+
         }
 
         public static async void StartPipe()
