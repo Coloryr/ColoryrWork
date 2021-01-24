@@ -222,13 +222,13 @@ namespace ColoryrServer.Pipe
                     var data = JsonConvert.DeserializeObject<PipeWebSocketData>(Encoding.UTF8.GetString(e.Buffer));
                     switch (data.State)
                     {
-                        case WebSocketState.Open:
+                        case SocketState.Open:
                             DllRun.WebSocketGo(new WebSocketOpen(data.IsAvailable, data.Info, data.Server));
                             break;
-                        case WebSocketState.Close:
+                        case SocketState.Close:
                             DllRun.WebSocketGo(new WebSocketClose(data.Info));
                             break;
-                        case WebSocketState.Message:
+                        case SocketState.Message:
                             DllRun.WebSocketGo(new WebSocketMessage(data.IsAvailable, data.Info, data.Data, data.Server));
                             break;
                     }
@@ -251,7 +251,7 @@ namespace ColoryrServer.Pipe
                     Port = Port,
                     Data = data,
                     Base = Base,
-                    State = WebSocketState.Message
+                    State = SocketState.Message
                 };
                 var Data = new PipeReData
                 {
@@ -271,7 +271,7 @@ namespace ColoryrServer.Pipe
                 var obj = new PipeWebSocketData
                 {
                     Port = Port,
-                    State = WebSocketState.Close
+                    State = SocketState.Close
                 };
                 var Data = new PipeReData
                 {
@@ -288,13 +288,69 @@ namespace ColoryrServer.Pipe
             {
                 if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
                 {
-
+                    var data = JsonConvert.DeserializeObject<PipeIoTData>(Encoding.UTF8.GetString(e.Buffer));
+                    var bytes = Encoding.UTF8.GetBytes(data.Data);
+                    if (data.IsTcp)
+                    {
+                        Task.Run(() =>
+                        {
+                            DllRun.IoTGo(new TcpIoTRequest(data.Port, bytes, data.Server));
+                        });
+                    }
+                    else
+                    {
+                        Task.Run(() =>
+                        {
+                            DllRun.IoTGo(new UdpIoTRequest(data.Port, bytes, data.Server));
+                        });
+                    }
                 }
                 else
                 {
                     e.AcceptSocket.Close();
                 }
             }
+        }
+        public static void IoTSend(int Port, int Server, byte[] data)
+        {
+            Task.Run(() =>
+            {
+                if (!PipeClients.ContainsKey(Server))
+                    return;
+                var obj = new PipeIoTData
+                {
+                    Port = Port,
+                    Data = Encoding.UTF8.GetString(data),
+                    IsTcp = true
+                };
+                var Data = new PipeReData
+                {
+                    Type = PipiPackType.IoT,
+                    Data = obj
+                };
+                var res = JsonConvert.SerializeObject(Data);
+                PipeClients[Server].Send(Encoding.UTF8.GetBytes(res));
+            });
+        }
+        public static void UdpSend(int Port, int Server, byte[] data)
+        {
+            Task.Run(() =>
+            {
+                if (!PipeClients.ContainsKey(Server))
+                    return;
+                var obj = new PipeIoTData
+                {
+                    Port = Port,
+                    Data = Encoding.UTF8.GetString(data)
+                };
+                var Data = new PipeReData
+                {
+                    Type = PipiPackType.IoT,
+                    Data = obj
+                };
+                var res = JsonConvert.SerializeObject(Data);
+                PipeClients[Server].Send(Encoding.UTF8.GetBytes(res));
+            });
         }
         private static void MqttCall(object sender, SocketAsyncEventArgs e)
         {

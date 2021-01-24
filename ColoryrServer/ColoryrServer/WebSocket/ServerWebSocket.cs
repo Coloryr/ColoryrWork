@@ -127,7 +127,7 @@ namespace ColoryrServer.WebSocket
                     Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
                     Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
                     {
-                        State = WebSocketState.Open,
+                        State = SocketState.Open,
                         Info = Socket.ConnectionInfo,
                         IsAvailable = Socket.IsAvailable,
                     }));
@@ -138,7 +138,7 @@ namespace ColoryrServer.WebSocket
                     Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
                     Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
                     {
-                        State = WebSocketState.Close,
+                        State = SocketState.Close,
                         Info = Socket.ConnectionInfo,
                         IsAvailable = Socket.IsAvailable,
                     }));
@@ -148,7 +148,7 @@ namespace ColoryrServer.WebSocket
                     Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
                     Task.Run(() => PipeClient.WebSocket(Socket.ConnectionInfo.ClientPort, new PipeWebSocketData
                     {
-                        State = WebSocketState.Message,
+                        State = SocketState.Message,
                         Info = Socket.ConnectionInfo,
                         IsAvailable = Socket.IsAvailable,
                         Data = message

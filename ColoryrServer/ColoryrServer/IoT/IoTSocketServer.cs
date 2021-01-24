@@ -240,11 +240,11 @@ namespace ColoryrServer.IoT
             }
         }
 
-        public static void TcpSendData(int port, byte[] data)
+        public static void TcpSendData(int port, byte[] data, int Server)
         {
             if (IsPipe)
-            { 
-            
+            {
+                PipeServer.IoTSend(port, Server, data);
             }
             else if (TcpClients.TryGetValue(port, out var socket))
             {
@@ -305,11 +305,11 @@ namespace ColoryrServer.IoT
             }
         }
 
-        public static void UdpSendData(int port, byte[] data)
+        public static void UdpSendData(int port, byte[] data, int Server)
         {
             if (IsPipe)
-            { 
-                PipeServer.
+            {
+                PipeServer.UdpSend(port, Server, data);
             }
             else if (UdpClients.TryGetValue(port, out var socket))
             {

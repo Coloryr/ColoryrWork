@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
+using ColoryrServer.IoT;
 using ColoryrServer.WebSocket;
 using Newtonsoft.Json;
 using System;
@@ -85,7 +86,7 @@ namespace ColoryrServer.Pipe
                             PipeWebSocketData obj1 = (PipeWebSocketData)data.Data;
                             switch (obj1.State)
                             {
-                                case WebSocketState.Message:
+                                case SocketState.Message:
                                     if (obj1.Base)
                                     {
                                         ServerWebSocket.Send(obj1.Port, Convert.FromBase64String(obj1.Data), 0);
@@ -95,9 +96,20 @@ namespace ColoryrServer.Pipe
                                         ServerWebSocket.Send(obj1.Port, obj1.Data, 0);
                                     }
                                     break;
-                                case WebSocketState.Close:
+                                case SocketState.Close:
                                     ServerWebSocket.Close(obj1.Port, 0);
                                     break;
+                            }
+                            break;
+                        case PipiPackType.IoT:
+                            PipeIoTData obj2 = (PipeIoTData)data.Data;
+                            if (obj2.IsTcp)
+                            {
+                                IoTSocketServer.TcpSendData(obj2.Port, Encoding.UTF8.GetBytes(obj2.Data), 0);
+                            }
+                            else
+                            {
+                                IoTSocketServer.UdpSendData(obj2.Port, Encoding.UTF8.GetBytes(obj2.Data), 0);
                             }
                             break;
                     }
@@ -138,6 +150,7 @@ namespace ColoryrServer.Pipe
             if (ClientSocket?.Connected == true)
             {
                 data.Server = ClientPort;
+                data.Port = Port;
                 var temp = JsonConvert.SerializeObject(data);
                 var temp1 = Encoding.UTF8.GetBytes(temp);
                 ClientSocket.Send(temp1);
@@ -149,6 +162,7 @@ namespace ColoryrServer.Pipe
             if (ClientSocket?.Connected == true)
             {
                 data.Server = ClientPort;
+                data.Port = Port;
                 var temp = JsonConvert.SerializeObject(data);
                 var temp1 = Encoding.UTF8.GetBytes(temp);
                 ClientSocket.Send(temp1);

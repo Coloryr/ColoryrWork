@@ -7,7 +7,7 @@ namespace ColoryrServer.Pipe
     { 
         Http, IoT, WebSocket, Mqtt
     }
-    internal enum WebSocketState
+    internal enum SocketState
     { 
         Open, Close, Message
     }
@@ -31,7 +31,7 @@ namespace ColoryrServer.Pipe
     }
     internal record PipeWebSocketData
     {
-        public WebSocketState State { get; set; }
+        public SocketState State { get; set; }
         public IWebSocketConnectionInfo Info { get; set; }
         public bool IsAvailable { get; set; }
         public int Server { get; set; }
@@ -49,6 +49,7 @@ namespace ColoryrServer.Pipe
     internal record PipeMqttData
     {
         public int Server { get; set; }
+        public int Port { get; set; }
         public string Data { get; set; }
         public string Title { get; set; }
     }
