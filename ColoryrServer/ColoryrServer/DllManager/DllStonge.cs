@@ -17,6 +17,7 @@ namespace ColoryrServer.DllManager
         private static readonly ConcurrentDictionary<string, DllBuildSave> IoTList = new();
         private static readonly ConcurrentDictionary<string, DllBuildSave> WebSocketList = new();
         private static readonly ConcurrentDictionary<string, DllBuildSave> RobotList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> MqttList = new();
 
         private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
 
@@ -25,6 +26,7 @@ namespace ColoryrServer.DllManager
         public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll\IoT\";
         public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll\WebSocket\";
         public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll\Robot\";
+        public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll\Mqtt\";
 
         public static readonly string AppLocal = ServerMain.RunLocal + @"Dll\App\";
 
@@ -196,6 +198,36 @@ namespace ColoryrServer.DllManager
             return new List<DllBuildSave>(RobotList.Values);
         }
 
+        public static void AddMqtt(string uuid, DllBuildSave save)
+        {
+            if (MqttList.ContainsKey(uuid))
+            {
+                MqttList[uuid].Assembly.Unload();
+                MqttList[uuid].Type = null;
+                MqttList[uuid].MethodInfos.Clear();
+                MqttList[uuid] = save;
+            }
+            else
+            {
+                MqttList.TryAdd(uuid, save);
+            }
+        }
+        public static void RemoveMqtt(string uuid)
+        {
+            if (MqttList.ContainsKey(uuid))
+            {
+                MqttList[uuid].Assembly.Unload();
+                MqttList[uuid].Type = null;
+                MqttList[uuid].MethodInfos.Clear();
+                MqttList.TryRemove(uuid, out var item);
+            }
+            RemoveAll(RobotLocal + uuid);
+        }
+        public static List<DllBuildSave> GetMqtt()
+        {
+            return new List<DllBuildSave>(MqttList.Values);
+        }
+
         public static void AddApp(string uuid, AppBuildSave save)
         {
             if (AppList.ContainsKey(uuid))
@@ -252,6 +284,10 @@ namespace ColoryrServer.DllManager
             {
                 Directory.CreateDirectory(RobotLocal);
             }
+            if (!Directory.Exists(MqttLocal))
+            {
+                Directory.CreateDirectory(MqttLocal);
+            }
             if (!Directory.Exists(AppLocal))
             {
                 Directory.CreateDirectory(AppLocal);
@@ -263,36 +299,34 @@ namespace ColoryrServer.DllManager
                 {
                     if (FileItem.FullName.Contains(".pdb"))
                         continue;
-                    using (var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read))
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string uuid = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载DLL：" + uuid);
+                    var AssemblySave = new DllBuildSave
                     {
-                        string uuid = FileItem.Name.Replace(".dll", "");
-                        ServerMain.LogOut("加载DLL：" + uuid);
-                        var AssemblySave = new DllBuildSave
-                        {
-                            Assembly = new AssemblyLoadContext(uuid, true)
-                        };
+                        Assembly = new AssemblyLoadContext(uuid, true)
+                    };
 
-                        var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                        if (File.Exists(pdb))
-                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                            {
-                                AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                            }
-                        else
-                            AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                        AssemblySave.Type = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                            .Where(x => x.Name == "app_" + uuid).First();
-                        var Temp = AssemblySave.Type.GetMethods();
-                        foreach (var Item in Temp)
-                        {
-                            if (Item.Name == "Main" || Item.Name == "GetType" || Item.Name == "ToString"
-                                || Item.Name == "Equals" || Item.Name == "GetHashCode")
-                                continue;
-                            AssemblySave.MethodInfos.Add(Item.Name, Item);
-                        }
-                        AddDll(uuid, AssemblySave);
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
                     }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First().GetTypes()
+                        .Where(x => x.Name == "app_" + uuid).First();
+                    var Temp = AssemblySave.Type.GetMethods();
+                    foreach (var Item in Temp)
+                    {
+                        if (Item.Name is "Main" or "GetType" or "ToString"
+                            or "Equals" or "GetHashCode")
+                            continue;
+                        AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddDll(uuid, AssemblySave);
                 }
                 catch (Exception e)
                 {
@@ -306,28 +340,26 @@ namespace ColoryrServer.DllManager
                 {
                     if (FileItem.FullName.Contains(".pdb"))
                         continue;
-                    using (var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read))
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载Class：" + Name);
+                    var AssemblySave = new DllBuildSave
                     {
-                        string Name = FileItem.Name.Replace(".dll", "");
-                        ServerMain.LogOut("加载Class：" + Name);
-                        var AssemblySave = new DllBuildSave
-                        {
-                            Assembly = new AssemblyLoadContext(Name, true)
-                        };
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
 
-                        var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                        if (File.Exists(pdb))
-                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                            {
-                                AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                            }
-                        else
-                            AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                        AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
-                            .GetTypes().Where(x => x.Name == Name).First();
-                        AddClass(Name, AssemblySave);
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
                     }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    AddClass(Name, AssemblySave);
                 }
                 catch (Exception e)
                 {
@@ -341,33 +373,31 @@ namespace ColoryrServer.DllManager
                 {
                     if (FileItem.FullName.Contains(".pdb"))
                         continue;
-                    using (var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read))
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载IoT：" + Name);
+                    var AssemblySave = new DllBuildSave
                     {
-                        string Name = FileItem.Name.Replace(".dll", "");
-                        ServerMain.LogOut("加载IoT：" + Name);
-                        var AssemblySave = new DllBuildSave
-                        {
-                            Assembly = new AssemblyLoadContext(Name, true)
-                        };
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
 
-                        var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                        if (File.Exists(pdb))
-                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                            {
-                                AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                            }
-                        else
-                            AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                        AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
-                            .GetTypes().Where(x => x.Name == Name).First();
-                        foreach (var Item in AssemblySave.Type.GetMethods())
-                        {
-                            if (Item.Name == "tcpmessage" || Item.Name == "udpmessage")
-                                AssemblySave.MethodInfos.Add(Item.Name, Item);
-                        }
-                        AddIoT(Name, AssemblySave);
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
                     }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    {
+                        if (Item.Name is CodeDemo.IoTTcp or CodeDemo.IoTUdp)
+                            AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddIoT(Name, AssemblySave);
                 }
                 catch (Exception e)
                 {
@@ -381,33 +411,31 @@ namespace ColoryrServer.DllManager
                 {
                     if (FileItem.FullName.Contains(".pdb"))
                         continue;
-                    using (var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read))
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载WebSocket：" + Name);
+                    var AssemblySave = new DllBuildSave
                     {
-                        string Name = FileItem.Name.Replace(".dll", "");
-                        ServerMain.LogOut("加载WebSocket：" + Name);
-                        var AssemblySave = new DllBuildSave
-                        {
-                            Assembly = new AssemblyLoadContext(Name, true)
-                        };
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
 
-                        var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                        if (File.Exists(pdb))
-                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                            {
-                                AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                            }
-                        else
-                            AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                        AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
-                            .GetTypes().Where(x => x.Name == Name).First();
-                        foreach (var Item in AssemblySave.Type.GetMethods())
-                        {
-                            if (Item.Name == "main" || Item.Name == "open" || Item.Name == "close")
-                                AssemblySave.MethodInfos.Add(Item.Name, Item);
-                        }
-                        AddWebSocket(Name, AssemblySave);
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
                     }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    {
+                        if (Item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
+                            AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddWebSocket(Name, AssemblySave);
                 }
                 catch (Exception e)
                 {
@@ -421,33 +449,69 @@ namespace ColoryrServer.DllManager
                 {
                     if (FileItem.FullName.Contains(".pdb"))
                         continue;
-                    using (var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read))
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载Robot：" + Name);
+                    var AssemblySave = new DllBuildSave
                     {
-                        string Name = FileItem.Name.Replace(".dll", "");
-                        ServerMain.LogOut("加载Robot：" + Name);
-                        var AssemblySave = new DllBuildSave
-                        {
-                            Assembly = new AssemblyLoadContext(Name, true)
-                        };
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
 
-                        var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                        if (File.Exists(pdb))
-                            using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                            {
-                                AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                            }
-                        else
-                            AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                        AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
-                            .GetTypes().Where(x => x.Name == Name).First();
-                        foreach (var Item in AssemblySave.Type.GetMethods())
-                        {
-                            if (Item.Name == "main" || Item.Name == "after" || Item.Name == "robot")
-                                AssemblySave.MethodInfos.Add(Item.Name, Item);
-                        }
-                        AddRobot(Name, AssemblySave);
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
                     }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    {
+                        if (Item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend)
+                            AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddRobot(Name, AssemblySave);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+            DllName = Function.GetPathFileName(MqttLocal);
+            foreach (var FileItem in DllName)
+            {
+                try
+                {
+                    if (FileItem.FullName.Contains(".pdb"))
+                        continue;
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载MQTT：" + Name);
+                    var AssemblySave = new DllBuildSave
+                    {
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
+
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
+                    }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    {
+                        if (Item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription)
+                            AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddMqtt(Name, AssemblySave);
                 }
                 catch (Exception e)
                 {

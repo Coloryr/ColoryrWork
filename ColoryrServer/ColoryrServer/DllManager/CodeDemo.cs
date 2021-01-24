@@ -11,6 +11,9 @@
         public const string RobotMessage = "message";
         public const string RobotEvent = "robot";
         public const string RobotSend = "after";
+        public const string MQTTMessage = "message";
+        public const string MQTTValidator = "check";
+        public const string MQTTSubscription = "subscription";
 
         public const string dll_ =
 @"using ColoryrServer.SDK;
@@ -97,5 +100,7 @@ namespace ColoryrServer
     }
 }
 ";
+        public const string mqtt_ =
+@"";
     }
 }

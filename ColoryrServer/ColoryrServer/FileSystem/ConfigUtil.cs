@@ -54,6 +54,10 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public Pipe Pipe { get; set; }
         /// <summary>
+        /// MQTT配置
+        /// </summary>
+        public MQTTConfig MQTTConfig { get; set; }
+        /// <summary>
         /// ffmpeg
         /// </summary>
         public string MPGE { get; set; }
@@ -61,6 +65,13 @@ namespace ColoryrServer.FileSystem
         /// HttpClient数量
         /// </summary>
         public int HttpClientNumber { get; set; }
+    }
+    internal record MQTTConfig
+    { 
+        /// <summary>
+        /// 端口
+        /// </summary>
+        public int Port { get; set; }
     }
     internal record OracleConfig
     {

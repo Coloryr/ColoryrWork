@@ -18,6 +18,7 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> IoTList { get; set; }
         public List<CSFileObj> WebSocketList { get; set; }
         public List<CSFileObj> RobotList { get; set; }
+        public List<CSFileObj> MqttList { get; set; }
         public List<AppFileObj> AppList { get; set; }
     }
     internal class CSFile
@@ -27,6 +28,7 @@ namespace ColoryrServer.FileSystem
         private static readonly string IoTFileLocal = ServerMain.RunLocal + @"CODE\IoT\";
         private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\CODE\WebScoket\";
         private static readonly string RobotFileLocal = ServerMain.RunLocal + @"CODE\Robot\";
+        private static readonly string MqttFileLocal = ServerMain.RunLocal + @"CODE\Mqtt\";
         private static readonly string AppFileLocal = ServerMain.RunLocal + @"CODE\App\";
 
         private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
@@ -37,6 +39,7 @@ namespace ColoryrServer.FileSystem
         public static readonly ConcurrentDictionary<string, CSFileCode> IoTFileList = new();
         public static readonly ConcurrentDictionary<string, CSFileCode> WebSocketFileList = new();
         public static readonly ConcurrentDictionary<string, CSFileCode> RobotFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> MqttFileList = new();
         public static readonly ConcurrentDictionary<string, AppFileObj> AppFileList = new();
 
         public static void Start()
@@ -68,6 +71,10 @@ namespace ColoryrServer.FileSystem
             if (!Directory.Exists(AppFileLocal))
             {
                 Directory.CreateDirectory(AppFileLocal);
+            }
+            if (!Directory.Exists(MqttFileLocal))
+            {
+                Directory.CreateDirectory(MqttFileLocal);
             }
             LoadAll();
         }
@@ -134,6 +141,16 @@ namespace ColoryrServer.FileSystem
                 RobotFileList[obj.UUID] = obj;
             else
                 RobotFileList.TryAdd(obj.UUID, obj);
+            Storage(url, obj);
+            UpdataMAP();
+        }
+        public static void StorageMQTT(CSFileCode obj)
+        {
+            var url = MqttFileLocal + obj.UUID + ".json";
+            if (MqttFileList.ContainsKey(obj.UUID))
+                MqttFileList[obj.UUID] = obj;
+            else
+                MqttFileList.TryAdd(obj.UUID, obj);
             Storage(url, obj);
             UpdataMAP();
         }
@@ -205,6 +222,14 @@ namespace ColoryrServer.FileSystem
             }
             return null;
         }
+        public static CSFileCode GetMqtt(string uuid)
+        {
+            if (MqttFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
+        }
         public static AppFileObj GetApp(string uuid)
         {
             if (AppFileList.TryGetValue(uuid, out var save))
@@ -252,6 +277,12 @@ namespace ColoryrServer.FileSystem
                         obj = GetRobot(uuid);
                         RobotFileList.TryRemove(uuid, out var item4);
                         DllStonge.RemoveRobot(uuid);
+                        break;
+                    case CodeType.Mqtt:
+                        Name = MqttFileLocal + uuid + ".json";
+                        obj = GetMqtt(uuid);
+                        MqttFileList.TryRemove(uuid, out var item6);
+                        DllStonge.RemoveMqtt(uuid);
                         break;
                     case CodeType.App:
                         Name = AppFileLocal + uuid + ".json";
@@ -386,6 +417,19 @@ Key:{obj.Key}
                     ServerMain.LogError(e);
                 }
             }
+            foreach (var item in Function.GetPathFileName(MqttFileLocal))
+            {
+                try
+                {
+                    var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
+                    string name = item.Name.Replace(".json", "");
+                    MqttFileList.TryAdd(name, obj);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
             foreach (var item in Function.GetPathFileName(AppFileLocal))
             {
                 try
@@ -414,6 +458,7 @@ Key:{obj.Key}
                         IoTList = new(IoTFileList.Values),
                         WebSocketList = new(WebSocketFileList.Values),
                         RobotList = new(RobotFileList.Values),
+                        MqttList = new(MqttFileList.Values),
                         AppList = new(AppFileList.Values)
                     };
                     File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));
