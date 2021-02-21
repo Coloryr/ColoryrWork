@@ -1,9 +1,7 @@
 ﻿using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,8 +44,10 @@ namespace ColoryrServer.TaskUtils
                 try
                 {
                     eventWait.Reset();
-                    var list = from items in Tasks.Values where items.State == TaskState.Done 
-                               || items.State == TaskState.Error || items.State == TaskState.TimeOut || items.State == TaskState.Cancel select items.Name;
+                    var list = from items in Tasks.Values
+                               where items.State == TaskState.Done
+    || items.State == TaskState.Error || items.State == TaskState.TimeOut || items.State == TaskState.Cancel
+                               select items.Name;
                     foreach (var item in list)
                     {
                         Tasks.TryRemove(item, out var temp);

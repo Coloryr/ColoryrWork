@@ -75,7 +75,9 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.dll_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.DllDemoCS
+                                .Replace("{name}", Json.UUID)
+                                .Replace("{mian}", CodeDemo.DllMain)
                             };
                             CSFile.StorageDll(File);
                             Object = new ReMessage
@@ -104,7 +106,8 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.class_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.ClassDemoCS
+                                .Replace("{name}", Json.UUID)
                             };
                             CSFile.StorageClass(File);
                             Object = new ReMessage
@@ -133,7 +136,10 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.iot_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.IoTDemoCS
+                                .Replace("{name}", Json.UUID)
+                                .Replace("{IoTTcp}", CodeDemo.IoTTcp)
+                                .Replace("{IoTUdp}", CodeDemo.IoTUdp)
                             };
                             CSFile.StorageIoT(File);
                             Object = new ReMessage
@@ -162,7 +168,11 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.websocket_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.WebSocketDemoCS
+                                .Replace("{name}", Json.UUID)
+                                .Replace("{WebSocketMessage}", CodeDemo.WebSocketMessage)
+                                .Replace("{WebSocketOpen}", CodeDemo.WebSocketOpen)
+                                .Replace("{WebSocketOpen}", CodeDemo.WebSocketClose)
                             };
                             CSFile.StorageWebSocket(File);
                             Object = new ReMessage
@@ -191,7 +201,11 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.robot_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.RobotDemoCS
+                                .Replace("{name}", Json.UUID)
+                                .Replace("{RobotMessage}", CodeDemo.RobotMessage)
+                                .Replace("{RobotSend}", CodeDemo.RobotSend)
+                                .Replace("{RobotEvent}", CodeDemo.RobotEvent)
                             };
                             CSFile.StorageRobot(File);
                             Object = new ReMessage
@@ -220,7 +234,11 @@ namespace ColoryrServer.DllManager
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = CodeDemo.robot_.Replace("{name}", Json.UUID)
+                                Code = ColoryrServer_Resource.RobotDemoCS
+                                .Replace("{name}", Json.UUID)
+                                .Replace("{MQTTMessage}", CodeDemo.MQTTMessage)
+                                .Replace("{MQTTValidator}", CodeDemo.MQTTValidator)
+                                .Replace("{MQTTSubscription}", CodeDemo.MQTTSubscription)
                             };
                             CSFile.StorageMqtt(File);
                             Object = new ReMessage
@@ -756,7 +774,8 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        string class_ = CodeDemo.class_.Replace("{name}", Json.Code);
+                        string class_ = ColoryrServer_Resource.ClassDemoCS
+                            .Replace("{name}", Json.Code);
                         File1.Codes.Add(Json.Code, class_);
                         CSFile.StorageApp(File1);
                         File1.Version++;

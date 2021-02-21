@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -25,6 +26,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 Res.Res = $"Robot[{File.UUID}]" + Res.Res;
                 return Res;
             }
+
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
@@ -43,22 +45,37 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Robot[{ File.UUID }]类名错误"
                 };
 
-            AssemblySave.Type = list.First();
+            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
+               .Where(x => x.Name == "Note");
 
-            foreach (var Item in AssemblySave.Type.GetMethods())
+            if (list1.Any())
             {
-                if (Item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend)
-                    AssemblySave.MethodInfos.Add(Item.Name, Item);
+                AssemblySave.NoteType = list1.First();
+                if (Activator.CreateInstance(AssemblySave.NoteType) is NotesSDK obj)
+                {
+                    NoteFile.StorageRobot(File.UUID, obj);
+                }
+            }
+
+            AssemblySave.DllType = list.First();
+            
+            foreach (var item in AssemblySave.DllType.GetMethods())
+            {
+                if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
+                    AssemblySave.MethodInfos.Add(item.Name, item);
             }
 
             if (AssemblySave.MethodInfos.Count == 0)
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = $"Robot[{ File.UUID }]没有主方法"
+                    Res = $"Robot[{File.UUID}]没有方法"
                 };
 
             DllStonge.AddRobot(File.UUID, AssemblySave);
+
+            var time = string.Format("{0:s}", DateTime.Now);
+            File.UpdataTime = time;
 
             Task.Run(() =>
             {
@@ -90,7 +107,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = $"Robot[{ File.UUID }]编译完成"
+                Res = $"Robot[{ File.UUID }]编译完成",
+                Time = File.UpdataTime
             };
         }
     }

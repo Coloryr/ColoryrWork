@@ -244,7 +244,10 @@ namespace ColoryrBuild.Windows
                 App.LogShow("编译", "服务器返回错误");
                 return;
             }
-            App.LogShow("编译", data.Message);
+            App.LogShow("编译", "编译后\n" + 
+                $"结果:{data.Message}\n" +
+                $"用时:{data.UseTime}\n" +
+                $"最后更新时间:{data.Time}");
             obj1.Version++;
             App.MainWindow_.Re(type);
             CodeSave.Save(Local + "main.cs", obj1.Code);

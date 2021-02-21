@@ -4,14 +4,14 @@ using MQTTnet.Server;
 
 namespace ColoryrServer.SDK
 {
-    public class ServerMqttConnectionValidator
+    public class MqttConnectionValidator
     {
         public MqttConnectionValidatorContext Context { get; init; }
         /// <summary>
         /// MQTT服务器验证
         /// </summary>
         /// <param name="Context">数据</param>
-        public ServerMqttConnectionValidator(MqttConnectionValidatorContext Context)
+        public MqttConnectionValidator(MqttConnectionValidatorContext Context)
             => this.Context = Context;
         /// <summary>
         /// 发送消息
@@ -28,14 +28,14 @@ namespace ColoryrServer.SDK
             => Context.ReasonCode = state;
     }
 
-    public class ServerMqttMessage
+    public class MqttMessage
     {
         public MqttApplicationMessageInterceptorContext Context { get; init; }
         /// <summary>
         /// MQTT服务器收到消息
         /// </summary>
         /// <param name="Context">数据</param>
-        public ServerMqttMessage(MqttApplicationMessageInterceptorContext Context)
+        public MqttMessage(MqttApplicationMessageInterceptorContext Context)
             => this.Context = Context;
         /// <summary>
         /// 发送消息
@@ -52,14 +52,14 @@ namespace ColoryrServer.SDK
             => Context.AcceptPublish = Publish;
     }
 
-    public class ServerMqttSubscription
+    public class MqttSubscription
     {
         public MqttSubscriptionInterceptorContext Context { get; init; }
         /// <summary>
         /// MQTT服务器订阅
         /// </summary>
         /// <param name="Context">数据</param>
-        public ServerMqttSubscription(MqttSubscriptionInterceptorContext Context)
+        public MqttSubscription(MqttSubscriptionInterceptorContext Context)
            => this.Context = Context;
         /// <summary>
         /// 发送消息

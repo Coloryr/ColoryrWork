@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -44,9 +45,33 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Class[{File.UUID}]类名错误"
                 };
 
-            AssemblySave.Type = list.First();
+            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
+                           .Where(x => x.Name == "Note");
 
+            if (!list1.Any())
+                return new GenReOBJ
+                {
+                    Isok = false,
+                    Res = $"Class[{File.UUID}]没有注释类"
+                };
+
+            AssemblySave.DllType = list.First();
+            AssemblySave.NoteType = list1.First();
+
+            if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
+            {
+                return new GenReOBJ
+                {
+                    Isok = false,
+                    Res = $"Class[{File.UUID}]注释类错误"
+                };
+            }
+
+            NoteFile.StorageClass(File.UUID, obj);
             DllStonge.AddClass(File.UUID, AssemblySave);
+
+            var time = string.Format("{0:s}", DateTime.Now);
+            File.UpdataTime = time;
 
             Task.Run(() =>
             {
@@ -78,7 +103,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = $"Class[{File.UUID}]编译完成"
+                Res = $"Class[{File.UUID}]编译完成",
+                Time = File.UpdataTime
             };
         }
     }

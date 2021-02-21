@@ -47,7 +47,7 @@ namespace ColoryrServer.DllManager
             if (DllList.ContainsKey(uuid))
             {
                 DllList[uuid].Assembly.Unload();
-                DllList[uuid].Type = null;
+                DllList[uuid].DllType = null;
                 DllList[uuid].MethodInfos.Clear();
                 DllList[uuid] = save;
             }
@@ -61,7 +61,7 @@ namespace ColoryrServer.DllManager
             if (DllList.ContainsKey(uuid))
             {
                 DllList[uuid].Assembly.Unload();
-                DllList[uuid].Type = null;
+                DllList[uuid].DllType = null;
                 DllList[uuid].MethodInfos.Clear();
                 DllList.TryRemove(uuid, out var item);
             }
@@ -82,7 +82,7 @@ namespace ColoryrServer.DllManager
             if (ClassList.ContainsKey(uuid))
             {
                 ClassList[uuid].Assembly.Unload();
-                ClassList[uuid].Type = null;
+                ClassList[uuid].DllType = null;
                 ClassList[uuid].MethodInfos.Clear();
                 ClassList[uuid] = save;
             }
@@ -96,7 +96,7 @@ namespace ColoryrServer.DllManager
             if (ClassList.ContainsKey(uuid))
             {
                 ClassList[uuid].Assembly.Unload();
-                ClassList[uuid].Type = null;
+                ClassList[uuid].DllType = null;
                 ClassList[uuid].MethodInfos.Clear();
                 ClassList.TryRemove(uuid, out var item);
             }
@@ -117,7 +117,7 @@ namespace ColoryrServer.DllManager
             if (IoTList.ContainsKey(uuid))
             {
                 IoTList[uuid].Assembly.Unload();
-                IoTList[uuid].Type = null;
+                IoTList[uuid].DllType = null;
                 IoTList[uuid].MethodInfos.Clear();
                 IoTList[uuid] = save;
             }
@@ -131,7 +131,7 @@ namespace ColoryrServer.DllManager
             if (IoTList.ContainsKey(uuid))
             {
                 IoTList[uuid].Assembly.Unload();
-                IoTList[uuid].Type = null;
+                IoTList[uuid].DllType = null;
                 IoTList[uuid].MethodInfos.Clear();
                 IoTList.TryRemove(uuid, out var item);
             }
@@ -143,7 +143,7 @@ namespace ColoryrServer.DllManager
             if (WebSocketList.ContainsKey(uuid))
             {
                 WebSocketList[uuid].Assembly.Unload();
-                WebSocketList[uuid].Type = null;
+                WebSocketList[uuid].DllType = null;
                 WebSocketList[uuid].MethodInfos.Clear();
                 WebSocketList[uuid] = save;
             }
@@ -157,7 +157,7 @@ namespace ColoryrServer.DllManager
             if (WebSocketList.ContainsKey(uuid))
             {
                 WebSocketList[uuid].Assembly.Unload();
-                WebSocketList[uuid].Type = null;
+                WebSocketList[uuid].DllType = null;
                 WebSocketList[uuid].MethodInfos.Clear();
                 WebSocketList.TryRemove(uuid, out var item);
             }
@@ -173,7 +173,7 @@ namespace ColoryrServer.DllManager
             if (RobotList.ContainsKey(uuid))
             {
                 RobotList[uuid].Assembly.Unload();
-                RobotList[uuid].Type = null;
+                RobotList[uuid].DllType = null;
                 RobotList[uuid].MethodInfos.Clear();
                 RobotList[uuid] = save;
             }
@@ -187,7 +187,7 @@ namespace ColoryrServer.DllManager
             if (RobotList.ContainsKey(uuid))
             {
                 RobotList[uuid].Assembly.Unload();
-                RobotList[uuid].Type = null;
+                RobotList[uuid].DllType = null;
                 RobotList[uuid].MethodInfos.Clear();
                 RobotList.TryRemove(uuid, out var item);
             }
@@ -203,7 +203,7 @@ namespace ColoryrServer.DllManager
             if (MqttList.ContainsKey(uuid))
             {
                 MqttList[uuid].Assembly.Unload();
-                MqttList[uuid].Type = null;
+                MqttList[uuid].DllType = null;
                 MqttList[uuid].MethodInfos.Clear();
                 MqttList[uuid] = save;
             }
@@ -217,7 +217,7 @@ namespace ColoryrServer.DllManager
             if (MqttList.ContainsKey(uuid))
             {
                 MqttList[uuid].Assembly.Unload();
-                MqttList[uuid].Type = null;
+                MqttList[uuid].DllType = null;
                 MqttList[uuid].MethodInfos.Clear();
                 MqttList.TryRemove(uuid, out var item);
             }
@@ -316,9 +316,9 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First().GetTypes()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First().GetTypes()
                         .Where(x => x.Name == "app_" + uuid).First();
-                    var Temp = AssemblySave.Type.GetMethods();
+                    var Temp = AssemblySave.DllType.GetMethods();
                     foreach (var Item in Temp)
                     {
                         if (Item.Name is "Main" or "GetType" or "ToString"
@@ -357,7 +357,7 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
                         .GetTypes().Where(x => x.Name == Name).First();
                     AddClass(Name, AssemblySave);
                 }
@@ -390,9 +390,9 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
                         .GetTypes().Where(x => x.Name == Name).First();
-                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    foreach (var Item in AssemblySave.DllType.GetMethods())
                     {
                         if (Item.Name is CodeDemo.IoTTcp or CodeDemo.IoTUdp)
                             AssemblySave.MethodInfos.Add(Item.Name, Item);
@@ -428,9 +428,9 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
                         .GetTypes().Where(x => x.Name == Name).First();
-                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    foreach (var Item in AssemblySave.DllType.GetMethods())
                     {
                         if (Item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
                             AssemblySave.MethodInfos.Add(Item.Name, Item);
@@ -466,9 +466,9 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
                         .GetTypes().Where(x => x.Name == Name).First();
-                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    foreach (var Item in AssemblySave.DllType.GetMethods())
                     {
                         if (Item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend)
                             AssemblySave.MethodInfos.Add(Item.Name, Item);
@@ -504,9 +504,9 @@ namespace ColoryrServer.DllManager
                     else
                         AssemblySave.Assembly.LoadFromStream(FileStream);
 
-                    AssemblySave.Type = AssemblySave.Assembly.Assemblies.First()
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
                         .GetTypes().Where(x => x.Name == Name).First();
-                    foreach (var Item in AssemblySave.Type.GetMethods())
+                    foreach (var Item in AssemblySave.DllType.GetMethods())
                     {
                         if (Item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription)
                             AssemblySave.MethodInfos.Add(Item.Name, Item);

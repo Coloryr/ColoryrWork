@@ -1,0 +1,28 @@
+using ColoryrServer.SDK;
+
+namespace ColoryrServer
+{
+    public class Note : NotesSDK
+    {
+        public Note()
+        {
+            Name = "test";
+            Text = "Ò»¸ö×¢ÊÍ";
+        }
+    }
+    public class {name}
+    {
+        public void {MQTTMessage}(MqttMessage head)
+        {
+             
+        }
+        public void {MQTTValidator}(MqttConnectionValidator head)
+        {
+             
+        }
+        public void {MQTTSubscription}(MqttSubscription head)
+        {
+            
+        }
+    }
+}

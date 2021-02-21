@@ -1,0 +1,29 @@
+using ColoryrServer.SDK;
+
+namespace ColoryrServer
+{
+    public class Note : NotesSDK
+    {
+        public Note()
+        {
+            Name = "test";
+            Text = "一个注释";
+            var item = new INOUT();
+            item.Input.Add("data", "输入");
+            item.Output.Add("String", "结果");
+            Function.Add("test", item);
+        }
+    }
+    public class {name}
+    {
+        public {name}()
+        {
+             
+        }
+
+        public string test(string data)
+        {
+            retuen data + "test";
+        }
+    }
+}

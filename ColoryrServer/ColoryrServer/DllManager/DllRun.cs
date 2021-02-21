@@ -36,7 +36,7 @@ namespace ColoryrServer.DllManager
 
                 MethodInfo MI = Dll.MethodInfos[FunName];
                 var Tran = new object[1] { Arg };
-                var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                 dynamic DllReturn = MI.Invoke(Assembly, Tran);
                 if (DllReturn is Dictionary<string, object>)
                 {
@@ -120,7 +120,7 @@ namespace ColoryrServer.DllManager
                 {
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.IoTTcp];
                     var Tran = new object[1] { Head };
-                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                     MI.Invoke(Assembly, Tran);
                 }
             }
@@ -142,7 +142,7 @@ namespace ColoryrServer.DllManager
                 {
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.IoTUdp];
                     var Tran = new object[1] { Head };
-                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                     MI.Invoke(Assembly, Tran);
                 }
             }
@@ -164,7 +164,7 @@ namespace ColoryrServer.DllManager
                 {
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketMessage];
                     var Tran = new object[1] { Head };
-                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                     MI.Invoke(Assembly, Tran);
                 }
             }
@@ -186,7 +186,7 @@ namespace ColoryrServer.DllManager
                 {
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketOpen];
                     var Tran = new object[1] { Head };
-                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                     MI.Invoke(Assembly, Tran);
                 }
             }
@@ -208,7 +208,7 @@ namespace ColoryrServer.DllManager
                 {
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketClose];
                     var Tran = new object[1] { Head };
-                    var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                     MI.Invoke(Assembly, Tran);
                 }
             }
@@ -232,7 +232,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos[CodeDemo.RobotMessage];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }
@@ -257,7 +257,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos["robot"];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }
@@ -282,7 +282,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos["after"];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }
@@ -297,7 +297,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(ServerMqttConnectionValidator Head)
+        public static void MqttGo(MqttConnectionValidator Head)
         {
             try
             {
@@ -307,7 +307,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTValidator];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }
@@ -322,7 +322,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(ServerMqttMessage Head)
+        public static void MqttGo(MqttMessage Head)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTMessage];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }
@@ -347,7 +347,7 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
-        public static void MqttGo(ServerMqttSubscription Head)
+        public static void MqttGo(MqttSubscription Head)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace ColoryrServer.DllManager
                     {
                         MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTSubscription];
                         var Tran = new object[1] { Head };
-                        var Assembly = Dll.Type.Assembly.CreateInstance(Dll.Type.FullName, true);
+                        var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
                         MI.Invoke(Assembly, Tran);
                     }
                 }

@@ -124,11 +124,17 @@
   <data name="AppDemoXAML" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\AppDemoXAML.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="ClassDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ClassDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="ColoryrSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ColoryrSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="DatabaseSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DatabaseSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="DllDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\DllDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="HtmlDocumentSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HtmlDocumentSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
@@ -142,23 +148,41 @@
   <data name="HttpSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HttpSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="IoTDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\IoTDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="IoTSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\IoTSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="IWebSocketConnectionSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\IWebSocketConnectionSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="MqttDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\MqttDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="MySqlCommandSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\MySqlCommandSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="NotesSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\NotesSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="OracleCommandSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OracleCommandSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="RobotDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\RobotDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="RobotSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\RobotSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="SqlCommandSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SqlCommandSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="TaskSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\TaskSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="WebSocketDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\WebSocketDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="WebSocketSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\WebSocketSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>

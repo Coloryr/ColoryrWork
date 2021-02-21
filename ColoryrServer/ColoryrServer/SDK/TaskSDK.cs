@@ -3,7 +3,7 @@ using System;
 
 namespace ColoryrServer.SDK
 {
-    class TaskSDK
+    public class TaskSDK
     {
         /// <summary>
         /// 是否存在任务

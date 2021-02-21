@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp.Android", "Color
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp.iOS", "ColoryrApp\ColoryrApp.iOS\ColoryrApp.iOS.csproj", "{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp", "ColoryrApp\ColoryrApp\ColoryrApp.csproj", "{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrApp", "ColoryrApp\ColoryrApp\ColoryrApp.csproj", "{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

@@ -107,6 +107,39 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///            var item = new INOUT();
+        ///            item.Input.Add(&quot;data&quot;, &quot;输入&quot;);
+        ///            item.Output.Add(&quot;String&quot;, &quot;结果&quot;);
+        ///            Function.Add(&quot;test&quot;, item);
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public {name}()
+        ///        {
+        ///             
+        ///        }
+        ///
+        ///        public string test(string data)
+        ///    [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ClassDemoCS {
+            get {
+                return ResourceManager.GetString("ClassDemoCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 using ColoryrServer.DllManager;
         ///using ColoryrServer.FileSystem;
         ///using ColoryrServer.Robot;
@@ -157,6 +190,37 @@ namespace ColoryrServer {
         internal static string DatabaseSDK {
             get {
                 return ResourceManager.GetString("DatabaseSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///            var item = new INOUT();
+        ///            item.Input.Add(&quot;http&quot;, &quot;请求头&quot;);
+        ///            item.Output.Add(&quot;String&quot;, &quot;请求结果&quot;);
+        ///            Function.Add(&quot;main&quot;, item);
+        ///        }
+        ///    }
+        ///    public class app_{name}
+        ///    {
+        ///        public dynamic {main}(HttpRequest http)
+        ///        {  
+        ///            return &quot;true&quot;;
+        ///        }
+        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string DllDemoCS {
+            get {
+                return ResourceManager.GetString("DllDemoCS", resourceCulture);
             }
         }
         
@@ -268,6 +332,41 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public class {name}
+        ///        {
+        ///            public void {IoTTcp}(TcpIoTRequest head)
+        ///            {
+        ///                
+        ///            }
+        ///            public void {IoTUdp}(UdpIoTRequest head)
+        ///            {
+        ///                
+        ///            }
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string IoTDemoCS {
+            get {
+                return ResourceManager.GetString("IoTDemoCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 using ColoryrServer.IoT;
         ///using System.Collections.Generic;
         ///using System.Text;
@@ -320,6 +419,39 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public void {MQTTMessage}(MqttMessage head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {MQTTValidator}(MqttConnectionValidator head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {MQTTSubscription}(MqttSubscription head)
+        ///        {
+        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDemoCS {
+            get {
+                return ResourceManager.GetString("MqttDemoCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 #region 程序集 MySql.Data, Version=8.0.23.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d
         ///// C:\Users\40206\.nuget\packages\mysql.data\8.0.23\lib\net5.0\MySql.Data.dll
         ///#endregion
@@ -346,6 +478,37 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 using System.Collections.Generic;
+        ///
+        ///namespace ColoryrServer.SDK
+        ///{
+        ///    public class INOUT
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 输入参数
+        ///        /// &lt;/summary&gt;
+        ///        public Dictionary&lt;string, string&gt; Input = new();
+        ///        /// &lt;summary&gt;
+        ///        /// 输出参数
+        ///        /// &lt;/summary&gt;
+        ///        public Dictionary&lt;string, string&gt; Output = new();
+        ///    }
+        ///    public class NotesSDK
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 名字
+        ///        /// &lt;/summary&gt;
+        ///        public string Name;
+        ///        /// &lt;summary&gt;
+        ///        / [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string NotesSDK {
+            get {
+                return ResourceManager.GetString("NotesSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 #region 程序集 Oracle.ManagedDataAccess, Version=2.0.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342
         ///// C:\Users\40206\.nuget\packages\oracle.manageddataaccess.core\2.19.101\lib\netstandard2.0\Oracle.ManagedDataAccess.dll
         ///#endregion
@@ -366,6 +529,42 @@ namespace ColoryrServer {
         internal static string OracleCommandSDK {
             get {
                 return ResourceManager.GetString("OracleCommandSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public void {RobotMessage}(RobotRequest head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {RobotSend}(RobotAfter head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {RobotEvent}(RobotEvent head)
+        ///        {
+        ///            
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string RobotDemoCS {
+            get {
+                return ResourceManager.GetString("RobotDemoCS", resourceCulture);
             }
         }
         
@@ -416,6 +615,67 @@ namespace ColoryrServer {
         internal static string SqlCommandSDK {
             get {
                 return ResourceManager.GetString("SqlCommandSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.TaskUtils;
+        ///using System;
+        ///
+        ///namespace ColoryrServer.SDK
+        ///{
+        ///    public class TaskSDK
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 是否存在任务
+        ///        /// &lt;/summary&gt;
+        ///        /// &lt;param name=&quot;name&quot;&gt;任务名字&lt;/param&gt;
+        ///        /// &lt;returns&gt;是否存在&lt;/returns&gt;
+        ///        public static bool HaveTask(string name);
+        ///        /// &lt;summary&gt;
+        ///        /// 添加一个任务
+        ///        /// 如果存在则会覆盖
+        ///        /// &lt;/summary&gt;
+        ///        /// &lt;param name=&quot;arg&quot;&gt;任务参数&lt;/param&gt;
+        ///        public static void StartTask(TaskUserArg arg);
+        ///        / [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string TaskSDK {
+            get {
+                return ResourceManager.GetString("TaskSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public void {WebSocketMessage}(WebSocketMessage head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {WebSocketOpen}(WebSocketOpen head)
+        ///        {
+        ///             
+        ///        }
+        ///        public void {WebSocketClose}(WebSocketClose head)
+        ///        {
+        ///            [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string WebSocketDemoCS {
+            get {
+                return ResourceManager.GetString("WebSocketDemoCS", resourceCulture);
             }
         }
         

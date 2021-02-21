@@ -55,7 +55,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">Mysql命令语句</param>
         /// <returns>执行结果</returns>
         public List<List<dynamic>> MysqlSql(MySqlCommand arg)
-            => MysqlCon.MysqlSql(arg, Database)
+            => MysqlCon.MysqlSql(arg, Database);
         /// <summary>
         /// 执行sql语句
         /// </summary>
@@ -261,7 +261,7 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <returns>累加后的数据</returns>
         public long Increment(string key, long val = 1)
-            => RedisCon.Increment(key, val)
+            => RedisCon.Increment(key, val);
     }
 
     public class RamData

@@ -368,7 +368,7 @@ namespace ColoryrServer.SDK
                 throw new VarDump("没有这个类:" + classname);
             try
             {
-                return Activator.CreateInstance(data.Type, obj);
+                return Activator.CreateInstance(data.DllType, obj);
             }
             catch (Exception e)
             {

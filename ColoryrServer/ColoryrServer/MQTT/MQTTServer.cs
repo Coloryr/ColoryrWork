@@ -4,7 +4,6 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,15 +38,15 @@ namespace ColoryrServer.MQTT
 
         private static void ConnectionValidator(MqttConnectionValidatorContext data)
         => Task.Run(()
-             => DllRun.MqttGo(new ServerMqttConnectionValidator(data)));
+             => DllRun.MqttGo(new MqttConnectionValidator(data)));
 
 
         private static void ApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
             => Task.Run(()
-                 => DllRun.MqttGo(new ServerMqttMessage(data)));
+                 => DllRun.MqttGo(new MqttMessage(data)));
         private static void SubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
             => Task.Run(()
-                 => DllRun.MqttGo(new ServerMqttSubscription(data)));
+                 => DllRun.MqttGo(new MqttSubscription(data)));
         public static async void Stop()
           => await MqttServer.StopAsync();
 

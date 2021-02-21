@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -25,6 +26,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 Res.Res = $"WebSocket[{ File.UUID }]" + Res.Res;
                 return Res;
             }
+
             Res.MS.Seek(0, SeekOrigin.Begin);
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
@@ -35,6 +37,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
             var list = AssemblySave.Assembly.Assemblies.First()
                            .GetTypes().Where(x => x.Name == File.UUID);
+
             if (!list.Any())
                 return new GenReOBJ
                 {
@@ -42,9 +45,21 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"WebSocket[{ File.UUID }]类名错误"
                 };
 
-            AssemblySave.Type = list.First();
+            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
+               .Where(x => x.Name == "Note");
 
-            foreach (var item in AssemblySave.Type.GetMethods())
+            if (list1.Any())
+            {
+                AssemblySave.NoteType = list1.First();
+                if (Activator.CreateInstance(AssemblySave.NoteType) is NotesSDK obj)
+                {
+                    NoteFile.StorageWebSocket(File.UUID, obj);
+                }
+            }
+
+            AssemblySave.DllType = list.First();
+
+            foreach (var item in AssemblySave.DllType.GetMethods())
             {
                 if (item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
                     AssemblySave.MethodInfos.Add(item.Name, item);
@@ -58,6 +73,9 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             DllStonge.AddWebSocket(File.UUID, AssemblySave);
+
+            var time = string.Format("{0:s}", DateTime.Now);
+            File.UpdataTime = time;
 
             Task.Run(() =>
             {
@@ -89,7 +107,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = $"WebSocket[{ File.UUID }]编译完成"
+                Res = $"WebSocket[{ File.UUID }]编译完成",
+                Time = File.UpdataTime
             };
         }
     }

@@ -1,0 +1,27 @@
+using ColoryrServer.SDK;
+
+namespace ColoryrServer
+{
+    public class Note : NotesSDK
+    {
+        public Note()
+        {
+            Name = "test";
+            Text = "Ò»¸ö×¢ÊÍ";
+        }
+    }
+    public class {name}
+    {
+        public class {name}
+        {
+            public void {IoTTcp}(TcpIoTRequest head)
+            {
+                
+            }
+            public void {IoTUdp}(UdpIoTRequest head)
+            {
+                
+            }
+        }
+    }
+}

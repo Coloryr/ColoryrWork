@@ -186,7 +186,7 @@ namespace ColoryrServer
                 //配置文件
                 ConfigUtil.Start();
                 CSFile.Start();
-
+                NoteFile.Start();
                 APIFile.Start();
                 FileTemp.Start();
                 FileRam.Start();

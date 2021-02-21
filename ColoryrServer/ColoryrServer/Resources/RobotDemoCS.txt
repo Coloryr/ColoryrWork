@@ -1,0 +1,28 @@
+using ColoryrServer.SDK;
+
+namespace ColoryrServer
+{
+    public class Note : NotesSDK
+    {
+        public Note()
+        {
+            Name = "test";
+            Text = "Ò»¸ö×¢ÊÍ";
+        }
+    }
+    public class {name}
+    {
+        public void {RobotMessage}(RobotRequest head)
+        {
+             
+        }
+        public void {RobotSend}(RobotAfter head)
+        {
+             
+        }
+        public void {RobotEvent}(RobotEvent head)
+        {
+            
+        }
+    }
+}

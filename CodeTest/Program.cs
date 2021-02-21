@@ -36,7 +36,7 @@ namespace CodeTest
                     Thread.Sleep(1000);
                 }
             }).Start();
-            while(true)
+            while (true)
             {
                 string temp = Console.ReadLine();
                 switch (temp)
