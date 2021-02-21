@@ -58,6 +58,10 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public MQTTConfig MQTTConfig { get; set; }
         /// <summary>
+        /// 任务配置
+        /// </summary>
+        public TaskUtilConfig TaskConfig { get; set; }
+        /// <summary>
         /// ffmpeg
         /// </summary>
         public string MPGE { get; set; }
@@ -67,11 +71,22 @@ namespace ColoryrServer.FileSystem
         public int HttpClientNumber { get; set; }
     }
     internal record MQTTConfig
-    { 
+    {
         /// <summary>
         /// 端口
         /// </summary>
         public int Port { get; set; }
+    }
+    internal record TaskUtilConfig
+    {
+        /// <summary>
+        /// 线程数量
+        /// </summary>
+        public int ThreadNumber { get; set; }
+        /// <summary>
+        /// 最大运行时间
+        /// </summary>
+        public int MaxTime { get; set; }
     }
     internal record OracleConfig
     {
@@ -375,7 +390,17 @@ namespace ColoryrServer.FileSystem
                         Username = "Admin",
                         Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
                     }
-                }
+                },
+                MQTTConfig = new()
+                {
+                    Port = 12345
+                },
+                TaskConfig = new()
+                {
+                    MaxTime = 30,
+                    ThreadNumber = 50
+                },
+                HttpClientNumber = 100
             }, FilePath);
         }
     }

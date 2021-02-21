@@ -28,17 +28,11 @@ namespace ColoryrServer.SDK
             this.Server = Server;
         }
         public void Send(string data)
-        {
-            ServerWebSocket.Send(Info.ClientPort, data, Server);
-        }
+            => ServerWebSocket.Send(Info.ClientPort, data, Server);
         public void Send(byte[] data)
-        {
-            ServerWebSocket.Send(Info.ClientPort, data, Server);
-        }
+            => ServerWebSocket.Send(Info.ClientPort, data, Server);
         public void Close()
-        {
-            ServerWebSocket.Close(Info.ClientPort, Server);
-        }
+            => ServerWebSocket.Close(Info.ClientPort, Server);
     }
     public class WebSocketOpen
     {
@@ -61,17 +55,11 @@ namespace ColoryrServer.SDK
             this.Server = Server;
         }
         public void Send(string data)
-        {
-            ServerWebSocket.Send(Info.ClientPort, data, Server);
-        }
+            => ServerWebSocket.Send(Info.ClientPort, data, Server);
         public void Send(byte[] data)
-        {
-            ServerWebSocket.Send(Info.ClientPort, data, Server);
-        }
+            => ServerWebSocket.Send(Info.ClientPort, data, Server);
         public void Close()
-        {
-            ServerWebSocket.Close(Info.ClientPort, Server);
-        }
+            => ServerWebSocket.Close(Info.ClientPort, Server);
     }
     public class WebSocketClose
     {
@@ -81,12 +69,8 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Client">WS客户端</param>
         public WebSocketClose(IWebSocketConnection Client)
-        {
-            Info = Client.ConnectionInfo;
-        }
+            => Info = Client.ConnectionInfo;
         public WebSocketClose(IWebSocketConnectionInfo Info)
-        {
-            this.Info = Info;
-        }
+            => this.Info = Info;
     }
 }

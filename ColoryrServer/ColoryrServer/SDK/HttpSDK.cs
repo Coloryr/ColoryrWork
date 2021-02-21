@@ -17,11 +17,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">参数名</param>
         /// <returns>数据</returns>
         public string GetParameter(string arg)
-        {
-            if (Parameter.ContainsKey(arg))
-                return Parameter[arg];
-            return null;
-        }
+            => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
     }
     public abstract class HttpResponse
     {
@@ -75,17 +71,13 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="data">内容</param>
         public void Write(string data)
-        {
-            Data += data;
-        }
+            => Data += data;
         /// <summary>
         /// 写数据后换行
         /// </summary>
         /// <param name="data">内容</param>
         public void WriteNewLine(string data)
-        {
-            Data += data + "\n";
-        }
+           => Data += data + "\n";
     }
 
     public class HttpResponseDictionary : HttpResponse
@@ -106,9 +98,7 @@ namespace ColoryrServer.SDK
         /// <param name="Key">键</param>
         /// <param name="Value">值</param>
         public void AddResponse(string Key, object Value)
-        {
-            Data.Add(Key, Value);
-        }
+            => Data.Add(Key, Value);
         /// <summary>
         /// 写数据
         /// </summary>

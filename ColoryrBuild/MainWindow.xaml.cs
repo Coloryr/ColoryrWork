@@ -2,8 +2,8 @@
 using Lib.Build.Object;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ColoryrBuild

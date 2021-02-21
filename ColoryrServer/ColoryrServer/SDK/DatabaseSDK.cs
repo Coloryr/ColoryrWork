@@ -55,9 +55,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">Mysql命令语句</param>
         /// <returns>执行结果</returns>
         public List<List<dynamic>> MysqlSql(MySqlCommand arg)
-        {
-            return MysqlCon.MysqlSql(arg, Database);
-        }
+            => MysqlCon.MysqlSql(arg, Database)
         /// <summary>
         /// 执行sql语句
         /// </summary>
@@ -233,9 +231,8 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <returns>值</returns>
         public object Get(dynamic key)
-        {
-            return RedisCon.Get(key);
-        }
+            => RedisCon.Get(key);
+
         /// <summary>
         /// 设置键值对
         /// </summary>
@@ -243,36 +240,28 @@ namespace ColoryrServer.SDK
         /// <param name="value">值</param>
         /// <param name="Time">存在秒</param>
         public bool Set(dynamic key, dynamic value, int Time = 0)
-        {
-            return RedisCon.Set(key, value, Time);
-        }
+            => RedisCon.Set(key, value, Time);
         /// <summary>
         /// 是否存在键
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否存在</returns>
         public bool Exists(dynamic key)
-        {
-            return RedisCon.Exists(key);
-        }
+            => RedisCon.Exists(key);
         /// <summary>
         /// 删除键值对
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否成功</returns>
         public bool Remove(dynamic key)
-        {
-            return RedisCon.Remove(key);
-        }
+            => RedisCon.Remove(key);
         /// <summary>
         /// 累加
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>累加后的数据</returns>
         public long Increment(string key, long val = 1)
-        {
-            return RedisCon.Increment(key, val);
-        }
+            => RedisCon.Increment(key, val)
     }
 
     public class RamData
@@ -292,33 +281,25 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <returns>返回值</returns>
         public dynamic Get(string key)
-        {
-            return RamDataBase.GetCache(Name, key);
-        }
+            => RamDataBase.GetCache(Name, key);
         /// <summary>
         /// 设置键值
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         public void Set(string key, dynamic value)
-        {
-            RamDataBase.SetCache(Name, key, value);
-        }
+            => RamDataBase.SetCache(Name, key, value);
         /// <summary>
         /// 检查是否有键
         /// </summary>
         /// <param name="key">键名</param>
         /// <returns>是否存在</returns>
         public bool HaveKey(string key)
-        {
-            return RamDataBase.HaveCacheKey(Name, key);
-        }
+            => RamDataBase.HaveCacheKey(Name, key);
         /// <summary>
         /// 清理缓存
         /// </summary>
         public void Close()
-        {
-            RamDataBase.CloseCache(Name);
-        }
+            => RamDataBase.CloseCache(Name);
     }
 }

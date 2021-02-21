@@ -53,9 +53,7 @@ namespace ColoryrServer.SDK
         /// <param name="data">数据</param>
         /// <returns>加密后的字符串</returns>
         public static string MD5(string data)
-        {
-            return BitConverter.ToString(MD5_R(data)).ToLower().Replace("-", "");
-        }
+            => BitConverter.ToString(MD5_R(data)).ToLower().Replace("-", "");
         /// <summary>
         /// MD5加密
         /// </summary>
@@ -78,7 +76,7 @@ namespace ColoryrServer.SDK
         {
             try
             {
-                RSACryptoServiceProvider _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
+                using var _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
                 return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(data), fOAEP));
             }
             catch (Exception e)
@@ -93,7 +91,7 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的数据</returns>
         public static string SHA1(string data)
         {
-            var sha1 = new SHA1CryptoServiceProvider();
+            using var sha1 = new SHA1CryptoServiceProvider();
             byte[] str01 = Encoding.Default.GetBytes(data);
             byte[] str02 = sha1.ComputeHash(str01);
             return BitConverter.ToString(str02).Replace("-", "");
@@ -113,7 +111,7 @@ namespace ColoryrServer.SDK
                 byte[] ivArray = iv;
                 byte[] toEncryptArray = Encoding.Default.GetBytes(data);
 
-                RijndaelManaged rDel = new RijndaelManaged
+                using var rDel = new RijndaelManaged
                 {
                     Key = keyArray,
                     IV = ivArray,
@@ -121,7 +119,7 @@ namespace ColoryrServer.SDK
                     Padding = PaddingMode.PKCS7
                 };
 
-                ICryptoTransform cTransform = rDel.CreateEncryptor();
+                using var cTransform = rDel.CreateEncryptor();
                 byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
                 return resultArray;
@@ -140,10 +138,7 @@ namespace ColoryrServer.SDK
         /// <param name="data">要解密的数据</param>
         /// <returns>加密后的数据</returns>
         public static string BASE64(string data)
-        {
-            byte[] c = Convert.FromBase64String(data);
-            return Encoding.UTF8.GetString(c);
-        }
+            => Encoding.UTF8.GetString(Convert.FromBase64String(data));
         /// <summary>
         /// AES128解码
         /// </summary>
@@ -153,7 +148,7 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string AES128(byte[] data, string key, byte[] iv)
         {
-            RijndaelManaged rijalg = new RijndaelManaged
+            using var rijalg = new RijndaelManaged
             {
                 Padding = PaddingMode.None,
                 Mode = CipherMode.CBC,
@@ -161,7 +156,7 @@ namespace ColoryrServer.SDK
                 IV = iv
             };
 
-            ICryptoTransform decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
+            using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
             try
             {
@@ -184,7 +179,7 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string AES256(byte[] data, string key, string iv)
         {
-            RijndaelManaged rijalg = new RijndaelManaged
+            using var rijalg = new RijndaelManaged
             {
                 BlockSize = 128,
                 KeySize = 256,
@@ -195,7 +190,7 @@ namespace ColoryrServer.SDK
                 IV = Encoding.Default.GetBytes(iv)
             };
 
-            ICryptoTransform decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
+            using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
             try
             {
@@ -220,7 +215,7 @@ namespace ColoryrServer.SDK
         {
             try
             {
-                RSACryptoServiceProvider _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
+                using var _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
                 return Convert.ToBase64String(_privateKeyRsaProvider.Decrypt(Encoding.UTF8.GetBytes(data), fOAEP));
             }
             catch
@@ -413,44 +408,34 @@ namespace ColoryrServer.SDK
         /// <param name="id">客户端ID</param>
         /// <returns>是否在线</returns>
         public static bool WebSocketIsOnline(string id)
-        {
-            return ServerWebSocket.IsOnline(id);
-        }
+        => ServerWebSocket.IsOnline(id);
         /// <summary>
         /// 获取在线的机器人
         /// </summary>
         /// <returns>机器人QQ号列表</returns>
         public static List<long> GetBots()
-        {
-            return RobotSocket.QQs;
-        }
+            => new(RobotSocket.QQs);
         /// <summary>
         /// 压缩HTML
         /// </summary>
         /// <param name="html">原始数据</param>
         /// <returns>压缩后的数据</returns>
         public static string CompressHTML(string html)
-        {
-            return CodeCompress.HTML(html);
-        }
+            => CodeCompress.HTML(html);
         /// <summary>
         /// 压缩JS
         /// </summary>
         /// <param name="js">原始数据</param>
         /// <returns>压缩后的数据</returns>
         public static string CompressJS(string js)
-        {
-            return CodeCompress.JS(js);
-        }
+            => CodeCompress.JS(js);
         /// <summary>
         /// 压缩CSS
         /// </summary>
         /// <param name="css">原始数据</param>
         /// <returns>压缩后的数据</returns>
         public static string CompressCSS(string css)
-        {
-            return CodeCompress.CSS(css);
-        }
+            => CodeCompress.CSS(css);
     }
     public class FileLoad
     {
@@ -460,18 +445,14 @@ namespace ColoryrServer.SDK
         /// <param name="filename">文件名</param>
         /// <returns>文件里面的字符串</returns>
         public static string LoadString(string filename)
-        {
-            return FileTemp.LoadString(filename);
-        }
+            => FileTemp.LoadString(filename);
         /// <summary>
         /// 读一个文件
         /// </summary>
         /// <param name="filename">文件名</param>
         /// <returns>文件二进制</returns>
         public static byte[] LoadBytes(string filename)
-        {
-            return FileTemp.LoadBytes(filename);
-        }
+            => FileTemp.LoadBytes(filename);
     }
     public class VarDump : Exception
     {

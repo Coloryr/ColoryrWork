@@ -21,43 +21,26 @@ namespace ColoryrServer.SDK
                     Dictionary<string, string> Head = null)
         {
             Http = HttpClientUtils.Get();
-            if (Cookie == null)
-            {
-                this.Cookie = new();
-            }
-            else
-            {
-                this.Cookie = Cookie;
-            }
-            if (Cancel == null)
-            {
-                Cancel = new();
-            }
+            this.Cookie = Cookie ?? new();
+            this.Cancel = Cancel ?? new();
             Http.Init(this.Cookie, Head);
         }
 
-        ~Html()
-        {
-            HttpClientUtils.Close(Http);
-        }
+        ~Html() => HttpClientUtils.Close(Http);
         /// <summary>
         /// 获取byte
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>byte</returns>
         public byte[] GetByte(string url)
-        {
-            return Http.GetByteArray(url, Cancel);
-        }
+            => Http.GetByteArray(url, Cancel);
         /// <summary>
         /// 获取字符串
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>字符串</returns>
         public string GetString(string url)
-        {
-            return Http.GetString(url, Cancel);
-        }
+            => Http.GetString(url, Cancel);
         /// <summary>
         /// 发送表单获取字符串
         /// </summary>
@@ -65,18 +48,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">参数</param>
         /// <returns>字符串</returns>
         public string PostString(string url, Dictionary<string, string> arg)
-        {
-            return Http.PostAsync(url, Cancel, arg);
-        }
+            => Http.PostAsync(url, Cancel, arg);
         /// <summary>
         /// 获取解析后的html
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>解析后的html</returns>
         public HtmlDoc GetWebHtml(string url)
-        {
-            return new HtmlDoc(GetString(url));
-        }
+            => new HtmlDoc(GetString(url));
         /// <summary>
         /// 发送表单获取解析后的html
         /// </summary>
@@ -84,19 +63,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns></returns>
         public HtmlDoc PostWebHtml(string url, Dictionary<string, string> arg)
-        {
-            var data = new HtmlDoc(PostString(url, arg));
-            return data;
-        }
+            => new HtmlDoc(PostString(url, arg));
         /// <summary>
         /// 进行一次http请求
         /// </summary>
         /// <param name="httpRequest">请求结构</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage Send(HttpRequestMessage httpRequest)
-        {
-            return Http.Send(httpRequest, Cancel);
-        }
+            => Http.Send(httpRequest, Cancel);
         /// <summary>
         /// 发送数据
         /// </summary>
@@ -104,9 +78,7 @@ namespace ColoryrServer.SDK
         /// <param name="data">数据</param>
         /// <returns>返回的字符串</returns>
         public string PutString(string url, byte[] data)
-        {
-            return Http.Put(url, data, Cancel);
-        }
+        => Http.Put(url, data, Cancel);
         /// <summary>
         /// 发送表单数据
         /// </summary>
@@ -114,18 +86,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
-        {
-            return Http.Post(url, arg, Cancel);
-        }
+        => Http.Post(url, arg, Cancel);
         /// <summary>
         /// Get获取数据
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage GetData(string url)
-        {
-            return Http.Get(url, Cancel);
-        }
+        => Http.Get(url, Cancel);
     }
 
     public class HtmlAsync
@@ -133,34 +101,28 @@ namespace ColoryrServer.SDK
         private HttpClient Http;
         public CancellationTokenSource Cancel;
         public CookieContainer Cookie;
-        protected HtmlAsync(TimeSpan timeOut, CookieContainer CookieContainer,
-            CancellationTokenSource CancellationToken = null,
+        /// <summary>
+        /// http爬虫异步
+        /// </summary>
+        /// <param name="timeOut">请求超时时间</param>
+        /// <param name="Cookie">Cookie</param>
+        /// <param name="Cancel">取消请求</param>
+        /// <param name="Head">请求头</param>
+        public HtmlAsync(TimeSpan timeOut, CookieContainer Cookie = null,
+            CancellationTokenSource Cancel = null,
             Dictionary<string, string> Head = null)
         {
-            if (CookieContainer == null)
-            {
-                Cookie = new();
-            }
-            else
-            {
-                Cookie = CookieContainer;
-            }
-            if (CancellationToken == null)
-            {
-                Cancel = new();
-            }
-            else
-            {
-                Cancel = CancellationToken;
-            }
+            this.Cookie = Cookie ?? new();
+            this.Cancel = Cancel ?? new();
             var Handler = new HttpClientHandler()
             {
-                CookieContainer = CookieContainer
+                CookieContainer = Cookie
             };
             Http = new(Handler)
             {
                 Timeout = timeOut
             };
+            Http.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
             if (Head != null)
             {
                 foreach (var Item in Head)
@@ -168,60 +130,30 @@ namespace ColoryrServer.SDK
                     Http.DefaultRequestHeaders.Add(Item.Key, Item.Value);
                 }
             }
-            else
-            {
-                Http.DefaultRequestHeaders.Add("User-Agent", @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
-            }
-            Cancel = CancellationToken;
         }
         /// <summary>
-        /// http爬虫
+        /// http爬虫异步
         /// </summary>
-        /// <param name="cookieContainer">cookie储存对象</param>
-        public HtmlAsync() : this(TimeSpan.FromSeconds(10), new CookieContainer())
+        public HtmlAsync() : this(TimeSpan.FromSeconds(10))
         {
         }
 
-        /// <summary>
-        /// http爬虫
-        /// </summary>
-        /// <param name="cookieContainer">cookie储存对象</param>
-        public HtmlAsync(CookieContainer cookieContainer) : this(TimeSpan.FromSeconds(10), cookieContainer)
-        {
-        }
         ~HtmlAsync()
-        {
-            Http.Dispose();
-        }
-        /// <summary>
-        /// Http爬虫
-        /// </summary>
-        /// <param name="timeOut">请求超时</param>
-        /// <param name="cancel">取消请求</param>
-        /// <param name="head">请求头</param>
-        /// <param name="cookieContainer">cookie储存对象</param>
-        public HtmlAsync(TimeSpan timeOut, CancellationTokenSource cancel,
-            Dictionary<string, string> head, CookieContainer cookieContainer) : this(timeOut, cookieContainer, cancel, head)
-        {
-        }
+            => Http.Dispose();
         /// <summary>
         /// 获取byte
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>byte</returns>
         public Task<byte[]> GetByte(string url)
-        {
-            return Http.GetByteArrayAsync(url, Cancel.Token);
-        }
+        => Http.GetByteArrayAsync(url, Cancel.Token);
         /// <summary>
         /// 获取字符串
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>字符串</returns>
         public Task<string> GetString(string url)
-        {
-            return Http.GetStringAsync(url, Cancel.Token);
-        }
+        => Http.GetStringAsync(url, Cancel.Token);
         /// <summary>
         /// 发送表单获取字符串
         /// </summary>
@@ -239,10 +171,7 @@ namespace ColoryrServer.SDK
         /// <param name="url">网址</param>
         /// <returns>解析后的html</returns>
         public async Task<HtmlDoc> GetWebHtml(string url)
-        {
-            var data = new HtmlDoc(await GetString(url));
-            return data;
-        }
+            => new HtmlDoc(await GetString(url));
         /// <summary>
         /// 发送表单获取解析后的html
         /// </summary>
@@ -250,19 +179,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns></returns>
         public async Task<HtmlDoc> PostWebHtml(string url, Dictionary<string, string> arg)
-        {
-            var data = new HtmlDoc(await PostString(url, arg));
-            return data;
-        }
+            => new HtmlDoc(await PostString(url, arg));
         /// <summary>
         /// 进行一次http请求
         /// </summary>
         /// <param name="httpRequest">请求结构</param>
         /// <returns>返回结构</returns>
         public async Task<HttpResponseMessage> DoString(HttpRequestMessage httpRequest)
-        {
-            return await Http.SendAsync(httpRequest, Cancel.Token);
-        }
+            => await Http.SendAsync(httpRequest, Cancel.Token);
         /// <summary>
         /// 发送数据
         /// </summary>
@@ -281,40 +205,30 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns>返回结构</returns>
         public async Task<HttpResponseMessage> PostData(string url, Dictionary<string, string> arg)
-        {
-            return await Http.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
-        }
+            => await Http.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
         /// <summary>
         /// Get获取数据
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>返回结构</returns>
         public async Task<HttpResponseMessage> GetData(string url)
-        {
-            return await Http.GetAsync(url, Cancel.Token);
-        }
+            => await Http.GetAsync(url, Cancel.Token);
     }
     public class HtmlDoc
     {
-        public HtmlDocument html;
+        public HtmlDocument html = new();
         /// <summary>
         /// Html解析
         /// </summary>
         /// <param name="data">Html字符串</param>
         public HtmlDoc(string data)
-        {
-            html = new HtmlDocument();
-            html.LoadHtml(data);
-        }
+           => html.LoadHtml(data);
         /// <summary>
         /// Html解析
         /// </summary>
         /// <param name="data">Html节点</param>
         public HtmlDoc(HtmlNode data)
-        {
-            html = new HtmlDocument();
-            html.LoadHtml(data.InnerHtml);
-        }
+           => html.LoadHtml(data.InnerHtml);
         /// <summary>
         /// 选择节点
         /// </summary>

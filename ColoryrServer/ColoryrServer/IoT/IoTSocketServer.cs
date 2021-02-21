@@ -47,9 +47,9 @@ namespace ColoryrServer.IoT
                     while (RunFlag)
                     {
                         EndPoint point = new IPEndPoint(IPAddress.Any, 0);//用来保存发送方的ip和端口号
-                            byte[] buffer = new byte[2048];
+                        byte[] buffer = new byte[2048];
                         int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
-                            if (point is IPEndPoint temp)
+                        if (point is IPEndPoint temp)
                         {
                             UdpClients.Add(temp.Port, temp);
                             IoTPackDo.ReadUdpPack(temp.Port, buffer);

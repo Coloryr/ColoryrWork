@@ -26,18 +26,14 @@ namespace ColoryrServer.SDK
         /// <param name="Name">设备名</param>
         /// <param name="Data">字符串</param>
         public void Send(int Port, string Data)
-        {
-            IoTPackDo.SendTcpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
-        }
+            => IoTPackDo.SendTcpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
         /// <summary>
         /// 向IoT设备发送数据
         /// </summary>
         /// <param name="Name">设备名</param>
         /// <param name="Data">数据</param>
         public void Send(int Port, byte[] Data)
-        {
-            IoTPackDo.SendTcpPack(Port, Data, Server);
-        }
+           => IoTPackDo.SendTcpPack(Port, Data, Server);
     }
     public class UdpIoTRequest
     {
@@ -61,18 +57,14 @@ namespace ColoryrServer.SDK
         /// <param name="Name">设备名</param>
         /// <param name="Data">字符串</param>
         public void Send(int Port, string Data)
-        {
-            IoTPackDo.SendUdpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
-        }
+            => IoTPackDo.SendUdpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
         /// <summary>
         /// 向IoT设备发送数据
         /// </summary>
         /// <param name="Name">设备名</param>
         /// <param name="Data">数据</param>
         public void Send(int Port, byte[] Data)
-        {
-            IoTPackDo.SendUdpPack(Port, Data, Server);
-        }
+           => IoTPackDo.SendUdpPack(Port, Data, Server);
     }
 
     public class TcpIoT
@@ -82,9 +74,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <returns>设备列表</returns>
         public static List<int> GetList()
-        {
-            return IoTSocketServer.GetTcpList();
-        }
+            => IoTSocketServer.GetTcpList();
     }
 
     public class UdpIoT
@@ -94,8 +84,6 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <returns>设备列表</returns>
         public static List<int> GetList()
-        {
-            return IoTSocketServer.GetUdpList();
-        }
+            => IoTSocketServer.GetUdpList();
     }
 }

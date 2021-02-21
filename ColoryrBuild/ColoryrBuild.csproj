@@ -17,7 +17,10 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.0-preview1" />
-    <PackageReference Include="Costura.Fody" Version="4.1.0" />
+    <PackageReference Include="Costura.Fody" Version="5.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="DiffPlex" Version="1.6.3" />
     <PackageReference Include="DiffPlex.Wpf" Version="1.1.2" />
     <PackageReference Include="Fody" Version="6.3.0">

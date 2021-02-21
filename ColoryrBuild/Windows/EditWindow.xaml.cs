@@ -1,6 +1,5 @@
 ﻿using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Highlighting;
 using Lib.Build;
 using Lib.Build.Object;
 using System;
@@ -77,8 +76,8 @@ namespace ColoryrBuild.Windows
                 }
             }
             else
-            { 
-                
+            {
+
             }
             Write = false;
         }

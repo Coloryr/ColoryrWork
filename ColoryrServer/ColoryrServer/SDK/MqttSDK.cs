@@ -1,11 +1,6 @@
 ﻿using ColoryrServer.MQTT;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK
 {
@@ -17,26 +12,20 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Context">数据</param>
         public ServerMqttConnectionValidator(MqttConnectionValidatorContext Context)
-        {
-            this.Context = Context;
-        }
+            => this.Context = Context;
         /// <summary>
         /// 发送消息
         /// </summary>
         /// <param name="Topic">标题</param>
         /// <param name="data">数据</param>
         public void Send(string Topic, string data)
-        {
-            MQTTServer.Send(Topic, data);
-        }
+            => MQTTServer.Send(Topic, data);
         /// <summary>
         /// 设置验证后的返回
         /// </summary>
         /// <param name="state">状态</param>
         public void SetReasonCode(MqttConnectReasonCode state)
-        {
-            Context.ReasonCode = state;
-        }
+            => Context.ReasonCode = state;
     }
 
     public class ServerMqttMessage
@@ -47,26 +36,20 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Context">数据</param>
         public ServerMqttMessage(MqttApplicationMessageInterceptorContext Context)
-        {
-            this.Context = Context;
-        }
+            => this.Context = Context;
         /// <summary>
         /// 发送消息
         /// </summary>
         /// <param name="Topic">标题</param>
         /// <param name="data">数据</param>
         public void Send(string Topic, string data)
-        {
-            MQTTServer.Send(Topic, data);
-        }
+            => MQTTServer.Send(Topic, data);
         /// <summary>
         /// 设置是否允许
         /// </summary>
         /// <param name="Publish">状态</param>
         public void SetPublish(bool Publish)
-        {
-            Context.AcceptPublish = Publish;
-        }
+            => Context.AcceptPublish = Publish;
     }
 
     public class ServerMqttSubscription
@@ -77,17 +60,13 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Context">数据</param>
         public ServerMqttSubscription(MqttSubscriptionInterceptorContext Context)
-        {
-            this.Context = Context;
-        }
+           => this.Context = Context;
         /// <summary>
         /// 发送消息
         /// </summary>
         /// <param name="Topic">标题</param>
         /// <param name="data">数据</param>
         public void Send(string Topic, string data)
-        {
-            MQTTServer.Send(Topic, data);
-        }
+            => MQTTServer.Send(Topic, data);
     }
 }

@@ -7,6 +7,7 @@ using ColoryrServer.IoT;
 using ColoryrServer.MQTT;
 using ColoryrServer.Pipe;
 using ColoryrServer.Robot;
+using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
 using Lib.Build;
@@ -189,6 +190,7 @@ namespace ColoryrServer
                 APIFile.Start();
                 FileTemp.Start();
                 FileRam.Start();
+                TaskThread.Start();
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
@@ -270,6 +272,7 @@ namespace ColoryrServer
             OracleCon.Stop();
             RamDataBase.Stop();
             MQTTServer.Stop();
+            TaskThread.Stop();
             LogOut("已关闭");
         }
 

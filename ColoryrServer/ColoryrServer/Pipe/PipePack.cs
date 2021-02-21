@@ -4,11 +4,11 @@ using Fleck;
 namespace ColoryrServer.Pipe
 {
     internal enum PipiPackType
-    { 
+    {
         Http, IoT, WebSocket, Mqtt
     }
     internal enum SocketState
-    { 
+    {
         Open, Close, Message
     }
     internal class PipePack
@@ -55,7 +55,7 @@ namespace ColoryrServer.Pipe
     }
 
     internal record PipeReData
-    { 
+    {
         public PipiPackType Type { get; set; }
         public string UID { get; set; }
         public object Data { get; set; }

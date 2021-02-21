@@ -42,9 +42,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-        {
-            RobotSocket.ReCall(messageId);
-        }
+            => RobotSocket.ReCall(messageId);
     }
     public class RobotRequest
     {
@@ -83,9 +81,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-        {
-            RobotSocket.ReCall(messageId);
-        }
+            => RobotSocket.ReCall(messageId);
         /// <summary>
         /// 发送消息回应
         /// </summary>
@@ -215,25 +211,19 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="message">消息</param>
         public void SendMessage(List<string> message)
-        {
-            RobotRequest.SendMessage(message);
-        }
+            => RobotRequest.SendMessage(message);
         /// <summary>
         /// 发送图片回应
         /// </summary>
         /// <param name="img">图片二进制</param>
         public void SendImage(byte[] img)
-        {
-            RobotRequest.SendImage(img);
-        }
+            => RobotRequest.SendImage(img);
 
         /// <summary>
         /// 发送声音回应
         /// </summary>
         /// <param name="sound">音频二进制</param>
         public void SendSound(byte[] sound)
-        {
-            RobotRequest.SendSound(sound);
-        }
+            => RobotRequest.SendSound(sound);
     }
 }
