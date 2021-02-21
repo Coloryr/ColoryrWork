@@ -23,16 +23,16 @@ namespace ColoryrServer.FileSystem
     }
     internal class CSFile
     {
-        private static readonly string DllFileLocal = ServerMain.RunLocal + @"CODE\Dll\";
-        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"CODE\Class\";
-        private static readonly string IoTFileLocal = ServerMain.RunLocal + @"CODE\IoT\";
-        private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\CODE\WebScoket\";
-        private static readonly string RobotFileLocal = ServerMain.RunLocal + @"CODE\Robot\";
-        private static readonly string MqttFileLocal = ServerMain.RunLocal + @"CODE\Mqtt\";
-        private static readonly string AppFileLocal = ServerMain.RunLocal + @"CODE\App\";
+        private static readonly string DllFileLocal = ServerMain.RunLocal + @"Codes\Dll\";
+        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Codes\Class\";
+        private static readonly string IoTFileLocal = ServerMain.RunLocal + @"Codes\IoT\";
+        private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\Codes\WebScoket\";
+        private static readonly string RobotFileLocal = ServerMain.RunLocal + @"Codes\Robot\";
+        private static readonly string MqttFileLocal = ServerMain.RunLocal + @"Codes\Mqtt\";
+        private static readonly string AppFileLocal = ServerMain.RunLocal + @"Codes\App\";
 
         private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
-        private static readonly string RemoveDir = ServerMain.RunLocal + @"Remove\";
+        private static readonly string RemoveDir = ServerMain.RunLocal + @"Removes\";
 
         public static readonly ConcurrentDictionary<string, CSFileCode> DllFileList = new();
         public static readonly ConcurrentDictionary<string, CSFileCode> ClassFileList = new();

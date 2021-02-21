@@ -18,7 +18,7 @@ namespace ColoryrBuild
         public Dictionary<string, CSFileObj> IoTList;
         public Dictionary<string, CSFileObj> RobotList;
         public Dictionary<string, CSFileObj> WebSocketList;
-        public Dictionary<string, CSFileObj> AppList;
+        public Dictionary<string, AppTempFileObj> AppList;
         public MainWindow()
         {
             InitializeComponent();
@@ -137,7 +137,7 @@ namespace ColoryrBuild
         }
         private async void ReApp()
         {
-            var list = await App.HttpUtils.GetList(CodeType.App);
+            var list = await App.HttpUtils.GetAppList();
             if (list == null)
             {
                 App.LogShow("刷新", "App刷新失败");
@@ -496,7 +496,25 @@ namespace ColoryrBuild
         {
             InputApp.Text = "";
         }
-
+        private async void Key_App_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListApp.SelectedItem == null)
+                return;
+            var item = ListApp.SelectedItem as AppTempFileObj;
+            if (item == null)
+                return;
+            var res = new InputWindow("设置APP的Key", item.Key).Set();
+            if (res == item.Key)
+                return;
+            if (string.IsNullOrWhiteSpace(res))
+                return;
+            var res1 = await App.HttpUtils.SetAppKey(item.UUID, res);
+            App.LogShow("修改Key", res1.Message);
+            if (res1.Build)
+            {
+                ReApp();
+            }
+        }
         private void Input_Dll_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(InputDll.Text))

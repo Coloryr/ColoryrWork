@@ -91,6 +91,19 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 {
+        ///    &quot;Key&quot;: &quot;key&quot;,
+        ///    &quot;Version&quot;: &quot;1.0.0&quot;,
+        ///    &quot;Libs&quot;: []
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string AppDemoJSON {
+            get {
+                return ResourceManager.GetString("AppDemoJSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ContentPage xmlns=&quot;http://xamarin.com/schemas/2014/forms&quot; xmlns:x=&quot;http://schemas.microsoft.com/winfx/2009/xaml&quot; x:Class=&quot;App2.MainPage&quot;&gt;
         ///	&lt;StackLayout HorizontalOptions=&quot;Center&quot;&gt;
@@ -346,16 +359,13 @@ namespace ColoryrServer {
         ///    }
         ///    public class {name}
         ///    {
-        ///        public class {name}
+        ///        public void {IoTTcp}(TcpIoTRequest head)
         ///        {
-        ///            public void {IoTTcp}(TcpIoTRequest head)
-        ///            {
         ///                
-        ///            }
-        ///            public void {IoTUdp}(UdpIoTRequest head)
-        ///            {
+        ///        }
+        ///        public void {IoTUdp}(UdpIoTRequest head)
+        ///        {
         ///                
-        ///            }
         ///        }
         ///    }
         ///} 的本地化字符串。

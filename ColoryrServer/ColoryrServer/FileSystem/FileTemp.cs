@@ -11,7 +11,7 @@ namespace ColoryrServer.FileSystem
 
         public static void Start()
         {
-            Local = ServerMain.RunLocal + @"/TEMP/";
+            Local = ServerMain.RunLocal + @"/TempFile/";
             if (!Directory.Exists(Local))
             {
                 Directory.CreateDirectory(Local);

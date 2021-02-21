@@ -163,6 +163,7 @@
                                 <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
                                 <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
                                 <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
+                                <GridViewColumn Header="Key" Width="180" DisplayMemberBinding="{Binding Key}"/>
                                 <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
                                 <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
                             </GridView>
@@ -172,6 +173,7 @@
                                 <MenuItem Header="添加" Click="Add_App_Click"/>
                                 <MenuItem Header="修改" Click="Change_App_Click"/>
                                 <MenuItem Header="删除" Click="Delete_App_Click"/>
+                                <MenuItem Header="修改Key" Click="Key_App_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>

@@ -121,6 +121,9 @@
   <data name="AppDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\AppDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="AppDemoJSON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\AppDemoJSON.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="AppDemoXAML" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\AppDemoXAML.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

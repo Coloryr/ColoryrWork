@@ -108,6 +108,32 @@ namespace ColoryrBuild
             }
         }
 
+        public async Task<AppFileList> GetAppList()
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.GetApp
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await GetAppList();
+                }
+                return JsonConvert.DeserializeObject<AppFileList>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<ReMessage> Add(CodeType type, string name)
         {
             try
@@ -399,6 +425,34 @@ namespace ColoryrBuild
                     return await GetApi();
                 }
                 return JsonConvert.DeserializeObject<APIFileObj>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ReMessage> SetAppKey(string uuid, string res)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.SetAppKey,
+                    UUID = uuid,
+                    Code = res
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await SetAppKey(uuid, res);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch
             {

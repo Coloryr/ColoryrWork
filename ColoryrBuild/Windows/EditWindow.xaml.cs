@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ColoryrBuild.Windows
 {
@@ -395,6 +396,11 @@ namespace ColoryrBuild.Windows
         private void Window_Closed(object sender, EventArgs e)
         {
             App.CloseEdit(obj, type);
+        }
+
+        private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Change_Click(null, null);
         }
     }
 }

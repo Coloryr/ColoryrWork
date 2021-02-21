@@ -43,17 +43,24 @@ namespace Lib.Build.Object
         public string Code { get; set; }
         public CodeType Type { get; set; }
     }
+    public record AppTempFileObj : CSFileObj
+    {
+        public string Key { get; set; }
+    }
     public record CSFileList
     {
         public Dictionary<string, CSFileObj> List { get; set; } = new();
     }
+    public record AppFileList
+    {
+        public Dictionary<string, AppTempFileObj> List { get; set; } = new();
+    }
 
-    public record AppFileObj : CSFileObj
+    public record AppFileObj : AppTempFileObj
     {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Xamls { get; set; }
         public Dictionary<string, string> Files { get; set; }
-        public string Key { get; set; }
         public CodeType Type { get; set; }
         public AppFileObj(CSFileObj obj)
         {

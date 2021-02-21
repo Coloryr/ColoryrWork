@@ -8,9 +8,10 @@ namespace ColoryrBuild.Windows
     public partial class InputWindow : Window
     {
         public string Data { get; set; }
-        public InputWindow(string title)
+        public InputWindow(string title, string data = "")
         {
             InitializeComponent();
+            Data = data;
             Title = title;
         }
 

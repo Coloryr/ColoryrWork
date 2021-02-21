@@ -9,7 +9,8 @@
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot, UpdataMqtt,
         AppRemoveFile, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
         AppCsUpdata, AppXamlUpdata, AppUpdata,
-        Check, Login, GetApi
+        Check, Login, GetApi,
+        SetAppKey
     }
     class BuildOBJ
     {

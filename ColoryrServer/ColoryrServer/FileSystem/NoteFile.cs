@@ -12,13 +12,13 @@ namespace ColoryrServer.FileSystem
 {
     internal class NoteFile
     {
-        private static readonly string DllFileLocal = ServerMain.RunLocal + @"NOTE\Dll\";
-        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"NOTE\Class\";
-        private static readonly string IoTFileLocal = ServerMain.RunLocal + @"NOTE\IoT\";
-        private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\NOTE\WebScoket\";
-        private static readonly string RobotFileLocal = ServerMain.RunLocal + @"NOTE\Robot\";
-        private static readonly string MqttFileLocal = ServerMain.RunLocal + @"NOTE\Mqtt\";
-        private static readonly string AppFileLocal = ServerMain.RunLocal + @"NOTE\App\";
+        private static readonly string DllFileLocal = ServerMain.RunLocal + @"Notes\Dll\";
+        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Notes\Class\";
+        private static readonly string IoTFileLocal = ServerMain.RunLocal + @"Notes\IoT\";
+        private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\Notes\WebScoket\";
+        private static readonly string RobotFileLocal = ServerMain.RunLocal + @"Notes\Robot\";
+        private static readonly string MqttFileLocal = ServerMain.RunLocal + @"Notes\Mqtt\";
+        private static readonly string AppFileLocal = ServerMain.RunLocal + @"Notes\App\";
 
         //public static readonly ConcurrentDictionary<string, NotesSDK> DllFileList = new();
         //public static readonly ConcurrentDictionary<string, NotesSDK> ClassFileList = new();

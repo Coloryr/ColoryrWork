@@ -282,7 +282,7 @@ namespace ColoryrServer.FileSystem
     }
     internal class ConfigUtil
     {
-        public static string FilePath = ServerMain.RunLocal + @"Mainconfig.json";
+        public static string FilePath = ServerMain.RunLocal + @"MainConfig.json";
         /// <summary>
         /// 读配置文件
         /// </summary>

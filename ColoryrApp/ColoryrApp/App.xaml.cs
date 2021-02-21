@@ -9,6 +9,9 @@ namespace ColoryrApp
     public partial class App : Application
     {
         public const string Version = "1.0.0";
+        public const string Url = "http://127.0.0.1:25555";
+        public const string UUID = "";
+        public const string Key = "";
 
         private string local;
         private dynamic AppDll;

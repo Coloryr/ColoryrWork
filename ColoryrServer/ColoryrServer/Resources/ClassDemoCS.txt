@@ -23,7 +23,7 @@ namespace ColoryrServer
 
         public string test(string data)
         {
-            retuen data + "test";
+            return data + "test";
         }
     }
 }

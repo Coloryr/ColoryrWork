@@ -15,245 +15,245 @@ namespace ColoryrServer.DllManager
     internal class DllBuild
     {
         public static readonly Dictionary<string, string> Token = new();
-        public static HttpReturn StartBuild(BuildOBJ Json, UserConfig User)
+        public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)
         {
-            object Object = null;
-            if (Json.Mode == ReType.Login)
+            object resObj = null;
+            if (json.Mode == ReType.Login)
             {
-                if (Json.Code == null)
+                if (json.Code == null)
                 {
-                    Object = new ReMessage
+                    resObj = new ReMessage
                     {
                         Build = false,
                         Message = "密码错误"
                     };
                 }
-                else if (User.Password.ToLower() == Json.Code.ToLower())
+                else if (user.Password.ToLower() == json.Code.ToLower())
                 {
-                    Json.UUID = Guid.NewGuid().ToString().Replace("-", "");
-                    if (Token.ContainsKey(Json.User))
-                        Token[Json.User] = Json.UUID;
+                    json.UUID = Guid.NewGuid().ToString().Replace("-", "");
+                    if (Token.ContainsKey(json.User))
+                        Token[json.User] = json.UUID;
                     else
-                        Token.Add(Json.User, Json.UUID);
-                    Object = new ReMessage
+                        Token.Add(json.User, json.UUID);
+                    resObj = new ReMessage
                     {
                         Build = true,
-                        Message = Json.UUID
+                        Message = json.UUID
                     };
                 }
                 else
-                    Object = new ReMessage
+                    resObj = new ReMessage
                     {
                         Build = false,
                         Message = "密码错误"
                     };
             }
-            else if (Json.Mode == ReType.Check)
+            else if (json.Mode == ReType.Check)
             {
-                Object = new ReMessage
+                resObj = new ReMessage
                 {
-                    Build = Token.ContainsKey(Json.User) && Token[Json.User] == Json.Token,
+                    Build = Token.ContainsKey(json.User) && Token[json.User] == json.Token,
                     Message = "自动登录"
                 };
             }
-            else if (Token.ContainsKey(Json.User) && Token[Json.User] == Json.Token)
+            else if (Token.ContainsKey(json.User) && Token[json.User] == json.Token)
             {
                 GenReOBJ BuildBack;
                 Stopwatch SW;
                 CSFileCode File;
                 CSFileList List;
-                switch (Json.Mode)
+                switch (json.Mode)
                 {
                     case ReType.AddDll:
-                        if (CSFile.GetDll(Json.UUID) == null)
+                        if (CSFile.GetDll(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.Dll,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.DllDemoCS
-                                .Replace("{name}", Json.UUID)
-                                .Replace("{mian}", CodeDemo.DllMain)
+                                .Replace("{name}", json.UUID)
+                                .Replace("{main}", CodeDemo.DllMain)
                             };
                             CSFile.StorageDll(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"Dll[{Json.UUID}]已创建"
+                                Message = $"Dll[{json.UUID}]已创建"
                             };
                             GenDll.StartGen(File);
-                            ServerMain.LogOut($"Dll[{Json.UUID}]创建");
+                            ServerMain.LogOut($"Dll[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Dll[{Json.UUID}]已存在"
+                                Message = $"Dll[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddClass:
-                        if (CSFile.GetClass(Json.UUID) == null)
+                        if (CSFile.GetClass(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.Class,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.ClassDemoCS
-                                .Replace("{name}", Json.UUID)
+                                .Replace("{name}", json.UUID)
                             };
                             CSFile.StorageClass(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"Class[{Json.UUID}]已创建"
+                                Message = $"Class[{json.UUID}]已创建"
                             };
                             GenClass.StartGen(File);
-                            ServerMain.LogOut($"Class[{Json.UUID}]创建");
+                            ServerMain.LogOut($"Class[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Class[{Json.UUID}]已存在"
+                                Message = $"Class[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddIoT:
-                        if (CSFile.GetIoT(Json.UUID) == null)
+                        if (CSFile.GetIoT(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.IoT,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.IoTDemoCS
-                                .Replace("{name}", Json.UUID)
+                                .Replace("{name}", json.UUID)
                                 .Replace("{IoTTcp}", CodeDemo.IoTTcp)
                                 .Replace("{IoTUdp}", CodeDemo.IoTUdp)
                             };
                             CSFile.StorageIoT(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"IoT[{Json.UUID}]已创建"
+                                Message = $"IoT[{json.UUID}]已创建"
                             };
                             GenIoT.StartGen(File);
-                            ServerMain.LogOut($"IoT[{Json.UUID}]创建");
+                            ServerMain.LogOut($"IoT[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"IoT[{Json.UUID}]已存在"
+                                Message = $"IoT[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddWebSocket:
-                        if (CSFile.GetWebSocket(Json.UUID) == null)
+                        if (CSFile.GetWebSocket(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.WebSocket,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.WebSocketDemoCS
-                                .Replace("{name}", Json.UUID)
+                                .Replace("{name}", json.UUID)
                                 .Replace("{WebSocketMessage}", CodeDemo.WebSocketMessage)
                                 .Replace("{WebSocketOpen}", CodeDemo.WebSocketOpen)
-                                .Replace("{WebSocketOpen}", CodeDemo.WebSocketClose)
+                                .Replace("{WebSocketClose}", CodeDemo.WebSocketClose)
                             };
                             CSFile.StorageWebSocket(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"WebSocket[{Json.UUID}]已创建"
+                                Message = $"WebSocket[{json.UUID}]已创建"
                             };
                             GenWebSocket.StartGen(File);
-                            ServerMain.LogOut($"WebSocket[{Json.UUID}]创建");
+                            ServerMain.LogOut($"WebSocket[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"WebSocket[{Json.UUID}]已存在"
+                                Message = $"WebSocket[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddRobot:
-                        if (CSFile.GetRobot(Json.UUID) == null)
+                        if (CSFile.GetRobot(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.Robot,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.RobotDemoCS
-                                .Replace("{name}", Json.UUID)
+                                .Replace("{name}", json.UUID)
                                 .Replace("{RobotMessage}", CodeDemo.RobotMessage)
                                 .Replace("{RobotSend}", CodeDemo.RobotSend)
                                 .Replace("{RobotEvent}", CodeDemo.RobotEvent)
                             };
                             CSFile.StorageRobot(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"Robot[{Json.UUID}]已创建"
+                                Message = $"Robot[{json.UUID}]已创建"
                             };
                             GenRobot.StartGen(File);
-                            ServerMain.LogOut($"Robot[{Json.UUID}]创建");
+                            ServerMain.LogOut($"Robot[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Robot[{Json.UUID}]已存在"
+                                Message = $"Robot[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.AddMqtt:
-                        if (CSFile.GetRobot(Json.UUID) == null)
+                        if (CSFile.GetRobot(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.Robot,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.RobotDemoCS
-                                .Replace("{name}", Json.UUID)
+                                .Replace("{name}", json.UUID)
                                 .Replace("{MQTTMessage}", CodeDemo.MQTTMessage)
                                 .Replace("{MQTTValidator}", CodeDemo.MQTTValidator)
                                 .Replace("{MQTTSubscription}", CodeDemo.MQTTSubscription)
                             };
                             CSFile.StorageMqtt(File);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"Mqtt[{Json.UUID}]已创建"
+                                Message = $"Mqtt[{json.UUID}]已创建"
                             };
                             GenMqtt.StartGen(File);
-                            ServerMain.LogOut($"Mqtt[{Json.UUID}]创建");
+                            ServerMain.LogOut($"Mqtt[{json.UUID}]创建");
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Mqtt[{Json.UUID}]已存在"
+                                Message = $"Mqtt[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.GetDll:
@@ -262,7 +262,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetClass:
                         List = new CSFileList();
@@ -270,7 +270,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetIoT:
                         List = new CSFileList();
@@ -278,7 +278,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetWebSocket:
                         List = new CSFileList();
@@ -286,7 +286,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetRobot:
                         List = new CSFileList();
@@ -294,7 +294,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetMqtt:
                         List = new CSFileList();
@@ -302,7 +302,7 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.GetApp:
                         List = new CSFileList();
@@ -310,116 +310,116 @@ namespace ColoryrServer.DllManager
                         {
                             List.List.Add(item.Key, item.Value);
                         }
-                        Object = List;
+                        resObj = List;
                         break;
                     case ReType.CodeDll:
-                        Object = CSFile.GetDll(Json.UUID);
+                        resObj = CSFile.GetDll(json.UUID);
                         break;
                     case ReType.CodeClass:
-                        Object = CSFile.GetClass(Json.UUID);
+                        resObj = CSFile.GetClass(json.UUID);
                         break;
                     case ReType.CodeIoT:
-                        Object = CSFile.GetIoT(Json.UUID);
+                        resObj = CSFile.GetIoT(json.UUID);
                         break;
                     case ReType.CodeWebSocket:
-                        Object = CSFile.GetWebSocket(Json.UUID);
+                        resObj = CSFile.GetWebSocket(json.UUID);
                         break;
                     case ReType.CodeRobot:
-                        Object = CSFile.GetRobot(Json.UUID);
+                        resObj = CSFile.GetRobot(json.UUID);
                         break;
                     case ReType.CodeMqtt:
-                        Object = CSFile.GetMqtt(Json.UUID);
+                        resObj = CSFile.GetMqtt(json.UUID);
                         break;
                     case ReType.GetApi:
-                        Object = APIFile.list;
+                        resObj = APIFile.list;
                         break;
                     case ReType.RemoveDll:
-                        CSFile.RemoveFile(CodeType.Dll, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.Dll, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"Dll[{Json.UUID}]已删除"
+                            Message = $"Dll[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveClass:
-                        CSFile.RemoveFile(CodeType.Class, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.Class, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"Class[{Json.UUID}]已删除"
+                            Message = $"Class[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveIoT:
-                        CSFile.RemoveFile(CodeType.IoT, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.IoT, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"IoT[{Json.UUID}]已删除"
+                            Message = $"IoT[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveWebSocket:
-                        CSFile.RemoveFile(CodeType.WebSocket, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.WebSocket, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"WebSocket[{Json.UUID}]已删除"
+                            Message = $"WebSocket[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveRobot:
-                        CSFile.RemoveFile(CodeType.Robot, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.Robot, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"Robot[{Json.UUID}]已删除"
+                            Message = $"Robot[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveMqtt:
-                        CSFile.RemoveFile(CodeType.Mqtt, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.Mqtt, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"Mqtt[{Json.UUID}]已删除"
+                            Message = $"Mqtt[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveApp:
-                        CSFile.RemoveFile(CodeType.App, Json.UUID);
-                        Object = new ReMessage
+                        CSFile.RemoveFile(CodeType.App, json.UUID);
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"App[{Json.UUID}]已删除"
+                            Message = $"App[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.UpdataDll:
-                        File = CSFile.GetDll(Json.UUID);
+                        File = CSFile.GetDll(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个Dll[{Json.UUID}]"
+                                Message = $"没有这个Dll[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Dll[{Json.UUID}]版本号错误"
+                                Message = $"Dll[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenDll.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -428,36 +428,36 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.UpdataClass:
-                        File = CSFile.GetClass(Json.UUID);
+                        File = CSFile.GetClass(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个Class[{Json.UUID}]"
+                                Message = $"没有这个Class[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Class[{Json.UUID}]版本号错误"
+                                Message = $"Class[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenClass.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -466,36 +466,36 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.UpdataIoT:
-                        File = CSFile.GetIoT(Json.UUID);
+                        File = CSFile.GetIoT(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个IoT[{Json.UUID}]"
+                                Message = $"没有这个IoT[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"IoT[{Json.UUID}]版本号错误"
+                                Message = $"IoT[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenIoT.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -504,36 +504,36 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.UpdataRobot:
-                        File = CSFile.GetRobot(Json.UUID);
+                        File = CSFile.GetRobot(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个Robot[{Json.UUID}]"
+                                Message = $"没有这个Robot[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Robot[{Json.UUID}]版本号错误"
+                                Message = $"Robot[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenRobot.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -542,36 +542,36 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.UpdataWebSocket:
-                        File = CSFile.GetWebSocket(Json.UUID);
+                        File = CSFile.GetWebSocket(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个WebSocket[{Json.UUID}]"
+                                Message = $"没有这个WebSocket[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"WebSocket[{Json.UUID}]版本号错误"
+                                Message = $"WebSocket[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenWebSocket.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -580,36 +580,36 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.UpdataMqtt:
-                        File = CSFile.GetMqtt(Json.UUID);
+                        File = CSFile.GetMqtt(json.UUID);
                         if (File == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个Mqtt[{Json.UUID}]"
+                                Message = $"没有这个Mqtt[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File.Version != Json.Version)
+                        if (File.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Mqtt[{Json.UUID}]版本号错误"
+                                Message = $"Mqtt[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
                         File.Code = FileEdit.StartEdit(File.Code, list);
-                        File.Text = Json.Text;
+                        File.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenMqtt.StartGen(File);
                         SW.Stop();
                         File.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -618,13 +618,13 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.AddApp:
-                        var File1 = CSFile.GetApp(Json.UUID);
+                        var File1 = CSFile.GetApp(json.UUID);
                         if (File1 == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File1 = new AppFileObj()
                             {
-                                UUID = Json.UUID,
+                                UUID = json.UUID,
                                 Type = CodeType.App,
                                 Version = 1,
                                 CreateTime = time,
@@ -633,64 +633,64 @@ namespace ColoryrServer.DllManager
                             File1.Codes.Add("main", ColoryrServer_Resource.AppDemoCS);
                             File1.Xamls.Add("main", ColoryrServer_Resource.AppDemoXAML);
                             CSFile.StorageApp(File1);
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = true,
-                                Message = $"App[{Json.UUID}]已创建"
+                                Message = $"App[{json.UUID}]已创建"
                             };
-                            ServerMain.LogOut($"App[{Json.UUID}]创建");
+                            ServerMain.LogOut($"App[{json.UUID}]创建");
                             GenApp.StartGen(File1);
                         }
                         else
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]已存在"
+                                Message = $"App[{json.UUID}]已存在"
                             };
                         break;
                     case ReType.CodeApp:
-                        Object = CSFile.GetApp(Json.UUID);
+                        resObj = CSFile.GetApp(json.UUID);
                         break;
                     case ReType.AppCsUpdata:
-                        File1 = CSFile.GetApp(Json.UUID);
+                        File1 = CSFile.GetApp(json.UUID);
                         if (File1 == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个App[{Json.UUID}]"
+                                Message = $"没有这个App[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File1.Version != Json.Version)
+                        if (File1.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]版本号错误"
+                                Message = $"App[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
-                        if (!File1.Codes.ContainsKey(Json.Temp))
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+                        if (!File1.Codes.ContainsKey(json.Temp))
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]没有文件{Json.Temp}.cs"
+                                Message = $"App[{json.UUID}]没有文件{json.Temp}.cs"
                             };
                             break;
                         }
-                        File1.Codes[Json.Temp] = FileEdit.StartEdit(File1.Codes[Json.Temp], list);
-                        File1.Text = Json.Text;
+                        File1.Codes[json.Temp] = FileEdit.StartEdit(File1.Codes[json.Temp], list);
+                        File1.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenApp.StartGen(File1);
                         SW.Stop();
                         File1.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -699,45 +699,45 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.AppXamlUpdata:
-                        File1 = CSFile.GetApp(Json.UUID);
+                        File1 = CSFile.GetApp(json.UUID);
                         if (File1 == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个App[{Json.UUID}]"
+                                Message = $"没有这个App[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File1.Version != Json.Version)
+                        if (File1.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]版本号错误"
+                                Message = $"App[{json.UUID}]版本号错误"
                             };
                             break;
                         }
 
-                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(Json.Code);
-                        if (!File1.Codes.ContainsKey(Json.Temp))
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+                        if (!File1.Codes.ContainsKey(json.Temp))
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]没有文件{Json.Temp}.xaml"
+                                Message = $"App[{json.UUID}]没有文件{json.Temp}.xaml"
                             };
                             break;
                         }
-                        File1.Xamls[Json.Temp] = FileEdit.StartEdit(File1.Xamls[Json.Temp], list);
-                        File1.Text = Json.Text;
+                        File1.Xamls[json.Temp] = FileEdit.StartEdit(File1.Xamls[json.Temp], list);
+                        File1.Text = json.Text;
 
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenApp.StartGen(File1);
                         SW.Stop();
                         File1.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
                             Message = BuildBack.Res,
@@ -746,95 +746,116 @@ namespace ColoryrServer.DllManager
                         };
                         break;
                     case ReType.AppAddCS:
-                        File1 = CSFile.GetApp(Json.UUID);
+                        File1 = CSFile.GetApp(json.UUID);
                         if (File1 == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个App[{Json.UUID}]"
+                                Message = $"没有这个App[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File1.Version != Json.Version)
+                        if (File1.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]版本号错误"
+                                Message = $"App[{json.UUID}]版本号错误"
                             };
                             break;
                         }
-                        if (File1.Codes.ContainsKey(Json.Code))
+                        if (File1.Codes.ContainsKey(json.Code))
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]文件{Json.Code}.cs已存在"
+                                Message = $"App[{json.UUID}]文件{json.Code}.cs已存在"
                             };
                             break;
                         }
                         string class_ = ColoryrServer_Resource.ClassDemoCS
-                            .Replace("{name}", Json.Code);
-                        File1.Codes.Add(Json.Code, class_);
+                            .Replace("{name}", json.Code);
+                        File1.Codes.Add(json.Code, class_);
                         CSFile.StorageApp(File1);
                         File1.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"App[{Json.UUID}]文件{Json.Code}.cs已添加"
+                            Message = $"App[{json.UUID}]文件{json.Code}.cs已添加"
                         };
                         break;
                     case ReType.AppAddXaml:
-                        File1 = CSFile.GetApp(Json.UUID);
+                        File1 = CSFile.GetApp(json.UUID);
                         if (File1 == null)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"没有这个App[{Json.UUID}]"
+                                Message = $"没有这个App[{json.UUID}]"
                             };
                             break;
                         }
-                        if (File1.Version != Json.Version)
+                        if (File1.Version != json.Version)
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]版本号错误"
+                                Message = $"App[{json.UUID}]版本号错误"
                             };
                             break;
                         }
-                        if (File1.Codes.ContainsKey(Json.Code))
+                        if (File1.Codes.ContainsKey(json.Code))
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"App[{Json.UUID}]文件{Json.Code}.xaml已存在"
+                                Message = $"App[{json.UUID}]文件{json.Code}.xaml已存在"
                             };
                             break;
                         }
-                        File1.Xamls.Add(Json.Code, ColoryrServer_Resource.AppDemoXAML);
+                        File1.Xamls.Add(json.Code, ColoryrServer_Resource.AppDemoXAML);
                         CSFile.StorageApp(File1);
                         File1.Version++;
-                        Object = new ReMessage
+                        resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"App[{Json.UUID}]文件{Json.Code}.xaml已添加"
+                            Message = $"App[{json.UUID}]文件{json.Code}.xaml已添加"
                         };
                         break;
                     case ReType.AppRemoveFile:
-                        var file = CSFile.GetApp(Json.UUID);
+                        var file = CSFile.GetApp(json.UUID);
                         if (file == null)
                         {
-                            Object = CSFile.RemoveAppFile(Json.UUID, Json.Text);
+                            resObj = CSFile.RemoveAppFile(json.UUID, json.Text);
                         }
                         else
                         {
-                            Object = new ReMessage
+                            resObj = new ReMessage
                             {
                                 Build = false,
                                 Message = "文件未找到"
+                            };
+                        }
+                        break;
+                    case ReType.SetAppKey:
+                        file = CSFile.GetApp(json.UUID);
+                        if (file == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"App[{json.UUID}]没有找到"
+                            };
+                        }
+                        else
+                        {
+                            file.Key = json.Code;
+                            CSFile.StorageApp(file);
+                            resObj = new ReMessage
+                            {
+                                Build = true,
+                                Message = $"App[{json.UUID}]的Key已设置"
                             };
                         }
                         break;
@@ -842,7 +863,7 @@ namespace ColoryrServer.DllManager
             }
             else
             {
-                Object = new ReMessage
+                resObj = new ReMessage
                 {
                     Build = false,
                     Message = "233"
@@ -850,7 +871,7 @@ namespace ColoryrServer.DllManager
             }
             return new HttpReturn
             {
-                Data = StreamUtils.JsonOBJ(Object)
+                Data = StreamUtils.JsonOBJ(resObj)
             };
         }
     }
