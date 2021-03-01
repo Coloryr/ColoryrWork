@@ -81,27 +81,39 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Dll[{File.UUID}]没有主方法"
                 };
 
-            if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
+            try
             {
-                return new GenReOBJ
-                {
-                    Isok = false,
-                    Res = $"Dll[{File.UUID}]注释类错误"
-                };
-            }
-            foreach (var item in AssemblySave.MethodInfos)
-            {
-                if (!obj.Function.Keys.Contains(item.Key))
+                if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
                 {
                     return new GenReOBJ
                     {
                         Isok = false,
-                        Res = $"Dll[{File.UUID}]的方法[{item}]没有注释"
+                        Res = $"Dll[{File.UUID}]注释类错误"
                     };
                 }
+                foreach (var item in AssemblySave.MethodInfos)
+                {
+                    if (!obj.Function.Keys.Contains(item.Key))
+                    {
+                        return new GenReOBJ
+                        {
+                            Isok = false,
+                            Res = $"Dll[{File.UUID}]的方法[{item}]没有注释"
+                        };
+                    }
+                }
+                NoteFile.StorageDll(File.UUID, obj);
+            }
+            catch
+            {
+                return new GenReOBJ
+                {
+                    Isok = false,
+                    Res = $"Dll[{File.UUID}]注释出错"
+                };
             }
 
-            NoteFile.StorageDll(File.UUID, obj);
+           
             DllStonge.AddDll(File.UUID, AssemblySave);
 
             var time = string.Format("{0:s}", DateTime.Now);

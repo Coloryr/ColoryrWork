@@ -46,6 +46,9 @@ namespace ColoryrServer.SDK
         {
             if (Head == null)
                 Head = new();
+            ReCode = 200;
+            SetCookie = false;
+            Cookie = "";
         }
         /// <summary>
         /// 往返回头写数据

@@ -43,14 +43,14 @@ namespace ColoryrServer.DataBase
                 {
                     try
                     {
-                        item.Mysql.Open();
+                        ServerMain.LogOut("打开数据库中");
                         item.State = ConnState.Open;
                         return item;
                     }
                     catch (MySqlException e)
                     {
                         ServerMain.LogError(e);
-                        ConnReset(item);
+                        Task.Run(() => ConnReset(item));
                     }
                 }
                 Thread.Sleep(1);
@@ -63,24 +63,22 @@ namespace ColoryrServer.DataBase
         /// <param name="item">连接池项目</param>
         public static void ConnReset(ExConn item)
         {
-            Task.Run(() =>
+            item.State = ConnState.Restart;
+            Config = ServerMain.Config.Mysql;
+            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
+            string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port, Config.User, pass);
+            var Conn = new MySqlConnection(ConnectString);
+            item.Mysql.Dispose();
+            item.Mysql = Conn;
+            if (Test(item))
             {
-                item.State = ConnState.Restart;
-                Config = ServerMain.Config.Mysql;
-                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
-                string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port, Config.User, pass);
-                var Conn = new MySqlConnection(ConnectString);
-                item.Mysql.Dispose();
-                item.Mysql = Conn;
-                if (Test(item))
-                {
-                    return;
-                }
-                else
-                {
-                    ServerMain.LogError($"Mysql数据库连接失败，连接池第{item.Index}个连接");
-                }
-            });
+                item.State = ConnState.Ok;
+                return;
+            }
+            else
+            {
+                ServerMain.LogError($"Mysql数据库连接失败，连接池第{item.Index}个连接");
+            }
         }
 
         /// <summary>
@@ -95,7 +93,6 @@ namespace ColoryrServer.DataBase
                 item.Mysql.Open();
                 new MySqlCommand("select * from test", item.Mysql).ExecuteNonQuery();
                 item.Mysql.Close();
-                item.State = ConnState.Ok;
                 return true;
             }
             catch (MySqlException ex)
@@ -105,7 +102,6 @@ namespace ColoryrServer.DataBase
                     case 1146:
                     case 1046:
                         item.Mysql.Close();
-                        item.State = ConnState.Ok;
                         return true;
                     default:
                         ServerMain.LogError(ex);
@@ -129,13 +125,14 @@ namespace ColoryrServer.DataBase
                 var Conn = new MySqlConnection(ConnectString);
                 var item = new ExConn
                 {
-                    State = ConnState.Error,
+                    State = ConnState.Close,
                     Type = ConnType.Mysql,
                     Mysql = Conn,
                     Index = a
                 };
                 if (Test(item))
                 {
+                    item.State = ConnState.Ok;
                     Conns[a] = item;
                 }
                 else
@@ -179,6 +176,7 @@ namespace ColoryrServer.DataBase
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
                     var conn = task.Result;
+                    conn.Mysql.Open();
                     Sql.Connection = conn.Mysql;
                     Sql.Connection.ChangeDatabase(Database);
                     MySqlDataReader reader = Sql.ExecuteReader();
@@ -197,7 +195,6 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Mysql数据库超时");
                 }
             }

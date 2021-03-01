@@ -8,7 +8,7 @@ namespace ColoryrServer.Html
 {
     internal enum ClientState
     {
-        Ready, Using, Closing
+        Ready, Using, Closing, Stop
     }
     class DefauleThing
     {
@@ -18,15 +18,11 @@ namespace ColoryrServer.Html
     {
         public ClientState State { get; set; }
         private HttpClient Client;
-        private readonly HttpClientHandler HttpClientHandler;
-        public ExClient()
-        {
-            State = ClientState.Ready;
-            HttpClientHandler = new();
-            Client = new(HttpClientHandler);
-            Client.Timeout = TimeSpan.FromSeconds(20);
-            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
-        }
+        //public ExClient()
+        //{
+        //    State = ClientState.Ready;
+            
+        //}
         public void Clear()
         {
             Client.DefaultRequestHeaders.Clear();
@@ -34,7 +30,13 @@ namespace ColoryrServer.Html
         }
         public void Init(CookieContainer Cookie, Dictionary<string, string> RequestHeaders)
         {
-            HttpClientHandler.CookieContainer = Cookie;
+            HttpClientHandler HttpClientHandler = new()
+            {
+                CookieContainer = Cookie
+            };
+            Client = new(HttpClientHandler);
+            Client.Timeout = TimeSpan.FromSeconds(20);
+            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
             if (RequestHeaders != null)
             {
                 foreach (var item in RequestHeaders)
@@ -70,6 +72,10 @@ namespace ColoryrServer.Html
         public HttpResponseMessage Get(string url, CancellationTokenSource Cancel)
         {
             return Client.GetAsync(url, Cancel.Token).Result;
+        }
+        public void Stop()
+        {
+            Client.Dispose();
         }
     }
 }

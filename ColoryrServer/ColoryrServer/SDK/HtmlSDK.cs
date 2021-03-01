@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK
 {
-    public class Html
+    public class HttpHtml
     {
         private ExClient Http;
         public CancellationTokenSource Cancel;
         public CookieContainer Cookie;
 
-        public Html(CookieContainer Cookie = null,
+        public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
                     Dictionary<string, string> Head = null)
         {
@@ -26,7 +26,7 @@ namespace ColoryrServer.SDK
             Http.Init(this.Cookie, Head);
         }
 
-        ~Html() => HttpClientUtils.Close(Http);
+        ~HttpHtml() => HttpClientUtils.Close(Http);
         /// <summary>
         /// 获取byte
         /// </summary>

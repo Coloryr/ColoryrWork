@@ -8,7 +8,7 @@
         Title="InputWindow" Height="56" Width="264" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <TextBox Name="Text" TextWrapping="Wrap" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"
+        <TextBox Name="Text" TextWrapping="NoWrap" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"
                  Text="{Binding Data}"/>
         <Button Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="210,5,0,0" 
                 Width="42" IsDefault="True" Click="Button_Click"/>

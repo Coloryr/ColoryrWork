@@ -101,7 +101,7 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(Dump.Get()),
+                        Data = StreamUtils.StringOBJ(Dump.Get()),
                         ReCode = 200
                     };
                 }

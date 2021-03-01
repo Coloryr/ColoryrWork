@@ -54,6 +54,10 @@
       <LastGenOutput>ColoryrServer.Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.IoT\Lib.IoT.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
