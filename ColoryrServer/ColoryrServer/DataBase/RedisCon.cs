@@ -40,7 +40,6 @@ namespace ColoryrServer.DataBase
                 }
                 if (item.State == ConnState.Ok)
                 {
-                    item.State = ConnState.Open;
                     return item;
                 }
                 Thread.Sleep(1);
@@ -86,8 +85,6 @@ namespace ColoryrServer.DataBase
                     return false;
                 }
                 item.Redis.GetDatabase().KeyExists("test");
-                item.Redis.Close();
-                item.State = ConnState.Ok;
                 return true;
             }
             catch (Exception ex)
@@ -114,7 +111,7 @@ namespace ColoryrServer.DataBase
                     {
                         Redis = ConnectionMultiplexer.Connect(ConnStr),
                         Index = a,
-                        State = ConnState.Error,
+                        State = ConnState.Ok,
                         Type = ConnType.Redis
                     };
                     if (Test(Conn))
@@ -172,13 +169,11 @@ namespace ColoryrServer.DataBase
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
                     var data = conn.Redis.GetDatabase().StringGet(key);
-                    conn.Redis.Close();
                     conn.State = ConnState.Ok;
                     return data;
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -205,7 +200,6 @@ namespace ColoryrServer.DataBase
                 });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     bool data = false;
                     if (expireMinutes > 0)
                     {
@@ -215,13 +209,11 @@ namespace ColoryrServer.DataBase
                     {
                         data = conn.Redis.GetDatabase().StringSet(key, value);
                     }
-                    conn.Redis.Close();
                     conn.State = ConnState.Ok;
                     return data;
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -246,15 +238,12 @@ namespace ColoryrServer.DataBase
                 });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     var data = conn.Redis.GetDatabase().KeyExists(key);
-                    conn.Redis.Close();
                     conn.State = ConnState.Ok;
                     return data;
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -279,15 +268,12 @@ namespace ColoryrServer.DataBase
                 });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     var data = conn.Redis.GetDatabase().KeyDelete(key);
-                    conn.Redis.Close();
                     conn.State = ConnState.Ok;
                     return data;
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -312,15 +298,12 @@ namespace ColoryrServer.DataBase
                 });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     var data = conn.Redis.GetDatabase().StringIncrement(key, val);
-                    conn.Redis.Close();
                     conn.State = ConnState.Ok;
                     return data;
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Redis数据库超时");
                 }
             }

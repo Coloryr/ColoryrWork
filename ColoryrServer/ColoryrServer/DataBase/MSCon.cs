@@ -201,7 +201,6 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("MS数据库超时");
                 }
             }

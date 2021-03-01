@@ -204,7 +204,6 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
-                    ConnReset(task.Result);
                     throw new VarDump("Oracle数据库超时");
                 }
             }
