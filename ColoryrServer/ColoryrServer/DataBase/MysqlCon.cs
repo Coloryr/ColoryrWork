@@ -27,7 +27,7 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 获取连接Task
         /// </summary>
-        public static Task<ExConn> GetConn = new(() =>
+        public static ExConn GetConn()
         {
             ExConn item;
             while (true)
@@ -43,7 +43,6 @@ namespace ColoryrServer.DataBase
                 {
                     try
                     {
-                        ServerMain.LogOut("打开数据库中");
                         item.State = ConnState.Open;
                         return item;
                     }
@@ -55,7 +54,7 @@ namespace ColoryrServer.DataBase
                 }
                 Thread.Sleep(1);
             }
-        });
+        }
 
         /// <summary>
         /// 开启重连Task
@@ -172,10 +171,13 @@ namespace ColoryrServer.DataBase
         {
             try
             {
-                var task = GetConn;
+                ExConn conn = null;
+                var task = Task.Run(()=>
+                {
+                    conn = GetConn();
+                });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     conn.Mysql.Open();
                     Sql.Connection = conn.Mysql;
                     Sql.Connection.ChangeDatabase(Database);

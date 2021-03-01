@@ -17,12 +17,16 @@ namespace ColoryrServer.Html
     class ExClient
     {
         public ClientState State { get; set; }
-        private HttpClient Client;
-        //public ExClient()
-        //{
-        //    State = ClientState.Ready;
-            
-        //}
+        private readonly HttpClient Client;
+        private readonly HttpClientHandler HttpClientHandler;
+        public ExClient()
+        {
+            State = ClientState.Ready;
+            HttpClientHandler = new();
+            Client = new(HttpClientHandler);
+            Client.Timeout = TimeSpan.FromSeconds(5);
+            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
+        }
         public void Clear()
         {
             Client.DefaultRequestHeaders.Clear();
@@ -30,13 +34,7 @@ namespace ColoryrServer.Html
         }
         public void Init(CookieContainer Cookie, Dictionary<string, string> RequestHeaders)
         {
-            HttpClientHandler HttpClientHandler = new()
-            {
-                CookieContainer = Cookie
-            };
-            Client = new(HttpClientHandler);
-            Client.Timeout = TimeSpan.FromSeconds(20);
-            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
+            HttpClientHandler.CookieContainer = Cookie;
             if (RequestHeaders != null)
             {
                 foreach (var item in RequestHeaders)

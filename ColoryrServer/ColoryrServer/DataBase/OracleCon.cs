@@ -27,7 +27,7 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 获取连接Task
         /// </summary>
-        private static Task<ExConn> GetConn = new(() =>
+        private static ExConn GetConn()
         {
             ExConn item;
             while (true)
@@ -56,7 +56,7 @@ namespace ColoryrServer.DataBase
                 }
                 Thread.Sleep(1);
             }
-        });
+        }
 
         /// <summary>
         /// 开启重连Task
@@ -179,10 +179,13 @@ namespace ColoryrServer.DataBase
         {
             try
             {
-                var task = GetConn;
+                ExConn conn = null;
+                var task = Task.Run(() =>
+                {
+                    conn = GetConn();
+                });
                 if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
                 {
-                    var conn = task.Result;
                     Sql.Connection = conn.Oracle;
                     Sql.Connection.ChangeDatabase(Database);
                     OracleDataReader reader = Sql.ExecuteReader();

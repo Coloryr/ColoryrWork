@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         mc:Ignorable="d"
-        Title="编辑窗口" Height="470" Width="690" MinHeight="470" MinWidth="690" Closed="Window_Closed">
+        Title="编辑窗口" Height="470" Width="700" MinHeight="470" MinWidth="700" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="代码编辑" Margin="10,27,165,10">

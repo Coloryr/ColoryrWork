@@ -334,7 +334,7 @@ namespace ColoryrServer.FileSystem
                     Enable = false,
                     IP = "127.0.0.1",
                     Port = 3306,
-                    User = "Root",
+                    User = "root",
                     Password = "MTIzNDU2",
                     ConnCount = 50,
                     TimeOut = 1000,
@@ -344,7 +344,7 @@ namespace ColoryrServer.FileSystem
                 {
                     Enable = false,
                     IP = "127.0.0.1",
-                    User = "Root",
+                    User = "root",
                     Password = "MTIzNDU2",
                     ConnCount = 50,
                     TimeOut = 1000,
@@ -363,7 +363,7 @@ namespace ColoryrServer.FileSystem
                 {
                     Enable = false,
                     IP = "127.0.0.1",
-                    User = "Root",
+                    User = "root",
                     Password = "MTIzNDU2",
                     ConnCount = 20,
                     TimeOut = 1000,
