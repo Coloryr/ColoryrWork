@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK
 {
-    public class HttpHtml
+    public class HttpHtml : IDisposable
     {
         private ExClient Http;
         public CancellationTokenSource Cancel;
@@ -26,7 +26,12 @@ namespace ColoryrServer.SDK
             Http.Init(this.Cookie, Head);
         }
 
-        ~HttpHtml() => HttpClientUtils.Close(Http);
+        public void Dispose()
+        {
+            HttpClientUtils.Close(Http);
+        }
+
+        ~HttpHtml() => Dispose();
         /// <summary>
         /// 获取byte
         /// </summary>

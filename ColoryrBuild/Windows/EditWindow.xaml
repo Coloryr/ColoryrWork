@@ -15,9 +15,12 @@
         </GroupBox>
         <Label Content="说明" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
         <TextBox x:Name="Text" TextWrapping="Wrap" Width="314" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="36,6,0,0"/>
-        <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="465,6,0,0" Width="50" Click="ReCode_Click"/>
-        <Button Content="更新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="355,6,0,0" Width="50" Click="Updata_Click"/>
-        <Button Content="编译" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,6,0,0" Width="50" Click="Build_Click"/>
+        <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="465,6,0,0" Width="50" Click="ReCode_Click"
+                Name="ReCode_Button"/>
+        <Button Content="更新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="355,6,0,0" Width="50" Click="Updata_Click"
+                Name="Updata_Button"/>
+        <Button Content="编译" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,6,0,0" Width="50" Click="Build_Click"
+                Name="Build_Button"/>
         <GroupBox Header="代码选择" Margin="0,6,10,10" Name="CodeA" HorizontalAlignment="Right" Width="150">
             <ListView x:Name="FileList" SelectionChanged="FileList_SelectionChanged">
                 <ListView.View>

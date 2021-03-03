@@ -173,6 +173,7 @@ namespace ColoryrBuild.Windows
 
         private void Updata_Click(object sender, RoutedEventArgs e)
         {
+            Updata_Button.IsEnabled = false;
             if (type != CodeType.App)
             {
                 obj1.Text = Text.Text;
@@ -195,11 +196,14 @@ namespace ColoryrBuild.Windows
                     Model = App.StartContrast(type, obj2.UUID, obj2.Xamls[temp], old);
                 }
             }
+            Updata_Button.IsEnabled = true;
         }
 
         private void ReCode_Click(object sender, RoutedEventArgs e)
         {
+            ReCode_Button.IsEnabled = false;
             GetCode();
+            ReCode_Button.IsEnabled = true;
         }
 
         private async void BuildOther()
@@ -272,7 +276,6 @@ namespace ColoryrBuild.Windows
                 old = obj2.Xamls[temp];
                 temp1 = ReType.AppXamlUpdata;
             }
-            obj2.Text = Text.Text;
             List<CodeEditObj> list = new();
             for (int pos = 0; pos < Model.Lines.Count; pos++)
             {
@@ -300,11 +303,12 @@ namespace ColoryrBuild.Windows
                     Line = pos
                 });
             }
-            if (list.Count == 0)
+            if (list.Count == 0 && obj2.Text == Text.Text)
             {
                 App.LogShow("编译", "没有代码更改");
                 return;
             }
+            obj2.Text = Text.Text;
             var data = await App.HttpUtils.BuildApp(obj2, temp1, temp, list);
             if (data == null)
             {
@@ -329,6 +333,7 @@ namespace ColoryrBuild.Windows
         {
             if (Write)
                 return;
+            Build_Button.IsEnabled = false;
             Write = true;
             if (type != CodeType.App)
             {
@@ -338,6 +343,7 @@ namespace ColoryrBuild.Windows
             {
                 BuildApp();
             }
+            Build_Button.IsEnabled = true;
             Write = false;
         }
 
