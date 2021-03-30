@@ -81,8 +81,7 @@ namespace ColoryrServer {
         ///            Local = local;
         ///            string pageXAML = &quot;&quot;;
         ///            var XamlFile = Path.Combine(local, &quot;main.xaml&quot;);
-        ///            if (File.Exists(XamlFile))
-        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///            if (File.Ex [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppDemoCS {
             get {
@@ -111,7 +110,7 @@ namespace ColoryrServer {
         ///		&lt;Button Text=&quot;Load&quot; x:Name=&quot;Button&quot; /&gt;
         ///		&lt;Entry Placeholder=&quot;Enter text&quot; x:Name=&quot;Entry&quot; /&gt;
         ///	&lt;/StackLayout&gt;
-        ///&lt;/ContentPage&gt; 的本地化字符串。
+        ///&lt;/ContentPage [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppDemoXAML {
             get {
@@ -304,14 +303,14 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer.SDK
         ///{
-        ///    public class Html
+        ///    public class HttpHtml : IDisposable
         ///    {
         ///        private ExClient Http;
         ///        public CancellationTokenSource Cancel;
         ///        public CookieContainer Cookie;
         ///
-        ///        public Html(CookieContainer Cookie = null,
-        ///                    CancellationTokenSource Cancel = n [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public HttpHtml(CookieContainer Cookie = null,
+        ///                    Cancellation [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string HtmlSDK {
             get {
@@ -625,6 +624,15 @@ namespace ColoryrServer {
         internal static string SqlCommandSDK {
             get {
                 return ResourceManager.GetString("SqlCommandSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似  的本地化字符串。
+        /// </summary>
+        internal static string TaskDemoCS {
+            get {
+                return ResourceManager.GetString("TaskDemoCS", resourceCulture);
             }
         }
         

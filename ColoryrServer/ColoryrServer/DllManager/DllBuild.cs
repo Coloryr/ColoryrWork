@@ -256,6 +256,37 @@ namespace ColoryrServer.DllManager
                                 Message = $"Mqtt[{json.UUID}]已存在"
                             };
                         break;
+                    case ReType.AddTask:
+                        if (CSFile.GetRobot(json.UUID) == null)
+                        {
+                            var time = string.Format("{0:s}", DateTime.Now);
+                            File = new()
+                            {
+                                UUID = json.UUID,
+                                Type = CodeType.Task,
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time,
+                                Code = ColoryrServer_Resource.TaskDemoCS
+                                .Replace("{name}", json.UUID)
+                                .Replace("{TaskMain}", CodeDemo.TaskRun)
+                            };
+                            CSFile.StorageTask(File);
+                            resObj = new ReMessage
+                            {
+                                Build = true,
+                                Message = $"Task[{json.UUID}]已创建"
+                            };
+                            GenTask.StartGen(File);
+                            ServerMain.LogOut($"Task[{json.UUID}]创建");
+                        }
+                        else
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Task[{json.UUID}]已存在"
+                            };
+                        break;
                     case ReType.GetDll:
                         List = new CSFileList();
                         foreach (var item in CSFile.DllFileList)
@@ -304,6 +335,14 @@ namespace ColoryrServer.DllManager
                         }
                         resObj = List;
                         break;
+                    case ReType.GetTask:
+                        List = new CSFileList();
+                        foreach (var item in CSFile.TaskFileList)
+                        {
+                            List.List.Add(item.Key, item.Value);
+                        }
+                        resObj = List;
+                        break;
                     case ReType.GetApp:
                         List = new CSFileList();
                         foreach (var item in CSFile.AppFileList)
@@ -329,6 +368,9 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.CodeMqtt:
                         resObj = CSFile.GetMqtt(json.UUID);
+                        break;
+                    case ReType.CodeTask:
+                        resObj = CSFile.GetTask(json.UUID);
                         break;
                     case ReType.GetApi:
                         resObj = APIFile.list;
@@ -379,6 +421,14 @@ namespace ColoryrServer.DllManager
                         {
                             Build = true,
                             Message = $"Mqtt[{json.UUID}]已删除"
+                        };
+                        break;
+                    case ReType.RemoveTask:
+                        CSFile.RemoveFile(CodeType.Task, json.UUID);
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Task[{json.UUID}]已删除"
                         };
                         break;
                     case ReType.RemoveApp:
@@ -607,6 +657,44 @@ namespace ColoryrServer.DllManager
                         SW = new Stopwatch();
                         SW.Start();
                         BuildBack = GenMqtt.StartGen(File);
+                        SW.Stop();
+                        File.Version++;
+                        resObj = new ReMessage
+                        {
+                            Build = BuildBack.Isok,
+                            Message = BuildBack.Res,
+                            UseTime = SW.ElapsedMilliseconds.ToString(),
+                            Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataTask:
+                        File = CSFile.GetTask(json.UUID);
+                        if (File == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个Task[{json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File.Version != json.Version)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Task[{json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+                        File.Code = FileEdit.StartEdit(File.Code, list);
+                        File.Text = json.Text;
+
+                        SW = new Stopwatch();
+                        SW.Start();
+                        BuildBack = GenTask.StartGen(File);
                         SW.Stop();
                         File.Version++;
                         resObj = new ReMessage

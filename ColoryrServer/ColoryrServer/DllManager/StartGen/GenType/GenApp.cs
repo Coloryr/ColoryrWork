@@ -20,7 +20,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             {
                 list.Add(CSharpSyntaxTree.ParseText(item.Value));
             }
-            var Res = GenTask.StartGen(File.UUID, list, GenLib.App);
+            var Res = GenCode.StartGen(File.UUID, list, GenLib.App);
             Task.Run(() => CSFile.StorageApp(File));
             if (!Res.Isok)
             {

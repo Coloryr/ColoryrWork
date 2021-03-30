@@ -18,6 +18,7 @@ namespace ColoryrServer.FileSystem
         private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\Notes\WebScoket\";
         private static readonly string RobotFileLocal = ServerMain.RunLocal + @"Notes\Robot\";
         private static readonly string MqttFileLocal = ServerMain.RunLocal + @"Notes\Mqtt\";
+        private static readonly string TaskFileLocal = ServerMain.RunLocal + @"Notes\Task\";
         private static readonly string AppFileLocal = ServerMain.RunLocal + @"Notes\App\";
 
         //public static readonly ConcurrentDictionary<string, NotesSDK> DllFileList = new();
@@ -102,6 +103,11 @@ namespace ColoryrServer.FileSystem
         public static void StorageMqtt(string UUID, NotesSDK obj)
         {
             var url = MqttFileLocal + UUID + ".json";
+            Storage(url, obj);
+        }
+        public static void StorageTask(string UUID, NotesSDK obj)
+        {
+            var url = TaskFileLocal + UUID + ".json";
             Storage(url, obj);
         }
     }

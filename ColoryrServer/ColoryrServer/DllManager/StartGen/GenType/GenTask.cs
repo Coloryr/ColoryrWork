@@ -5,25 +5,27 @@ using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.DllManager.StartGen.GenType
 {
-    internal class GenRobot
+    class GenTask
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
-            var Res = GenCode.StartGen(File.UUID, new()
+            var Res = GenCode.StartGen(File.UUID, new List<SyntaxTree>
             {
                 CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);
-            Task.Run(() => CSFile.StorageRobot(File));
+            Task.Run(() => CSFile.StorageTask(File));
             if (!Res.Isok)
             {
-                Res.Res = $"Robot[{File.UUID}]" + Res.Res;
+                Res.Res = $"Task[{File.UUID}]" + Res.Res;
                 return Res;
             }
 
@@ -35,44 +37,64 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 Assembly = new AssemblyLoadContext(File.UUID, true)
             };
             AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
-            var list = AssemblySave.Assembly.Assemblies.First()
-                           .GetTypes().Where(x => x.Name == File.UUID);
+            var list = AssemblySave.Assembly.Assemblies.First().GetTypes()
+                           .Where(x => x.Name == File.UUID);
 
             if (!list.Any())
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = $"Robot[{ File.UUID }]类名错误"
+                    Res = $"Task[{File.UUID}]类名错误"
                 };
 
             var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
-               .Where(x => x.Name == "Note");
+                           .Where(x => x.Name == "Note");
 
-            if (list1.Any())
+            AssemblySave.DllType = list.First();
+
+            foreach (var item in AssemblySave.DllType.GetMethods())
             {
-                AssemblySave.NoteType = list1.First();
-                if (Activator.CreateInstance(AssemblySave.NoteType) is NotesSDK obj)
+                if (item.Name is CodeDemo.TaskRun && item.IsPublic)
                 {
-                    NoteFile.StorageRobot(File.UUID, obj);
+                    AssemblySave.MethodInfos.Add(item.Name, item);
+                    break;
                 }
             }
 
-            AssemblySave.DllType = list.First();
-            
-            foreach (var item in AssemblySave.DllType.GetMethods())
-            {
-                if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
-                    AssemblySave.MethodInfos.Add(item.Name, item);
-            }
-
-            if (AssemblySave.MethodInfos.Count == 0)
+            if (!AssemblySave.MethodInfos.ContainsKey(CodeDemo.TaskRun))
                 return new GenReOBJ
                 {
                     Isok = false,
-                    Res = $"Robot[{File.UUID}]没有方法"
+                    Res = $"Task[{File.UUID}]没有主方法"
                 };
 
-            DllStonge.AddRobot(File.UUID, AssemblySave);
+            try
+            {
+                if (list1.Any())
+                {
+                    AssemblySave.NoteType = list1.First();
+                    if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
+                    {
+                        return new GenReOBJ
+                        {
+                            Isok = false,
+                            Res = $"Task[{File.UUID}]注释类错误"
+                        };
+                    }
+                    NoteFile.StorageTask(File.UUID, obj);
+                }
+            }
+            catch
+            {
+                return new GenReOBJ
+                {
+                    Isok = false,
+                    Res = $"Task[{File.UUID}]注释出错"
+                };
+            }
+
+
+            DllStonge.AddDll(File.UUID, AssemblySave);
 
             var time = string.Format("{0:s}", DateTime.Now);
             File.UpdataTime = time;
@@ -83,14 +105,14 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
                 using (var FileStream = new FileStream(
-                    DllStonge.RobotLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                    DllStonge.TaskLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
                 {
                     FileStream.Write(Res.MS.ToArray());
                     FileStream.Flush();
                 }
 
                 using (var FileStream = new FileStream(
-                    DllStonge.RobotLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                    DllStonge.TaskLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
                 {
                     FileStream.Write(Res.MSPdb.ToArray());
                     FileStream.Flush();
@@ -107,7 +129,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             return new GenReOBJ
             {
                 Isok = true,
-                Res = $"Robot[{ File.UUID }]编译完成",
+                Res = $"Task[{File.UUID}]编译完成",
                 Time = File.UpdataTime
             };
         }

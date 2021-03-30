@@ -12,7 +12,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
     {
         Dll, App
     }
-    internal class GenTask
+    internal class GenCode
     {
         public static readonly List<MetadataReference> References = new();
         public static readonly List<MetadataReference> AppReferences = new();

@@ -181,6 +181,9 @@
   <data name="SqlCommandSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SqlCommandSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="TaskDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\TaskDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="TaskSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\TaskSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

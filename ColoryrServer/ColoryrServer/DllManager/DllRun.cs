@@ -372,5 +372,28 @@ namespace ColoryrServer.DllManager
                     ServerMain.LogError(e);
             }
         }
+
+        public static bool TaskGo(TaskUserArg name)
+        {
+            try
+            {
+                var dll = DllStonge.GetTask(name.Dll);
+                if (dll == null)
+                    return false;
+                MethodInfo MI = dll.MethodInfos[CodeDemo.TaskRun];
+                var Assembly = dll.DllType.Assembly.CreateInstance(dll.DllType.FullName, true);
+                MI.Invoke(Assembly, name.Arg);
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is VarDump Dump)
+                {
+                    ServerMain.LogError(Dump.Get());
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+            return false;
+        }
     }
 }

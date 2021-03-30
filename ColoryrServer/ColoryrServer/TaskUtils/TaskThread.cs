@@ -1,9 +1,11 @@
-﻿using ColoryrServer.SDK;
+﻿using ColoryrServer.DllManager;
+using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace ColoryrServer.TaskUtils
 {
@@ -25,7 +27,7 @@ namespace ColoryrServer.TaskUtils
                 item.Start();
             }
             IsRun = true;
-            Task.Run(Remove, Cancel.Token);
+            //Task.Run(Remove, Cancel.Token);
         }
 
         public static void Stop()
@@ -86,7 +88,11 @@ namespace ColoryrServer.TaskUtils
                                 }
                             }
                             obj.Cancel = CancellationTokenSource.CreateLinkedTokenSource(Cancel.Token);
-                            obj.RunTask = new Task(obj.Task, obj.Cancel.Token);
+                            bool ok = false;
+                            obj.RunTask = new Task(() =>
+                            {
+                                ok = DllRun.TaskGo(obj);
+                            }, obj.Cancel.Token);
                             var delay = Task.Delay(ServerMain.Config.TaskConfig.MaxTime);
                             var res = Task.WhenAny(obj.RunTask, delay).Result;
                             if (res == delay)
@@ -97,6 +103,10 @@ namespace ColoryrServer.TaskUtils
                             else if (obj.Cancel.IsCancellationRequested)
                             {
                                 obj.State = TaskState.Cancel;
+                            }
+                            else if (!ok)
+                            {
+                                obj.State = TaskState.Error;
                             }
                             else if (obj.Times <= 0)
                             {
@@ -127,19 +137,29 @@ namespace ColoryrServer.TaskUtils
         {
             return Tasks.ContainsKey(name);
         }
-        public static void StartTask(TaskUserArg arg)
+        public static bool StartTask(TaskUserArg arg)
         {
             if (Tasks.ContainsKey(arg.Name))
             {
-                Tasks.TryRemove(arg.Name, out var temp);
-                temp.State = TaskState.Cancel;
-                temp.Cancel.Cancel(false);
+                var item = Tasks[arg.Name];
+                if (item.Name == arg.Name)
+                {
+                    item.Times++;
+                    return true;
+                }
+                else
+                {
+                    Tasks.TryRemove(arg.Name, out var temp);
+                    temp.State = TaskState.Cancel;
+                    temp.Cancel.Cancel(false);
+                }
             }
-            TaskObj obj = new TaskObj(arg)
+            TaskObj obj = new(arg)
             {
                 State = TaskState.Ready
             };
             Tasks.TryAdd(obj.Name, obj);
+            return true;
         }
         public static void StopTask(string name)
         {
@@ -163,6 +183,13 @@ namespace ColoryrServer.TaskUtils
                 return -1;
             }
             return Tasks[name].Times;
+        }
+        public static void SetArg(string name, object[] arg)
+        {
+            if (Tasks.ContainsKey(name))
+            {
+                Tasks[name].Arg = arg;
+            }
         }
     }
 }

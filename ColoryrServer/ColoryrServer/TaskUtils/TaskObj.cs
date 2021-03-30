@@ -9,7 +9,8 @@ namespace ColoryrServer.TaskUtils
         public TaskObj(TaskUserArg arg)
         {
             Name = arg.Name;
-            Task = arg.Task;
+            Arg = arg.Arg;
+            Dll = arg.Dll;
             Times = arg.Times;
         }
         public TaskState State { get; set; }

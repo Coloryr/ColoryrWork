@@ -229,7 +229,7 @@ namespace ColoryrServer
                         RobotSocket.Start();
                         DatabaseRun();
                         //初始化动态编译
-                        GenTask.Start();
+                        GenCode.Start();
                         DllStonge.Start();
                     }
                 }
@@ -243,7 +243,7 @@ namespace ColoryrServer
                     IoTSocketServer.Start();
                     ServerWebSocket.Start();
                     //初始化动态编译
-                    GenTask.Start();
+                    GenCode.Start();
                     DllStonge.Start();
                 }
 

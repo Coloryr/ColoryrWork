@@ -19,6 +19,7 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> WebSocketList { get; set; }
         public List<CSFileObj> RobotList { get; set; }
         public List<CSFileObj> MqttList { get; set; }
+        public List<CSFileObj> TaskList { get; set; }
         public List<AppFileObj> AppList { get; set; }
     }
     internal class CSFile
@@ -29,6 +30,7 @@ namespace ColoryrServer.FileSystem
         private static readonly string WebSocketFileLocal = ServerMain.RunLocal + @"\Codes\WebScoket\";
         private static readonly string RobotFileLocal = ServerMain.RunLocal + @"Codes\Robot\";
         private static readonly string MqttFileLocal = ServerMain.RunLocal + @"Codes\Mqtt\";
+        private static readonly string TaskFileLocal = ServerMain.RunLocal + @"Codes\Task\";
         private static readonly string AppFileLocal = ServerMain.RunLocal + @"Codes\App\";
 
         private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
@@ -40,6 +42,7 @@ namespace ColoryrServer.FileSystem
         public static readonly ConcurrentDictionary<string, CSFileCode> WebSocketFileList = new();
         public static readonly ConcurrentDictionary<string, CSFileCode> RobotFileList = new();
         public static readonly ConcurrentDictionary<string, CSFileCode> MqttFileList = new();
+        public static readonly ConcurrentDictionary<string, CSFileCode> TaskFileList = new();
         public static readonly ConcurrentDictionary<string, AppFileObj> AppFileList = new();
 
         public static void Start()
@@ -75,6 +78,10 @@ namespace ColoryrServer.FileSystem
             if (!Directory.Exists(MqttFileLocal))
             {
                 Directory.CreateDirectory(MqttFileLocal);
+            }
+            if (!Directory.Exists(TaskFileLocal))
+            {
+                Directory.CreateDirectory(TaskFileLocal);
             }
             LoadAll();
         }
@@ -154,6 +161,16 @@ namespace ColoryrServer.FileSystem
             Storage(url, obj);
             UpdataMAP();
         }
+        public static void StorageTask(CSFileCode obj)
+        {
+            var url = TaskFileLocal + obj.UUID + ".json";
+            if (TaskFileList.ContainsKey(obj.UUID))
+                TaskFileList[obj.UUID] = obj;
+            else
+                TaskFileList.TryAdd(obj.UUID, obj);
+            Storage(url, obj);
+            UpdataMAP();
+        }
 
         public static bool AddFileApp(AppFileObj item, UploadObj obj, Stream baseStream)
         {
@@ -230,6 +247,14 @@ namespace ColoryrServer.FileSystem
             }
             return null;
         }
+        public static CSFileCode GetTask(string uuid)
+        {
+            if (TaskFileList.TryGetValue(uuid, out var save))
+            {
+                return save;
+            }
+            return null;
+        }
         public static AppFileObj GetApp(string uuid)
         {
             if (AppFileList.TryGetValue(uuid, out var save))
@@ -283,6 +308,12 @@ namespace ColoryrServer.FileSystem
                         obj = GetMqtt(uuid);
                         MqttFileList.TryRemove(uuid, out var item6);
                         DllStonge.RemoveMqtt(uuid);
+                        break;
+                    case CodeType.Task:
+                        Name = TaskFileLocal + uuid + ".json";
+                        obj = GetMqtt(uuid);
+                        MqttFileList.TryRemove(uuid, out var item7);
+                        DllStonge.RemoveTask(uuid);
                         break;
                     case CodeType.App:
                         Name = AppFileLocal + uuid + ".json";
@@ -430,6 +461,19 @@ Key:{obj.Key}
                     ServerMain.LogError(e);
                 }
             }
+            foreach (var item in Function.GetPathFileName(TaskFileLocal))
+            {
+                try
+                {
+                    var obj = JsonConvert.DeserializeObject<CSFileCode>(File.ReadAllText(item.FullName));
+                    string name = item.Name.Replace(".json", "");
+                    TaskFileList.TryAdd(name, obj);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
             foreach (var item in Function.GetPathFileName(AppFileLocal))
             {
                 try
@@ -459,6 +503,7 @@ Key:{obj.Key}
                         WebSocketList = new(WebSocketFileList.Values),
                         RobotList = new(RobotFileList.Values),
                         MqttList = new(MqttFileList.Values),
+                        TaskList = new(TaskFileList.Values),
                         AppList = new(AppFileList.Values)
                     };
                     File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));

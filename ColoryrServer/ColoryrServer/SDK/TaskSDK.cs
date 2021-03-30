@@ -17,7 +17,7 @@ namespace ColoryrServer.SDK
         /// 如果存在则会覆盖
         /// </summary>
         /// <param name="arg">任务参数</param>
-        public static void StartTask(TaskUserArg arg)
+        public static bool StartTask(TaskUserArg arg)
             => TaskThread.StartTask(arg);
         /// <summary>
         /// 停止一个任务
@@ -39,6 +39,12 @@ namespace ColoryrServer.SDK
         /// <returns>次数</returns>
         public static int GetTaskTime(string name)
             => TaskThread.GetTaskTime(name);
+        /// <summary>
+        /// 设置任务参数
+        /// </summary>
+        /// <param name="arg"></param>
+        public static void SetArg(string name, object[] arg)
+            => TaskThread.SetArg(name, arg);
     }
     public enum TaskState
     {
@@ -51,9 +57,13 @@ namespace ColoryrServer.SDK
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 任务内容
+        /// 任务类名
         /// </summary>
-        public Action Task { get; set; }
+        public string Dll { get; set; }
+        /// <summary>
+        /// 参数
+        /// </summary>
+        public object[] Arg { get; set; }
         /// <summary>
         /// 循环次数
         /// </summary>

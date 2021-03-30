@@ -17,7 +17,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
     {
         public static GenReOBJ StartGen(CSFileCode File)
         {
-            var Res = GenTask.StartGen(File.UUID, new List<SyntaxTree>
+            var Res = GenCode.StartGen(File.UUID, new List<SyntaxTree>
             {
                 CSharpSyntaxTree.ParseText(File.Code)
             }, GenLib.Dll);

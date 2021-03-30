@@ -18,6 +18,8 @@ namespace ColoryrBuild
         public Dictionary<string, CSFileObj> IoTList;
         public Dictionary<string, CSFileObj> RobotList;
         public Dictionary<string, CSFileObj> WebSocketList;
+        public Dictionary<string, CSFileObj> MqttList;
+        public Dictionary<string, CSFileObj> TaskList;
         public Dictionary<string, AppTempFileObj> AppList;
         public MainWindow()
         {

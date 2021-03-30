@@ -14,5 +14,6 @@
         public const string MQTTMessage = "message";
         public const string MQTTValidator = "check";
         public const string MQTTSubscription = "subscription";
+        public const string TaskRun = "run";
     }
 }

@@ -18,6 +18,7 @@ namespace ColoryrServer.DllManager
         private static readonly ConcurrentDictionary<string, DllBuildSave> WebSocketList = new();
         private static readonly ConcurrentDictionary<string, DllBuildSave> RobotList = new();
         private static readonly ConcurrentDictionary<string, DllBuildSave> MqttList = new();
+        private static readonly ConcurrentDictionary<string, DllBuildSave> TaskList = new();
 
         private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
 
@@ -27,6 +28,7 @@ namespace ColoryrServer.DllManager
         public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll\WebSocket\";
         public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll\Robot\";
         public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll\Mqtt\";
+        public static readonly string TaskLocal = ServerMain.RunLocal + @"Dll\Task\";
 
         public static readonly string AppLocal = ServerMain.RunLocal + @"Dll\App\";
 
@@ -221,11 +223,41 @@ namespace ColoryrServer.DllManager
                 MqttList[uuid].MethodInfos.Clear();
                 MqttList.TryRemove(uuid, out var item);
             }
-            RemoveAll(RobotLocal + uuid);
+            RemoveAll(MqttLocal + uuid);
         }
         public static List<DllBuildSave> GetMqtt()
         {
             return new List<DllBuildSave>(MqttList.Values);
+        }
+
+        public static void AddTask(string uuid, DllBuildSave save)
+        {
+            if (TaskList.ContainsKey(uuid))
+            {
+                TaskList[uuid].Assembly.Unload();
+                TaskList[uuid].DllType = null;
+                TaskList[uuid].MethodInfos.Clear();
+                TaskList[uuid] = save;
+            }
+            else
+            {
+                TaskList.TryAdd(uuid, save);
+            }
+        }
+        public static void RemoveTask(string uuid)
+        {
+            if (TaskList.ContainsKey(uuid))
+            {
+                TaskList[uuid].Assembly.Unload();
+                TaskList[uuid].DllType = null;
+                TaskList[uuid].MethodInfos.Clear();
+                TaskList.TryRemove(uuid, out var item);
+            }
+            RemoveAll(RobotLocal + uuid);
+        }
+        public static DllBuildSave GetTask(string uuid)
+        {
+            return MqttList.TryGetValue(uuid, out var dll) ? dll : null;
         }
 
         public static void AddApp(string uuid, AppBuildSave save)
