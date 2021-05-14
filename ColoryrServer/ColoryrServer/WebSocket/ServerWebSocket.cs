@@ -59,9 +59,10 @@ namespace ColoryrServer.WebSocket
 
         internal static void Start()
         {
-            ServerMain.LogOut("WebScoket正在启动");
+            ServerMain.LogOut("WebScoket服务器正在启动");
             FleckLog.Level = LogLevel.Error;
             Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
+            ServerMain.LogOut($"WebScoket监听{ServerMain.Config.WebSocket.IP}:{ServerMain.Config.WebSocket.Port}");
             Server.Start(Socket =>
             {
                 Socket.OnOpen = () =>
@@ -93,7 +94,7 @@ namespace ColoryrServer.WebSocket
             }, source.Token);
             IsRun = true;
             PingThread.Start();
-            ServerMain.LogOut("WebScoket已启动");
+            ServerMain.LogOut("WebScoket服务器已启动");
         }
         internal static void Stop()
         {

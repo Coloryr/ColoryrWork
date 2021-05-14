@@ -126,45 +126,13 @@ namespace ColoryrServer
         private static void DatabaseRun()
         {
             //Mysql链接
-            if (Config.Mysql.Enable)
-                if (MysqlCon.Start())
-                {
-                    LogOut("Mysql数据库已连接");
-                }
-                else
-                {
-                    LogError("Mysql数据库连接失败");
-                }
+            MysqlCon.Start();
             //MS链接
-            if (Config.MSsql.Enable)
-                if (MSCon.Start())
-                {
-                    LogOut("Ms数据库已连接");
-                }
-                else
-                {
-                    LogError("Ms数据库连接失败");
-                }
+            MSCon.Start();
             //Redis链接
-            if (Config.Redis.Enable)
-                if (RedisCon.Start())
-                {
-                    LogOut("Redis服务器已连接");
-                }
-                else
-                {
-                    LogError("Redis连接失败");
-                }
+            RedisCon.Start();
             //Oracle链接
-            if (Config.Oracle.Enable)
-                if (OracleCon.Start())
-                {
-                    LogOut("Oracle服务器已连接");
-                }
-                else
-                {
-                    LogError("Oracle连接失败");
-                }
+            OracleCon.Start();
             //内存数据库
             RamDataBase.Start();
         }

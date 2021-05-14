@@ -6,9 +6,13 @@ namespace ColoryrServer.FileSystem
     internal record MainConfig
     {
         /// <summary>
-        /// Socket配置
+        /// Http处理线程
         /// </summary>
-        public HttpConfig Http { get; set; }
+        public int HttpThreadNumber { get; set; }
+        /// <summary>
+        /// Http配置
+        /// </summary>
+        public List<HttpConfig> Http { get; set; }
         /// <summary>
         /// IoT配置
         /// </summary>
@@ -32,19 +36,19 @@ namespace ColoryrServer.FileSystem
         /// <summary>
         /// Mysql配置
         /// </summary>
-        public MysqlConfig Mysql { get; set; }
+        public List<MysqlConfig> Mysql { get; set; }
         /// <summary>
         /// MS sql设置
         /// </summary>
-        public MSsqlConfig MSsql { get; set; }
+        public List<MSsqlConfig> MSsql { get; set; }
         /// <summary>
         /// Redis设置
         /// </summary>
-        public RedisConfig Redis { get; set; }
+        public List<RedisConfig> Redis { get; set; }
         /// <summary>
         /// Oracle配置
         /// </summary>
-        public OracleConfig Oracle { get; set; }
+        public List<OracleConfig> Oracle { get; set; }
         /// <summary>
         /// 用户路径
         /// </summary>
@@ -151,10 +155,6 @@ namespace ColoryrServer.FileSystem
     }
     internal record HttpConfig : SocketConfig
     {
-        /// <summary>
-        /// 线程数量
-        /// </summary>
-        public int ThreadNumber { get; set; }
     }
     internal record MysqlConfig
     {
@@ -193,6 +193,7 @@ namespace ColoryrServer.FileSystem
     }
     internal record MSsqlConfig
     {
+        /// <summary>
         /// <summary>
         /// 启用
         /// </summary>
@@ -290,11 +291,14 @@ namespace ColoryrServer.FileSystem
         {
             ServerMain.Config = ConfigSave.Config(new MainConfig
             {
+                HttpThreadNumber = 200,
                 Http = new()
                 {
-                    IP = "127.0.0.1",
-                    Port = 25555,
-                    ThreadNumber = 200
+                    new()
+                    {
+                        IP = "127.0.0.1",
+                        Port = 25555
+                    }
                 },
                 IoT = new()
                 {
@@ -331,43 +335,55 @@ namespace ColoryrServer.FileSystem
                 },
                 Mysql = new()
                 {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    Port = 3306,
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    ConnCount = 50,
-                    TimeOut = 1000,
-                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                    new()
+                    {
+                        Enable = false,
+                        IP = "127.0.0.1",
+                        Port = 3306,
+                        User = "root",
+                        Password = "MTIzNDU2",
+                        ConnCount = 50,
+                        TimeOut = 1000,
+                        Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                    }
                 },
                 MSsql = new()
                 {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    ConnCount = 50,
-                    TimeOut = 1000,
-                    Conn = "Server={0};UID={1};PWD={2};"
+                    new()
+                    {
+                        Enable = false,
+                        IP = "127.0.0.1",
+                        User = "root",
+                        Password = "MTIzNDU2",
+                        ConnCount = 50,
+                        TimeOut = 1000,
+                        Conn = "Server={0};UID={1};PWD={2};"
+                    }
                 },
                 Redis = new()
                 {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    Port = 6379,
-                    TimeOut = 1000,
-                    Conn = "{0}:{1}",
-                    ConnCount = 20
+                    new()
+                    {
+                        Enable = false,
+                        IP = "127.0.0.1",
+                        Port = 6379,
+                        TimeOut = 1000,
+                        Conn = "{0}:{1}",
+                        ConnCount = 20
+                    }
                 },
                 Oracle = new()
                 {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    ConnCount = 20,
-                    TimeOut = 1000,
-                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                    new()
+                    {
+                        Enable = false,
+                        IP = "127.0.0.1",
+                        User = "root",
+                        Password = "MTIzNDU2",
+                        ConnCount = 20,
+                        TimeOut = 1000,
+                        Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                    }
                 },
                 Pipe = new()
                 {

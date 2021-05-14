@@ -9,17 +9,21 @@ namespace ColoryrServer.SDK
     public class Mysql
     {
         private string Database;
+        private int ID;
         /// <summary>
         /// Mysql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
-        public Mysql(string Database)
+        public Mysql(string Database, int ID = 0)
         {
-            if (MysqlCon.State == false)
+            this.ID = ID;
+            this.Database = Database;
+            if (!MysqlCon.State.ContainsKey(ID))
+                throw new VarDump($"没有Mysql数据库{ID}");
+            if (MysqlCon.State[ID] == false)
                 throw new VarDump("Mysql未就绪");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new VarDump("没有选择数据库");
-            this.Database = Database;
         }
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace ColoryrServer.SDK
             var com = GenCommand(sql, arg);
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
-            return MysqlCon.MysqlSql(com, Database);
+            return MysqlCon.MysqlSql(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -47,7 +51,7 @@ namespace ColoryrServer.SDK
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
-            return MysqlCon.MysqlSql(com, Database);
+            return MysqlCon.MysqlSql(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -55,7 +59,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">Mysql命令语句</param>
         /// <returns>执行结果</returns>
         public List<List<dynamic>> MysqlSql(MySqlCommand arg)
-            => MysqlCon.MysqlSql(arg, Database);
+            => MysqlCon.MysqlSql(arg, Database, ID);
         /// <summary>
         /// 执行sql语句
         /// </summary>
@@ -67,7 +71,7 @@ namespace ColoryrServer.SDK
             var com = GenCommand(sql, arg);
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
-            MysqlCon.MysqlSql(com, Database);
+            MysqlCon.MysqlSql(com, Database, ID);
             return com;
         }
         private MySqlCommand GenCommand(string sql, Dictionary<string, string> arg)
@@ -85,17 +89,22 @@ namespace ColoryrServer.SDK
     public class MSsql
     {
         private string Database;
+        private int ID;
         /// <summary>
         /// MSsql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
-        public MSsql(string Database)
+        public MSsql(string Database, int ID = 0)
         {
-            if (MSCon.State == false)
+            this.Database = Database;
+            this.ID = ID;
+            if (!MSCon.State.ContainsKey(ID))
+                throw new VarDump($"没有Mysql数据库{ID}");
+            if (MSCon.State[ID] == false)
                 throw new VarDump("MS数据库没有链接");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new VarDump("没有选择数据库");
-            this.Database = Database;
+            
         }
         /// <summary>
         /// 执行sql语句
@@ -108,7 +117,7 @@ namespace ColoryrServer.SDK
             var a = GenCommand(sql, arg);
             if (a == null)
                 throw new VarDump("SQL语句参数非法");
-            return MSCon.MSsqlSql(a, Database);
+            return MSCon.MSsqlSql(a, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -122,7 +131,7 @@ namespace ColoryrServer.SDK
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
-            return MSCon.MSsqlSql(com, Database);
+            return MSCon.MSsqlSql(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -135,10 +144,10 @@ namespace ColoryrServer.SDK
             var com = GenCommand(sql, arg);
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
-            MSCon.MSsqlSql(com, Database);
+            MSCon.MSsqlSql(com, Database, ID);
             return com;
         }
-        private SqlCommand GenCommand(string sql, Dictionary<string, string> arg)
+        private static SqlCommand GenCommand(string sql, Dictionary<string, string> arg)
         {
             var com = new SqlCommand(sql);
             if (arg != null)
@@ -153,13 +162,17 @@ namespace ColoryrServer.SDK
     public class Oracle
     {
         private string Database;
+        private int ID;
         /// <summary>
         /// MSsql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
-        public Oracle(string Database)
+        public Oracle(string Database, int ID)
         {
-            if (OracleCon.State == false)
+            this.ID = ID;
+            if (!OracleCon.State.ContainsKey(ID))
+                throw new VarDump($"没有Oracle数据库{ID}");
+            if (OracleCon.State[ID] == false)
                 throw new VarDump("Oracle没有链接");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new VarDump("没有选择数据库");
@@ -176,7 +189,7 @@ namespace ColoryrServer.SDK
             var a = GenCommand(sql, arg);
             if (a == null)
                 throw new VarDump("SQL语句参数非法");
-            return OracleCon.OracleSql(a, Database);
+            return OracleCon.OracleSql(a, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -190,7 +203,7 @@ namespace ColoryrServer.SDK
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
-            return OracleCon.OracleSql(com, Database);
+            return OracleCon.OracleSql(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -203,10 +216,10 @@ namespace ColoryrServer.SDK
             var com = GenCommand(sql, arg);
             if (com == null)
                 throw new VarDump("SQL语句参数非法");
-            OracleCon.OracleSql(com, Database);
+            OracleCon.OracleSql(com, Database, ID);
             return com;
         }
-        private OracleCommand GenCommand(string sql, Dictionary<string, string> arg)
+        private static OracleCommand GenCommand(string sql, Dictionary<string, string> arg)
         {
             var com = new OracleCommand(sql);
             if (arg != null)
@@ -220,9 +233,13 @@ namespace ColoryrServer.SDK
 
     public class Redis
     {
-        public Redis()
+        private int ID;
+        public Redis(int ID = 0)
         {
-            if (RedisCon.State == false)
+            this.ID = ID;
+            if (!RedisCon.State.ContainsKey(ID))
+                throw new VarDump($"没有Redis数据库{ID}");
+            if (RedisCon.State[ID] == false)
                 throw new VarDump("Redis没有链接");
         }
         /// <summary>
@@ -231,7 +248,7 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <returns>值</returns>
         public object Get(dynamic key)
-            => RedisCon.Get(key);
+            => RedisCon.Get(key, ID);
 
         /// <summary>
         /// 设置键值对
@@ -240,28 +257,28 @@ namespace ColoryrServer.SDK
         /// <param name="value">值</param>
         /// <param name="Time">存在秒</param>
         public bool Set(dynamic key, dynamic value, int Time = 0)
-            => RedisCon.Set(key, value, Time);
+            => RedisCon.Set(key, value, Time, ID);
         /// <summary>
         /// 是否存在键
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否存在</returns>
         public bool Exists(dynamic key)
-            => RedisCon.Exists(key);
+            => RedisCon.Exists(key, ID);
         /// <summary>
         /// 删除键值对
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否成功</returns>
         public bool Remove(dynamic key)
-            => RedisCon.Remove(key);
+            => RedisCon.Remove(key, ID);
         /// <summary>
         /// 累加
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>累加后的数据</returns>
         public long Increment(string key, long val = 1)
-            => RedisCon.Increment(key, val);
+            => RedisCon.Increment(key, ID, val);
     }
 
     public class RamData

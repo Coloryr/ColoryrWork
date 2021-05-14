@@ -2,6 +2,7 @@
 using ColoryrServer.SDK;
 using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,31 +13,30 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 连接状态
         /// </summary>
-        public static bool State { get; private set; }
+        public static Dictionary<int, bool> State = new();
 
         /// <summary>
         /// 连接池
         /// </summary>
-        private static ExConn[] Conns;
-
-        private static object LockObj = new object();
-        private static int LastIndex = 0;
-        private static RedisConfig Config;
+        private static Dictionary<int, ExConn[]> Conns = new();
+        private static Dictionary<int, object> LockObj = new();
+        private static Dictionary<int, int> LastIndex = new();
+        private static List<RedisConfig> Config;
 
         /// <summary>
         /// 获取连接Task
         /// </summary>
-        private static ExConn GetConn()
+        private static ExConn GetConn(int id)
         {
             ExConn item;
             while (true)
             {
-                lock (LockObj)
+                lock (LockObj[id])
                 {
-                    item = Conns[LastIndex];
-                    LastIndex++;
-                    if (LastIndex >= Config.ConnCount)
-                        LastIndex = 0;
+                    item = Conns[id][LastIndex[id]];
+                    LastIndex[id]++;
+                    if (LastIndex[id] >= Config[id].ConnCount)
+                        LastIndex[id] = 0;
                 }
                 if (item.State == ConnState.Ok)
                 {
@@ -52,23 +52,28 @@ namespace ColoryrServer.DataBase
         /// <param name="item">连接池项目</param>
         public static void ConnReset(ExConn item)
         {
-            Task.Run(() =>
+            item.State = ConnState.Restart;
+            Config = ServerMain.Config.Redis;
+            if (Config.Count <= item.id)
             {
-                item.State = ConnState.Restart;
-                Config = ServerMain.Config.Redis;
-                string ConnectString = string.Format(Config.Conn, Config.IP, Config.Port);
-                var Conn = ConnectionMultiplexer.Connect(ConnectString);
-                item.Redis.Dispose();
-                item.Redis = Conn;
-                if (Test(item))
-                {
-                    return;
-                }
-                else
-                {
-                    ServerMain.LogError($"Redis数据库重连失败，连接池第{item.Index}个连接");
-                }
-            });
+                ServerMain.LogError($"Redis配置出错，id:{item.id}");
+                item.State = ConnState.Stop;
+                return;
+            }
+            var config = Config[item.id];
+            string ConnectString = string.Format(config.Conn, config.IP, config.Port);
+            var Conn = ConnectionMultiplexer.Connect(ConnectString);
+            item.Redis.Dispose();
+            item.Redis = Conn;
+            if (Test(item))
+            {
+                item.State = ConnState.Ok;
+                return;
+            }
+            else
+            {
+                ServerMain.LogError($"Redis数据库重连失败，连接池第{item.Index}个连接");
+            }
         }
 
         /// <summary>
@@ -95,44 +100,74 @@ namespace ColoryrServer.DataBase
         }
 
         /// <summary>
-        /// Mysql初始化
+        /// Redis初始化
         /// </summary>
         /// <returns>是否连接成功</returns>
-        public static dynamic Start()
+        public static void Start()
         {
+            ServerMain.LogOut($"正在连接Redis数据库");
             Config = ServerMain.Config.Redis;
-            string ConnStr = string.Format(Config.Conn, Config.IP, Config.Port);
-            Conns = new ExConn[Config.ConnCount];
-            for (int a = 0; a < Config.ConnCount; a++)
+            for (int a = 0; a < Config.Count; a++)
             {
-                try
+                var config = Config[a];
+                if (!config.Enable)
+                    continue;
+                string ConnectString = string.Format(config.Conn, config.IP, config.Port);
+                var conn = new ExConn[config.ConnCount];
+                State.Add(a, false);
+                LockObj.Add(a, new());
+                bool isok = false;
+                for (int b = 0; b < config.ConnCount; b++)
                 {
-                    var Conn = new ExConn
+                    try
                     {
-                        Redis = ConnectionMultiplexer.Connect(ConnStr),
-                        Index = a,
-                        State = ConnState.Ok,
-                        Type = ConnType.Redis
-                    };
-                    if (Test(Conn))
-                    {
-                        Conns[a] = Conn;
+                        var Conn = ConnectionMultiplexer.Connect(ConnectString);
+                        var item = new ExConn
+                        {
+                            id = a,
+                            State = ConnState.Close,
+                            Type = ConnType.Redis,
+                            Redis = Conn,
+                            Index = b
+                        };
+                        if (Test(item))
+                        {
+                            item.State = ConnState.Ok;
+                            conn[b] = item;
+                        }
+                        else
+                        {
+                            foreach (var item1 in conn)
+                            {
+                                if (item1 != null)
+                                    item1.Redis.Dispose();
+                            }
+                            ServerMain.LogError($"Redis数据库{a}连接失败");
+                            isok = false;
+                            break;
+                        }
                     }
-                    else
+                    catch(Exception e)
                     {
-                        State = false;
-                        return false;
+                        foreach (var item1 in conn)
+                        {
+                            if (item1 != null)
+                                item1.Redis.Dispose();
+                        }
+                        ServerMain.LogError(e);
+                        ServerMain.LogError($"Redis数据库{a}连接失败");
+                        isok = false;
+                        break;
                     }
                 }
-                catch (Exception e)
+                if (!isok)
                 {
-                    ServerMain.LogError(e);
-                    State = false;
-                    return false;
+                    continue;
                 }
+                State[a] = true;
+                Conns.Add(a, conn);
+                ServerMain.LogOut($"Redis数据库{a}已连接");
             }
-            State = true;
-            return true;
         }
 
         /// <summary>
@@ -140,16 +175,19 @@ namespace ColoryrServer.DataBase
         /// </summary>
         public static void Stop()
         {
-            if (State)
+            foreach (var item in State)
             {
-                State = false;
-                foreach (var a in Conns)
-                {
-                    a.State = ConnState.Close;
-                    a.Redis.Dispose();
-                }
-                ServerMain.LogOut("Redis数据库已断开");
+                State[item.Key] = false;
             }
+            foreach (var item in Conns)
+            {
+                foreach (var item1 in item.Value)
+                {
+                    item1.State = ConnState.Close;
+                    item1.Redis.Dispose();
+                }
+            }
+            ServerMain.LogOut("Redis数据库已断开");
         }
 
         /// <summary>
@@ -157,16 +195,17 @@ namespace ColoryrServer.DataBase
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>值</returns>
-        public static RedisValue Get(string key)
+        public static RedisValue Get(string key, int id)
         {
             try
             {
                 ExConn conn = null;
-                var task = Task.Run(()=>
+                CancellationTokenSource cancel = new();
+                var task = Task.Run(() =>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     var data = conn.Redis.GetDatabase().StringGet(key);
                     conn.State = ConnState.Ok;
@@ -174,6 +213,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -189,16 +229,17 @@ namespace ColoryrServer.DataBase
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="expireMinutes">存在秒</param>
-        public static bool Set(string key, string value, int expireMinutes)
+        public static bool Set(string key, string value, int expireMinutes, int id)
         {
             try
             {
                 ExConn conn = null;
+                CancellationTokenSource cancel = new();
                 var task = Task.Run(() =>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     bool data = false;
                     if (expireMinutes > 0)
@@ -214,6 +255,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -227,16 +269,17 @@ namespace ColoryrServer.DataBase
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否存在</returns>
-        public static bool Exists(string key)
+        public static bool Exists(string key, int id)
         {
             try
             {
                 ExConn conn = null;
+                CancellationTokenSource cancel = new();
                 var task = Task.Run(() =>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     var data = conn.Redis.GetDatabase().KeyExists(key);
                     conn.State = ConnState.Ok;
@@ -244,6 +287,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -257,16 +301,17 @@ namespace ColoryrServer.DataBase
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否移除</returns>
-        public static bool Remove(string key)
+        public static bool Remove(string key, int id)
         {
             try
             {
                 ExConn conn = null;
+                CancellationTokenSource cancel = new();
                 var task = Task.Run(() =>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     var data = conn.Redis.GetDatabase().KeyDelete(key);
                     conn.State = ConnState.Ok;
@@ -274,6 +319,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("Redis数据库超时");
                 }
             }
@@ -287,16 +333,17 @@ namespace ColoryrServer.DataBase
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>累加后的值</returns>
-        public static long Increment(string key, long val = 1)
+        public static long Increment(string key, int id, long val = 1)
         {
             try
             {
                 ExConn conn = null;
+                CancellationTokenSource cancel = new();
                 var task = Task.Run(() =>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     var data = conn.Redis.GetDatabase().StringIncrement(key, val);
                     conn.State = ConnState.Ok;
@@ -304,6 +351,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("Redis数据库超时");
                 }
             }

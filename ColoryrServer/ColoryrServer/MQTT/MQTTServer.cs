@@ -14,16 +14,16 @@ namespace ColoryrServer.MQTT
         private static IMqttServer MqttServer;
         public static async void Start()
         {
-            ServerMain.LogOut("正在启动Mqtt");
+            ServerMain.LogOut("Mqtt服务器正在启动");
             var optionsBuilder = new MqttServerOptionsBuilder()
                      .WithConnectionValidator(ConnectionValidator)
                      .WithSubscriptionInterceptor(SubscriptionInterceptor)
                      .WithApplicationMessageInterceptor(ApplicationMessageInterceptor)
                      .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
-
+            ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MQTTConfig.Port}");
             MqttServer = new MqttFactory().CreateMqttServer();
             await MqttServer.StartAsync(optionsBuilder.Build());
-            ServerMain.LogOut("已启动Mqtt");
+            ServerMain.LogOut("Mqtt服务器已启动");
         }
 
         public static async void Send(string Topic, string data)

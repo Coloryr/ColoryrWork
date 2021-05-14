@@ -28,7 +28,7 @@ namespace ColoryrServer.IoT
                 var ip = IPAddress.Parse(ServerMain.Config.IoT.IP);
                 TcpServer = new TcpListener(ip, ServerMain.Config.IoT.Port);
                 TcpServer.Start();
-
+                ServerMain.LogOut($"IoT服务器监听{ServerMain.Config.IoT.IP}:{ServerMain.Config.IoT.Port}");
                 UdpServer = new Socket(SocketType.Dgram, ProtocolType.Udp);
                 UdpServer.Bind(new IPEndPoint(ip, ServerMain.Config.IoT.Port));
 

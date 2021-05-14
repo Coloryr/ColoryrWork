@@ -153,6 +153,38 @@ namespace ColoryrBuild
             }
             App.LogShow("刷新", "App刷新成功");
         }
+        private async void ReMqtt()
+        {
+            var list = await App.HttpUtils.GetList(CodeType.Mqtt);
+            if (list == null)
+            {
+                App.LogShow("刷新", "Mqtt刷新失败");
+                return;
+            }
+            MqttList = list.List;
+            ListMqtt.Items.Clear();
+            foreach (var item in AppList)
+            {
+                ListMqtt.Items.Add(item.Value);
+            }
+            App.LogShow("刷新", "Mqtt刷新成功");
+        }
+        private async void ReTask()
+        {
+            var list = await App.HttpUtils.GetList(CodeType.Task);
+            if (list == null)
+            {
+                App.LogShow("刷新", "Task刷新失败");
+                return;
+            }
+            TaskList = list.List;
+            ListTask.Items.Clear();
+            foreach (var item in AppList)
+            {
+                ListTask.Items.Add(item.Value);
+            }
+            App.LogShow("刷新", "Task刷新成功");
+        }
         public void Re(CodeType type)
         {
             switch (type)
@@ -171,6 +203,12 @@ namespace ColoryrBuild
                     break;
                 case CodeType.Robot:
                     ReRobot();
+                    break;
+                case CodeType.Task:
+                    ReTask();
+                    break;
+                case CodeType.Mqtt:
+                    ReMqtt();
                     break;
             }
         }
@@ -443,6 +481,114 @@ namespace ColoryrBuild
         private void Clear_WebSocket_Click(object sender, RoutedEventArgs e)
         {
             InputWebSocket.Text = "";
+        }
+
+        private async void Add_Mqtt_Click(object sender, RoutedEventArgs e)
+        {
+            var data = new InputWindow("UUID设置").Set();
+            if (string.IsNullOrWhiteSpace(data))
+                return;
+            var list = await App.HttpUtils.Add(CodeType.Mqtt, data);
+            if (list == null)
+            {
+                App.LogShow("添加", "服务器返回错误");
+                return;
+            }
+            App.LogShow("创建", list.Message);
+            if (list.Build)
+            {
+                ReMqtt();
+            }
+        }
+        private void Change_Mqtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListMqtt.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListMqtt.SelectedItem;
+            App.AddEdit(item, CodeType.Mqtt);
+        }
+        private async void Delete_Mqtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListMqtt.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListMqtt.SelectedItem;
+            var res = new ChoseWindow("删除确认", "是否要删除").Set();
+            if (res)
+            {
+                var data = await App.HttpUtils.Remove(CodeType.Mqtt, item);
+                if (data == null)
+                {
+                    App.LogShow("删除", "服务器返回错误");
+                    return;
+                }
+                App.LogShow("删除", data.Message);
+                if (data.Build)
+                {
+                    ReMqtt();
+                }
+            }
+        }
+        private void Re_Mqtt_Click(object sender, RoutedEventArgs e)
+        {
+            ReMqtt();
+        }
+        private void Clear_Mqtt_Click(object sender, RoutedEventArgs e)
+        {
+            InputMqtt.Text = "";
+        }
+
+        private async void Add_Task_Click(object sender, RoutedEventArgs e)
+        {
+            var data = new InputWindow("UUID设置").Set();
+            if (string.IsNullOrWhiteSpace(data))
+                return;
+            var list = await App.HttpUtils.Add(CodeType.Task, data);
+            if (list == null)
+            {
+                App.LogShow("添加", "服务器返回错误");
+                return;
+            }
+            App.LogShow("创建", list.Message);
+            if (list.Build)
+            {
+                ReTask();
+            }
+        }
+        private void Change_Task_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListTask.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListTask.SelectedItem;
+            App.AddEdit(item, CodeType.Task);
+        }
+        private async void Delete_Task_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListTask.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListTask.SelectedItem;
+            var res = new ChoseWindow("删除确认", "是否要删除").Set();
+            if (res)
+            {
+                var data = await App.HttpUtils.Remove(CodeType.Task, item);
+                if (data == null)
+                {
+                    App.LogShow("删除", "服务器返回错误");
+                    return;
+                }
+                App.LogShow("删除", data.Message);
+                if (data.Build)
+                {
+                    ReTask();
+                }
+            }
+        }
+        private void Re_Task_Click(object sender, RoutedEventArgs e)
+        {
+            ReTask();
+        }
+        private void Clear_Task_Click(object sender, RoutedEventArgs e)
+        {
+            InputTask.Text = "";
         }
 
         private async void Add_App_Click(object sender, RoutedEventArgs e)

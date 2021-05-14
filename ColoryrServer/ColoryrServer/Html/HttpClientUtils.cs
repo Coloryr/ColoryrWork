@@ -28,7 +28,6 @@ namespace ColoryrServer.Html
         }
         public static ExClient Get()
         {
-            return new ExClient();
             while (true)
             {
                 ExClient item;

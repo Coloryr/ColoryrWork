@@ -5,25 +5,25 @@ namespace ColoryrServer.Utils
 {
     internal class Css : HtmlCompression.Core.ICompressor
     {
+        private static readonly CssCompressor css = new();
         public string Compress(string source)
         {
-            CssCompressor css = new CssCompressor();
             return css.Compress(source);
         }
     }
     internal class JS : HtmlCompression.Core.ICompressor
     {
+        private static readonly JavaScriptCompressor css = new();
         public string Compress(string source)
         {
             if (source == "")
                 return source;
-            JavaScriptCompressor css = new JavaScriptCompressor();
             return css.Compress(source);
         }
     }
     internal class CodeCompress
     {
-        private static readonly HtmlCompressor Compress = new HtmlCompressor(new HtmlCompressorSettings
+        private static readonly HtmlCompressor Compress = new(new HtmlCompressorSettings
         {
             CompressCss = true,
             CompressJavaScript = true,

@@ -10,7 +10,7 @@ namespace ColoryrServer.DataBase
     /// </summary>
     internal enum ConnState
     {
-        Ok, Error, Restart, Open, Close
+        Ok, Error, Restart, Open, Close, Stop
     }
     /// <summary>
     /// 存储类型
@@ -24,6 +24,7 @@ namespace ColoryrServer.DataBase
     /// </summary>
     internal record ExConn
     {
+        public int id;
         public int Index;
         public ConnState State;
         public ConnType Type;

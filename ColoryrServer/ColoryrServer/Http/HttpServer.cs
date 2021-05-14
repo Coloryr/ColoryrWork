@@ -426,25 +426,32 @@ namespace ColoryrServer.Http
     }
     class HttpServer
     {
-        public static HttpListener Listener;//http服务器
         private static Thread[] Workers;                             // 工作线程组
         public static ConcurrentBag<HttpListenerContext> Queue;   // 请求队列
+        public static List<HttpListener> Listeners;
         public static bool IsActive { get; set; }//是否在运行
 
         private static void Init()
         {
-            ServerMain.LogOut("Http服务器正在启动");
-            Listener = new();
-            Workers = new Thread[ServerMain.Config.Http.ThreadNumber];
+            ServerMain.LogOut($"Http服务器正在启动");
+
+            Workers = new Thread[ServerMain.Config.HttpThreadNumber];
+            Listeners = new();
             Queue = new();
             IsActive = false;
 
-            Listener.Prefixes.Add("http://" + ServerMain.Config.Http.IP + ":" +
-                ServerMain.Config.Http.Port + "/");
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            foreach (var item in ServerMain.Config.Http)
             {
-                Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
-                Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+                var Listener = new HttpListener();
+                Listener.Prefixes.Add("http://" + item.IP + ":" +
+                item.Port + "/");
+                ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Listener.TimeoutManager.EntityBody = TimeSpan.FromSeconds(30);
+                    Listener.TimeoutManager.RequestQueue = TimeSpan.FromSeconds(30);
+                }
+                Listeners.Add(Listener);
             }
         }
 
@@ -460,8 +467,11 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
-                Listener.Start();
-                Listener.BeginGetContext(ContextReady, null);
+                foreach (var item in Listeners)
+                {
+                    item.Start();
+                    item.BeginGetContext(ContextReady, null);
+                }
                 ServerMain.LogOut("Http服务器已启动");
             }
             catch (Exception e)
@@ -482,8 +492,11 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
-                Listener.Start();
-                Listener.BeginGetContext(ContextReady, null);
+                foreach (var item in Listeners)
+                {
+                    item.Start();
+                    item.BeginGetContext(ContextReady, item);
+                }
                 ServerMain.LogOut("Http服务器已启动");
             }
             catch (Exception e)
@@ -496,8 +509,9 @@ namespace ColoryrServer.Http
         {
             if (IsActive)
             {
-                Listener.BeginGetContext(ContextReady, null);
-                Queue.Add(Listener.EndGetContext(ar));
+                var http = ar.AsyncState as HttpListener;
+                http.BeginGetContext(ContextReady, http);
+                Queue.Add(http.EndGetContext(ar));
             }
         }
 
@@ -507,7 +521,11 @@ namespace ColoryrServer.Http
             {
                 ServerMain.LogOut("Http服务器正在关闭");
                 IsActive = false;
-                Listener.Stop();
+                foreach (var item in Listeners)
+                {
+                    item.Stop();
+                    item.BeginGetContext(ContextReady, null);
+                }
                 ServerMain.LogOut("Http服务器已关闭");
             }
         }

@@ -14,31 +14,30 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 连接状态
         /// </summary>
-        public static bool State { get; private set; }
+        public static Dictionary<int, bool> State = new();
 
         /// <summary>
         /// 连接池
         /// </summary>
-        private static ExConn[] Conns;
-
-        private static readonly object LockObj = new();
-        private static int LastIndex = 0;
-        private static MSsqlConfig Config;
+        private static Dictionary<int, ExConn[]> Conns = new();
+        private static Dictionary<int, object> LockObj = new();
+        private static Dictionary<int, int> LastIndex = new();
+        private static List<MSsqlConfig> Config;
 
         /// <summary>
         /// 获取连接Task
         /// </summary>
-        private static ExConn GetConn()
+        private static ExConn GetConn(int id)
         {
             ExConn item;
             while (true)
             {
-                lock (LockObj)
+                lock (LockObj[id])
                 {
-                    item = Conns[LastIndex];
-                    LastIndex++;
-                    if (LastIndex >= Config.ConnCount)
-                        LastIndex = 0;
+                    item = Conns[id][LastIndex[id]];
+                    LastIndex[id]++;
+                    if (LastIndex[id] >= Config[id].ConnCount)
+                        LastIndex[id] = 0;
                 }
                 if (item.State == ConnState.Ok)
                 {
@@ -51,7 +50,7 @@ namespace ColoryrServer.DataBase
                     catch (SqlException e)
                     {
                         ServerMain.LogError(e);
-                        ConnReset(item);
+                        Task.Run(() => ConnReset(item));
                     }
                 }
                 Thread.Sleep(1);
@@ -64,24 +63,29 @@ namespace ColoryrServer.DataBase
         /// <param name="item">连接池项目</param>
         public static void ConnReset(ExConn item)
         {
-            Task.Run(() =>
+            item.State = ConnState.Restart;
+            Config = ServerMain.Config.MSsql;
+            if (Config.Count <= item.id)
             {
-                item.State = ConnState.Restart;
-                Config = ServerMain.Config.MSsql;
-                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
-                string ConnectString = string.Format(Config.Conn, Config.IP, Config.User, pass);
-                var Conn = new SqlConnection(ConnectString);
-                item.Ms.Dispose();
-                item.Ms = Conn;
-                if (Test(item))
-                {
-                    return;
-                }
-                else
-                {
-                    ServerMain.LogError($"Ms数据库重连失败，连接池第{item.Index}个连接");
-                }
-            });
+                ServerMain.LogError($"Ms配置出错，id:{item.id}");
+                item.State = ConnState.Stop;
+                return;
+            }
+            var config = Config[item.id];
+            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
+            string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
+            var Conn = new SqlConnection(ConnectString);
+            item.Ms.Dispose();
+            item.Ms = Conn;
+            if (Test(item))
+            {
+                item.State = ConnState.Ok;
+                return;
+            }
+            else
+            {
+                ServerMain.LogError($"Ms数据库连接失败，连接池{item.id}第{item.Index}个连接");
+            }
         }
 
         /// <summary>
@@ -119,34 +123,58 @@ namespace ColoryrServer.DataBase
         /// MSCon初始化
         /// </summary>
         /// <returns>是否连接成功</returns>
-        public static bool Start()
+        public static void Start()
         {
+            ServerMain.LogOut($"正在连接Ms数据库");
             Config = ServerMain.Config.MSsql;
-            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(Config.Password));
-            string ConnectString = string.Format(Config.Conn, Config.IP, Config.User, pass);
-            Conns = new ExConn[Config.ConnCount];
-            for (int a = 0; a < Config.ConnCount; a++)
+            for (int a = 0; a < Config.Count; a++)
             {
-                var Conn = new SqlConnection(ConnectString);
-                var item = new ExConn
+                var config = Config[a];
+                if (!config.Enable)
+                    continue;
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
+                string ConnectString = string.Format(config.Conn, config.IP,  config.User, pass);
+                var conn = new ExConn[config.ConnCount];
+                State.Add(a, false);
+                LockObj.Add(a, new());
+                bool isok = false;
+                for (int b = 0; b < config.ConnCount; b++)
                 {
-                    State = ConnState.Error,
-                    Type = ConnType.Ms,
-                    Ms = Conn,
-                    Index = a
-                };
-                if (Test(item))
-                {
-                    Conns[a] = item;
+                    var Conn = new SqlConnection(ConnectString);
+                    var item = new ExConn
+                    {
+                        id = a,
+                        State = ConnState.Close,
+                        Type = ConnType.Ms,
+                        Ms = Conn,
+                        Index = b
+                    };
+                    if (Test(item))
+                    {
+                        item.State = ConnState.Ok;
+                        conn[b] = item;
+                    }
+                    else
+                    {
+                        foreach (var item1 in conn)
+                        {
+                            if (item1 != null)
+                                item1.Ms?.Dispose();
+                        }
+                        ServerMain.LogError($"Ms数据库{a}连接失败");
+                        isok = false;
+                        break;
+                    }
+                    isok = true;
                 }
-                else
+                if (!isok)
                 {
-                    State = false;
-                    return false;
+                    continue;
                 }
+                State[a] = true;
+                Conns.Add(a, conn);
+                ServerMain.LogOut($"Ms数据库{a}已连接");
             }
-            State = true;
-            return true;
         }
 
         /// <summary>
@@ -154,16 +182,19 @@ namespace ColoryrServer.DataBase
         /// </summary>
         public static void Stop()
         {
-            if (State)
+            foreach (var item in State)
             {
-                State = false;
-                foreach (var a in Conns)
-                {
-                    a.State = ConnState.Close;
-                    a.Ms.Dispose();
-                }
-                ServerMain.LogOut("Ms数据库已断开");
+                State[item.Key] = false;
             }
+            foreach (var item in Conns)
+            {
+                foreach (var item1 in item.Value)
+                {
+                    item1.State = ConnState.Close;
+                    item1.Ms.Dispose();
+                }
+            }
+            ServerMain.LogOut("Ms数据库已断开");
         }
 
         /// <summary>
@@ -172,16 +203,17 @@ namespace ColoryrServer.DataBase
         /// <param name="Database">数据库</param>
         /// <param name="Sql">SQL语句</param>
         /// <returns>结果集</returns>
-        public static List<List<dynamic>> MSsqlSql(SqlCommand Sql, string Database)
+        public static List<List<dynamic>> MSsqlSql(SqlCommand Sql, string Database, int id)
         {
             try
             {
                 ExConn conn = null;
+                CancellationTokenSource cancel = new();
                 var task = Task.Run(()=>
                 {
-                    conn = GetConn();
-                });
-                if (Task.WhenAny(task, Task.Delay(Config.TimeOut)).Result == task)
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     Sql.Connection = conn.Ms;
                     Sql.Connection.ChangeDatabase(Database);
@@ -201,6 +233,7 @@ namespace ColoryrServer.DataBase
                 }
                 else
                 {
+                    cancel.Cancel(false);
                     throw new VarDump("MS数据库超时");
                 }
             }
