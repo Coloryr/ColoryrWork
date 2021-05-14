@@ -59,6 +59,10 @@ namespace ColoryrServer.FileSystem
             {
                 Directory.CreateDirectory(MqttFileLocal);
             }
+            if (!Directory.Exists(TaskFileLocal))
+            {
+                Directory.CreateDirectory(TaskFileLocal);
+            }
         }
         private static void Storage(string Local, object obj)
         {

@@ -87,13 +87,15 @@ namespace ColoryrServer.TaskUtils
                                     obj.State = TaskState.Going;
                                 }
                             }
+                            if (obj == null)
+                                break;
                             obj.Cancel = CancellationTokenSource.CreateLinkedTokenSource(Cancel.Token);
                             bool ok = false;
-                            obj.RunTask = new Task(() =>
+                            obj.RunTask = Task.Run(() =>
                             {
                                 ok = DllRun.TaskGo(obj);
                             }, obj.Cancel.Token);
-                            var delay = Task.Delay(ServerMain.Config.TaskConfig.MaxTime);
+                            var delay = Task.Delay(TimeSpan.FromSeconds(ServerMain.Config.TaskConfig.MaxTime));
                             var res = Task.WhenAny(obj.RunTask, delay).Result;
                             if (res == delay)
                             {
@@ -144,7 +146,9 @@ namespace ColoryrServer.TaskUtils
                 var item = Tasks[arg.Name];
                 if (item.Name == arg.Name)
                 {
-                    item.Times++;
+                    item.State = TaskState.Ready;
+                    item.Dll = arg.Dll;
+                    item.Times = arg.Times;
                     return true;
                 }
                 else

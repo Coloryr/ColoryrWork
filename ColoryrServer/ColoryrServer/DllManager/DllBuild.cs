@@ -224,17 +224,17 @@ namespace ColoryrServer.DllManager
                             };
                         break;
                     case ReType.AddMqtt:
-                        if (CSFile.GetRobot(json.UUID) == null)
+                        if (CSFile.GetMqtt(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
                             {
                                 UUID = json.UUID,
-                                Type = CodeType.Robot,
+                                Type = CodeType.Mqtt,
                                 Version = 1,
                                 CreateTime = time,
                                 UpdataTime = time,
-                                Code = ColoryrServer_Resource.RobotDemoCS
+                                Code = ColoryrServer_Resource.MqttDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{MQTTMessage}", CodeDemo.MQTTMessage)
                                 .Replace("{MQTTValidator}", CodeDemo.MQTTValidator)
@@ -257,7 +257,7 @@ namespace ColoryrServer.DllManager
                             };
                         break;
                     case ReType.AddTask:
-                        if (CSFile.GetRobot(json.UUID) == null)
+                        if (CSFile.GetTask(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
                             File = new()
@@ -269,7 +269,7 @@ namespace ColoryrServer.DllManager
                                 UpdataTime = time,
                                 Code = ColoryrServer_Resource.TaskDemoCS
                                 .Replace("{name}", json.UUID)
-                                .Replace("{TaskMain}", CodeDemo.TaskRun)
+                                .Replace("{TaskRun}", CodeDemo.TaskRun)
                             };
                             CSFile.StorageTask(File);
                             resObj = new ReMessage

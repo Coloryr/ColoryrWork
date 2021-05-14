@@ -94,7 +94,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             }
 
 
-            DllStonge.AddDll(File.UUID, AssemblySave);
+            DllStonge.AddTask(File.UUID, AssemblySave);
 
             var time = string.Format("{0:s}", DateTime.Now);
             File.UpdataTime = time;

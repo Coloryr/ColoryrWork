@@ -55,6 +55,8 @@ namespace ColoryrBuild
             ReRobot();
             ReWebSocket();
             ReApp();
+            ReMqtt();
+            ReTask();
         }
 
         private async void ReDll()
@@ -163,7 +165,7 @@ namespace ColoryrBuild
             }
             MqttList = list.List;
             ListMqtt.Items.Clear();
-            foreach (var item in AppList)
+            foreach (var item in MqttList)
             {
                 ListMqtt.Items.Add(item.Value);
             }
@@ -179,7 +181,7 @@ namespace ColoryrBuild
             }
             TaskList = list.List;
             ListTask.Items.Clear();
-            foreach (var item in AppList)
+            foreach (var item in TaskList)
             {
                 ListTask.Items.Add(item.Value);
             }

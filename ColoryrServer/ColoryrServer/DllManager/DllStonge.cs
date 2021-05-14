@@ -257,7 +257,7 @@ namespace ColoryrServer.DllManager
         }
         public static DllBuildSave GetTask(string uuid)
         {
-            return MqttList.TryGetValue(uuid, out var dll) ? dll : null;
+            return TaskList.TryGetValue(uuid, out var dll) ? dll : null;
         }
 
         public static void AddApp(string uuid, AppBuildSave save)
@@ -323,6 +323,14 @@ namespace ColoryrServer.DllManager
             if (!Directory.Exists(AppLocal))
             {
                 Directory.CreateDirectory(AppLocal);
+            }
+            if (!Directory.Exists(TaskLocal))
+            {
+                Directory.CreateDirectory(TaskLocal);
+            }
+            if (!Directory.Exists(MqttLocal))
+            {
+                Directory.CreateDirectory(MqttLocal);
             }
             var DllName = Function.GetPathFileName(DllLocal);
             foreach (var FileItem in DllName)
@@ -544,6 +552,44 @@ namespace ColoryrServer.DllManager
                             AssemblySave.MethodInfos.Add(Item.Name, Item);
                     }
                     AddMqtt(Name, AssemblySave);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+            DllName = Function.GetPathFileName(TaskLocal);
+            foreach (var FileItem in DllName)
+            {
+                try
+                {
+                    if (FileItem.FullName.Contains(".pdb"))
+                        continue;
+                    using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
+                    string Name = FileItem.Name.Replace(".dll", "");
+                    ServerMain.LogOut("加载Task：" + Name);
+                    var AssemblySave = new DllBuildSave
+                    {
+                        Assembly = new AssemblyLoadContext(Name, true)
+                    };
+
+                    var pdb = FileItem.FullName.Replace(".dll", ".pdb");
+                    if (File.Exists(pdb))
+                    {
+                        using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                        AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
+                    }
+                    else
+                        AssemblySave.Assembly.LoadFromStream(FileStream);
+
+                    AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
+                        .GetTypes().Where(x => x.Name == Name).First();
+                    foreach (var Item in AssemblySave.DllType.GetMethods())
+                    {
+                        if (Item.Name is CodeDemo.TaskRun)
+                            AssemblySave.MethodInfos.Add(Item.Name, Item);
+                    }
+                    AddTask(Name, AssemblySave);
                 }
                 catch (Exception e)
                 {

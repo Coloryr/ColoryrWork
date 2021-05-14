@@ -84,6 +84,8 @@ namespace ColoryrBuild
                     CodeType.Robot => ReType.GetRobot,
                     CodeType.WebSocket => ReType.GetWebSocket,
                     CodeType.App => ReType.GetApp,
+                    CodeType.Mqtt => ReType.GetMqtt,
+                    CodeType.Task => ReType.GetTask,
                     _ => ReType.GetDll,
                 };
                 var pack = new BuildOBJ
@@ -145,6 +147,8 @@ namespace ColoryrBuild
                     CodeType.Robot => ReType.AddRobot,
                     CodeType.WebSocket => ReType.AddWebSocket,
                     CodeType.App => ReType.AddApp,
+                    CodeType.Mqtt => ReType.AddMqtt,
+                    CodeType.Task => ReType.AddTask,
                     _ => ReType.AddDll,
                 };
                 var pack = new BuildOBJ
@@ -181,6 +185,8 @@ namespace ColoryrBuild
                     CodeType.Robot => ReType.RemoveRobot,
                     CodeType.WebSocket => ReType.RemoveWebSocket,
                     CodeType.App => ReType.RemoveApp,
+                    CodeType.Mqtt => ReType.RemoveMqtt,
+                    CodeType.Task => ReType.RemoveTask,
                     _ => ReType.RemoveDll,
                 };
                 var pack = new BuildOBJ
@@ -252,6 +258,8 @@ namespace ColoryrBuild
                     CodeType.IoT => ReType.CodeIoT,
                     CodeType.Robot => ReType.CodeRobot,
                     CodeType.WebSocket => ReType.CodeWebSocket,
+                    CodeType.Mqtt => ReType.CodeMqtt,
+                    CodeType.Task => ReType.CodeTask,
                     _ => ReType.CodeDll,
                 };
                 var pack = new BuildOBJ
@@ -378,6 +386,8 @@ namespace ColoryrBuild
                     CodeType.IoT => ReType.UpdataIoT,
                     CodeType.Robot => ReType.UpdataRobot,
                     CodeType.WebSocket => ReType.UpdataWebSocket,
+                    CodeType.Mqtt => ReType.UpdataMqtt,
+                    CodeType.Task => ReType.UpdataTask,
                     _ => ReType.UpdataDll,
                 };
                 var pack = new BuildOBJ

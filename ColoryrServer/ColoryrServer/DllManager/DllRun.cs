@@ -383,6 +383,7 @@ namespace ColoryrServer.DllManager
                 MethodInfo MI = dll.MethodInfos[CodeDemo.TaskRun];
                 var Assembly = dll.DllType.Assembly.CreateInstance(dll.DllType.FullName, true);
                 MI.Invoke(Assembly, name.Arg);
+                return true;
             }
             catch (Exception e)
             {

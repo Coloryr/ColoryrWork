@@ -476,10 +476,11 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
-                foreach (var item in Listeners)
+                for (int a = 0; a < Listeners.Count; a++)
                 {
+                    var item = Listeners[a];
                     item.Start();
-                    item.BeginGetContext(ContextReady, item);
+                    item.BeginGetContext(ContextReady, a);
                 }
                 ServerMain.LogOut("Http服务器已启动");
             }
@@ -501,10 +502,11 @@ namespace ColoryrServer.Http
                     Workers[i].Start();
                 }
                 IsActive = true;
-                foreach (var item in Listeners)
+                for (int a = 0; a < Listeners.Count; a++)
                 {
+                    var item = Listeners[a];
                     item.Start();
-                    item.BeginGetContext(ContextReady, item);
+                    item.BeginGetContext(ContextReady, a);
                 }
                 ServerMain.LogOut("Http服务器已启动");
             }
@@ -518,8 +520,8 @@ namespace ColoryrServer.Http
         {
             if (IsActive)
             {
-                var http = ar.AsyncState as HttpListener;
-                http.BeginGetContext(ContextReady, http);
+                var http = Listeners[(int)ar.AsyncState];
+                http.BeginGetContext(ContextReady, ar.AsyncState);
                 Queue.Add(http.EndGetContext(ar));
             }
         }
@@ -690,7 +692,7 @@ namespace ColoryrServer.Http
                         ServerMain.LogError(e);
                     }
                 }
-                Thread.Sleep(1);
+                Thread.Sleep(TimeSpan.FromTicks(100));
             }
         }
     }

@@ -63,7 +63,7 @@ namespace ColoryrServer.SDK
         /// <summary>
         /// 参数
         /// </summary>
-        public object[] Arg { get; set; }
+        public object[] Arg { get; set; } = new object[1];
         /// <summary>
         /// 循环次数
         /// </summary>
