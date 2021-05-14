@@ -4,7 +4,7 @@ namespace Lib.Build.Object
 {
     public enum CodeType
     {
-        Dll, Class, IoT, WebSocket, Robot, App, Mqtt, Task
+        Dll, Class, IoT, WebSocket, Robot, App, Mqtt, Task, Web
     }
     public record CSFileObj
     {
@@ -42,6 +42,11 @@ namespace Lib.Build.Object
         }
         public string Code { get; set; }
         public CodeType Type { get; set; }
+    }
+    public record WebObj : CSFileObj
+    { 
+        public Dictionary<string, string> Codes { get; set; }
+        public Dictionary<string, string> Files { get; set; }
     }
     public record AppTempFileObj : CSFileObj
     {

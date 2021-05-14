@@ -110,6 +110,32 @@ namespace ColoryrBuild
             }
         }
 
+        public async Task<CSFileList> GetWebList()
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.GetWeb
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await GetWebList();
+                }
+                return JsonConvert.DeserializeObject<CSFileList>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<AppFileList> GetAppList()
         {
             try
@@ -316,6 +342,33 @@ namespace ColoryrBuild
             }
         }
 
+        public async Task<WebObj> GetWebCode(string name)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.CodeWeb,
+                    UUID = name
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await GetWebCode(name);
+                }
+                return JsonConvert.DeserializeObject<WebObj>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<ReMessage> BuildApp(AppFileObj obj, ReType type, string file, List<CodeEditObj> list)
         {
             try
@@ -407,6 +460,98 @@ namespace ColoryrBuild
                 if (!CheckLogin(data))
                 {
                     return await Build(obj, type, list);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ReMessage> BuildWeb(CSFileObj obj, List<CodeEditObj> list, string Name)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode =  ReType.WebUpdata,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Text = obj.Text,
+                    Code = JsonConvert.SerializeObject(list),
+                    Temp = Name
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await BuildWeb(obj, list, Name);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ReMessage> AddWebCode(CSFileObj obj, string Name)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.WebAddCode,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Text = obj.Text,
+                    Code = Name
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await AddWebCode(obj, Name);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ReMessage> AddWebFile(CSFileObj obj, string Name, string by)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.WebAddCode,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Text = obj.Text,
+                    Code = Name,
+                    Temp = by
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await AddWebFile(obj, Name, by);
                 }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }

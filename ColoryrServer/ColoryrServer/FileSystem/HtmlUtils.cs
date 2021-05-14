@@ -1,4 +1,6 @@
 ﻿using ColoryrServer.SDK;
+using Lib.Build.Object;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace ColoryrServer.FileSystem
         private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes\Static\";
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
-        private static readonly ConcurrentDictionary<string, Dictionary<string, string>> HtmlCodeList = new();
+        private static readonly ConcurrentDictionary<string, WebObj> HtmlCodeList = new();
 
         private static byte[] Index;
 
@@ -66,43 +68,20 @@ namespace ColoryrServer.FileSystem
 
             Index = File.ReadAllBytes(HtmlLocal + "index.html");
 
-            var list = new DirectoryInfo(HtmlCodeLocal).GetDirectories();
+            var list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)
             {
-                ServerMain.LogOut($"加载网页{item.Name}");
-                var list1 = new DirectoryInfo(item.FullName).GetFiles();
-                var list2 = new Dictionary<string, string>();
-                foreach (var item1 in list1)
+                try
                 {
-                    if (item1.Extension is ".html" or ".css" or ".js" or ".json" or ".txt")
-                        list2.Add(item1.Name, File.ReadAllText(item1.FullName));
-                    else
-                        list2.Add(item1.Name, null);
+                    WebObj obj = JsonConvert.DeserializeObject<WebObj>(File.ReadAllText(item.FullName));
+                    HtmlCodeList.TryAdd(item.Name, obj);
+                    ServerMain.LogOut($"加载网页{item.Name}");
                 }
-                HtmlCodeList.TryAdd(item.Name, list2);
-            }
-
-            list = new DirectoryInfo(HtmlLocal).GetDirectories();
-            foreach (var item in list)
-            {
-                var list1 = new DirectoryInfo(item.FullName).GetFiles();
-                var list2 = new Dictionary<string, byte[]>();
-                if (!HtmlCodeList.ContainsKey(item.Name))
+                catch (Exception e)
                 {
-                    continue;
+                    ServerMain.LogOut($"加载网页{item.Name}错误");
+                    ServerMain.LogError(e);
                 }
-                foreach (var item1 in list1)
-                {
-                    if (!(item1.Extension is ".html" or ".css" or ".js" or ".json" or ".txt"))
-                    {
-                        if (!HtmlCodeList[item.Name].ContainsKey(item1.Name))
-                            HtmlCodeList[item.Name].Add(item1.Name, null);
-                    }
-                        
-                    var temp = File.ReadAllBytes(item1.FullName);
-                    list2.Add(item1.Name, temp);
-                }
-                HtmlList.TryAdd(item.Name, list2);
             }
         }
         private static void DeleteAll(string UUID)
@@ -110,42 +89,37 @@ namespace ColoryrServer.FileSystem
             string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
             string dir = HtmlRemoveLocal + $"[{UUID}]-{time}" + "\\";
             Directory.CreateDirectory(dir);
-            foreach (var item in HtmlCodeList[UUID])
-            {
-                File.WriteAllText(dir + item.Key, item.Value);
-            }
-            foreach (var item in HtmlList[UUID])
-            {
-                if (File.Exists(dir + item.Key))
-                {
-                    continue;
-                }
-                File.WriteAllBytes(dir + item.Key, item.Value);
-            }
-
+            var obj = HtmlCodeList[UUID];
+            string info =
+$@"/*
+UUID:{obj.UUID},
+Text:{obj.Text},
+Version:{obj.Version}
+*/
+";
+            File.WriteAllText(dir + "info.txt", info);
             string temp = HtmlLocal + UUID + "\\";
             if (Directory.Exists(temp))
             {
-                var info = new DirectoryInfo(temp);
-                var list = info.GetFiles();
-                foreach (var item in list)
-                {
-                    item.Delete();
-                }
-                info.Delete();
+                File.Delete(temp + UUID);
             }
 
             temp = HtmlCodeLocal + UUID + "\\";
             if (Directory.Exists(temp))
             {
-                var info = new DirectoryInfo(temp);
-                var list = info.GetFiles();
+                var info1 = new DirectoryInfo(temp);
+                var list = info1.GetFiles();
                 foreach (var item in list)
                 {
                     item.Delete();
                 }
-                info.Delete();
+                info1.Delete();
             }
+            foreach (var item in HtmlList[UUID])
+            {
+                File.WriteAllBytes(dir + item.Key, item.Value);  
+            }
+            HtmlList.TryRemove(UUID, out var temp1);
         }
         private static void Delete(string UUID, string Name)
         {
@@ -157,13 +131,19 @@ namespace ColoryrServer.FileSystem
             {
                 if (File.Exists(temp + Name))
                     File.Delete(temp + Name);
+                HtmlCodeList[UUID].Files.Remove(Name);
             }
-            else if(temp1[1] is ".html" or ".css" or ".js" or ".json" or ".txt")
+            else if (temp1[1] is ".html" or ".css" or ".js" or ".json" or ".txt")
             {
-                temp = HtmlCodeLocal + UUID + "\\";
+                HtmlCodeList[UUID].Codes.Remove(Name);
+            }
+            else
+            {
                 if (File.Exists(temp + Name))
                     File.Delete(temp + Name);
+                HtmlCodeList[UUID].Files.Remove(Name);
             }
+            Storage(HtmlCodeLocal + UUID, HtmlCodeList[UUID]);
         }
 
         private static void Save(string UUID, string Name, string Code)
@@ -220,37 +200,49 @@ namespace ColoryrServer.FileSystem
             else
                 HtmlList[UUID][Name] = Data;
 
-            if (!HtmlCodeList[UUID].ContainsKey(Name))
-                HtmlCodeList[UUID].Add(Name, null);
+            if (!HtmlCodeList[UUID].Files.ContainsKey(Name))
+                HtmlCodeList[UUID].Files.Add(Name, Name);
+        }
+
+        private static void Storage(string Local, object obj)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    File.WriteAllText(Local, JsonConvert.SerializeObject(obj, Formatting.Indented));
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            });
+        }
+
+        public static void New(WebObj obj)
+        {
+            HtmlCodeList.TryAdd(obj.UUID, obj);
+            Storage(HtmlCodeLocal + obj.UUID, obj);
         }
 
         public static void AddCode(string UUID, string Name, string Code)
         { 
-            Dictionary<string, string> list;
-            if (HtmlCodeList.ContainsKey(UUID))
+            WebObj obj = HtmlCodeList[UUID];
+            if (obj.Codes.ContainsKey(Name))
             {
-                list = HtmlCodeList[UUID];
-            }
-            else
-            {
-                list = new();
-                HtmlCodeList.TryAdd(Name, list);
+                obj.Codes.Remove(Name);
             }
 
-            if (list.ContainsKey(Name))
-            {
-                list.Remove(Name);
-            }
-
-            list.Add(Name, Code);
+            obj.Codes.Add(Name, Code);
             Save(UUID, Name, Code);
+            Storage(HtmlCodeLocal + obj.UUID, obj);
         }
 
         public static void Remove(string UUID, string Name)
         {
             if (HtmlCodeList.ContainsKey(UUID))
             {
-                HtmlCodeList[UUID].Remove(Name);
+                HtmlCodeList[UUID].Codes.Remove(Name);
             }
             if (HtmlList.ContainsKey(UUID))
             {

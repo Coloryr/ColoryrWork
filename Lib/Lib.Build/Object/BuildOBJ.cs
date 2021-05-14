@@ -2,13 +2,14 @@
 {
     public enum ReType
     {
-        AddDll, AddClass, AddIoT, AddWebSocket, AddRobot, AddMqtt, AddApp, AddTask,
-        GetDll, GetClass, GetIoT, GetWebSocket, GetRobot, GetMqtt, GetApp, GetTask,
-        CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot, CodeMqtt, CodeApp, CodeTask,
-        RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveApp, RemoveTask,
+        AddDll, AddClass, AddIoT, AddWebSocket, AddRobot, AddMqtt, AddApp, AddTask, AddWeb,
+        GetDll, GetClass, GetIoT, GetWebSocket, GetRobot, GetMqtt, GetApp, GetTask, GetWeb,
+        CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot, CodeMqtt, CodeApp, CodeTask, CodeWeb,
+        RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveApp, RemoveTask, RemoveWeb,
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask,
         AppRemoveFile, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
         AppCsUpdata, AppXamlUpdata, AppUpdata,
+        WebRemoveFile, WebAddFile, WebAddCode, WebRemoveCode, WebUpdata,
         Check, Login, GetApi,
         SetAppKey
     }

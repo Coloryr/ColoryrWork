@@ -21,6 +21,7 @@ namespace ColoryrBuild
         public Dictionary<string, CSFileObj> MqttList;
         public Dictionary<string, CSFileObj> TaskList;
         public Dictionary<string, AppTempFileObj> AppList;
+        public Dictionary<string, CSFileObj> WebList;
         public MainWindow()
         {
             InitializeComponent();
@@ -57,6 +58,7 @@ namespace ColoryrBuild
             ReApp();
             ReMqtt();
             ReTask();
+            ReWeb();
         }
 
         private async void ReDll()
@@ -187,6 +189,22 @@ namespace ColoryrBuild
             }
             App.LogShow("刷新", "Task刷新成功");
         }
+        private async void ReWeb()
+        {
+            var list = await App.HttpUtils.GetWebList();
+            if (list == null)
+            {
+                App.LogShow("刷新", "Web刷新失败");
+                return;
+            }
+            WebList = list.List;
+            ListWeb.Items.Clear();
+            foreach (var item in WebList)
+            {
+                ListWeb.Items.Add(item.Value);
+            }
+            App.LogShow("刷新", "Web刷新成功");
+        }
         public void Re(CodeType type)
         {
             switch (type)
@@ -211,6 +229,9 @@ namespace ColoryrBuild
                     break;
                 case CodeType.Mqtt:
                     ReMqtt();
+                    break;
+                case CodeType.Web:
+                    ReWeb();
                     break;
             }
         }
@@ -539,6 +560,60 @@ namespace ColoryrBuild
             InputMqtt.Text = "";
         }
 
+        private async void Add_Web_Click(object sender, RoutedEventArgs e)
+        {
+            var data = new InputWindow("UUID设置").Set();
+            if (string.IsNullOrWhiteSpace(data))
+                return;
+            var list = await App.HttpUtils.Add(CodeType.Web, data);
+            if (list == null)
+            {
+                App.LogShow("添加", "服务器返回错误");
+                return;
+            }
+            App.LogShow("创建", list.Message);
+            if (list.Build)
+            {
+                ReWeb();
+            }
+        }
+        private void Change_Web_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListWeb.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListWeb.SelectedItem;
+            App.AddEdit(item, CodeType.Web);
+        }
+        private async void Delete_Web_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListMqtt.SelectedItem == null)
+                return;
+            var item = (CSFileObj)ListWeb.SelectedItem;
+            var res = new ChoseWindow("删除确认", "是否要删除").Set();
+            if (res)
+            {
+                var data = await App.HttpUtils.Remove(CodeType.Web, item);
+                if (data == null)
+                {
+                    App.LogShow("删除", "服务器返回错误");
+                    return;
+                }
+                App.LogShow("删除", data.Message);
+                if (data.Build)
+                {
+                    ReWeb();
+                }
+            }
+        }
+        private void Re_Web_Click(object sender, RoutedEventArgs e)
+        {
+            ReWeb();
+        }
+        private void Clear_Web_Click(object sender, RoutedEventArgs e)
+        {
+            InputWeb.Text = "";
+        }
+
         private async void Add_Task_Click(object sender, RoutedEventArgs e)
         {
             var data = new InputWindow("UUID设置").Set();
@@ -793,6 +868,75 @@ namespace ColoryrBuild
                     if (item.Value.UUID.Contains(InputApp.Text))
                     {
                         ListApp.Items.Add(item.Value);
+                    }
+                }
+            }
+        }
+
+        private void Input_Web_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(InputWeb.Text))
+            {
+                ListWeb.Items.Clear();
+                foreach (var item in WebList)
+                {
+                    ListWeb.Items.Add(item.Value);
+                }
+            }
+            else
+            {
+                ListWeb.Items.Clear();
+                foreach (var item in WebList)
+                {
+                    if (item.Value.UUID.Contains(InputWeb.Text))
+                    {
+                        ListWeb.Items.Add(item.Value);
+                    }
+                }
+            }
+        }
+
+        private void Input_Task_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(InputTask.Text))
+            {
+                ListTask.Items.Clear();
+                foreach (var item in TaskList)
+                {
+                    ListTask.Items.Add(item.Value);
+                }
+            }
+            else
+            {
+                ListTask.Items.Clear();
+                foreach (var item in TaskList)
+                {
+                    if (item.Value.UUID.Contains(InputTask.Text))
+                    {
+                        ListTask.Items.Add(item.Value);
+                    }
+                }
+            }
+        }
+
+        private void Input_Mqtt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(InputMqtt.Text))
+            {
+                ListMqtt.Items.Clear();
+                foreach (var item in MqttList)
+                {
+                    ListWeb.Items.Add(item.Value);
+                }
+            }
+            else
+            {
+                ListMqtt.Items.Clear();
+                foreach (var item in MqttList)
+                {
+                    if (item.Value.UUID.Contains(InputMqtt.Text))
+                    {
+                        ListMqtt.Items.Add(item.Value);
                     }
                 }
             }
