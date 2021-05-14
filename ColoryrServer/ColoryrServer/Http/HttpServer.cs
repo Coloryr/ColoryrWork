@@ -324,6 +324,15 @@ namespace ColoryrServer.Http
         {
             string UUID = "0";
             string FunctionName = null;
+            var temp = HtmlUtils.GetFile(Url);
+            if (temp != null)
+            {
+                return new HttpReturn
+                {
+                    Data = temp,
+                    ContentType = ServerContentType.HTML
+                };
+            }
             if (Function.Constr(Url, '/') >= 2)
             {
                 int tow = Url.IndexOf('/', 2);
@@ -470,7 +479,7 @@ namespace ColoryrServer.Http
                 foreach (var item in Listeners)
                 {
                     item.Start();
-                    item.BeginGetContext(ContextReady, null);
+                    item.BeginGetContext(ContextReady, item);
                 }
                 ServerMain.LogOut("Http服务器已启动");
             }

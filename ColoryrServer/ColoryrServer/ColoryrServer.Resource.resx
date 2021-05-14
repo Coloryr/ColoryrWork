@@ -139,6 +139,9 @@
   <data name="DllDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DllDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="HtmlDemoHtml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\HtmlDemoHtml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="HtmlDocumentSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HtmlDocumentSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
@@ -150,6 +153,9 @@
   </data>
   <data name="HttpSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HttpSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="IndexHtml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\IndexHtml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="IoTDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\IoTDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>

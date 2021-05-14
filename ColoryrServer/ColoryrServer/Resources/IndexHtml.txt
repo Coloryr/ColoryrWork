@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ColoryrServer</title>
+    <style>
+        .center {
+            padding: 10px;
+            margin: 20px auto;
+            font-size: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center">
+        ª∂”≠ π”√ColoryrServer
+    </div>
+</body>
+
+</html>

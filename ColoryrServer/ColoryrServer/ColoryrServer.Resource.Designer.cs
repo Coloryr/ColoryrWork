@@ -237,6 +237,35 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似 &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
+        ///    &lt;title&gt;测试&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///
+        ///&lt;script src=&quot;https://cdn.jsdelivr.net/npm/vue/dist/vue.js&quot;&gt;&lt;/script&gt;
+        ///&lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;
+        ///
+        ///&lt;body&gt;
+        ///    &lt;div id=&quot;app&quot;&gt;
+        ///        &lt;h1&gt;Bitcoin Price Index&lt;/h1&gt;
+        ///
+        ///        &lt;section v-if=&quot;errored&quot;&gt;
+        ///            &lt;p&gt;We&apos;re sorry, we&apos;re not able to retrieve this information at the moment, please try back later&lt;/p&gt;
+        ///        &lt;/section&gt;
+        ///
+        ///        &lt;section v-else&gt;
+        ///             [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string HtmlDemoHtml {
+            get {
+                return ResourceManager.GetString("HtmlDemoHtml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 #region 程序集 HtmlAgilityPack, Version=1.11.29.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a
         ///// C:\Users\40206\.nuget\packages\htmlagilitypack\1.11.29\lib\netstandard2.0\HtmlAgilityPack.dll
         ///#endregion
@@ -340,6 +369,37 @@ namespace ColoryrServer {
         internal static string HttpSDK {
             get {
                 return ResourceManager.GetString("HttpSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
+        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        .center {
+        ///            padding: 10px;
+        ///            margin: 20px auto;
+        ///            font-size: 40px;
+        ///            text-align: center;
+        ///        }
+        ///    &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;center&quot;&gt;
+        ///        欢迎使用ColoryrServer
+        ///    &lt;/div&gt;
+        ///&lt;/body&gt;
+        ///
+        ///&lt;/html&gt; 的本地化字符串。
+        /// </summary>
+        internal static string IndexHtml {
+            get {
+                return ResourceManager.GetString("IndexHtml", resourceCulture);
             }
         }
         
@@ -628,7 +688,26 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///namespace ColoryrServer
+        ///{
+        ///    public class Note : NotesSDK
+        ///    {
+        ///        public Note()
+        ///        {
+        ///            Name = &quot;test&quot;;
+        ///            Text = &quot;一个注释&quot;;
+        ///        }
+        ///    }
+        ///    public class {name}
+        ///    {
+        ///        public void {TaskRun}(object[] args)
+        ///        {
+        ///             
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
         /// </summary>
         internal static string TaskDemoCS {
             get {
