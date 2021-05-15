@@ -36,7 +36,7 @@ namespace ColoryrServer.DllManager
 
                 MethodInfo MI = Dll.MethodInfos[FunName];
                 var Tran = new object[1] { Arg };
-                var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
+                var Assembly = Activator.CreateInstance(Dll.DllType);
                 dynamic DllReturn = MI.Invoke(Assembly, Tran);
                 if (DllReturn is Dictionary<string, object>)
                 {

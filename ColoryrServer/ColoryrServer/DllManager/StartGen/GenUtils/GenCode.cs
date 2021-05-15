@@ -5,6 +5,8 @@ using Microsoft.CodeAnalysis.Emit;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Threading;
 
 namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
@@ -18,6 +20,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
         public static readonly List<MetadataReference> AppReferences = new();
 
         private static readonly string AppLibLocal = ServerMain.RunLocal + "Libs/App/";
+        private static readonly string DllLibLocal = ServerMain.RunLocal + "Libs/Dll/";
 
         public static GenReOBJ StartGen(string Name, List<SyntaxTree> Code, GenLib lib)
         {
@@ -63,7 +66,34 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
         }
         public static void Start()
         {
+            if (!Directory.Exists(DllLibLocal))
+            {
+                Directory.CreateDirectory(DllLibLocal);
+            }
             var list = AppDomain.CurrentDomain.GetAssemblies();
+            bool add;
+            foreach (var item in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory))
+            {
+                add = true;
+                if (item.EndsWith(".dll"))
+                {
+                    foreach(var item1 in list)
+                    {
+                        if (item1.IsDynamic)
+                            continue;
+                        if (item1.Location == item)
+                        {
+                            add = false;
+                            break;
+                        }
+                    }
+                    if (add)
+                    {
+                        References.Add(MetadataReference.CreateFromFile(item));
+                    }
+                }
+            }
+           
             //导入DLL
             foreach (var Item in list)
             {
@@ -73,6 +103,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
                     continue;
                 References.Add(MetadataReference.CreateFromFile(Item.Location));
             }
+
             if (!Directory.Exists(AppLibLocal))
             {
                 Directory.CreateDirectory(AppLibLocal);

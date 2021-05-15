@@ -62,5 +62,8 @@
   <Import Project="..\..\Lib\Lib.IoT\Lib.IoT.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
   <Import Project="..\..\Lib.App\Lib.App.projitems" Label="Shared" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll&quot; &quot;$(TargetDir)System.Drawing.Common.dll&quot;" />
+  </Target>
 
 </Project>
