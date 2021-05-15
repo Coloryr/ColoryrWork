@@ -219,7 +219,7 @@ namespace ColoryrServer.DataBase
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump("Redis错误", e);
             }
         }
 
@@ -261,7 +261,7 @@ namespace ColoryrServer.DataBase
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -293,7 +293,7 @@ namespace ColoryrServer.DataBase
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -325,7 +325,7 @@ namespace ColoryrServer.DataBase
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -357,7 +357,7 @@ namespace ColoryrServer.DataBase
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump("Redis错误", e);
             }
         }
     }

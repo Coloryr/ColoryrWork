@@ -254,8 +254,7 @@ namespace ColoryrServer.DataBase
             }
             catch (OracleException e)
             {
-                ServerMain.LogError(e);
-                throw new VarDump(e);
+                throw new VarDump("执行sql语句出错", e);
             }
         }
     }

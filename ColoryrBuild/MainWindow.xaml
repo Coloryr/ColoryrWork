@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild"
         mc:Ignorable="d"
-        Title="ColoryrWork编辑器" MinHeight="474" Height="474" MinWidth="920" Width="920"
+        Title="ColoryrWork编辑器" MinHeight="474" Height="474" MinWidth="930" Width="930"
         Icon="/ColoryrWork.png" ResizeMode="CanMinimize" Closing="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
@@ -253,7 +253,6 @@
                                 <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
                                 <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
                                 <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="Key" Width="180" DisplayMemberBinding="{Binding Key}"/>
                                 <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
                                 <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
                             </GridView>

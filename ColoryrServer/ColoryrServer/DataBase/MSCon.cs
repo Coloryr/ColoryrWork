@@ -239,7 +239,7 @@ namespace ColoryrServer.DataBase
             }
             catch (SqlException e)
             {
-                throw new VarDump(e);
+                throw new VarDump("执行sql语句出错", e);
             }
         }
     }
