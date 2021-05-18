@@ -376,12 +376,8 @@ namespace ColoryrServer.Http
             }
             return new HttpReturn
             {
-                Data = StreamUtils.JsonOBJ(new GetMeesage
-                {
-                    Res = 666,
-                    Text = "未找到DLL",
-                    Data = Url
-                }),
+                Data = HtmlUtils.Html404,
+                ContentType = ServerContentType.HTML,
                 ReCode = 404
             };
         }

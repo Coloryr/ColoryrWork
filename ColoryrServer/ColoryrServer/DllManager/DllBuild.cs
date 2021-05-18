@@ -287,6 +287,38 @@ namespace ColoryrServer.DllManager
                                 Message = $"Task[{json.UUID}]已存在"
                             };
                         break;
+                    case ReType.AddWeb:
+                        if (HtmlUtils.GetHtml(json.UUID) == null)
+                        {
+                            var time = string.Format("{0:s}", DateTime.Now);
+                            WebObj File2 = new()
+                            {
+                                UUID = json.UUID,
+                                Version = 1,
+                                CreateTime = time,
+                                UpdataTime = time,
+                                Text = "",
+                                Codes = new()
+                                {
+                                    { "index.html", ColoryrServer_Resource.HtmlDemoHtml }
+                                },
+                                Files = new()
+                            };
+                            HtmlUtils.New(File2);
+                            resObj = new ReMessage
+                            {
+                                Build = true,
+                                Message = $"Web[{json.UUID}]已创建"
+                            };
+                            ServerMain.LogOut($"Web[{json.UUID}]创建");
+                        }  
+                        else
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]已存在"
+                            };
+                        break;
                     case ReType.GetDll:
                         List = new CSFileList();
                         foreach (var item in CSFile.DllFileList)
@@ -351,6 +383,14 @@ namespace ColoryrServer.DllManager
                         }
                         resObj = List;
                         break;
+                    case ReType.GetWeb:
+                        List = new CSFileList();
+                        foreach (var item in HtmlUtils.HtmlCodeList)
+                        {
+                            List.List.Add(item.Key, item.Value);
+                        }
+                        resObj = List;
+                        break;
                     case ReType.CodeDll:
                         resObj = CSFile.GetDll(json.UUID);
                         break;
@@ -371,6 +411,9 @@ namespace ColoryrServer.DllManager
                         break;
                     case ReType.CodeTask:
                         resObj = CSFile.GetTask(json.UUID);
+                        break;
+                    case ReType.CodeWeb:
+                        resObj = HtmlUtils.GetHtml(json.UUID);
                         break;
                     case ReType.GetApi:
                         resObj = APIFile.list;

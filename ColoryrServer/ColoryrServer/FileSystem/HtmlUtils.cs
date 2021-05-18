@@ -19,9 +19,19 @@ namespace ColoryrServer.FileSystem
         private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes\Static\";
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
-        private static readonly ConcurrentDictionary<string, WebObj> HtmlCodeList = new();
+        public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; private set; } = new();
 
-        private static byte[] Index;
+        private static byte[] HtmlIndex;
+        public static byte[] Html404 { get; private set; }
+
+        public static WebObj GetHtml(string uuid)
+        {
+            if (!HtmlCodeList.TryGetValue(uuid, out var item))
+            {
+                return null;
+            }
+            return item;
+        }
 
         public static byte[] GetFile(string local)
         {
@@ -31,11 +41,12 @@ namespace ColoryrServer.FileSystem
             {
                 if (string.IsNullOrWhiteSpace(uuid))
                 {
-                    return Index;
+                    return HtmlIndex;
                 }
                 if (HtmlList.ContainsKey(uuid))
                 {
-                    return HtmlList[uuid]["index.html"];
+                    if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
+                        return temp1;
                 }
             }
             else
@@ -43,10 +54,8 @@ namespace ColoryrServer.FileSystem
                 string name = temp[3];
                 if (HtmlList.ContainsKey(uuid))
                 {
-                    if (HtmlList[uuid].ContainsKey(name))
-                    {
-                        return HtmlList[uuid][name];
-                    }
+                    if (HtmlList[uuid].TryGetValue(name, out var temp1))
+                        return temp1;
                 }
             }
             return null;
@@ -66,7 +75,13 @@ namespace ColoryrServer.FileSystem
                 File.WriteAllText(HtmlLocal + "index.html", ColoryrServer_Resource.IndexHtml, Encoding.UTF8);
             }
 
-            Index = File.ReadAllBytes(HtmlLocal + "index.html");
+            if (!File.Exists(HtmlLocal + "404.html"))
+            {
+                File.WriteAllText(HtmlLocal + "404.html", ColoryrServer_Resource._404Html, Encoding.UTF8);
+            }
+
+            HtmlIndex = File.ReadAllBytes(HtmlLocal + "index.html");
+            Html404 = File.ReadAllBytes(HtmlLocal + "404.html");
 
             var list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)
@@ -74,7 +89,37 @@ namespace ColoryrServer.FileSystem
                 try
                 {
                     WebObj obj = JsonConvert.DeserializeObject<WebObj>(File.ReadAllText(item.FullName));
-                    HtmlCodeList.TryAdd(item.Name, obj);
+                    HtmlCodeList.TryAdd(obj.UUID, obj);
+                    string dir = HtmlLocal + obj.UUID + "\\";
+                    if(!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                        foreach (var item1 in obj.Codes)
+                        {
+                            File.WriteAllText(dir + item1.Key, item1.Value);
+                        }
+                        var list1 = new List<string>();
+                        foreach(var item1 in obj.Files)
+                        {
+                            if (!File.Exists(dir + item1.Key))
+                            {
+                                list1.Add(item1.Key);
+                            }
+                        }
+                        if(list1.Count!=0)
+                        {
+                            foreach (var item1 in list1)
+                            {
+                                obj.Files.Remove(item1);
+                            }
+                        }
+                    }
+                    Dictionary<string, byte[]> list2 = new();
+                    foreach (var item1 in new DirectoryInfo(dir).GetFiles())
+                    {
+                        list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
+                    }
+                    HtmlList.TryAdd(obj.UUID, list2);
                     ServerMain.LogOut($"加载网页{item.Name}");
                 }
                 catch (Exception e)
@@ -143,18 +188,12 @@ Version:{obj.Version}
                     File.Delete(temp + Name);
                 HtmlCodeList[UUID].Files.Remove(Name);
             }
-            Storage(HtmlCodeLocal + UUID, HtmlCodeList[UUID]);
+            Storage(HtmlCodeLocal + UUID + ".json", HtmlCodeList[UUID]);
         }
 
         private static void Save(string UUID, string Name, string Code)
         {
-            string temp = HtmlCodeLocal + UUID + "\\";
-            if (!Directory.Exists(temp))
-                Directory.CreateDirectory(temp);
-
-            File.WriteAllText(temp + Name, Code, Encoding.UTF8);
-
-            temp = HtmlLocal + UUID + "\\";
+            string temp = HtmlLocal + UUID + "\\";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
@@ -222,7 +261,8 @@ Version:{obj.Version}
         public static void New(WebObj obj)
         {
             HtmlCodeList.TryAdd(obj.UUID, obj);
-            Storage(HtmlCodeLocal + obj.UUID, obj);
+            Save(obj.UUID, "index.html", obj.Codes["index.html"]);
+            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
         public static void AddCode(string UUID, string Name, string Code)
@@ -235,7 +275,7 @@ Version:{obj.Version}
 
             obj.Codes.Add(Name, Code);
             Save(UUID, Name, Code);
-            Storage(HtmlCodeLocal + obj.UUID, obj);
+            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
         public static void Remove(string UUID, string Name)

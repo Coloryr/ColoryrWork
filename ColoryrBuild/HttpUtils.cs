@@ -175,6 +175,7 @@ namespace ColoryrBuild
                     CodeType.App => ReType.AddApp,
                     CodeType.Mqtt => ReType.AddMqtt,
                     CodeType.Task => ReType.AddTask,
+                    CodeType.Web => ReType.AddWeb,
                     _ => ReType.AddDll,
                 };
                 var pack = new BuildOBJ

@@ -3,45 +3,23 @@ using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Utils
 {
-    internal class Css : HtmlCompression.Core.ICompressor
-    {
-        private static readonly CssCompressor css = new();
-        public string Compress(string source)
-        {
-            return css.Compress(source);
-        }
-    }
-    internal class JS : HtmlCompression.Core.ICompressor
-    {
-        private static readonly JavaScriptCompressor css = new();
-        public string Compress(string source)
-        {
-            if (source == "")
-                return source;
-            return css.Compress(source);
-        }
-    }
     internal class CodeCompress
     {
-        private static readonly HtmlCompressor Compress = new(new HtmlCompressorSettings
-        {
-            CompressCss = true,
-            CompressJavaScript = true,
-            JavaScriptCompressor = new JS(),
-            CssCompressor = new Css()
-        });
+        private static readonly HtmlCompressor html = new();
+        private static readonly CssCompressor css = new();
+        private static readonly JavaScriptCompressor js = new();
 
-        public static string JS(string js)
+        public static string JS(string code)
         {
-            return Compress.Settings.JavaScriptCompressor.Compress(js);
+            return js.Compress(code);
         }
-        public static string CSS(string css)
+        public static string CSS(string code)
         {
-            return Compress.Settings.CssCompressor.Compress(css);
+            return css.Compress(code);
         }
-        public static string HTML(string html)
+        public static string HTML(string code)
         {
-            return Compress.Compress(html);
+            return html.Compress(code);
         }
     }
 }

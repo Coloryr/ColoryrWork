@@ -36,6 +36,7 @@ namespace ColoryrBuild.Windows
             foldingStrategy.UpdateFoldings(foldingManager, textEditor.Document);
             textEditor.Options.ShowSpaces = true;
             textEditor.Options.ShowTabs = true;
+
             this.type = type;
             Title = $"编辑窗口{type}[{obj.UUID}]";
             if (type != CodeType.App && type != CodeType.Web)
@@ -117,7 +118,7 @@ namespace ColoryrBuild.Windows
                 var data = await App.HttpUtils.GetWebCode(obj.UUID);
                 if (data == null)
                 {
-                    App.LogShow("获取代码", $"代码Web[{obj1.UUID}]获取错误");
+                    App.LogShow("获取代码", $"代码Web[{obj.UUID}]获取错误");
                     Write = false;
                     return;
                 }
@@ -154,7 +155,7 @@ namespace ColoryrBuild.Windows
                 }
                 thisfile = "index.html";
                 old = textEditor.Text = obj3.Codes["index.html"];
-                App.LogShow("获取代码", $"代码Web[{obj2.UUID}]获取成功");
+                App.LogShow("获取代码", $"代码Web[{obj.UUID}]获取成功");
             }
             else
             {

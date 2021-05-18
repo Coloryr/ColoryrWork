@@ -61,6 +61,15 @@ namespace ColoryrServer {
         }
         
         /// <summary>
+        ///   查找类似  的本地化字符串。
+        /// </summary>
+        internal static string _404Html {
+            get {
+                return ResourceManager.GetString("404Html", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 ﻿using System;
         ///using System.IO;
         ///using Xamarin.Forms;
