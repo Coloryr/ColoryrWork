@@ -76,7 +76,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 List<NotesSDK> obj = new();
                 foreach (var item in AssemblySave.MethodInfos.Values)
                 {
-                    var listA = item.GetType().GetCustomAttributes();
+                    var listA = item.GetCustomAttributes(true);
                     bool have = false;
                     foreach (var item1 in listA)
                     {
