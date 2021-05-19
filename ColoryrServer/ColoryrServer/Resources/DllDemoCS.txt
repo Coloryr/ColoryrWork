@@ -2,7 +2,7 @@ using ColoryrServer.SDK;
 
 namespace ColoryrServer
 {
-    [NotesSDK("一个接口", new(){{"Input", "Input"}, new(){{"Output", "Output"}})]
+    [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
     public class app_{name}
     {
         public dynamic {main}(HttpRequest http)
