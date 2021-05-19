@@ -284,11 +284,6 @@ namespace ColoryrBuild.Windows
                     Line = pos
                 });
             }
-            if (list.Count == 0)
-            {
-                App.LogShow("编译", "没有代码更改");
-                return;
-            }
             var data = await App.HttpUtils.Build(obj1, type, list);
             if (data == null)
             {
@@ -349,11 +344,6 @@ namespace ColoryrBuild.Windows
                     Line = pos
                 });
             }
-            if (list.Count == 0 && obj2.Text == Text.Text)
-            {
-                App.LogShow("编译", "没有代码更改");
-                return;
-            }
             obj2.Text = Text.Text;
             var data = await App.HttpUtils.BuildApp(obj2, temp1, temp, list);
             if (data == null)
@@ -411,11 +401,6 @@ namespace ColoryrBuild.Windows
                     Fun = type,
                     Line = pos
                 });
-            }
-            if (list.Count == 0 && obj2.Text == Text.Text)
-            {
-                App.LogShow("编译", "没有代码更改");
-                return;
             }
             obj2.Text = Text.Text;
             var data = await App.HttpUtils.BuildWeb(obj2, list, thisfile);

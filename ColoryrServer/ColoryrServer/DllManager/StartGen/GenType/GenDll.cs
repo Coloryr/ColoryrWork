@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
@@ -46,18 +47,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Dll[{File.UUID}]类名错误"
                 };
 
-            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                           .Where(x => x.Name == "Note");
-
-            if (!list1.Any())
-                return new GenReOBJ
-                {
-                    Isok = false,
-                    Res = $"Dll[{File.UUID}]没有注释类"
-                };
-
             AssemblySave.DllType = list.First();
-            AssemblySave.NoteType = list1.First();
 
             foreach (var item in AssemblySave.DllType.GetMethods())
             {
@@ -83,17 +73,21 @@ namespace ColoryrServer.DllManager.StartGen.GenType
 
             try
             {
-                if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
+                List<NotesSDK> obj = new();
+                foreach (var item in AssemblySave.MethodInfos.Values)
                 {
-                    return new GenReOBJ
+                    var listA = item.GetType().GetCustomAttributes();
+                    bool have = false;
+                    foreach (var item1 in listA)
                     {
-                        Isok = false,
-                        Res = $"Dll[{File.UUID}]注释类错误"
-                    };
-                }
-                foreach (var item in AssemblySave.MethodInfos)
-                {
-                    if (!obj.Function.Keys.Contains(item.Key))
+                        if (item1 is NotesSDK)
+                        {
+                            have = true;
+                            obj.Add(item1 as NotesSDK);
+                            break;
+                        }
+                    }
+                    if (!have)
                     {
                         return new GenReOBJ
                         {

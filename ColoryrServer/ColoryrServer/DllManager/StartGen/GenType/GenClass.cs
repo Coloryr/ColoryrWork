@@ -5,6 +5,7 @@ using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
@@ -45,26 +46,19 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Class[{File.UUID}]类名错误"
                 };
 
-            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                           .Where(x => x.Name == "Note");
-
-            if (!list1.Any())
-                return new GenReOBJ
-                {
-                    Isok = false,
-                    Res = $"Class[{File.UUID}]没有注释类"
-                };
-
             AssemblySave.DllType = list.First();
-            AssemblySave.NoteType = list1.First();
-
-            if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
+            var listM = AssemblySave.Assembly.GetType().GetMethods();
+            List<NotesSDK> obj = new();
+            foreach (var item in listM)
             {
-                return new GenReOBJ
+                var listA = item.GetCustomAttributes(true);
+                foreach (var item1 in listA)
                 {
-                    Isok = false,
-                    Res = $"Class[{File.UUID}]注释类错误"
-                };
+                    if (item1 is NotesSDK)
+                    {
+                        obj.Add(item1 as NotesSDK);
+                    }
+                }
             }
 
             NoteFile.StorageClass(File.UUID, obj);

@@ -20,7 +20,6 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
     {
         public AssemblyLoadContext Assembly { get; set; }
         public Type DllType { get; set; }
-        public Type NoteType { get; set; }
         public Dictionary<string, MethodInfo> MethodInfos { get; set; } = new();
     }
 }

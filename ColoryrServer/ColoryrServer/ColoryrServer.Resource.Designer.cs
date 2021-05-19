@@ -61,7 +61,29 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
+        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        .center {
+        ///            padding: 10px;
+        ///            margin: 20px auto;
+        ///            font-size: 40px;
+        ///            text-align: center;
+        ///        }
+        ///    &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;center&quot;&gt;
+        ///        404 NotFound
+        ///    &lt;/div&gt;
+        ///&lt;/body&gt;
+        ///
+        ///&lt;/html&gt; 的本地化字符串。
         /// </summary>
         internal static string _404Html {
             get {
@@ -219,25 +241,15 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///            var item = new INOUT();
-        ///            item.Input.Add(&quot;http&quot;, &quot;请求头&quot;);
-        ///            item.Output.Add(&quot;String&quot;, &quot;请求结果&quot;);
-        ///            Function.Add(&quot;main&quot;, item);
-        ///        }
-        ///    }
+        ///    [NotesSDK(&quot;一个接口&quot;, new(){{&quot;Input&quot;, &quot;Input&quot;}, new(){{&quot;Output&quot;, &quot;Output&quot;}})]
         ///    public class app_{name}
         ///    {
         ///        public dynamic {main}(HttpRequest http)
         ///        {  
         ///            return &quot;true&quot;;
         ///        }
-        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    }
+        ///} 的本地化字符串。
         /// </summary>
         internal static string DllDemoCS {
             get {
@@ -417,14 +429,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public void {IoTTcp}(TcpIoTRequest head)
@@ -501,14 +505,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public void {MQTTMessage}(MqttMessage head)
@@ -521,7 +517,10 @@ namespace ColoryrServer {
         ///        }
         ///        public void {MQTTSubscription}(MqttSubscription head)
         ///        {
-        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///            
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
         /// </summary>
         internal static string MqttDemoCS {
             get {
@@ -556,29 +555,26 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似 using System.Collections.Generic;
+        ///   查找类似 using System;
         ///
         ///namespace ColoryrServer.SDK
         ///{
-        ///    public class INOUT
+        ///    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+        ///    public class NotesSDK : Attribute
         ///    {
-        ///        /// &lt;summary&gt;
-        ///        /// 输入参数
-        ///        /// &lt;/summary&gt;
-        ///        public Dictionary&lt;string, string&gt; Input = new();
-        ///        /// &lt;summary&gt;
-        ///        /// 输出参数
-        ///        /// &lt;/summary&gt;
-        ///        public Dictionary&lt;string, string&gt; Output = new();
+        ///        public string Text;
+        ///        public string[] Input;
+        ///        public string[] Output;
+        ///
+        ///        public NotesSDK(string Text, string[] Input = null, string[] Output = null)
+        ///        {
+        ///            this.Text = Text;
+        ///            this.Input = Input ?? new string[1];
+        ///            this.Output = Output ?? new string[1];
+        ///        }
         ///    }
-        ///    public class NotesSDK
-        ///    {
-        ///        /// &lt;summary&gt;
-        ///        /// 名字
-        ///        /// &lt;/summary&gt;
-        ///        public string Name;
-        ///        /// &lt;summary&gt;
-        ///        / [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///}
+        /// 的本地化字符串。
         /// </summary>
         internal static string NotesSDK {
             get {
@@ -615,14 +611,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public void {RobotMessage}(RobotRequest head)
@@ -701,14 +689,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public void {TaskRun}(object[] args)
@@ -757,14 +737,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public void {WebSocketMessage}(WebSocketMessage head)
@@ -777,7 +749,10 @@ namespace ColoryrServer {
         ///        }
         ///        public void {WebSocketClose}(WebSocketClose head)
         ///        {
-        ///            [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///            
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
         /// </summary>
         internal static string WebSocketDemoCS {
             get {

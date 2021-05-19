@@ -47,9 +47,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"Task[{File.UUID}]类名错误"
                 };
 
-            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                           .Where(x => x.Name == "Note");
-
             AssemblySave.DllType = list.First();
 
             foreach (var item in AssemblySave.DllType.GetMethods())
@@ -67,32 +64,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Isok = false,
                     Res = $"Task[{File.UUID}]没有主方法"
                 };
-
-            try
-            {
-                if (list1.Any())
-                {
-                    AssemblySave.NoteType = list1.First();
-                    if (Activator.CreateInstance(AssemblySave.NoteType) is not NotesSDK obj)
-                    {
-                        return new GenReOBJ
-                        {
-                            Isok = false,
-                            Res = $"Task[{File.UUID}]注释类错误"
-                        };
-                    }
-                    NoteFile.StorageTask(File.UUID, obj);
-                }
-            }
-            catch
-            {
-                return new GenReOBJ
-                {
-                    Isok = false,
-                    Res = $"Task[{File.UUID}]注释出错"
-                };
-            }
-
 
             DllStonge.AddTask(File.UUID, AssemblySave);
 

@@ -45,18 +45,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                     Res = $"WebSocket[{ File.UUID }]类名错误"
                 };
 
-            var list1 = AssemblySave.Assembly.Assemblies.First().GetTypes()
-               .Where(x => x.Name == "Note");
-
-            if (list1.Any())
-            {
-                AssemblySave.NoteType = list1.First();
-                if (Activator.CreateInstance(AssemblySave.NoteType) is NotesSDK obj)
-                {
-                    NoteFile.StorageWebSocket(File.UUID, obj);
-                }
-            }
-
             AssemblySave.DllType = list.First();
 
             foreach (var item in AssemblySave.DllType.GetMethods())
