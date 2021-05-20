@@ -324,6 +324,10 @@ namespace ColoryrServer.Http
         {
             string UUID = "0";
             string FunctionName = null;
+            if (Url.StartsWith("//"))
+            {
+                Url = Url[1..];
+            }
             var temp = HtmlUtils.GetFile(Url);
             if (temp != null)
             {
