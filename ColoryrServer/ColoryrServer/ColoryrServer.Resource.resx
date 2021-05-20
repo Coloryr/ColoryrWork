@@ -157,6 +157,9 @@
   <data name="HttpSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HttpSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="IndexDemoJS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\IndexDemoJS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="IndexHtml" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\IndexHtml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

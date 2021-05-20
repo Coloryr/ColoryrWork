@@ -9,7 +9,7 @@
         UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask,
         AppRemoveFile, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
         AppCsUpdata, AppXamlUpdata, AppUpdata,
-        WebRemoveFile, WebAddFile, WebAddCode, WebRemoveCode, WebUpdata,
+        WebRemoveFile, WebAddFile, WebAddCode, WebRemoveCode, UpdataWeb,
         Check, Login, GetApi,
         SetAppKey
     }

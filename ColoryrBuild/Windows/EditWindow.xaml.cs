@@ -220,13 +220,7 @@ namespace ColoryrBuild.Windows
         private void Updata_Click(object sender, RoutedEventArgs e)
         {
             Updata_Button.IsEnabled = false;
-            if (type != CodeType.App)
-            {
-                obj1.Text = Text.Text;
-                obj1.Code = textEditor.Text;
-                Model = App.StartContrast(obj1, old);
-            }
-            else
+            if (type == CodeType.App)
             {
                 obj2.Text = Text.Text;
                 if (thisfile.EndsWith(".cs"))
@@ -241,6 +235,31 @@ namespace ColoryrBuild.Windows
                     obj2.Codes[temp] = textEditor.Text;
                     Model = App.StartContrast(type, obj2.UUID, obj2.Xamls[temp], old);
                 }
+                else
+                {
+                    App.LogShow("更新错误", "不支持修改该文件");
+                }
+            }
+            else if (type == CodeType.Web)
+            {
+                obj3.Text = Text.Text;
+                if (thisfile.EndsWith(".html") || thisfile.EndsWith(".css")
+                || thisfile.EndsWith(".js") || thisfile.EndsWith(".json")
+                || thisfile.EndsWith(".txt"))
+                {
+                    obj3.Codes[thisfile] = textEditor.Text;
+                    Model = App.StartContrast(type, obj3.UUID, obj3.Codes[thisfile], old);
+                }
+                else
+                {
+                    App.LogShow("更新错误", "不支持修改该文件");
+                }
+            }
+            else
+            {
+                obj1.Text = Text.Text;
+                obj1.Code = textEditor.Text;
+                Model = App.StartContrast(obj1, old);
             }
             Updata_Button.IsEnabled = true;
         }
@@ -367,13 +386,13 @@ namespace ColoryrBuild.Windows
 
         private async void BuildWeb()
         {
-            string temp = "";
+            string temp = thisfile;
             Updata_Click(null, null);
             if (thisfile.EndsWith(".html") || thisfile.EndsWith(".css")
                 || thisfile.EndsWith(".js") || thisfile.EndsWith(".json")
                 || thisfile.EndsWith(".txt"))
             {
-                old = obj2.Codes[temp];
+                old = obj3.Codes[temp];
             }
             List<CodeEditObj> list = new();
             for (int pos = 0; pos < Model.Lines.Count; pos++)
@@ -402,17 +421,17 @@ namespace ColoryrBuild.Windows
                     Line = pos
                 });
             }
-            obj2.Text = Text.Text;
-            var data = await App.HttpUtils.BuildWeb(obj2, list, thisfile);
+            obj3.Text = Text.Text;
+            var data = await App.HttpUtils.BuildWeb(obj3, list, thisfile);
             if (data == null)
             {
                 App.LogShow("编译", "服务器返回错误");
                 return;
             }
             App.LogShow("编译", data.Message);
-            obj2.Version++;
+            obj3.Version++;
             App.MainWindow_.Re(type);
-            CodeSave.Save(Local + $"{thisfile}", obj2.Codes[temp]);
+            CodeSave.Save(Local + $"{thisfile}", obj3.Codes[temp]);
             App.ClearContrast();
         }
 

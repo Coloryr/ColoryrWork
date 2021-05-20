@@ -241,9 +241,9 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    [NotesSDK(&quot;一个接口&quot;, new(){{&quot;Input&quot;, &quot;Input&quot;}, new(){{&quot;Output&quot;, &quot;Output&quot;}})]
         ///    public class app_{name}
         ///    {
+        ///        [NotesSDK(&quot;一个接口&quot;, new string[1]{ &quot;输入&quot; }, new string[1]{ &quot;输出&quot; })]
         ///        public dynamic {main}(HttpRequest http)
         ///        {  
         ///            return &quot;true&quot;;
@@ -390,6 +390,15 @@ namespace ColoryrServer {
         internal static string HttpSDK {
             get {
                 return ResourceManager.GetString("HttpSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似  的本地化字符串。
+        /// </summary>
+        internal static string IndexDemoJS {
+            get {
+                return ResourceManager.GetString("IndexDemoJS", resourceCulture);
             }
         }
         

@@ -51,7 +51,7 @@ namespace ColoryrServer.FileSystem
             }
             else
             {
-                string name = temp[3];
+                string name = temp[2];
                 if (HtmlList.ContainsKey(uuid))
                 {
                     if (HtmlList[uuid].TryGetValue(name, out var temp1))
@@ -191,6 +191,16 @@ Version:{obj.Version}
             Storage(HtmlCodeLocal + UUID + ".json", HtmlCodeList[UUID]);
         }
 
+
+        public static void Save(WebObj obj, string name, string code)
+        {
+            var time = string.Format("{0:s}", DateTime.Now);
+            obj.UpdataTime = time;
+
+            Save(obj.UUID, name, code);
+            HtmlList[obj.UUID][name] = File.ReadAllBytes(HtmlLocal + obj.UUID + "\\" + name);
+            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
+        }
         private static void Save(string UUID, string Name, string Code)
         {
             string temp = HtmlLocal + UUID + "\\";
@@ -262,7 +272,14 @@ Version:{obj.Version}
         {
             HtmlCodeList.TryAdd(obj.UUID, obj);
             Save(obj.UUID, "index.html", obj.Codes["index.html"]);
+            Save(obj.UUID, "js.js", obj.Codes["js.js"]);
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
+            Dictionary<string, byte[]> list2 = new();
+            foreach (var item1 in new DirectoryInfo(HtmlLocal + obj.UUID).GetFiles())
+            {
+                list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
+            }
+            HtmlList.TryAdd(obj.UUID, list2);
         }
 
         public static void AddCode(string UUID, string Name, string Code)

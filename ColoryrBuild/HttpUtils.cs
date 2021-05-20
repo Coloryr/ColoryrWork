@@ -478,7 +478,7 @@ namespace ColoryrBuild
                 {
                     User = App.Config.Name,
                     Token = App.Config.Token,
-                    Mode =  ReType.WebUpdata,
+                    Mode =  ReType.UpdataWeb,
                     UUID = obj.UUID,
                     Version = obj.Version,
                     Text = obj.Text,

@@ -61,6 +61,7 @@ namespace ColoryrServer.DllManager
                 GenReOBJ BuildBack;
                 Stopwatch SW;
                 CSFileCode File;
+                WebObj File2;
                 CSFileList List;
                 switch (json.Mode)
                 {
@@ -291,7 +292,7 @@ namespace ColoryrServer.DllManager
                         if (HtmlUtils.GetHtml(json.UUID) == null)
                         {
                             var time = string.Format("{0:s}", DateTime.Now);
-                            WebObj File2 = new()
+                            File2 = new()
                             {
                                 UUID = json.UUID,
                                 Version = 1,
@@ -300,7 +301,12 @@ namespace ColoryrServer.DllManager
                                 Text = "",
                                 Codes = new()
                                 {
-                                    { "index.html", ColoryrServer_Resource.HtmlDemoHtml }
+                                    {
+                                        "index.html",
+                                        ColoryrServer_Resource.HtmlDemoHtml
+                                        .Replace("{name}", json.UUID)
+                                    },
+                                    { "js.js", ColoryrServer_Resource.IndexDemoJS }
                                 },
                                 Files = new()
                             };
@@ -746,6 +752,50 @@ namespace ColoryrServer.DllManager
                             Message = BuildBack.Res,
                             UseTime = SW.ElapsedMilliseconds.ToString(),
                             Time = BuildBack.Time
+                        };
+                        break;
+                    case ReType.UpdataWeb:
+                        File2 = HtmlUtils.GetHtml(json.UUID);
+                        if (File2 == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"没有这个Web[{json.UUID}]"
+                            };
+                            break;
+                        }
+                        if (File2.Version != json.Version)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]版本号错误"
+                            };
+                            break;
+                        }
+
+                        list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+                        if (!File2.Codes.TryGetValue(json.Temp, out var code))
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]不存在文件[{json.Temp}]"
+                            };
+                            break;
+                        }
+                        code = FileEdit.StartEdit(code, list);
+                        File2.Text = json.Text;
+
+                        File2.Version++;
+                        HtmlUtils.Save(File2, json.Temp, code);
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Web[{json.UUID}]文件[{json.Temp}]已修改",
+                            UseTime = "0",
+                            Time = File2.UpdataTime
                         };
                         break;
                     case ReType.AddApp:
