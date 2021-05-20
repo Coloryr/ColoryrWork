@@ -506,6 +506,11 @@ namespace ColoryrBuild.Windows
                     }
                 }
             }
+            if(res == null)
+            {
+                App.LogShow("添加", "服务器返回错误");
+                return;
+            }
             App.LogShow("添加", res.Message);
             if (res.Build)
             {
@@ -562,10 +567,10 @@ namespace ColoryrBuild.Windows
                 var data1 = await App.HttpUtils.WebRemoveFile(obj3, data);
                 if (data1 == null)
                 {
-                    App.LogShow("编译", "服务器返回错误");
+                    App.LogShow("删除", "服务器返回错误");
                     return;
                 }
-                App.LogShow("编译", data1.Message);
+                App.LogShow("删除", data1.Message);
                 GetCode();
             }
         }

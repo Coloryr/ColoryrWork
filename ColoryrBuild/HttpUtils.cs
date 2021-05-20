@@ -539,7 +539,7 @@ namespace ColoryrBuild
                 {
                     User = App.Config.Name,
                     Token = App.Config.Token,
-                    Mode = ReType.WebAddCode,
+                    Mode = ReType.WebAddFile,
                     UUID = obj.UUID,
                     Version = obj.Version,
                     Text = obj.Text,

@@ -164,32 +164,12 @@ Version:{obj.Version}
             }
             HtmlList.TryRemove(UUID, out var temp1);
         }
-        private static void Delete(string UUID, string Name)
-        {
-            string temp = HtmlLocal + UUID + "\\";
-            if (!Directory.Exists(temp))
-                Directory.CreateDirectory(temp);
-            var temp1 = Name.Split('.');
-            if (temp1.Length != 1)
-            {
-                if (temp1[1] is "html" or "css" or "js" or "json" or "txt")
-                    HtmlCodeList[UUID].Codes.Remove(Name);
-                else
-                    HtmlCodeList[UUID].Files.Remove(Name);
-            }
-            if (File.Exists(temp + Name))
-                File.Delete(temp + Name);
-            HtmlList[UUID].Remove(Name);
-            
-            Storage(HtmlCodeLocal + UUID + ".json", HtmlCodeList[UUID]);
-        }
-
-
         public static void Save(WebObj obj, string name, string code)
         {
             obj.Codes[name] = code;
             Save(obj.UUID, name, code);
             HtmlList[obj.UUID][name] = File.ReadAllBytes(HtmlLocal + obj.UUID + "\\" + name);
+            obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
         private static void Save(string UUID, string Name, string Code)
@@ -227,21 +207,19 @@ Version:{obj.Version}
             }
         }
 
-        public static void AddFile(string UUID, string Name, byte[] Data)
+        public static void AddFile(WebObj obj, string Name, byte[] Data)
         {
-            string temp = HtmlLocal + UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "\\";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
             File.WriteAllBytes(temp + Name, Data);
 
-            if (!HtmlList[UUID].ContainsKey(Name))
-                HtmlList[UUID].Add(Name, Data);
-            else
-                HtmlList[UUID][Name] = Data;
+            HtmlList[obj.UUID].Add(Name, Data);
+            HtmlCodeList[obj.UUID].Files.Add(Name, Name);
 
-            if (!HtmlCodeList[UUID].Files.ContainsKey(Name))
-                HtmlCodeList[UUID].Files.Add(Name, Name);
+            obj.Up();
+            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
         private static void Storage(string Local, object obj)
@@ -264,6 +242,7 @@ Version:{obj.Version}
             HtmlCodeList.TryAdd(obj.UUID, obj);
             Save(obj.UUID, "index.html", obj.Codes["index.html"]);
             Save(obj.UUID, "js.js", obj.Codes["js.js"]);
+            obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
             Dictionary<string, byte[]> list2 = new();
             foreach (var item1 in new DirectoryInfo(HtmlLocal + obj.UUID).GetFiles())
@@ -277,12 +256,27 @@ Version:{obj.Version}
         {
             obj.Codes.Add(Name, Code);
             Save(obj, Name, Code);
-            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
         public static void Remove(WebObj obj, string Name)
         {
-            Delete(obj.UUID, Name);
+            string temp = HtmlLocal + obj.UUID + "\\";
+            if (!Directory.Exists(temp))
+                Directory.CreateDirectory(temp);
+            var temp1 = Name.Split('.');
+            if (temp1.Length != 1)
+            {
+                if (temp1[1] is "html" or "css" or "js" or "json" or "txt")
+                    HtmlCodeList[obj.UUID].Codes.Remove(Name);
+                else
+                    HtmlCodeList[obj.UUID].Files.Remove(Name);
+            }
+            if (File.Exists(temp + Name))
+                File.Delete(temp + Name);
+            HtmlList[obj.UUID].Remove(Name);
+
+            obj.Up();
+            Storage(HtmlCodeLocal + obj.UUID + ".json", HtmlCodeList[obj.UUID]);
         }
     }
 }

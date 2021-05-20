@@ -29,10 +29,6 @@ namespace Lib.Build.Object
         /// 修改时间
         /// </summary>
         public string UpdataTime { get; set; }
-        public CSFileObj()
-        {
-            Version = 1;
-        }
         public void Up()
         {
             var time = string.Format("{0:s}", DateTime.Now);

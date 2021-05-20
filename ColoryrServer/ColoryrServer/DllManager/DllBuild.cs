@@ -773,7 +773,6 @@ namespace ColoryrServer.DllManager
                         File2.Text = json.Text;
 
                         HtmlUtils.Save(File2, json.Temp, code);
-                        File2.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -1044,7 +1043,6 @@ namespace ColoryrServer.DllManager
                         }
                         
                         HtmlUtils.AddCode(File2, json.Code, "");
-                        File2.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -1071,22 +1069,49 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        if (!File2.Codes.ContainsKey(json.Code))
+                        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.ContainsKey(json.Code))
                         {
                             resObj = new ReMessage
                             {
                                 Build = false,
-                                Message = $"Web[{json.UUID}]的源码文件[{json.Code}]不存在"
+                                Message = $"Web[{json.UUID}]的文件[{json.Code}]不存在"
                             };
                             break;
                         }
                         
                         HtmlUtils.Remove(File2, json.Code);
-                        File2.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
-                            Message = $"Web[{json.UUID}]已删除源码文件[{json.Code}]"
+                            Message = $"Web[{json.UUID}]已删除文件[{json.Code}]"
+                        };
+                        break;
+                    case ReType.WebAddFile:
+                        File2 = HtmlUtils.GetHtml(json.UUID);
+                        if (File2 == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]没有找到"
+                            };
+                            break;
+                        }
+                        if (File2.Files.ContainsKey(json.Code))
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]的文件[{json.Code}]已存在"
+                            };
+                            break;
+                        }
+
+                        HtmlUtils.AddFile(File2, json.Code, Convert.FromBase64String(json.Temp));
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Web[{json.UUID}]已添加文件[{json.Code}]"
                         };
                         break;
                 }

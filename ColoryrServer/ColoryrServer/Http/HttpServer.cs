@@ -327,10 +327,27 @@ namespace ColoryrServer.Http
             var temp = HtmlUtils.GetFile(Url);
             if (temp != null)
             {
+                string type = ServerContentType.HTML;
+                if (Url.EndsWith(".jpg") || Url.EndsWith(".jpge"))
+                {
+                    type = ServerContentType.JPEG;
+                }
+                else if (Url.ToLower().EndsWith(".png"))
+                {
+                    type = ServerContentType.PNG;
+                }
+                else if (Url.ToLower().EndsWith(".json"))
+                {
+                    type = ServerContentType.JSON;
+                }
+                else if (Url.ToLower().EndsWith(".xml"))
+                {
+                    type = ServerContentType.XML;
+                }
                 return new HttpReturn
                 {
                     Data = temp,
-                    ContentType = ServerContentType.HTML
+                    ContentType = type
                 };
             }
             if (Function.Constr(Url, '/') >= 2)
