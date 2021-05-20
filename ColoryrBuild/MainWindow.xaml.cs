@@ -586,7 +586,7 @@ namespace ColoryrBuild
         }
         private async void Delete_Web_Click(object sender, RoutedEventArgs e)
         {
-            if (ListMqtt.SelectedItem == null)
+            if (ListWeb.SelectedItem == null)
                 return;
             var item = (CSFileObj)ListWeb.SelectedItem;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();

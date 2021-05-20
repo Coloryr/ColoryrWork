@@ -214,6 +214,7 @@ namespace ColoryrBuild
                     CodeType.App => ReType.RemoveApp,
                     CodeType.Mqtt => ReType.RemoveMqtt,
                     CodeType.Task => ReType.RemoveTask,
+                    CodeType.Web => ReType.RemoveWeb,
                     _ => ReType.RemoveDll,
                 };
                 var pack = new BuildOBJ

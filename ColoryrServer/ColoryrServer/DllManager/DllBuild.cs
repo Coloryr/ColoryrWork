@@ -1114,6 +1114,25 @@ namespace ColoryrServer.DllManager
                             Message = $"Web[{json.UUID}]已添加文件[{json.Code}]"
                         };
                         break;
+                    case ReType.RemoveWeb:
+                        File2 = HtmlUtils.GetHtml(json.UUID);
+                        if (File2 == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]没有找到"
+                            };
+                            break;
+                        }
+
+                        HtmlUtils.DeleteAll(File2);
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Web[{json.UUID}]已删除"
+                        };
+                        break;
                 }
             }
             else

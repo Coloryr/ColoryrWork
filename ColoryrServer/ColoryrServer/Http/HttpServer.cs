@@ -344,6 +344,18 @@ namespace ColoryrServer.Http
                 {
                     type = ServerContentType.XML;
                 }
+                else if (Url.ToLower().EndsWith(".mp3"))
+                {
+                    type = ServerContentType.MP3;
+                }
+                else if (Url.ToLower().EndsWith(".mp4"))
+                {
+                    type = ServerContentType.MP4;
+                }
+                else if (Url.ToLower().EndsWith(".gif"))
+                {
+                    type = ServerContentType.GIF;
+                }
                 return new HttpReturn
                 {
                     Data = temp,

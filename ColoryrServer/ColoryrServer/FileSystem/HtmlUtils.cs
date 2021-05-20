@@ -127,42 +127,35 @@ namespace ColoryrServer.FileSystem
                 }
             }
         }
-        private static void DeleteAll(string UUID)
+        public static void DeleteAll(WebObj obj)
         {
             string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
-            string dir = HtmlRemoveLocal + $"[{UUID}]-{time}" + "\\";
+            string dir = HtmlRemoveLocal + $"{obj.UUID}-{time}" + "\\";
             Directory.CreateDirectory(dir);
-            var obj = HtmlCodeList[UUID];
             string info =
-$@"/*
+$@"
 UUID:{obj.UUID},
 Text:{obj.Text},
 Version:{obj.Version}
-*/
 ";
             File.WriteAllText(dir + "info.txt", info);
-            string temp = HtmlLocal + UUID + "\\";
-            if (Directory.Exists(temp))
+            File.WriteAllText(dir + obj.UUID + ".json", JsonConvert.SerializeObject(obj));
+            string temp = HtmlLocal + obj.UUID + "\\";
+            foreach (var item in Directory.GetFiles(temp))
             {
-                File.Delete(temp + UUID);
+                File.Delete(item);
             }
+            Directory.Delete(temp);
 
-            temp = HtmlCodeLocal + UUID + "\\";
-            if (Directory.Exists(temp))
-            {
-                var info1 = new DirectoryInfo(temp);
-                var list = info1.GetFiles();
-                foreach (var item in list)
-                {
-                    item.Delete();
-                }
-                info1.Delete();
-            }
-            foreach (var item in HtmlList[UUID])
+            temp = HtmlCodeLocal + obj.UUID + ".json" ;
+            File.Delete(temp);
+
+            foreach (var item in HtmlList[obj.UUID])
             {
                 File.WriteAllBytes(dir + item.Key, item.Value);
             }
-            HtmlList.TryRemove(UUID, out var temp1);
+            HtmlCodeList.TryRemove(obj.UUID, out var temp1);
+            HtmlList.TryRemove(obj.UUID, out var temp2);
         }
         public static void Save(WebObj obj, string name, string code)
         {
