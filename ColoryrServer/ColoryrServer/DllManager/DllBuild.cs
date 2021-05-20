@@ -73,9 +73,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.Dll,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.DllDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{main}", CodeDemo.DllMain)
@@ -104,9 +102,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.Class,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.ClassDemoCS
                                 .Replace("{name}", json.UUID)
                             };
@@ -134,9 +130,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.IoT,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.IoTDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{IoTTcp}", CodeDemo.IoTTcp)
@@ -166,9 +160,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.WebSocket,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.WebSocketDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{WebSocketMessage}", CodeDemo.WebSocketMessage)
@@ -199,9 +191,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.Robot,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.RobotDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{RobotMessage}", CodeDemo.RobotMessage)
@@ -232,9 +222,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.Mqtt,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.MqttDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{MQTTMessage}", CodeDemo.MQTTMessage)
@@ -265,9 +253,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.Task,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Code = ColoryrServer_Resource.TaskDemoCS
                                 .Replace("{name}", json.UUID)
                                 .Replace("{TaskRun}", CodeDemo.TaskRun)
@@ -295,9 +281,7 @@ namespace ColoryrServer.DllManager
                             File2 = new()
                             {
                                 UUID = json.UUID,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                                 Text = "",
                                 Codes = new()
                                 {
@@ -317,7 +301,7 @@ namespace ColoryrServer.DllManager
                                 Message = $"Web[{json.UUID}]已创建"
                             };
                             ServerMain.LogOut($"Web[{json.UUID}]创建");
-                        }  
+                        }
                         else
                             resObj = new ReMessage
                             {
@@ -517,7 +501,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenDll.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -555,7 +539,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenClass.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -593,7 +577,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenIoT.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -631,7 +615,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenRobot.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -669,7 +653,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenWebSocket.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -707,7 +691,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenMqtt.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -745,7 +729,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenTask.StartGen(File);
                         SW.Stop();
-                        File.Version++;
+                        File.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -788,8 +772,8 @@ namespace ColoryrServer.DllManager
                         code = FileEdit.StartEdit(code, list);
                         File2.Text = json.Text;
 
-                        File2.Version++;
                         HtmlUtils.Save(File2, json.Temp, code);
+                        File2.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -807,9 +791,7 @@ namespace ColoryrServer.DllManager
                             {
                                 UUID = json.UUID,
                                 Type = CodeType.App,
-                                Version = 1,
                                 CreateTime = time,
-                                UpdataTime = time,
                             };
                             File1.Codes.Add("main", ColoryrServer_Resource.AppDemoCS);
                             File1.Xamls.Add("main", ColoryrServer_Resource.AppDemoXAML);
@@ -870,7 +852,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenApp.StartGen(File1);
                         SW.Stop();
-                        File1.Version++;
+                        File1.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -917,7 +899,7 @@ namespace ColoryrServer.DllManager
                         SW.Start();
                         BuildBack = GenApp.StartGen(File1);
                         SW.Stop();
-                        File1.Version++;
+                        File1.Up();
                         resObj = new ReMessage
                         {
                             Build = BuildBack.Isok,
@@ -959,7 +941,7 @@ namespace ColoryrServer.DllManager
                             .Replace("{name}", json.Code);
                         File1.Codes.Add(json.Code, class_);
                         CSFile.StorageApp(File1);
-                        File1.Version++;
+                        File1.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -997,7 +979,7 @@ namespace ColoryrServer.DllManager
                         }
                         File1.Xamls.Add(json.Code, ColoryrServer_Resource.AppDemoXAML);
                         CSFile.StorageApp(File1);
-                        File1.Version++;
+                        File1.Up();
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -1039,6 +1021,73 @@ namespace ColoryrServer.DllManager
                                 Message = $"App[{json.UUID}]的Key已设置"
                             };
                         }
+                        break;
+                    case ReType.WebAddCode:
+                        File2 = HtmlUtils.GetHtml(json.UUID);
+                        if (File2 == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]没有找到"
+                            };
+                            break;
+                        }
+                        if (File2.Codes.ContainsKey(json.Code))
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]的源码文件[{json.Code}]已存在"
+                            };
+                            break;
+                        }
+                        
+                        HtmlUtils.AddCode(File2, json.Code, "");
+                        File2.Up();
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Web[{json.UUID}]已添加源码文件[{json.Code}]"
+                        };
+                        break;
+                    case ReType.WebRemoveFile:
+                        File2 = HtmlUtils.GetHtml(json.UUID);
+                        if (File2 == null)
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]没有找到"
+                            };
+                            break;
+                        }
+                        if(json.Code == "index.html")
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]的主文件不允许删除"
+                            };
+                            break;
+                        }
+                        if (!File2.Codes.ContainsKey(json.Code))
+                        {
+                            resObj = new ReMessage
+                            {
+                                Build = false,
+                                Message = $"Web[{json.UUID}]的源码文件[{json.Code}]不存在"
+                            };
+                            break;
+                        }
+                        
+                        HtmlUtils.Remove(File2, json.Code);
+                        File2.Up();
+                        resObj = new ReMessage
+                        {
+                            Build = true,
+                            Message = $"Web[{json.UUID}]已删除源码文件[{json.Code}]"
+                        };
                         break;
                 }
             }

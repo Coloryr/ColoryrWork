@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
@@ -107,11 +106,8 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
             }
 
-           
-            DllStonge.AddDll(File.UUID, AssemblySave);
 
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
+            DllStonge.AddDll(File.UUID, AssemblySave);
 
             Task.Run(() =>
             {

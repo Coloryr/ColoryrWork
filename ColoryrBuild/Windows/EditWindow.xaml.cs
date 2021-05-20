@@ -66,7 +66,7 @@ namespace ColoryrBuild.Windows
             if (Write)
                 return;
             Write = true;
-            if (type != CodeType.App && type!=CodeType.Web)
+            if (type != CodeType.App && type != CodeType.Web)
             {
                 if (e.Name == "main.cs")
                 {
@@ -113,7 +113,7 @@ namespace ColoryrBuild.Windows
                 CodeSave.Save(Local + "main.cs", obj1.Code);
                 App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取成功");
             }
-            else if(type == CodeType.Web)
+            else if (type == CodeType.Web)
             {
                 var data = await App.HttpUtils.GetWebCode(obj.UUID);
                 if (data == null)
@@ -309,11 +309,11 @@ namespace ColoryrBuild.Windows
                 App.LogShow("编译", "服务器返回错误");
                 return;
             }
-            App.LogShow("编译", "编译后\n" + 
+            App.LogShow("编译", "编译后\n" +
                 $"结果:{data.Message}\n" +
                 $"用时:{data.UseTime}\n" +
                 $"最后更新时间:{data.Time}");
-            obj1.Version++;
+            obj1.Next();
             App.MainWindow_.Re(type);
             CodeSave.Save(Local + "main.cs", obj1.Code);
             App.ClearContrast();
@@ -371,7 +371,7 @@ namespace ColoryrBuild.Windows
                 return;
             }
             App.LogShow("编译", data.Message);
-            obj2.Version++;
+            obj2.Next();
             App.MainWindow_.Re(type);
             if (temp1 == ReType.AppCsUpdata)
             {
@@ -388,11 +388,10 @@ namespace ColoryrBuild.Windows
         {
             string temp = thisfile;
             Updata_Click(null, null);
-            if (thisfile.EndsWith(".html") || thisfile.EndsWith(".css")
-                || thisfile.EndsWith(".js") || thisfile.EndsWith(".json")
-                || thisfile.EndsWith(".txt"))
+            if (Model == null)
             {
-                old = obj3.Codes[temp];
+                App.LogShow("编译", "代码对比错误");
+                return;
             }
             List<CodeEditObj> list = new();
             for (int pos = 0; pos < Model.Lines.Count; pos++)
@@ -429,7 +428,8 @@ namespace ColoryrBuild.Windows
                 return;
             }
             App.LogShow("编译", data.Message);
-            obj3.Version++;
+            obj3.Next();
+            old = textEditor.Text;
             App.MainWindow_.Re(type);
             CodeSave.Save(Local + $"{thisfile}", obj3.Codes[temp]);
             App.ClearContrast();
@@ -445,7 +445,7 @@ namespace ColoryrBuild.Windows
             {
                 BuildOther();
             }
-            else if(type == CodeType.Web)
+            else if (type == CodeType.Web)
             {
                 BuildWeb();
             }
@@ -478,34 +478,31 @@ namespace ColoryrBuild.Windows
                 }
                 res = await App.HttpUtils.AddAppFile(obj2, type, data);
             }
-            else
+            else if (type == CodeType.Web)
             {
-                if (type == CodeType.App)
+                if (data.EndsWith(".html") || data.EndsWith(".css")
+            || data.EndsWith(".js") || data.EndsWith(".json")
+            || data.EndsWith(".txt"))
                 {
-                    if (thisfile.EndsWith(".html") || thisfile.EndsWith(".css")
-                || thisfile.EndsWith(".js") || thisfile.EndsWith(".json")
-                || thisfile.EndsWith(".txt"))
+                    res = await App.HttpUtils.AddWebCode(obj3, data);
+                }
+                else
+                {
+                    var openFileDialog1 = new System.Windows.Forms.OpenFileDialog
                     {
-                        res = await App.HttpUtils.AddWebCode(obj2, data);
+                        Title = "选择要添加的",
+                        Filter = "文件|*.*",
+                        FilterIndex = 2,
+                        RestoreDirectory = true
+                    };
+                    if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        var by = File.ReadAllBytes(openFileDialog1.FileName);
+                        res = await App.HttpUtils.AddWebFile(obj3, data, Convert.ToBase64String(by));
                     }
-                    else 
+                    else
                     {
-                        var openFileDialog1 = new System.Windows.Forms.OpenFileDialog
-                        {
-                            Title = "选择要添加的",
-                            Filter = "文件|*.*",
-                            FilterIndex = 2,
-                            RestoreDirectory = true
-                        };
-                        if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            var by = File.ReadAllBytes(openFileDialog1.FileName);
-                            res = await App.HttpUtils.AddWebFile(obj2, data, Convert.ToBase64String(by));
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
             }
@@ -522,26 +519,55 @@ namespace ColoryrBuild.Windows
             string data = (string)FileList.SelectedItem;
             if (thisfile == data)
                 return;
-            else if (data.EndsWith(".cs"))
+            if (type == CodeType.Web)
             {
-                old = obj2.Codes[data.Replace(".cs", "")];
-                textEditor.Text = old;
-            }
-            else if (data.EndsWith(".xaml"))
-            {
-                old = obj2.Xamls[data.Replace(".xaml", "")];
-                textEditor.Text = old;
+                if (data.EndsWith(".html") || data.EndsWith(".css")
+                   || data.EndsWith(".js") || data.EndsWith(".json")
+                   || data.EndsWith(".txt"))
+                {
+                    old = obj3.Codes[data];
+                    textEditor.Text = old;
+                }
+                else
+                {
+                    old = textEditor.Text = "";
+                }
             }
             else
             {
-                old = textEditor.Text = "";
+                if (data.EndsWith(".cs"))
+                {
+                    old = obj2.Codes[data.Replace(".cs", "")];
+                    textEditor.Text = old;
+                }
+                else if (data.EndsWith(".xaml"))
+                {
+                    old = obj2.Xamls[data.Replace(".xaml", "")];
+                    textEditor.Text = old;
+                }
+                else
+                {
+                    old = textEditor.Text = "";
+                }
             }
             thisfile = data;
         }
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (FileList.SelectedItem == null)
                 return;
+            string data = (string)FileList.SelectedItem;
+            if (type == CodeType.Web)
+            {
+                var data1 = await App.HttpUtils.WebRemoveFile(obj3, data);
+                if (data1 == null)
+                {
+                    App.LogShow("编译", "服务器返回错误");
+                    return;
+                }
+                App.LogShow("编译", data1.Message);
+                GetCode();
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)

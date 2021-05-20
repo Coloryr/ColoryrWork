@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Lib.Build.Object
 {
@@ -6,7 +7,7 @@ namespace Lib.Build.Object
     {
         Dll, Class, IoT, WebSocket, Robot, App, Mqtt, Task, Web
     }
-    public record CSFileObj
+    public class CSFileObj
     {
         /// <summary>
         /// 名字
@@ -28,9 +29,23 @@ namespace Lib.Build.Object
         /// 修改时间
         /// </summary>
         public string UpdataTime { get; set; }
+        public CSFileObj()
+        {
+            Version = 1;
+        }
+        public void Up()
+        {
+            var time = string.Format("{0:s}", DateTime.Now);
+            UpdataTime = time;
+            Version++;
+        }
+        public void Next()
+        {
+            Version++;
+        }
 
     }
-    public record CSFileCode : CSFileObj
+    public class CSFileCode : CSFileObj
     {
         public CSFileCode(CSFileObj obj)
         {
@@ -43,12 +58,12 @@ namespace Lib.Build.Object
         public string Code { get; set; }
         public CodeType Type { get; set; }
     }
-    public record WebObj : CSFileObj
-    { 
+    public class WebObj : CSFileObj
+    {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Files { get; set; }
     }
-    public record AppTempFileObj : CSFileObj
+    public class AppTempFileObj : CSFileObj
     {
         public string Key { get; set; }
     }
@@ -61,7 +76,7 @@ namespace Lib.Build.Object
         public Dictionary<string, AppTempFileObj> List { get; set; } = new();
     }
 
-    public record AppFileObj : AppTempFileObj
+    public class AppFileObj : AppTempFileObj
     {
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Xamls { get; set; }

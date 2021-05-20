@@ -147,7 +147,7 @@ namespace ColoryrServer.DataBase
                             break;
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         foreach (var item1 in conn)
                         {

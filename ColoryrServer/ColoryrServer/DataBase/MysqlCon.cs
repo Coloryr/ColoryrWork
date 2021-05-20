@@ -207,7 +207,7 @@ namespace ColoryrServer.DataBase
             {
                 ExConn conn = null;
                 CancellationTokenSource cancel = new();
-                var task = Task.Run(()=>
+                var task = Task.Run(() =>
                 {
                     conn = GetConn(id);
                 }, cancel.Token);

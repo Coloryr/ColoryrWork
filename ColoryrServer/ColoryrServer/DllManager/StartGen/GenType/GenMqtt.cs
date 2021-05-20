@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
-using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
@@ -60,9 +59,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             DllStonge.AddMqtt(File.UUID, AssemblySave);
-
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
 
             Task.Run(() =>
             {

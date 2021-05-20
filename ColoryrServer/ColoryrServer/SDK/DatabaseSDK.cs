@@ -104,7 +104,7 @@ namespace ColoryrServer.SDK
                 throw new VarDump("MS数据库没有链接");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new VarDump("没有选择数据库");
-            
+
         }
         /// <summary>
         /// 执行sql语句

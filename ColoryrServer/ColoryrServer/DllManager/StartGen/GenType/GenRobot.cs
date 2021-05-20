@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
-using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -46,7 +45,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             AssemblySave.DllType = list.First();
-            
+
             foreach (var item in AssemblySave.DllType.GetMethods())
             {
                 if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
@@ -61,9 +60,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             DllStonge.AddRobot(File.UUID, AssemblySave);
-
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
 
             Task.Run(() =>
             {

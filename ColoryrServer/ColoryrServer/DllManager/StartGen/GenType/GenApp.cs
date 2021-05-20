@@ -38,8 +38,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             };
 
             DllStonge.AddApp(File.UUID, save);
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
+            File.Up();
 
             Res.MSPdb.Close();
             Res.MSPdb.Dispose();

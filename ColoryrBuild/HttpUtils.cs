@@ -478,7 +478,7 @@ namespace ColoryrBuild
                 {
                     User = App.Config.Name,
                     Token = App.Config.Token,
-                    Mode =  ReType.UpdataWeb,
+                    Mode = ReType.UpdataWeb,
                     UUID = obj.UUID,
                     Version = obj.Version,
                     Text = obj.Text,
@@ -553,6 +553,35 @@ namespace ColoryrBuild
                 if (!CheckLogin(data))
                 {
                     return await AddWebFile(obj, Name, by);
+                }
+                return JsonConvert.DeserializeObject<ReMessage>(data);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public async Task<ReMessage> WebRemoveFile(CSFileObj obj, string Name)
+        {
+            try
+            {
+                var pack = new BuildOBJ
+                {
+                    User = App.Config.Name,
+                    Token = App.Config.Token,
+                    Mode = ReType.WebRemoveFile,
+                    UUID = obj.UUID,
+                    Version = obj.Version,
+                    Text = obj.Text,
+                    Code = Name
+                };
+                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var temp = await httpClient.PostAsync(App.Config.Http, Content);
+                var data = await temp.Content.ReadAsStringAsync();
+                if (!CheckLogin(data))
+                {
+                    return await WebRemoveFile(obj, Name);
                 }
                 return JsonConvert.DeserializeObject<ReMessage>(data);
             }

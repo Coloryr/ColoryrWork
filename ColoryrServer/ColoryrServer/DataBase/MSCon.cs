@@ -133,7 +133,7 @@ namespace ColoryrServer.DataBase
                 if (!config.Enable)
                     continue;
                 var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
-                string ConnectString = string.Format(config.Conn, config.IP,  config.User, pass);
+                string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
                 var conn = new ExConn[config.ConnCount];
                 State.Add(a, false);
                 LockObj.Add(a, new());
@@ -209,7 +209,7 @@ namespace ColoryrServer.DataBase
             {
                 ExConn conn = null;
                 CancellationTokenSource cancel = new();
-                var task = Task.Run(()=>
+                var task = Task.Run(() =>
                 {
                     conn = GetConn(id);
                 }, cancel.Token);

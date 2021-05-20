@@ -1,11 +1,9 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
-using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
@@ -62,9 +60,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
                 };
 
             DllStonge.AddIoT(File.UUID, AssemblySave);
-
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
 
             Task.Factory.StartNew(() =>
             {

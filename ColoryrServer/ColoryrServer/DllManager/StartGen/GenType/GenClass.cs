@@ -64,8 +64,7 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             NoteFile.StorageClass(File.UUID, obj);
             DllStonge.AddClass(File.UUID, AssemblySave);
 
-            var time = string.Format("{0:s}", DateTime.Now);
-            File.UpdataTime = time;
+            File.Up();
 
             Task.Run(() =>
             {

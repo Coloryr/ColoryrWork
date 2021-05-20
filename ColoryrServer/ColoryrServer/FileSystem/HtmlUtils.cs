@@ -4,9 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -91,7 +89,7 @@ namespace ColoryrServer.FileSystem
                     WebObj obj = JsonConvert.DeserializeObject<WebObj>(File.ReadAllText(item.FullName));
                     HtmlCodeList.TryAdd(obj.UUID, obj);
                     string dir = HtmlLocal + obj.UUID + "\\";
-                    if(!Directory.Exists(dir))
+                    if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                         foreach (var item1 in obj.Codes)
@@ -99,14 +97,14 @@ namespace ColoryrServer.FileSystem
                             File.WriteAllText(dir + item1.Key, item1.Value);
                         }
                         var list1 = new List<string>();
-                        foreach(var item1 in obj.Files)
+                        foreach (var item1 in obj.Files)
                         {
                             if (!File.Exists(dir + item1.Key))
                             {
                                 list1.Add(item1.Key);
                             }
                         }
-                        if(list1.Count!=0)
+                        if (list1.Count != 0)
                         {
                             foreach (var item1 in list1)
                             {
@@ -162,7 +160,7 @@ Version:{obj.Version}
             }
             foreach (var item in HtmlList[UUID])
             {
-                File.WriteAllBytes(dir + item.Key, item.Value);  
+                File.WriteAllBytes(dir + item.Key, item.Value);
             }
             HtmlList.TryRemove(UUID, out var temp1);
         }
@@ -172,31 +170,24 @@ Version:{obj.Version}
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
             var temp1 = Name.Split('.');
-            if (temp1.Length == 1)
+            if (temp1.Length != 1)
             {
-                if (File.Exists(temp + Name))
-                    File.Delete(temp + Name);
-                HtmlCodeList[UUID].Files.Remove(Name);
+                if (temp1[1] is "html" or "css" or "js" or "json" or "txt")
+                    HtmlCodeList[UUID].Codes.Remove(Name);
+                else
+                    HtmlCodeList[UUID].Files.Remove(Name);
             }
-            else if (temp1[1] is ".html" or ".css" or ".js" or ".json" or ".txt")
-            {
-                HtmlCodeList[UUID].Codes.Remove(Name);
-            }
-            else
-            {
-                if (File.Exists(temp + Name))
-                    File.Delete(temp + Name);
-                HtmlCodeList[UUID].Files.Remove(Name);
-            }
+            if (File.Exists(temp + Name))
+                File.Delete(temp + Name);
+            HtmlList[UUID].Remove(Name);
+            
             Storage(HtmlCodeLocal + UUID + ".json", HtmlCodeList[UUID]);
         }
 
 
         public static void Save(WebObj obj, string name, string code)
         {
-            var time = string.Format("{0:s}", DateTime.Now);
-            obj.UpdataTime = time;
-
+            obj.Codes[name] = code;
             Save(obj.UUID, name, code);
             HtmlList[obj.UUID][name] = File.ReadAllBytes(HtmlLocal + obj.UUID + "\\" + name);
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
@@ -282,35 +273,16 @@ Version:{obj.Version}
             HtmlList.TryAdd(obj.UUID, list2);
         }
 
-        public static void AddCode(string UUID, string Name, string Code)
-        { 
-            WebObj obj = HtmlCodeList[UUID];
-            if (obj.Codes.ContainsKey(Name))
-            {
-                obj.Codes.Remove(Name);
-            }
-
+        public static void AddCode(WebObj obj, string Name, string Code)
+        {
             obj.Codes.Add(Name, Code);
-            Save(UUID, Name, Code);
+            Save(obj, Name, Code);
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
-        public static void Remove(string UUID, string Name)
+        public static void Remove(WebObj obj, string Name)
         {
-            if (HtmlCodeList.ContainsKey(UUID))
-            {
-                HtmlCodeList[UUID].Codes.Remove(Name);
-            }
-            if (HtmlList.ContainsKey(UUID))
-            {
-                HtmlList[UUID].Remove(Name);
-            }
-            Delete(UUID, Name);
-        }
-
-        public static bool Have(string UUID)
-        {
-            return HtmlCodeList.ContainsKey(UUID);
+            Delete(obj.UUID, Name);
         }
     }
 }

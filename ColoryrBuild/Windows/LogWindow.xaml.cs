@@ -18,7 +18,6 @@ namespace ColoryrBuild.Windows
             {
                 Text.AppendText(data + "\n");
                 Text.ScrollToEnd();
-                Activate();
             });
         }
 

@@ -6,10 +6,10 @@
         GetDll, GetClass, GetIoT, GetWebSocket, GetRobot, GetMqtt, GetApp, GetTask, GetWeb,
         CodeDll, CodeClass, CodeIoT, CodeWebSocket, CodeRobot, CodeMqtt, CodeApp, CodeTask, CodeWeb,
         RemoveDll, RemoveClass, RemoveIoT, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveApp, RemoveTask, RemoveWeb,
-        UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask,
+        UpdataDll, UpdataClass, UpdataIoT, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask, UpdataWeb,
         AppRemoveFile, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
         AppCsUpdata, AppXamlUpdata, AppUpdata,
-        WebRemoveFile, WebAddFile, WebAddCode, WebRemoveCode, UpdataWeb,
+        WebRemoveFile, WebAddFile, WebAddCode, 
         Check, Login, GetApi,
         SetAppKey
     }
