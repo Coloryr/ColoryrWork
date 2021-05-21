@@ -188,6 +188,7 @@ namespace ColoryrServer.DataBase
                 }
                 State[a] = true;
                 Conns.Add(a, conn);
+                LastIndex.Add(a, 0);
                 ServerMain.LogOut($"Oracle数据库{a}已连接");
             }
         }

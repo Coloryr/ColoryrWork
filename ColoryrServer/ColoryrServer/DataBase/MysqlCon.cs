@@ -171,6 +171,7 @@ namespace ColoryrServer.DataBase
                 }
                 State[a] = true;
                 Conns.Add(a, conn);
+                LastIndex.Add(a, 0);
                 ServerMain.LogOut($"Mysql数据库{a}已连接");
             }
         }

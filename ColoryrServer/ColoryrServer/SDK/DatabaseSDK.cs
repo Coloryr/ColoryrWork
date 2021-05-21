@@ -14,6 +14,7 @@ namespace ColoryrServer.SDK
         /// Mysql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
+        /// <param name="ID">数据库ID</param>
         public Mysql(string Database, int ID = 0)
         {
             this.ID = ID;
@@ -94,6 +95,7 @@ namespace ColoryrServer.SDK
         /// MSsql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
+        /// <param name="ID">数据库ID</param>
         public MSsql(string Database, int ID = 0)
         {
             this.Database = Database;
@@ -167,6 +169,7 @@ namespace ColoryrServer.SDK
         /// MSsql数据库
         /// </summary>
         /// <param name="Database">数据库名</param>
+        /// <param name="ID">数据库ID</param>
         public Oracle(string Database, int ID)
         {
             this.ID = ID;
@@ -234,6 +237,10 @@ namespace ColoryrServer.SDK
     public class Redis
     {
         private int ID;
+        /// <summary>
+        /// Redis数据库
+        /// </summary>
+        /// <param name="ID">数据库ID</param>
         public Redis(int ID = 0)
         {
             this.ID = ID;

@@ -133,8 +133,7 @@ namespace ColoryrServer.FileSystem
             string dir = HtmlRemoveLocal + $"{obj.UUID}-{time}" + "\\";
             Directory.CreateDirectory(dir);
             string info =
-$@"
-UUID:{obj.UUID},
+$@"UUID:{obj.UUID},
 Text:{obj.Text},
 Version:{obj.Version}
 ";
@@ -156,6 +155,7 @@ Version:{obj.Version}
             }
             HtmlCodeList.TryRemove(obj.UUID, out var temp1);
             HtmlList.TryRemove(obj.UUID, out var temp2);
+            ServerMain.LogOut($"Web[{obj.UUID}]删除");
         }
         public static void Save(WebObj obj, string name, string code)
         {
