@@ -564,7 +564,6 @@ namespace ColoryrServer.Http
                 foreach (var item in Listeners)
                 {
                     item.Stop();
-                    item.BeginGetContext(ContextReady, null);
                 }
                 ServerMain.LogOut("Http服务器已关闭");
             }
