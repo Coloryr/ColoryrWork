@@ -158,7 +158,6 @@ namespace ColoryrServer
                 FileRam.Start();
                 TaskThread.Start();
                 HttpClientUtils.Start();
-                HtmlUtils.Start();
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
@@ -197,6 +196,7 @@ namespace ColoryrServer
                         //初始化动态编译
                         GenCode.Start();
                         DllStonge.Start();
+                        HtmlUtils.Start();
                     }
                 }
                 else

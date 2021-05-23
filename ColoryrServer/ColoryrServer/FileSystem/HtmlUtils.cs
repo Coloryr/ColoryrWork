@@ -118,11 +118,11 @@ namespace ColoryrServer.FileSystem
                         list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
                     }
                     HtmlList.TryAdd(obj.UUID, list2);
-                    ServerMain.LogOut($"加载网页{item.Name}");
+                    ServerMain.LogOut($"加载Web：{item.Name}");
                 }
                 catch (Exception e)
                 {
-                    ServerMain.LogOut($"加载网页{item.Name}错误");
+                    ServerMain.LogOut($"加载Web：{item.Name}错误");
                     ServerMain.LogError(e);
                 }
             }
