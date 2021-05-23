@@ -2,9 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ColoryrBuild
+namespace Lib.Build
 {
-    class Utils
+    public class Utils
     {
         public static string GetSHA1(string data)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace ColoryrServer
 {
@@ -7,7 +8,7 @@ namespace ColoryrServer
         /// <summary> 
         /// 必需的设计器变量。
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// 清理所有正在使用的资源。
@@ -37,7 +38,7 @@ namespace ColoryrServer
             components = new System.ComponentModel.Container();
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                this.ServiceName = "ColoryrWork";
+                this.ServiceName = "ColoryrServer";
             }
         }
 

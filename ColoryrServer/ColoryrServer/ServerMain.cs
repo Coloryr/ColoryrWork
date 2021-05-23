@@ -95,12 +95,9 @@ namespace ColoryrServer
         /// <param name="e">Exception</param>
         public static void LogError(Exception e)
         {
-            Task.Factory.StartNew(() =>
-            {
-                string a = "[错误]" + e.ToString();
-                Logs.LogWrite(a);
-                Console.WriteLine(a);
-            });
+            string a = "[错误]" + e.ToString();
+            Task.Run(() => Logs.LogWrite(a));
+            Console.WriteLine(a);
         }
         /// <summary>
         /// 写错误到日志中
@@ -109,7 +106,7 @@ namespace ColoryrServer
         public static void LogError(string a)
         {
             a = "[错误]" + a;
-            Task.Factory.StartNew(() => Logs.LogWrite(a));
+            Task.Run(() => Logs.LogWrite(a));
             Console.WriteLine(a);
         }
         /// <summary>
@@ -119,7 +116,7 @@ namespace ColoryrServer
         public static void LogOut(string a)
         {
             a = "[信息]" + a;
-            Task.Factory.StartNew(() => Logs.LogWrite(a));
+            Task.Run(() => Logs.LogWrite(a));
             Console.WriteLine(a);
         }
 
