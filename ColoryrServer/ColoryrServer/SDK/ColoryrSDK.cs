@@ -414,7 +414,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <returns>机器人QQ号列表</returns>
         public static List<long> GetBots()
-            => new(RobotSocket.QQs);
+            => new(RobotUtils.QQs);
         /// <summary>
         /// 压缩HTML
         /// </summary>

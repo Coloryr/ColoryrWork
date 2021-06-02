@@ -42,7 +42,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-            => RobotSocket.ReCall(messageId);
+            => RobotUtils.ReCall(messageId);
     }
     public class RobotRequest
     {
@@ -81,7 +81,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-            => RobotSocket.ReCall(messageId);
+            => RobotUtils.ReCall(messageId);
         /// <summary>
         /// 发送消息回应
         /// </summary>
@@ -91,13 +91,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupMessage(qq, id, message);
+                    RobotUtils.SendGroupMessage(qq, id, message);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateMessage(qq, id, fid, message);
+                    RobotUtils.SendGroupPrivateMessage(qq, id, fid, message);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendMessage(qq, fid, message);
+                    RobotUtils.SendFriendMessage(qq, fid, message);
                     break;
             }
         }
@@ -111,13 +111,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupImage(qq, id, data);
+                    RobotUtils.SendGroupImage(qq, id, data);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateImage(qq, id, fid, data);
+                    RobotUtils.SendGroupPrivateImage(qq, id, fid, data);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendImage(qq, fid, data);
+                    RobotUtils.SendFriendImage(qq, fid, data);
                     break;
             }
         }
@@ -131,13 +131,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupImageFile(qq, id, file);
+                    RobotUtils.SendGroupImageFile(qq, id, file);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateImageFile(qq, id, fid, file);
+                    RobotUtils.SendGroupPrivateImageFile(qq, id, fid, file);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendImageFile(qq, fid, file);
+                    RobotUtils.SendFriendImageFile(qq, fid, file);
                     break;
             }
         }
@@ -152,7 +152,7 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupSound(qq, id, data);
+                    RobotUtils.SendGroupSound(qq, id, data);
                     break;
             }
         }
@@ -166,7 +166,7 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupSoundFile(qq, id, file);
+                    RobotUtils.SendGroupSoundFile(qq, id, file);
                     break;
             }
         }

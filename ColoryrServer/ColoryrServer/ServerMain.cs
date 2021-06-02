@@ -67,7 +67,7 @@ namespace ColoryrServer
                 var item1 = item.GetMethod();
                 if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
                 {
-                    RobotSocket.Start();
+                    RobotUtils.Start();
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace ColoryrServer
                     }
                     else
                     {
-                        RobotSocket.Start();
+                        RobotUtils.Start();
                         DatabaseRun();
                         //初始化动态编译
                         GenCode.Start();
@@ -202,7 +202,7 @@ namespace ColoryrServer
                 else
                 {
                     MQTTServer.Start();
-                    RobotSocket.Start();
+                    RobotUtils.Start();
                     DatabaseRun();
                     //服务器启动
                     HttpServer.Start();
@@ -235,7 +235,7 @@ namespace ColoryrServer
             MSCon.Stop();
             IoTSocketServer.Stop();
             ServerWebSocket.Stop();
-            RobotSocket.Stop();
+            RobotUtils.Stop();
             RedisCon.Stop();
             OracleCon.Stop();
             RamDataBase.Stop();
