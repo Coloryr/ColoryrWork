@@ -32,9 +32,9 @@ namespace ColoryrServer.Utils
         /// </summary>
         /// <param name="js">包含要压缩的 JavaScript 代码的 <see cref="StringBuilder"/>。</param>
         /// <returns>返回包含压缩后的 JavaScript 代码的 <see cref="StringBuilder"/>。</returns>
-        public static StringBuilder Minify(StringBuilder js) 
-        { 
-            return Minify(new StringReader(js.ToString())); 
+        public static StringBuilder Minify(StringBuilder js)
+        {
+            return Minify(new StringReader(js.ToString()));
         }
 
         /// <summary>
@@ -179,19 +179,19 @@ namespace ColoryrServer.Utils
 
             _TheB = _Next();
 
-            if (_TheB != '/' || 
-                (_TheA != '(' 
-                && _TheA != ',' 
-                && _TheA != '=' 
-                && _TheA != '[' 
-                && _TheA != '!' 
-                && _TheA != ':' 
-                && _TheA != '&' 
-                && _TheA != '|' 
-                && _TheA != '?' 
-                && _TheA != '{' 
-                && _TheA != '}' 
-                && _TheA != ';' 
+            if (_TheB != '/' ||
+                (_TheA != '('
+                && _TheA != ','
+                && _TheA != '='
+                && _TheA != '['
+                && _TheA != '!'
+                && _TheA != ':'
+                && _TheA != '&'
+                && _TheA != '|'
+                && _TheA != '?'
+                && _TheA != '{'
+                && _TheA != '}'
+                && _TheA != ';'
                 && _TheA != '\n'))
                 return;
 

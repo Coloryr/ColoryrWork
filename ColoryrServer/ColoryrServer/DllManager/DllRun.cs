@@ -35,7 +35,7 @@ namespace ColoryrServer.DllManager
                     function = CodeDemo.DllMain;
 
                 MethodInfo mi = dll.MethodInfos[function];
-                dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType), 
+                dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType),
                     new object[1] { arg });
                 if (dllres is Dictionary<string, object>)
                 {

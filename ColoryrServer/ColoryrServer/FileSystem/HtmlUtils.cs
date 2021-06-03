@@ -156,7 +156,7 @@ Version:{obj.Version}
             }
             Directory.Delete(temp);
 
-            temp = HtmlCodeLocal + obj.UUID + ".json" ;
+            temp = HtmlCodeLocal + obj.UUID + ".json";
             File.Delete(temp);
 
             foreach (var item in HtmlList[obj.UUID])

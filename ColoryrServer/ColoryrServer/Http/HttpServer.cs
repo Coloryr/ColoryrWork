@@ -43,7 +43,7 @@ namespace ColoryrServer.Http
             return null;
         }
 
-        public static HttpReturn HttpPOST(Stream stream,long Length,  string Url, NameValueCollection Hashtable, MyContentType type)
+        public static HttpReturn HttpPOST(Stream stream, long Length, string Url, NameValueCollection Hashtable, MyContentType type)
         {
             var Temp = new Dictionary<string, dynamic>();
             switch (type)
@@ -350,84 +350,91 @@ namespace ColoryrServer.Http
             {
                 Url = Url[1..];
             }
-            var temp = HtmlUtils.GetFile(Url);
-            if (temp != null)
+            if (Url.StartsWith(ServerMain.Config.Requset.Web))
             {
-                string type = ServerContentType.HTML;
-                if (Url.EndsWith(".jpg") || Url.EndsWith(".jpge"))
+                var temp = HtmlUtils.GetFile(Url.Replace(ServerMain.Config.Requset.Web, "") + "/");
+                if (temp != null)
                 {
-                    type = ServerContentType.JPEG;
+                    string type = ServerContentType.HTML;
+                    if (Url.EndsWith(".jpg") || Url.EndsWith(".jpge"))
+                    {
+                        type = ServerContentType.JPEG;
+                    }
+                    else if (Url.ToLower().EndsWith(".png"))
+                    {
+                        type = ServerContentType.PNG;
+                    }
+                    else if (Url.ToLower().EndsWith(".json"))
+                    {
+                        type = ServerContentType.JSON;
+                    }
+                    else if (Url.ToLower().EndsWith(".xml"))
+                    {
+                        type = ServerContentType.XML;
+                    }
+                    else if (Url.ToLower().EndsWith(".mp3"))
+                    {
+                        type = ServerContentType.MP3;
+                    }
+                    else if (Url.ToLower().EndsWith(".mp4"))
+                    {
+                        type = ServerContentType.MP4;
+                    }
+                    else if (Url.ToLower().EndsWith(".gif"))
+                    {
+                        type = ServerContentType.GIF;
+                    }
+                    return new HttpReturn
+                    {
+                        Data = temp,
+                        ContentType = type
+                    };
                 }
-                else if (Url.ToLower().EndsWith(".png"))
-                {
-                    type = ServerContentType.PNG;
-                }
-                else if (Url.ToLower().EndsWith(".json"))
-                {
-                    type = ServerContentType.JSON;
-                }
-                else if (Url.ToLower().EndsWith(".xml"))
-                {
-                    type = ServerContentType.XML;
-                }
-                else if (Url.ToLower().EndsWith(".mp3"))
-                {
-                    type = ServerContentType.MP3;
-                }
-                else if (Url.ToLower().EndsWith(".mp4"))
-                {
-                    type = ServerContentType.MP4;
-                }
-                else if (Url.ToLower().EndsWith(".gif"))
-                {
-                    type = ServerContentType.GIF;
-                }
-                return new HttpReturn
-                {
-                    Data = temp,
-                    ContentType = type
-                };
             }
-            if (Function.Constr(Url, '/') >= 2)
+            else if (Url.StartsWith(ServerMain.Config.Requset.Back))
             {
-                int tow = Url.IndexOf('/', 2);
-                int thr = Url.IndexOf('?', 2);
-                if (thr == -1)
+                Url = Url.Replace(ServerMain.Config.Requset.Back, "") + "/";
+                if (Function.Constr(Url, '/') >= 2)
                 {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..].Remove(0, 1);
-                }
-                else if (tow < thr)
-                {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..thr];
+                    int tow = Url.IndexOf('/', 2);
+                    int thr = Url.IndexOf('?', 2);
+                    if (thr == -1)
+                    {
+                        UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                        FunctionName = Url[tow..].Remove(0, 1);
+                    }
+                    else if (tow < thr)
+                    {
+                        UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                        FunctionName = Url[tow..thr];
+                    }
+                    else
+                    {
+                        UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                    }
                 }
                 else
                 {
                     UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
                 }
-            }
-            else
-            {
-                UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
-            }
-            var Dll = DllStonge.GetDll(UUID);
-            if (Dll != null)
-            {
-                var Temp = new Dictionary<string, dynamic>();
-                foreach (string a in Data.AllKeys)
+                var Dll = DllStonge.GetDll(UUID);
+                if (Dll != null)
                 {
-                    Temp.Add(a, Data.Get(a));
+                    var Temp = new Dictionary<string, dynamic>();
+                    foreach (string a in Data.AllKeys)
+                    {
+                        Temp.Add(a, Data.Get(a));
+                    }
+                    var Http = new HttpRequest
+                    {
+                        Cookie = HaveCookie(Hashtable),
+                        RowRequest = Hashtable,
+                        Parameter = Temp,
+                        ContentType = MyContentType.XFormData
+                    };
+                    var Data1 = DllRun.DllGo(Dll, Http, FunctionName);
+                    return Data1;
                 }
-                var Http = new HttpRequest
-                {
-                    Cookie = HaveCookie(Hashtable),
-                    RowRequest = Hashtable,
-                    Parameter = Temp,
-                    ContentType = MyContentType.XFormData
-                };
-                var Data1 = DllRun.DllGo(Dll, Http, FunctionName);
-                return Data1;
             }
             return new HttpReturn
             {

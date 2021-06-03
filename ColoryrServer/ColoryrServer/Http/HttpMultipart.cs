@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Http
 {
-    internal class HttpMultipartRes 
+    internal class HttpMultipartRes
     {
         /// <summary>
         /// 参数集合

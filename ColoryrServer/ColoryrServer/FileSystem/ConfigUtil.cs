@@ -73,6 +73,21 @@ namespace ColoryrServer.FileSystem
         /// HttpClient数量
         /// </summary>
         public int HttpClientNumber { get; set; }
+        /// <summary>
+        /// 请求选项
+        /// </summary>
+        public RequsetChoose Requset { get; set; }
+    }
+    internal record RequsetChoose
+    {
+        /// <summary>
+        /// 前端
+        /// </summary>
+        public string Web { get; set; }
+        /// <summary>
+        /// 后端
+        /// </summary>
+        public string Back { get; set; }
     }
     internal record MQTTConfig
     {
@@ -415,6 +430,11 @@ namespace ColoryrServer.FileSystem
                 {
                     MaxTime = 30,
                     ThreadNumber = 50
+                },
+                Requset = new()
+                {
+                    Web = "/",
+                    Back = "/Back"
                 },
                 HttpClientNumber = 100
             }, FilePath);

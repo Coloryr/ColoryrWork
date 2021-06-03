@@ -1041,7 +1041,7 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        
+
                         HtmlUtils.AddCode(File2, json.Code, "");
                         resObj = new ReMessage
                         {
@@ -1060,7 +1060,7 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        if(json.Code == "index.html")
+                        if (json.Code == "index.html")
                         {
                             resObj = new ReMessage
                             {
@@ -1078,7 +1078,7 @@ namespace ColoryrServer.DllManager
                             };
                             break;
                         }
-                        
+
                         HtmlUtils.Remove(File2, json.Code);
                         resObj = new ReMessage
                         {
