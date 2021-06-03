@@ -11,13 +11,13 @@ namespace ColoryrServer.DllManager
 {
     internal class DllRun
     {
-        public static HttpReturn DllGo(DllBuildSave Dll, HttpRequest Arg, string FunName)
+        public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)
         {
             try
             {
-                if (FunName != null)
+                if (function != null)
                 {
-                    if (!Dll.MethodInfos.ContainsKey(FunName))
+                    if (!dll.MethodInfos.ContainsKey(function))
                     {
                         return new HttpReturn
                         {
@@ -32,54 +32,71 @@ namespace ColoryrServer.DllManager
                     }
                 }
                 else
-                    FunName = CodeDemo.DllMain;
+                    function = CodeDemo.DllMain;
 
-                MethodInfo MI = Dll.MethodInfos[FunName];
-                var Tran = new object[1] { Arg };
-                var Assembly = Activator.CreateInstance(Dll.DllType);
-                dynamic DllReturn = MI.Invoke(Assembly, Tran);
-                if (DllReturn is Dictionary<string, object>)
+                MethodInfo mi = dll.MethodInfos[function];
+                dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType), 
+                    new object[1] { arg });
+                if (dllres is Dictionary<string, object>)
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(DllReturn)
+                        Data = StreamUtils.JsonOBJ(dllres)
                     };
                 }
-                else if (DllReturn is string)
+                else if (dllres is string)
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(DllReturn)
+                        Data = StreamUtils.StringOBJ(dllres)
                     };
                 }
-                else if (DllReturn is HttpResponseString)
+                else if (dllres is HttpResponseString)
                 {
+                    var dr = dllres as HttpResponseString;
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(DllReturn.Data),
-                        Head = DllReturn.Head,
-                        ReCode = DllReturn.ReCode,
-                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
+                        Data = StreamUtils.StringOBJ(dr.Data),
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        ReCode = dr.ReCode,
+                        Cookie = dr.SetCookie ? dr.Cookie : null
                     };
                 }
-                else if (DllReturn is HttpResponseDictionary)
+                else if (dllres is HttpResponseDictionary)
                 {
+                    var dr = dllres as HttpResponseDictionary;
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(DllReturn.Data),
-                        Head = DllReturn.Head,
-                        ReCode = DllReturn.ReCode,
-                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
+                        Data = StreamUtils.JsonOBJ(dr.Data),
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        ReCode = dr.ReCode,
+                        Cookie = dr.SetCookie ? dr.Cookie : null
                     };
                 }
-                else if (DllReturn is HttpResponseStream)
+                else if (dllres is HttpResponseStream)
                 {
+                    var dr = dllres as HttpResponseStream;
                     return new HttpReturn
                     {
-                        Data1 = DllReturn.Data,
-                        Head = DllReturn.Head,
-                        ReCode = DllReturn.ReCode,
-                        Cookie = DllReturn.SetCookie ? DllReturn.Cookie : null
+                        Data1 = dr.Data,
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        ReCode = dr.ReCode,
+                        Cookie = dr.SetCookie ? dr.Cookie : null
+                    };
+                }
+                else if (dllres is HttpResponseBytes)
+                {
+                    var dr = dllres as HttpResponseBytes;
+                    return new HttpReturn
+                    {
+                        Data = dr.Data,
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        ReCode = dr.ReCode,
+                        Cookie = dr.SetCookie ? dr.Cookie : null
                     };
                 }
                 else
@@ -90,18 +107,18 @@ namespace ColoryrServer.DllManager
                         {
                             Res = 80,
                             Text = "DLL返回错误",
-                            Data = DllReturn
+                            Data = dllres
                         })
                     };
                 }
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is VarDump dump)
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(Dump.Get()),
+                        Data = StreamUtils.StringOBJ(dump.Get()),
                         ReCode = 200
                     };
                 }

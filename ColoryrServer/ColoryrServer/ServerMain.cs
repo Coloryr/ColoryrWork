@@ -161,7 +161,8 @@ namespace ColoryrServer
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
-                new HttpResponseMessage();
+                dynamic test = new HttpResponseMessage();
+                var test1 = test.IsSuccessStatusCode;
                 Parallel.ForEach(new List<string>(), (i, b) => { });
                 Bitmap bitmap = new Bitmap(1, 1);
                 bitmap.Dispose();
@@ -211,6 +212,7 @@ namespace ColoryrServer
                     //初始化动态编译
                     GenCode.Start();
                     DllStonge.Start();
+                    HtmlUtils.Start();
                 }
 
                 //等待初始化完成

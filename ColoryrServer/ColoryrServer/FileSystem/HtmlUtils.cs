@@ -59,6 +59,16 @@ namespace ColoryrServer.FileSystem
             return null;
         }
 
+        public static byte[] GetFile(string uuid, string name)
+        {
+            if (HtmlList.ContainsKey(uuid))
+            {
+                if (HtmlList[uuid].TryGetValue(name, out var temp1))
+                    return temp1;
+            }
+            return null;
+        }
+
         public static void Start()
         {
             if (!Directory.Exists(HtmlLocal))
@@ -165,63 +175,74 @@ Version:{obj.Version}
             obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
-        private static void Save(string UUID, string Name, string Code)
+        public static void SaveFile(WebObj obj, string name, byte[] data)
         {
-            string temp = HtmlLocal + UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "\\";
+            if (File.Exists(temp + name))
+                File.Delete(temp + name);
+            HtmlList[obj.UUID].Remove(name);
+            File.WriteAllBytes(temp + name, data);
+            HtmlList[obj.UUID].Add(name, data);
+            obj.Up();
+            Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
+        }
+        private static void Save(string uuid, string name, string code)
+        {
+            string temp = HtmlLocal + uuid + "\\";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
-            var temp1 = Name.Split('.');
+            var temp1 = name.Split('.');
             if (temp1.Length == 1)
             {
-                File.WriteAllText(temp + Name, Code, Encoding.UTF8);
+                File.WriteAllText(temp + name, code, Encoding.UTF8);
             }
             else
             {
                 if (temp1[1] is "html")
                 {
-                    Code = Tools.CompressHTML(Code);
-                    File.WriteAllText(temp + Name, Code, Encoding.UTF8);
+                    code = Tools.CompressHTML(code);
+                    File.WriteAllText(temp + name, code, Encoding.UTF8);
                 }
                 else if (temp1[1] is "css")
                 {
-                    Code = Tools.CompressCSS(Code);
-                    File.WriteAllText(temp + Name, Code, Encoding.UTF8);
+                    code = Tools.CompressCSS(code);
+                    File.WriteAllText(temp + name, code, Encoding.UTF8);
                 }
                 else if (temp1[1] is "js")
                 {
-                    Code = Tools.CompressJS(Code);
-                    File.WriteAllText(temp + Name, Code, Encoding.UTF8);
+                    code = Tools.CompressJS(code);
+                    File.WriteAllText(temp + name, code, Encoding.UTF8);
                 }
                 else
                 {
-                    File.WriteAllText(temp + Name, Code, Encoding.UTF8);
+                    File.WriteAllText(temp + name, code, Encoding.UTF8);
                 }
             }
         }
 
-        public static void AddFile(WebObj obj, string Name, byte[] Data)
+        public static void AddFile(WebObj obj, string Name, byte[] data)
         {
             string temp = HtmlLocal + obj.UUID + "\\";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
-            File.WriteAllBytes(temp + Name, Data);
+            File.WriteAllBytes(temp + Name, data);
 
-            HtmlList[obj.UUID].Add(Name, Data);
+            HtmlList[obj.UUID].Add(Name, data);
             HtmlCodeList[obj.UUID].Files.Add(Name, Name);
 
             obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
 
-        private static void Storage(string Local, object obj)
+        private static void Storage(string local, object obj)
         {
             Task.Run(() =>
             {
                 try
                 {
-                    File.WriteAllText(Local, JsonConvert.SerializeObject(obj, Formatting.Indented));
+                    File.WriteAllText(local, JsonConvert.SerializeObject(obj, Formatting.Indented));
                 }
                 catch (Exception e)
                 {
@@ -245,28 +266,28 @@ Version:{obj.Version}
             HtmlList.TryAdd(obj.UUID, list2);
         }
 
-        public static void AddCode(WebObj obj, string Name, string Code)
+        public static void AddCode(WebObj obj, string name, string code)
         {
-            obj.Codes.Add(Name, Code);
-            Save(obj, Name, Code);
+            obj.Codes.Add(name, code);
+            Save(obj, name, code);
         }
 
-        public static void Remove(WebObj obj, string Name)
+        public static void Remove(WebObj obj, string name)
         {
             string temp = HtmlLocal + obj.UUID + "\\";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
-            var temp1 = Name.Split('.');
+            var temp1 = name.Split('.');
             if (temp1.Length != 1)
             {
                 if (temp1[1] is "html" or "css" or "js" or "json" or "txt")
-                    HtmlCodeList[obj.UUID].Codes.Remove(Name);
+                    HtmlCodeList[obj.UUID].Codes.Remove(name);
                 else
-                    HtmlCodeList[obj.UUID].Files.Remove(Name);
+                    HtmlCodeList[obj.UUID].Files.Remove(name);
             }
-            if (File.Exists(temp + Name))
-                File.Delete(temp + Name);
-            HtmlList[obj.UUID].Remove(Name);
+            if (File.Exists(temp + name))
+                File.Delete(temp + name);
+            HtmlList[obj.UUID].Remove(name);
 
             obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", HtmlCodeList[obj.UUID]);

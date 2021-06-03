@@ -41,7 +41,10 @@ namespace ColoryrServer.SDK
         /// 编码
         /// </summary>
         public EncodeType EncodeType { get; set; }
-
+        /// <summary>
+        /// 返回类型
+        /// </summary>
+        public string ContentType { get; init; }
         public HttpResponse()
         {
             if (Head == null)
@@ -49,6 +52,7 @@ namespace ColoryrServer.SDK
             ReCode = 200;
             SetCookie = false;
             Cookie = "";
+            ContentType = ServerContentType.JSON;
         }
         /// <summary>
         /// 往返回头写数据
@@ -126,6 +130,18 @@ namespace ColoryrServer.SDK
         {
             if (Data == null)
                 Data = new MemoryStream();
+        }
+    }
+    public class HttpResponseBytes : HttpResponse
+    {
+        /// <summary>
+        /// 二进制
+        /// </summary>
+        public byte[] Data { get; set; }
+        public HttpResponseBytes() : base()
+        {
+            if (Data == null)
+                Data = new byte[0];
         }
     }
 }

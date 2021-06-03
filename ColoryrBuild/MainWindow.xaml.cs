@@ -32,7 +32,7 @@ namespace ColoryrBuild
 
         private async void GetApi()
         {
-            string dir = App.RunLocal + "CodeTEMP\\Api\\";
+            string dir = App.RunLocal + "CodeTEMP\\SDK\\";
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
