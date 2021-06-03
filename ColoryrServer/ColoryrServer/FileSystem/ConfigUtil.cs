@@ -433,7 +433,7 @@ namespace ColoryrServer.FileSystem
                 },
                 Requset = new()
                 {
-                    Web = "/",
+                    Web = "/Web",
                     Back = "/Back"
                 },
                 HttpClientNumber = 100

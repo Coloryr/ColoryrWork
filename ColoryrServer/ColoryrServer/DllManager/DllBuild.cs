@@ -289,6 +289,7 @@ namespace ColoryrServer.DllManager
                                         "index.html",
                                         ColoryrServer_Resource.HtmlDemoHtml
                                         .Replace("{name}", json.UUID)
+                                        .Replace("{web}", ServerMain.Config.Requset.Web)
                                     },
                                     { "js.js", ColoryrServer_Resource.IndexDemoJS }
                                 },

@@ -352,7 +352,8 @@ namespace ColoryrServer.Http
             }
             if (Url.StartsWith(ServerMain.Config.Requset.Web))
             {
-                var temp = HtmlUtils.GetFile(Url.Replace(ServerMain.Config.Requset.Web, "") + "/");
+                Url = Url.Substring(ServerMain.Config.Requset.Web.Length);
+                var temp = HtmlUtils.GetFile(Url);
                 if (temp != null)
                 {
                     string type = ServerContentType.HTML;
@@ -393,7 +394,7 @@ namespace ColoryrServer.Http
             }
             else if (Url.StartsWith(ServerMain.Config.Requset.Back))
             {
-                Url = Url.Replace(ServerMain.Config.Requset.Back, "") + "/";
+                Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
                 if (Function.Constr(Url, '/') >= 2)
                 {
                     int tow = Url.IndexOf('/', 2);

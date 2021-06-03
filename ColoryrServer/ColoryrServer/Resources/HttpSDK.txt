@@ -16,12 +16,8 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="arg">参数名</param>
         /// <returns>数据</returns>
-        public string GetParameter(string arg)
-        {
-            if (Parameter.ContainsKey(arg))
-                return Parameter[arg];
-            return null;
-        }
+        public dynamic GetParameter(string arg)
+            => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
     }
     public abstract class HttpResponse
     {
@@ -45,11 +41,18 @@ namespace ColoryrServer.SDK
         /// 编码
         /// </summary>
         public EncodeType EncodeType { get; set; }
-
+        /// <summary>
+        /// 返回类型
+        /// </summary>
+        public string ContentType { get; init; }
         public HttpResponse()
         {
             if (Head == null)
                 Head = new();
+            ReCode = 200;
+            SetCookie = false;
+            Cookie = "";
+            ContentType = ServerContentType.JSON;
         }
         /// <summary>
         /// 往返回头写数据
@@ -75,17 +78,13 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="data">内容</param>
         public void Write(string data)
-        {
-            Data += data;
-        }
+            => Data += data;
         /// <summary>
         /// 写数据后换行
         /// </summary>
         /// <param name="data">内容</param>
         public void WriteNewLine(string data)
-        {
-            Data += data + "\n";
-        }
+           => Data += data + "\n";
     }
 
     public class HttpResponseDictionary : HttpResponse
@@ -106,9 +105,7 @@ namespace ColoryrServer.SDK
         /// <param name="Key">键</param>
         /// <param name="Value">值</param>
         public void AddResponse(string Key, object Value)
-        {
-            Data.Add(Key, Value);
-        }
+            => Data.Add(Key, Value);
         /// <summary>
         /// 写数据
         /// </summary>
@@ -133,6 +130,18 @@ namespace ColoryrServer.SDK
         {
             if (Data == null)
                 Data = new MemoryStream();
+        }
+    }
+    public class HttpResponseBytes : HttpResponse
+    {
+        /// <summary>
+        /// 二进制
+        /// </summary>
+        public byte[] Data { get; set; }
+        public HttpResponseBytes() : base()
+        {
+            if (Data == null)
+                Data = new byte[0];
         }
     }
 }

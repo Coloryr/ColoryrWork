@@ -30,8 +30,6 @@ namespace ColoryrServer.SDK
         {
             HttpClientUtils.Close(Http);
         }
-
-        ~HttpHtml() => Dispose();
         /// <summary>
         /// 获取byte
         /// </summary>
@@ -60,7 +58,7 @@ namespace ColoryrServer.SDK
         /// <param name="url">网址</param>
         /// <returns>解析后的html</returns>
         public HtmlDoc GetWebHtml(string url)
-            => new HtmlDoc(GetString(url));
+            => new(GetString(url));
         /// <summary>
         /// 发送表单获取解析后的html
         /// </summary>
@@ -68,7 +66,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns></returns>
         public HtmlDoc PostWebHtml(string url, Dictionary<string, string> arg)
-            => new HtmlDoc(PostString(url, arg));
+            => new(PostString(url, arg));
         /// <summary>
         /// 进行一次http请求
         /// </summary>
@@ -83,7 +81,7 @@ namespace ColoryrServer.SDK
         /// <param name="data">数据</param>
         /// <returns>返回的字符串</returns>
         public string PutString(string url, byte[] data)
-        => Http.Put(url, data, Cancel);
+            => Http.Put(url, data, Cancel);
         /// <summary>
         /// 发送表单数据
         /// </summary>
@@ -91,14 +89,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
-        => Http.Post(url, arg, Cancel);
+            => Http.Post(url, arg, Cancel);
         /// <summary>
         /// Get获取数据
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage GetData(string url)
-        => Http.Get(url, Cancel);
+            => Http.Get(url, Cancel);
     }
 
     public class HtmlAsync

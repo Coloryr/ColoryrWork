@@ -198,10 +198,12 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer.SDK
         ///{
-        ///    public class ServerContentType
+        ///    public class HttpMultipartFile
         ///    {
-        ///        public const string JSON = &quot;application/json&quot;;
-        ///        public const string XML = &quot;application/ [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public byte[] Data { get; set; }
+        ///        public string FileName { get; set; }
+        ///    }
+        ///    publ [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string ColoryrSDK {
             get {
@@ -482,17 +484,16 @@ namespace ColoryrServer {
         ///{
         ///    public class TcpIoTRequest
         ///    {
-        ///        public int Port { get; private set; }
-        ///        public byte[] Data { get; private set; }
+        ///        private int Server { get; init; }
+        ///        public int Port { get; init; }
+        ///        public byte[] Data { get; init; }
         ///        /// &lt;summary&gt;
         ///        /// 构造方法
         ///        /// &lt;/summary&gt;
         ///        /// &lt;param name=&quot;Port&quot;&gt;IoT端口&lt;/param&gt;
         ///        /// &lt;param name=&quot;Data&quot;&gt;IoT发送的数据&lt;/param&gt;
-        ///        public TcpIoTRequest(int Port, byte[] Data)
-        ///        {
-        ///            this.Port = Port;
-        ///       [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public TcpIoTRequest(int Port, byte[] Data, int Server)
+        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string IoTSDK {
             get {
@@ -550,6 +551,32 @@ namespace ColoryrServer {
         internal static string MqttDemoCS {
             get {
                 return ResourceManager.GetString("MqttDemoCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.MQTT;
+        ///using MQTTnet.Protocol;
+        ///using MQTTnet.Server;
+        ///
+        ///namespace ColoryrServer.SDK
+        ///{
+        ///    public class MqttConnectionValidator
+        ///    {
+        ///        public MqttConnectionValidatorContext Context { get; init; }
+        ///        /// &lt;summary&gt;
+        ///        /// MQTT服务器验证
+        ///        /// &lt;/summary&gt;
+        ///        /// &lt;param name=&quot;Context&quot;&gt;数据&lt;/param&gt;
+        ///        public MqttConnectionValidator(MqttConnectionValidatorContext Context)
+        ///            =&gt; this.Context = Context;
+        ///        /// &lt;summary&gt;
+        ///        /// 发送消息
+        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttSDK {
+            get {
+                return ResourceManager.GetString("MqttSDK", resourceCulture);
             }
         }
         
@@ -660,7 +687,29 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 using System;
+        ///using System.Collections.Concurrent;
+        ///using System.Collections.Generic;
+        ///
+        ///namespace ColoryrServer.Robot
+        ///{
+        ///    /// &lt;summary&gt;
+        ///    /// 55 [插件]获取群列表
+        ///    /// &lt;/summary&gt;
+        ///    public record ListGroupPack : PackBase
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 群列表
+        ///        /// &lt;/summary&gt;
+        ///        public List&lt;GroupInfo&gt; groups { get; set; }
+        ///    }
+        ///    /// &lt;summary&gt;
+        ///    /// 56 [插件]获取好友列表
+        ///    /// &lt;/summary&gt;
+        ///    public record ListFriendPack : PackBase
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 朋友列 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string RobotPacks {
             get {
@@ -740,7 +789,6 @@ namespace ColoryrServer {
         
         /// <summary>
         ///   查找类似 using ColoryrServer.TaskUtils;
-        ///using System;
         ///
         ///namespace ColoryrServer.SDK
         ///{
@@ -751,18 +799,27 @@ namespace ColoryrServer {
         ///        /// &lt;/summary&gt;
         ///        /// &lt;param name=&quot;name&quot;&gt;任务名字&lt;/param&gt;
         ///        /// &lt;returns&gt;是否存在&lt;/returns&gt;
-        ///        public static bool HaveTask(string name);
+        ///        public static bool HaveTask(string name)
+        ///            =&gt; TaskThread.HaveTask(name);
         ///        /// &lt;summary&gt;
         ///        /// 添加一个任务
         ///        /// 如果存在则会覆盖
         ///        /// &lt;/summary&gt;
         ///        /// &lt;param name=&quot;arg&quot;&gt;任务参数&lt;/param&gt;
-        ///        public static void StartTask(TaskUserArg arg);
-        ///        / [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public static bool StartTask(T [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string TaskSDK {
             get {
                 return ResourceManager.GetString("TaskSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似  的本地化字符串。
+        /// </summary>
+        internal static string WebHtmlSDK {
+            get {
+                return ResourceManager.GetString("WebHtmlSDK", resourceCulture);
             }
         }
         

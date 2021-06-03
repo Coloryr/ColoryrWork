@@ -175,6 +175,9 @@
   <data name="MqttDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\MqttDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="MqttSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\MqttSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="MySqlCommandSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\MySqlCommandSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

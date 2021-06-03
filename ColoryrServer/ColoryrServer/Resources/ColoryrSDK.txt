@@ -13,8 +13,16 @@ using System.Text;
 
 namespace ColoryrServer.SDK
 {
+    public class HttpMultipartFile
+    {
+        public byte[] Data { get; set; }
+        public string FileName { get; set; }
+    }
     public class ServerContentType
     {
+        public const string OSTREAM = "application/octet-stream";
+        public const string POSTXFORM = "application/x-www-form-urlencoded";
+        public const string POSTFORMDATA = "multipart/form-data";
         public const string JSON = "application/json";
         public const string XML = "application/xml";
         public const string HTML = "text/html";
@@ -29,7 +37,7 @@ namespace ColoryrServer.SDK
     }
     public enum MyContentType
     {
-        Json, Form, Other
+        Json, XFormData, MFormData, Other
     }
     public enum EncodeType
     {
@@ -408,13 +416,13 @@ namespace ColoryrServer.SDK
         /// <param name="id">客户端ID</param>
         /// <returns>是否在线</returns>
         public static bool WebSocketIsOnline(string id)
-        => ServerWebSocket.IsOnline(id);
+            => ServerWebSocket.IsOnline(id);
         /// <summary>
         /// 获取在线的机器人
         /// </summary>
         /// <returns>机器人QQ号列表</returns>
         public static List<long> GetBots()
-            => new(RobotSocket.QQs);
+            => new(RobotUtils.GetQQs());
         /// <summary>
         /// 压缩HTML
         /// </summary>

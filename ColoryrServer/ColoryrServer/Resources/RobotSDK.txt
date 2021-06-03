@@ -42,9 +42,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-        {
-            RobotSocket.ReCall(messageId);
-        }
+            => RobotUtils.ReCall(messageId);
     }
     public class RobotRequest
     {
@@ -83,9 +81,7 @@ namespace ColoryrServer.SDK
         /// 撤回消息
         /// </summary>
         public void ReCall()
-        {
-            RobotSocket.ReCall(messageId);
-        }
+            => RobotUtils.ReCall(messageId);
         /// <summary>
         /// 发送消息回应
         /// </summary>
@@ -95,13 +91,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupMessage(qq, id, message);
+                    RobotUtils.SendGroupMessage(qq, id, message);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateMessage(qq, id, fid, message);
+                    RobotUtils.SendGroupPrivateMessage(qq, id, fid, message);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendMessage(qq, fid, message);
+                    RobotUtils.SendFriendMessage(qq, fid, message);
                     break;
             }
         }
@@ -115,13 +111,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupImage(qq, id, data);
+                    RobotUtils.SendGroupImage(qq, id, data);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateImage(qq, id, fid, data);
+                    RobotUtils.SendGroupPrivateImage(qq, id, fid, data);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendImage(qq, fid, data);
+                    RobotUtils.SendFriendImage(qq, fid, data);
                     break;
             }
         }
@@ -135,13 +131,13 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupImageFile(qq, id, file);
+                    RobotUtils.SendGroupImageFile(qq, id, file);
                     break;
                 case MessageType.private_:
-                    RobotSocket.SendGroupPrivateImageFile(qq, id, fid, file);
+                    RobotUtils.SendGroupPrivateImageFile(qq, id, fid, file);
                     break;
                 case MessageType.friend:
-                    RobotSocket.SendFriendImageFile(qq, fid, file);
+                    RobotUtils.SendFriendImageFile(qq, fid, file);
                     break;
             }
         }
@@ -156,7 +152,7 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupSound(qq, id, data);
+                    RobotUtils.SendGroupSound(qq, id, data);
                     break;
             }
         }
@@ -170,7 +166,7 @@ namespace ColoryrServer.SDK
             switch (type)
             {
                 case MessageType.group:
-                    RobotSocket.SendGroupSoundFile(qq, id, file);
+                    RobotUtils.SendGroupSoundFile(qq, id, file);
                     break;
             }
         }
@@ -215,25 +211,29 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="message">消息</param>
         public void SendMessage(List<string> message)
-        {
-            RobotRequest.SendMessage(message);
-        }
+            => RobotRequest.SendMessage(message);
         /// <summary>
         /// 发送图片回应
         /// </summary>
         /// <param name="img">图片二进制</param>
         public void SendImage(byte[] img)
-        {
-            RobotRequest.SendImage(img);
-        }
+            => RobotRequest.SendImage(img);
 
         /// <summary>
         /// 发送声音回应
         /// </summary>
         /// <param name="sound">音频二进制</param>
         public void SendSound(byte[] sound)
-        {
-            RobotRequest.SendSound(sound);
-        }
+            => RobotRequest.SendSound(sound);
+    }
+
+    public class Robot
+    {
+        /// <summary>
+        /// 向机器人发送一个数据包
+        /// </summary>
+        /// <param name="data">数据包</param>
+        public void AddTask(byte[] data)
+            => RobotUtils.AddTask(data);
     }
 }

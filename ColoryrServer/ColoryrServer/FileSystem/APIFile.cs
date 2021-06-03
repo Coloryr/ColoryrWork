@@ -24,6 +24,8 @@ namespace ColoryrServer.FileSystem
             list.List.Add("TaskSDK", ColoryrServer_Resource.TaskSDK);
             list.List.Add("NotesSDK", ColoryrServer_Resource.NotesSDK);
             list.List.Add("RobotPacks", ColoryrServer_Resource.RobotPacks);
+            list.List.Add("MqttSDK", ColoryrServer_Resource.MqttSDK);
+            list.List.Add("WebHtmlSDK", ColoryrServer_Resource.WebHtmlSDK);
         }
     }
 }
