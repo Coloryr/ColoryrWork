@@ -815,7 +815,25 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 using ColoryrServer.FileSystem;
+        ///using System;
+        ///
+        ///namespace ColoryrServer.SDK
+        ///{
+        ///    public class WebHtml
+        ///    {
+        ///        /// &lt;summary&gt;
+        ///        /// 向前端添加Web资源
+        ///        /// &lt;/summary&gt;
+        ///        /// &lt;param name=&quot;uuid&quot;&gt;资源UUID&lt;/param&gt;
+        ///        /// &lt;param name=&quot;name&quot;&gt;名字&lt;/param&gt;
+        ///        /// &lt;param name=&quot;code&quot;&gt;内容&lt;/param&gt;
+        ///        public static void AddHtml(string uuid, string name, string code)
+        ///        {
+        ///            var web = HtmlUtils.GetHtml(uuid);
+        ///            if (web == null)
+        ///            {
+        ///               [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string WebHtmlSDK {
             get {
@@ -852,23 +870,23 @@ namespace ColoryrServer {
         }
         
         /// <summary>
-        ///   查找类似 using Fleck;
+        ///   查找类似 using ColoryrServer.WebSocket;
+        ///using Fleck;
         ///
         ///namespace ColoryrServer.SDK
         ///{
         ///    public class WebSocketMessage
         ///    {
-        ///        public IWebSocketConnection Client { get; private set; }
-        ///        public string Data { get; private set; }
+        ///        public bool IsAvailable { get; init; }
+        ///        public IWebSocketConnectionInfo Info { get; init; }
+        ///        public string Data { get; init; }
+        ///        private int Server { get; init; }
         ///        /// &lt;summary&gt;
         ///        /// WebSocket传来数据
         ///        /// &lt;/summary&gt;
         ///        /// &lt;param name=&quot;Client&quot;&gt;WS客户端&lt;/param&gt;
         ///        /// &lt;param name=&quot;Data&quot;&gt;WS本次传来的数据&lt;/param&gt;
-        ///        public WebSocketMessage(IWebSocketConnection Client, string Data)
-        ///        {
-        ///            this.Client = Client;
-        ///            t [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public WebSocke [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string WebSocketSDK {
             get {
