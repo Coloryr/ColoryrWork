@@ -43,13 +43,13 @@ namespace ColoryrServer.Http
             return null;
         }
 
-        public static HttpReturn HttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
+        public static HttpReturn HttpPOST(Stream stream,long Length,  string Url, NameValueCollection Hashtable, MyContentType type)
         {
             var Temp = new Dictionary<string, dynamic>();
             switch (type)
             {
                 case MyContentType.Json:
-                    string Str = streamReader.ReadToEnd();
+                    string Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
                     try
                     {
                         JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
@@ -100,8 +100,8 @@ namespace ColoryrServer.Http
                         };
                     }
                     break;
-                case MyContentType.Form:
-                    Str = streamReader.ReadToEnd();
+                case MyContentType.XFormData:
+                    Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
                     foreach (string Item in Str.Split('&'))
                     {
                         if (Item.Contains("="))
@@ -109,6 +109,28 @@ namespace ColoryrServer.Http
                             string[] KV = Item.Split('=');
                             Temp.Add(KV[0], KV[1]);
                         }
+                    }
+                    break;
+                case MyContentType.MFormData:
+                    var parser = HttpMultipart.Parse(stream, Length);
+                    if (parser == null)
+                    {
+                        return new HttpReturn
+                        {
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            {
+                                Res = 123,
+                                Text = "表单解析发生错误"
+                            })
+                        };
+                    }
+                    foreach (var item in parser.Parameters)
+                    {
+                        Temp.Add(item.Key, item.Value);
+                    }
+                    foreach (var item in parser.FileContents)
+                    {
+                        Temp.Add(item.Key, item.Value);
                     }
                     break;
                 case MyContentType.Other:
@@ -132,7 +154,7 @@ namespace ColoryrServer.Http
                             }
                             else
                             {
-                                if (CSFile.AddFileApp(app, item, streamReader.BaseStream))
+                                if (CSFile.AddFileApp(app, item, stream))
                                 {
                                     return new HttpReturn
                                     {
@@ -209,7 +231,7 @@ namespace ColoryrServer.Http
                     Parameter = Temp,
                     RowRequest = Hashtable,
                     ContentType = type,
-                    Stream = type == MyContentType.Other ? streamReader.BaseStream : null
+                    Stream = type == MyContentType.Other ? stream : null
                 };
                 var Data = DllRun.DllGo(Dll, Http, FunctionName);
                 return Data;
@@ -262,7 +284,7 @@ namespace ColoryrServer.Http
                         };
                     }
                     break;
-                case MyContentType.Form:
+                case MyContentType.XFormData:
                     Str = streamReader.ReadToEnd();
                     foreach (string Item in Str.Split('&'))
                     {
@@ -402,7 +424,7 @@ namespace ColoryrServer.Http
                     Cookie = HaveCookie(Hashtable),
                     RowRequest = Hashtable,
                     Parameter = Temp,
-                    ContentType = MyContentType.Form
+                    ContentType = MyContentType.XFormData
                 };
                 var Data1 = DllRun.DllGo(Dll, Http, FunctionName);
                 return Data1;
@@ -453,7 +475,7 @@ namespace ColoryrServer.Http
                     Cookie = HaveCookie(Hashtable),
                     Parameter = Temp,
                     RowRequest = Hashtable,
-                    ContentType = MyContentType.Form
+                    ContentType = MyContentType.XFormData
                 },
                 FunctionName = FunctionName,
                 UUID = UUID,
@@ -591,13 +613,17 @@ namespace ColoryrServer.Http
                         switch (Request.HttpMethod)
                         {
                             case "POST":
-                                StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
+                                Stream stream = Context.Request.InputStream;
                                 MyContentType type;
-                                if (Context.Request.ContentType == "application/x-www-form-urlencoded")
+                                if (Context.Request.ContentType.StartsWith(ServerContentType.POSTXFORM))
                                 {
-                                    type = MyContentType.Form;
+                                    type = MyContentType.XFormData;
                                 }
-                                else if (Context.Request.ContentType == "application/json")
+                                else if (Context.Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
+                                {
+                                    type = MyContentType.MFormData;
+                                }
+                                else if (Context.Request.ContentType.StartsWith(ServerContentType.JSON))
                                 {
                                     type = MyContentType.Json;
                                 }
@@ -605,7 +631,7 @@ namespace ColoryrServer.Http
                                 {
                                     type = MyContentType.Other;
                                 }
-                                httpReturn = HttpProcessor.HttpPOST(Reader, Request.RawUrl, Request.Headers, type);
+                                httpReturn = HttpProcessor.HttpPOST(stream, Request.ContentLength64, Request.RawUrl, Request.Headers, type);
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
                                 if (httpReturn.Head != null)
@@ -675,13 +701,17 @@ namespace ColoryrServer.Http
                         switch (Request.HttpMethod)
                         {
                             case "POST":
-                                StreamReader Reader = new StreamReader(Context.Request.InputStream, Encoding.UTF8);
+                                StreamReader Reader = new(Context.Request.InputStream, Encoding.UTF8);
                                 MyContentType type;
-                                if (Context.Request.ContentType == "application/x-www-form-urlencoded")
+                                if (Context.Request.ContentType is ServerContentType.POSTXFORM)
                                 {
-                                    type = MyContentType.Form;
+                                    type = MyContentType.XFormData;
                                 }
-                                else if (Context.Request.ContentType == "application/json")
+                                else if (Context.Request.ContentType is ServerContentType.POSTFORMDATA)
+                                {
+                                    type = MyContentType.MFormData;
+                                }
+                                else if (Context.Request.ContentType is ServerContentType.JSON)
                                 {
                                     type = MyContentType.Json;
                                 }

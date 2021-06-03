@@ -187,6 +187,9 @@
   <data name="RobotDemoCS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\RobotDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="RobotPacks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\RobotPacks.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="RobotSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\RobotSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

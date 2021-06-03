@@ -23,6 +23,7 @@ namespace ColoryrServer.FileSystem
             list.List.Add("WebSocketSDK", ColoryrServer_Resource.WebSocketSDK);
             list.List.Add("TaskSDK", ColoryrServer_Resource.TaskSDK);
             list.List.Add("NotesSDK", ColoryrServer_Resource.NotesSDK);
+            list.List.Add("RobotPacks", ColoryrServer_Resource.RobotPacks);
         }
     }
 }

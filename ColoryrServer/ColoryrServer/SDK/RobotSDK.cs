@@ -226,4 +226,14 @@ namespace ColoryrServer.SDK
         public void SendSound(byte[] sound)
             => RobotRequest.SendSound(sound);
     }
+
+    public class Robot
+    {
+        /// <summary>
+        /// 向机器人发送一个数据包
+        /// </summary>
+        /// <param name="data">数据包</param>
+        public void AddTask(byte[] data)
+            => RobotUtils.AddTask(data);
+    }
 }

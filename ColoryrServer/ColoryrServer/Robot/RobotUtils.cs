@@ -58,13 +58,12 @@ namespace ColoryrServer.Robot
 
         private static void Log(LogType type, string data)
         {
-
-            Console.WriteLine($"日志:{type} {data}");
+            ServerMain.LogOut($"机器人:{type} {data}");
         }
 
         private static void State(StateType type)
         {
-            Console.WriteLine($"日志:{type}");
+            ServerMain.LogOut($"机器人:{type}");
         }
 
         internal static void Start()
@@ -85,35 +84,40 @@ namespace ColoryrServer.Robot
             robot.Set(config);
             robot.Start();
         }
-        
+
+        internal static List<long> GetQQs()
+        {
+            return robot.QQs;
+        }
+
         internal static void SendGroupMessage(long qq, long id, List<string> message)
         {
-            var data = BuildPack.Build(new SendGroupMessagePack 
-            { 
-                qq = qq, 
-                id = id, 
-                message = message 
+            var data = BuildPack.Build(new SendGroupMessagePack
+            {
+                qq = qq,
+                id = id,
+                message = message
             }, 52);
             robot.AddTask(data);
         }
         internal static void SendGroupPrivateMessage(long qq, long id, long fid, List<string> message)
         {
-            var data = BuildPack.Build(new SendGroupPrivateMessagePack 
-            { 
-                qq = qq, 
-                id = id, 
-                fid = fid, 
-                message = message 
+            var data = BuildPack.Build(new SendGroupPrivateMessagePack
+            {
+                qq = qq,
+                id = id,
+                fid = fid,
+                message = message
             }, 53);
             robot.AddTask(data);
         }
         internal static void SendFriendMessage(long qq, long id, List<string> message)
         {
-            var data = BuildPack.Build(new SendFriendMessagePack 
-            { 
-                qq = qq, 
-                id = id, 
-                message = message 
+            var data = BuildPack.Build(new SendFriendMessagePack
+            {
+                qq = qq,
+                id = id,
+                message = message
             }, 54);
             robot.AddTask(data);
         }
@@ -140,42 +144,42 @@ namespace ColoryrServer.Robot
         }
         internal static void SendGroupImageFile(long qq, long id, string file)
         {
-            var data = BuildPack.Build(new LoadFileSendToGroupImagePack 
-            { 
-                qq = qq, 
-                id = id, 
-                file = file, 
+            var data = BuildPack.Build(new LoadFileSendToGroupImagePack
+            {
+                qq = qq,
+                id = id,
+                file = file,
             }, 75);
             robot.AddTask(data);
         }
         internal static void SendGroupPrivateImageFile(long qq, long id, long fid, string file)
         {
-            var data = BuildPack.Build(new LoadFileSendToGroupPrivateImagePack 
-            { 
-                qq = qq, 
-                id = id, 
-                fid = fid, 
-                file = file, 
+            var data = BuildPack.Build(new LoadFileSendToGroupPrivateImagePack
+            {
+                qq = qq,
+                id = id,
+                fid = fid,
+                file = file,
             }, 76);
             robot.AddTask(data);
         }
         internal static void SendFriendImageFile(long qq, long id, string file)
         {
-            var data = BuildPack.Build(new LoadFileSendToFriendImagePack 
-            { 
-                qq = qq, 
-                id = id, 
+            var data = BuildPack.Build(new LoadFileSendToFriendImagePack
+            {
+                qq = qq,
+                id = id,
                 file = file,
             }, 77);
             robot.AddTask(data);
         }
         internal static void SendGroupSoundFile(long qq, long id, string file)
         {
-            var data = BuildPack.Build(new LoadFileSendToGroupSoundPack 
-            { 
-                qq = qq, 
-                id = id, 
-                file = file, 
+            var data = BuildPack.Build(new LoadFileSendToGroupSoundPack
+            {
+                qq = qq,
+                id = id,
+                file = file,
             }, 78);
             robot.AddTask(data);
         }
@@ -187,10 +191,14 @@ namespace ColoryrServer.Robot
         }
         internal static void ReCall(string id)
         {
-            var data = BuildPack.Build(new ReCallMessagePack 
-            { 
-                id = int.Parse(id) 
+            var data = BuildPack.Build(new ReCallMessagePack
+            {
+                id = int.Parse(id)
             }, 71);
+            robot.AddTask(data);
+        }
+        internal static void AddTask(byte[] data)
+        {
             robot.AddTask(data);
         }
     }
