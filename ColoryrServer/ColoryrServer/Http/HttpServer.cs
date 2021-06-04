@@ -25,19 +25,16 @@ namespace ColoryrServer.Http
     {
         public static string HaveCookie(NameValueCollection hashtable)
         {
-            if (hashtable.HasKeys())
+            string Temp = hashtable["Cookie"];
+            if (Temp == null)
+                return null;
+            string[] Cookies = Temp.Split(';');
+            foreach (var Item in Cookies)
             {
-                string Temp = hashtable["Cookie"];
-                if (Temp == null)
-                    return null;
-                string[] Cookies = Temp.Split(';');
-                foreach (var Item in Cookies)
+                var temp = Item.Replace(" ", "");
+                if (temp.StartsWith("cs="))
                 {
-                    var temp = Item.Replace(" ", "");
-                    if (temp.StartsWith("cs="))
-                    {
-                        return temp.Replace("cs=", "");
-                    }
+                    return temp.Replace("cs=", "");
                 }
             }
             return null;
@@ -638,6 +635,7 @@ namespace ColoryrServer.Http
                                 httpReturn = HttpProcessor.HttpPOST(stream, Request.ContentLength64, Request.RawUrl, Request.Headers, type);
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
+                                Response.StatusCode = httpReturn.ReCode;
                                 if (httpReturn.Head != null)
                                     foreach (var Item in httpReturn.Head)
                                     {
@@ -649,17 +647,19 @@ namespace ColoryrServer.Http
                                     Response.OutputStream.Write(httpReturn.Data);
                                 else
                                 {
-                                    httpReturn.Data1.Seek(0, SeekOrigin.Begin);
+                                    Response.ContentLength64 = httpReturn.Data1.Length;
+                                    httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                                    Response.StatusCode = 206;
                                     httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
                                 Response.OutputStream.Flush();
-                                Response.StatusCode = httpReturn.ReCode;
                                 Response.Close();
                                 break;
                             case "GET":
                                 httpReturn = HttpProcessor.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
+                                Response.StatusCode = httpReturn.ReCode;
                                 if (httpReturn.Head != null)
                                     foreach (var Item in httpReturn.Head)
                                     {
@@ -671,11 +671,12 @@ namespace ColoryrServer.Http
                                     Response.OutputStream.Write(httpReturn.Data);
                                 else
                                 {
-                                    httpReturn.Data1.Seek(0, SeekOrigin.Begin);
+                                    Response.ContentLength64 = httpReturn.Data1.Length;
+                                    httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                                    Response.StatusCode = 206;
                                     httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
                                 Response.OutputStream.Flush();
-                                Response.StatusCode = httpReturn.ReCode;
                                 Response.Close();
                                 break;
                         }

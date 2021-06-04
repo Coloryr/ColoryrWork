@@ -17,6 +17,13 @@ namespace ColoryrServer.DllManager
             {
                 if (function != null)
                 {
+                    int index = function.LastIndexOf(".");
+                    if (index!=- 1)
+                    {
+                        string temp = function[index..];
+                        function = function[..index];
+                        arg.Parameter.Add(".", temp);
+                    }
                     if (!dll.MethodInfos.ContainsKey(function))
                     {
                         return new HttpReturn
@@ -84,7 +91,8 @@ namespace ColoryrServer.DllManager
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,
-                        Cookie = dr.SetCookie ? dr.Cookie : null
+                        Cookie = dr.SetCookie ? dr.Cookie : null,
+                        Pos = dr.Pos
                     };
                 }
                 else if (dllres is HttpResponseBytes)

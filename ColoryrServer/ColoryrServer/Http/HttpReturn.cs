@@ -14,5 +14,6 @@ namespace ColoryrServer.Http
         public Stream Data1;
         public Dictionary<string, string> Head;
         public int ReCode = 200;
+        public int Pos = 0;
     }
 }

@@ -126,6 +126,10 @@ namespace ColoryrServer.SDK
         /// 流
         /// </summary>
         public Stream Data { get; set; }
+        /// <summary>
+        /// 流的位置
+        /// </summary>
+        public int Pos { get; set; }
         public HttpResponseStream() : base()
         {
             if (Data == null)

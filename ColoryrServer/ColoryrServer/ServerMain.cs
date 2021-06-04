@@ -203,6 +203,7 @@ namespace ColoryrServer
                     GenCode.Start();
                     DllStonge.Start();
                     HtmlUtils.Start();
+                    FileHttpStream.Start();
                 }
 
                 //等待初始化完成
@@ -234,6 +235,7 @@ namespace ColoryrServer
             MQTTServer.Stop();
             TaskThread.Stop();
             HttpClientUtils.Stop();
+            HtmlUtils.Stop();
             LogOut("已关闭");
         }
 
