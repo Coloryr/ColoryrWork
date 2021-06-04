@@ -128,12 +128,9 @@ namespace ColoryrServer.Http
                     }
                     foreach (var item in parser.Files)
                     {
-                        Stream stream1 = item.Data;
-                        byte[] buff = new byte[stream1.Length];
-                        stream1.Read(buff);
                         Temp.Add(item.Name, new HttpMultipartFile()
                         {
-                            Data = buff,
+                            Data = item.Data,
                             FileName = item.FileName
                         });
                     }

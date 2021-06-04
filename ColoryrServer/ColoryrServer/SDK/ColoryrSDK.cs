@@ -15,7 +15,7 @@ namespace ColoryrServer.SDK
 {
     public class HttpMultipartFile
     {
-        public byte[] Data { get; set; }
+        public Stream Data { get; set; }
         public string FileName { get; set; }
     }
     public class ServerContentType
