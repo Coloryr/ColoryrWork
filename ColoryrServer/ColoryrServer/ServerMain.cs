@@ -37,7 +37,9 @@ namespace ColoryrServer
             {
                 StackFrame item = sfs[i];
                 var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
+                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program"
+                    && item1.Module.Name is "ColoryrServer.RunTest.dll" 
+                    && item1.Name is "Main")
                 {
                     ServerMain.Start();
                 }
@@ -51,23 +53,11 @@ namespace ColoryrServer
             {
                 StackFrame item = sfs[i];
                 var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
+                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program" 
+                    && item1.Module.Name is "ColoryrServer.RunTest.dll"
+                    && item1.Name is "Main")
                 {
                     ServerMain.Stop();
-                }
-            }
-        }
-        public static void Robot()
-        {
-            StackTrace st = new(true);
-            StackFrame[] sfs = st.GetFrames();
-            for (int i = 1; i < sfs.Length; ++i)
-            {
-                StackFrame item = sfs[i];
-                var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName == "ColoryrServer.RunTest.Program" && item1.Module.Name == "ColoryrServer.RunTest.dll" && item1.Name == "Main")
-                {
-                    RobotUtils.Start();
                 }
             }
         }
@@ -85,9 +75,9 @@ namespace ColoryrServer
         /// <summary>
         /// 日志输出
         /// </summary>
-        public static Logs Logs;
+        private static Logs Logs;
 
-        public static bool isGo = false;
+        public static bool isGo { get; private set; } = false;
 
         /// <summary>
         /// 写错误到日志中

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Lib.Build
 {
@@ -9,7 +8,7 @@ namespace Lib.Build
     {
         public string log = "logs.log";
         public string RunLocal;
-        private readonly object lockobject = new object();
+        private readonly object lockobject = new();
 
         public Logs(string RunLocal)
         {
@@ -33,31 +32,6 @@ namespace Lib.Build
                 catch
                 { }
             }
-        }
-        public void LogError(Exception e)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                string a = "[Error]" + e.Message + ":" + e.Source + "\n" + e.StackTrace;
-                LogWrite(a);
-            });
-        }
-        public void LogError(string a)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                a = "[Error]" + a;
-                LogWrite(a);
-            });
-        }
-
-        public void LogOut(string a)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                a = "[Info]" + a;
-                LogWrite(a);
-            });
         }
     }
 }

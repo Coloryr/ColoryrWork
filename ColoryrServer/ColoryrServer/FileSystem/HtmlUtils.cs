@@ -6,10 +6,24 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
+    internal class HtmlFileObj
+    {
+        public byte[] Data { get; set; }
+        public int Time { get; private set; }
+        public void Reset()
+        {
+            Time = ServerMain.Config.Requset.TempTime;
+        }
+        public void Tick()
+        {
+            Time--;
+        }
+    }
     internal class HtmlUtils
     {
         private static readonly string HtmlLocal = ServerMain.RunLocal + @"Static\";
@@ -17,11 +31,38 @@ namespace ColoryrServer.FileSystem
         private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes\Static\";
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
-        public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; private set; } = new();
+        private static readonly ConcurrentDictionary<string, Dictionary<string, HtmlFileObj>> HtmlFileList = new();
+        public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
-        private static byte[] HtmlIndex;
+        public static byte[] HtmlIndex { get; private set; }
         public static byte[] Html404 { get; private set; }
-
+        private static bool IsRun;
+        private static readonly Thread Thread = new(TickTask);
+        private static void TickTask()
+        {
+            while (IsRun)
+            {
+                try
+                {
+                    foreach (var item in HtmlFileList)
+                    {
+                        foreach (var item1 in item.Value)
+                        {
+                            item1.Value.Tick();
+                            if (item1.Value.Time <= 0)
+                            {
+                                item.Value.Remove(item1.Key);
+                            }
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+        }
         public static WebObj GetHtml(string uuid)
         {
             if (!HtmlCodeList.TryGetValue(uuid, out var item))
@@ -50,10 +91,42 @@ namespace ColoryrServer.FileSystem
             else
             {
                 string name = temp[2];
-                if (HtmlList.ContainsKey(uuid))
+                int index = name.LastIndexOf(".");
+                string type = name[index..];
+                if (ServerMain.Config.Requset.Temp.Contains(type))
                 {
-                    if (HtmlList[uuid].TryGetValue(name, out var temp1))
-                        return temp1;
+                    if (!HtmlFileList.ContainsKey(uuid))
+                    {
+                        HtmlFileList.TryAdd(uuid, new());
+                    }
+                    if (HtmlFileList[uuid].ContainsKey(name))
+                    {
+                        return HtmlFileList[uuid][name].Data;
+                    }
+                    else
+                    {
+                        string temp1 = HtmlLocal + uuid + "\\" + name;
+                        if (File.Exists(temp1))
+                        {
+                            var data = File.ReadAllBytes(temp1);
+                            var obj = new HtmlFileObj()
+                            {
+                                Data = data
+                            };
+                            obj.Reset();
+                            HtmlFileList[uuid].TryAdd(name, obj);
+                            return data;
+                        }
+                        return null;
+                    }
+                }
+                else
+                {
+                    if (HtmlList.ContainsKey(uuid))
+                    {
+                        if (HtmlList[uuid].TryGetValue(name, out var temp1))
+                            return temp1;
+                    }
                 }
             }
             return null;
@@ -125,6 +198,8 @@ namespace ColoryrServer.FileSystem
                     Dictionary<string, byte[]> list2 = new();
                     foreach (var item1 in new DirectoryInfo(dir).GetFiles())
                     {
+                        if (ServerMain.Config.Requset.Temp.Contains(item1.Extension))
+                            continue;
                         list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
                     }
                     HtmlList.TryAdd(obj.UUID, list2);
@@ -136,6 +211,12 @@ namespace ColoryrServer.FileSystem
                     ServerMain.LogError(e);
                 }
             }
+            IsRun = true;
+            Thread.Start();
+        }
+        public static void Stop()
+        {
+            IsRun = false;
         }
         public static void DeleteAll(WebObj obj)
         {

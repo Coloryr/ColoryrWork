@@ -88,6 +88,14 @@ namespace ColoryrServer.FileSystem
         /// 后端
         /// </summary>
         public string Back { get; set; }
+        /// <summary>
+        /// 放进缓存的文件类型
+        /// </summary>
+        public List<string> Temp { get; set; }
+        /// <summary>
+        /// 缓存保留时间
+        /// </summary>
+        public int TempTime { get; set; }
     }
     internal record MQTTConfig
     {
@@ -434,7 +442,12 @@ namespace ColoryrServer.FileSystem
                 Requset = new()
                 {
                     Web = "/Web",
-                    Back = "/Back"
+                    Back = "/Back",
+                    Temp = new()
+                    { 
+                        ".jpg", ".png", ".mp4", ".jpge", ".gif"
+                    },
+                    TempTime = 1800
                 },
                 HttpClientNumber = 100
             }, FilePath);
