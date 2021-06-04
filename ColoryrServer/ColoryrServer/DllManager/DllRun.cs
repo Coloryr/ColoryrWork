@@ -18,7 +18,7 @@ namespace ColoryrServer.DllManager
                 if (function != null)
                 {
                     int index = function.LastIndexOf(".");
-                    if (index!=- 1)
+                    if (index != -1)
                     {
                         string temp = function[index..];
                         function = function[..index];

@@ -506,7 +506,7 @@ namespace ColoryrBuild.Windows
                     }
                 }
             }
-            if(res == null)
+            if (res == null)
             {
                 App.LogShow("添加", "服务器返回错误");
                 return;

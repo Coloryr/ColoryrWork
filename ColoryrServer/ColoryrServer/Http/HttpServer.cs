@@ -3,6 +3,7 @@ using ColoryrServer.FileSystem;
 using ColoryrServer.Pipe;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
+using HttpMultipartParser;
 using Lib.App;
 using Lib.Build;
 using Lib.Build.Object;
@@ -109,7 +110,7 @@ namespace ColoryrServer.Http
                     }
                     break;
                 case MyContentType.MFormData:
-                    var parser = HttpMultipart.Parse(stream, Length);
+                    var parser = MultipartFormDataParser.Parse(stream);
                     if (parser == null)
                     {
                         return new HttpReturn
@@ -123,11 +124,18 @@ namespace ColoryrServer.Http
                     }
                     foreach (var item in parser.Parameters)
                     {
-                        Temp.Add(item.Key, item.Value);
+                        Temp.Add(item.Name, item.Data);
                     }
-                    foreach (var item in parser.FileContents)
+                    foreach (var item in parser.Files)
                     {
-                        Temp.Add(item.Key, item.Value);
+                        Stream stream1 = item.Data;
+                        byte[] buff = new byte[stream1.Length];
+                        stream1.Read(buff);
+                        Temp.Add(item.Name, new HttpMultipartFile()
+                        {
+                            Data = buff,
+                            FileName = item.FileName
+                        });
                     }
                     break;
                 case MyContentType.Other:
@@ -192,6 +200,7 @@ namespace ColoryrServer.Http
 
             string UUID = "0";
             string FunctionName = null;
+            Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
             int thr = Url.IndexOf('?', 0);
             if (Function.Constr(Url, '/') >= 2)
             {
@@ -292,6 +301,7 @@ namespace ColoryrServer.Http
 
             string UUID = "0";
             string FunctionName = null;
+            Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
             int thr = Url.IndexOf('?', 0);
             if (Function.Constr(Url, '/') >= 2)
             {

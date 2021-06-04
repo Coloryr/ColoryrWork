@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.SDK;
+using Lib.Server;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -7,7 +8,7 @@ namespace ColoryrServer.FileSystem
 {
     internal class FileHttpStream
     {
-        private static ConcurrentDictionary<string, Stream> CookieTemp = new();
+        private static readonly ConcurrentDictionary<string, Stream> CookieTemp = new();
         public static string Local;
 
         public static void Start()
@@ -85,7 +86,7 @@ namespace ColoryrServer.FileSystem
                 {
                     if (range.StartsWith("bytes="))
                     {
-                        var temp = range.Replace("bytes=", "").Replace("-", "");
+                        var temp = Function.GetSrings(range, "bytes=", "-");
                         pos = int.Parse(temp);
                     }
                 }
@@ -95,10 +96,8 @@ namespace ColoryrServer.FileSystem
                     SetCookie = true,
                     Cookie = cookie,
                     Data = stream,
-                    Pos = pos,
-                    ContentType = ServerContentType.MP4
+                    Pos = pos
                 };
-                res.AddHead("ETag", "\"5f6f4e61-ff34c2\"");
                 res.AddHead("Content-Range", $"bytes {pos}-{stream.Length - 1}/{stream.Length}");
                 return res;
             }

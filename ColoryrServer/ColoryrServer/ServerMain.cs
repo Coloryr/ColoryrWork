@@ -11,6 +11,7 @@ using ColoryrServer.Robot;
 using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
+using ICSharpCode.SharpZipLib.Zip;
 using Lib.Build;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace ColoryrServer
                 StackFrame item = sfs[i];
                 var item1 = item.GetMethod();
                 if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program"
-                    && item1.Module.Name is "ColoryrServer.RunTest.dll" 
+                    && item1.Module.Name is "ColoryrServer.RunTest.dll"
                     && item1.Name is "Main")
                 {
                     ServerMain.Start();
@@ -53,7 +54,7 @@ namespace ColoryrServer
             {
                 StackFrame item = sfs[i];
                 var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program" 
+                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program"
                     && item1.Module.Name is "ColoryrServer.RunTest.dll"
                     && item1.Name is "Main")
                 {
@@ -156,6 +157,7 @@ namespace ColoryrServer
                 Parallel.ForEach(new List<string>(), (i, b) => { });
                 Bitmap bitmap = new Bitmap(1, 1);
                 bitmap.Dispose();
+                Stream zip = ZipOutputStream.Null;
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 

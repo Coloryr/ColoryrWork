@@ -444,8 +444,12 @@ namespace ColoryrServer.FileSystem
                     Web = "/Web",
                     Back = "/Back",
                     Temp = new()
-                    { 
-                        ".jpg", ".png", ".mp4", ".jpge", ".gif"
+                    {
+                        ".jpg",
+                        ".png",
+                        ".mp4",
+                        ".jpge",
+                        ".gif"
                     },
                     TempTime = 1800
                 },

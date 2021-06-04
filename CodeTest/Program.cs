@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace CodeTest
 {
-    [AttributeUsage(AttributeTargets.Method , AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NotesSDK : Attribute
     {
         public string Text;
@@ -23,13 +21,13 @@ namespace CodeTest
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            
+
         }
 
         [NotesSDK("", null, null)]
         public static void test()
-        { 
-        
+        {
+
         }
     }
 }
