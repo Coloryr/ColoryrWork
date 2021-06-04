@@ -1,0 +1,379 @@
+#region 程序集 ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73
+// E:\NuGet\packages\sharpziplib\1.3.2\lib\netstandard2.1\ICSharpCode.SharpZipLib.dll
+#endregion
+
+using System;
+
+namespace ICSharpCode.SharpZipLib.Zip
+{
+    //
+    // 摘要:
+    //     This class represents an entry in a zip archive. This can be a file or a directory
+    //     ZipFile and ZipInputStream will give you instances of this class as information
+    //     about the members in an archive. ZipOutputStream uses an instance of this class
+    //     when creating an entry in a Zip file.
+    //     Author of the original java version : Jochen Hoenicke
+    public class ZipEntry
+    {
+        //
+        // 摘要:
+        //     Creates a zip entry with the given name.
+        //
+        // 参数:
+        //   name:
+        //     The name for this entry. Can include directory components. The convention for
+        //     names is 'unix' style paths with relative names only. There are with no device
+        //     names and path elements are separated by '/' characters.
+        //
+        // 异常:
+        //   T:System.ArgumentNullException:
+        //     The name passed is null
+        public ZipEntry(string name);
+        //
+        // 摘要:
+        //     Creates a deep copy of the given zip entry.
+        //
+        // 参数:
+        //   entry:
+        //     The entry to copy.
+        [Obsolete("Use Clone instead")]
+        public ZipEntry(ZipEntry entry);
+
+        //
+        // 摘要:
+        //     Get a value indicating whether this entry can be decompressed by the library.
+        //
+        // 言论：
+        //     This is based on the ICSharpCode.SharpZipLib.Zip.ZipEntry.Version and whether
+        //     the compression method is supported.
+        public bool CanDecompress { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating if the entry requires Zip64 extensions to store the full
+        //     entry values.
+        //
+        // 值:
+        //     A System.Boolean value of true if a local header requires Zip64 extensions; false
+        //     if not.
+        public bool LocalHeaderRequiresZip64 { get; }
+        //
+        // 摘要:
+        //     Get a value indicating whether the central directory entry requires Zip64 extensions
+        //     to be stored.
+        public bool CentralHeaderRequiresZip64 { get; }
+        //
+        // 摘要:
+        //     Get/Set DosTime value.
+        //
+        // 言论：
+        //     The MS-DOS date format can only represent dates between 1/1/1980 and 12/31/2107.
+        public long DosTime { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the time of last modification of the entry.
+        //
+        // 言论：
+        //     The ICSharpCode.SharpZipLib.Zip.ZipEntry.DosTime property is updated to match
+        //     this as far as possible.
+        public DateTime DateTime { get; set; }
+        //
+        // 摘要:
+        //     Returns the entry name.
+        //
+        // 言论：
+        //     The unix naming convention is followed. Path components in the entry should always
+        //     separated by forward slashes ('/'). Dos device names like C: should also be removed.
+        //     See the ICSharpCode.SharpZipLib.Zip.ZipNameTransform class, or ICSharpCode.SharpZipLib.Zip.ZipEntry.CleanName(System.String)
+        public string Name { get; }
+        //
+        // 摘要:
+        //     Gets/Sets the size of the uncompressed data.
+        //
+        // 返回结果:
+        //     The size or -1 if unknown.
+        //
+        // 言论：
+        //     Setting the size before adding an entry to an archive can help avoid compatibility
+        //     problems with some archivers which don't understand Zip64 extensions.
+        public long Size { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the size of the compressed data.
+        //
+        // 返回结果:
+        //     The compressed entry size or -1 if unknown.
+        public long CompressedSize { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the crc of the uncompressed data.
+        //
+        // 返回结果:
+        //     The crc value or -1 if unknown.
+        //
+        // 异常:
+        //   T:System.ArgumentOutOfRangeException:
+        //     Crc is not in the range 0..0xffffffffL
+        public long Crc { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the compression method.
+        //
+        // 返回结果:
+        //     The compression method for this entry
+        public CompressionMethod CompressionMethod { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the extra data.
+        //
+        // 返回结果:
+        //     Extra data or null if not set.
+        //
+        // 异常:
+        //   T:System.ArgumentOutOfRangeException:
+        //     Extra data is longer than 64KB (0xffff) bytes.
+        public byte[] ExtraData { get; set; }
+        //
+        // 摘要:
+        //     For AES encrypted files returns or sets the number of bits of encryption (128,
+        //     192 or 256). When setting, only 0 (off), 128 or 256 is supported.
+        public int AESKeySize { get; set; }
+        //
+        // 摘要:
+        //     Gets/Sets the entry comment.
+        //
+        // 返回结果:
+        //     The comment or null if not set.
+        //
+        // 异常:
+        //   T:System.ArgumentOutOfRangeException:
+        //     If comment is longer than 0xffff.
+        //
+        // 言论：
+        //     A comment is only available for entries when read via the ICSharpCode.SharpZipLib.Zip.ZipFile
+        //     class. The ICSharpCode.SharpZipLib.Zip.ZipInputStream class doesn't have the
+        //     comment data available.
+        public string Comment { get; set; }
+        //
+        // 摘要:
+        //     Get minimum Zip feature version required to extract this entry
+        //
+        // 言论：
+        //     Minimum features are defined as:
+        //     1.0 - Default value
+        //     1.1 - File is a volume label
+        //     2.0 - File is a folder/directory
+        //     2.0 - File is compressed using Deflate compression
+        //     2.0 - File is encrypted using traditional encryption
+        //     2.1 - File is compressed using Deflate64
+        //     2.5 - File is compressed using PKWARE DCL Implode
+        //     2.7 - File is a patch data set
+        //     4.5 - File uses Zip64 format extensions
+        //     4.6 - File is compressed using BZIP2 compression
+        //     5.0 - File is encrypted using DES
+        //     5.0 - File is encrypted using 3DES
+        //     5.0 - File is encrypted using original RC2 encryption
+        //     5.0 - File is encrypted using RC4 encryption
+        //     5.1 - File is encrypted using AES encryption
+        //     5.1 - File is encrypted using corrected RC2 encryption
+        //     5.1 - File is encrypted using corrected RC2-64 encryption
+        //     6.1 - File is encrypted using non-OAEP key wrapping
+        //     6.2 - Central directory encryption (not confirmed yet)
+        //     6.3 - File is compressed using LZMA
+        //     6.3 - File is compressed using PPMD+
+        //     6.3 - File is encrypted using Blowfish
+        //     6.3 - File is encrypted using Twofish
+        public int Version { get; }
+        //
+        // 摘要:
+        //     Gets the compatibility information for the external file attribute If the external
+        //     file attributes are compatible with MS-DOS and can be read by PKZIP for DOS version
+        //     2.04g then this value will be zero. Otherwise the value will be non-zero and
+        //     identify the host system on which the attributes are compatible.
+        //
+        // 言论：
+        //     The values for this as defined in the Zip File format and by others are shown
+        //     below. The values are somewhat misleading in some cases as they are not all used
+        //     as shown. You should consult the relevant documentation to obtain up to date
+        //     and correct information. The modified appnote by the infozip group is particularly
+        //     helpful as it documents a lot of peculiarities. The document is however a little
+        //     dated.
+        //     0 - MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)
+        //     1 - Amiga
+        //     2 - OpenVMS
+        //     3 - Unix
+        //     4 - VM/CMS
+        //     5 - Atari ST
+        //     6 - OS/2 HPFS
+        //     7 - Macintosh
+        //     8 - Z-System
+        //     9 - CP/M
+        //     10 - Windows NTFS
+        //     11 - MVS (OS/390 - Z/OS)
+        //     12 - VSE
+        //     13 - Acorn Risc
+        //     14 - VFAT
+        //     15 - Alternate MVS
+        //     16 - BeOS
+        //     17 - Tandem
+        //     18 - OS/400
+        //     19 - OS/X (Darwin)
+        //     99 - WinZip AES
+        //     remainder - unused
+        public int HostSystem { get; set; }
+        //
+        // 摘要:
+        //     Get a value indicating this entry is for a DOS/Windows system.
+        public bool IsDOSEntry { get; }
+        //
+        // 摘要:
+        //     Get the version made by for this entry or zero if unknown. The value / 10 indicates
+        //     the major version number, and the value mod 10 is the minor version number
+        public int VersionMadeBy { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating if the entry is a directory. however.
+        //
+        // 言论：
+        //     A directory is determined by an entry name with a trailing slash '/'. The external
+        //     file attributes can also indicate an entry is for a directory. Currently only
+        //     dos/windows attributes are tested in this manner. The trailing slash convention
+        //     should always be followed.
+        public bool IsDirectory { get; }
+        //
+        // 摘要:
+        //     Get a value indicating whether the entry has a CRC value available.
+        public bool HasCrc { get; }
+        //
+        // 摘要:
+        //     Get/Set flag indicating if entry is encrypted. A simple helper routine to aid
+        //     interpretation of flags
+        //
+        // 言论：
+        //     This is an assistant that interprets the flags property.
+        public bool IsCrypted { get; set; }
+        //
+        // 摘要:
+        //     Get / set a flag indicating whether entry name and comment text are encoded in
+        //     unicode UTF8.
+        //
+        // 言论：
+        //     This is an assistant that interprets the flags property.
+        public bool IsUnicodeText { get; set; }
+        //
+        // 摘要:
+        //     Get a value of true if the entry appears to be a file; false otherwise
+        //
+        // 言论：
+        //     This only takes account of DOS/Windows attributes. Other operating systems are
+        //     ignored. For linux and others the result may be incorrect.
+        public bool IsFile { get; }
+        //
+        // 摘要:
+        //     Get/Set index of this entry in Zip file
+        //
+        // 言论：
+        //     This is only valid when the entry is part of a ICSharpCode.SharpZipLib.Zip.ZipFile
+        public long ZipFileIndex { get; set; }
+        //
+        // 摘要:
+        //     Get/set offset for use in central header
+        public long Offset { get; set; }
+        //
+        // 摘要:
+        //     Get/Set external file attributes as an integer. The values of this are operating
+        //     system dependent see HostSystem for details
+        public int ExternalFileAttributes { get; set; }
+        //
+        // 摘要:
+        //     Get/Set general purpose bit flag for entry
+        //
+        // 言论：
+        //     General purpose bit flag
+        //     Bit 0: If set, indicates the file is encrypted
+        //     Bit 1-2 Only used for compression type 6 Imploding, and 8, 9 deflating
+        //     Imploding:
+        //     Bit 1 if set indicates an 8K sliding dictionary was used. If clear a 4k dictionary
+        //     was used
+        //     Bit 2 if set indicates 3 Shannon-Fanno trees were used to encode the sliding
+        //     dictionary, 2 otherwise
+        //     Deflating:
+        //     Bit 2 Bit 1
+        //     0 0 Normal compression was used
+        //     0 1 Maximum compression was used
+        //     1 0 Fast compression was used
+        //     1 1 Super fast compression was used
+        //     Bit 3: If set, the fields crc-32, compressed size and uncompressed size are were
+        //     not able to be written during zip file creation The correct values are held in
+        //     a data descriptor immediately following the compressed data.
+        //     Bit 4: Reserved for use by PKZIP for enhanced deflating
+        //     Bit 5: If set indicates the file contains compressed patch data
+        //     Bit 6: If set indicates strong encryption was used.
+        //     Bit 7-10: Unused or reserved
+        //     Bit 11: If set the name and comments for this entry are in unicode.
+        //     Bit 12-15: Unused or reserved
+        public int Flags { get; set; }
+
+        //
+        // 摘要:
+        //     Cleans a name making it conform to Zip file conventions. Devices names ('c:\')
+        //     and UNC share names ('\\server\share') are removed and forward slashes ('\')
+        //     are converted to back slashes ('/'). Names are made relative by trimming leading
+        //     slashes which is compatible with the ZIP naming convention.
+        //
+        // 参数:
+        //   name:
+        //     The name to clean
+        //
+        // 返回结果:
+        //     The 'cleaned' name.
+        //
+        // 言论：
+        //     The Zip name transform class is more flexible.
+        public static string CleanName(string name);
+        //
+        // 摘要:
+        //     Test a compression method to see if this library supports extracting data compressed
+        //     with that method
+        //
+        // 参数:
+        //   method:
+        //     The compression method to test.
+        //
+        // 返回结果:
+        //     Returns true if the compression method is supported; false otherwise
+        public static bool IsCompressionMethodSupported(CompressionMethod method);
+        //
+        // 摘要:
+        //     Creates a copy of this zip entry.
+        //
+        // 返回结果:
+        //     An System.Object that is a copy of the current instance.
+        public object Clone();
+        //
+        // 摘要:
+        //     Force this entry to be recorded using Zip64 extensions.
+        public void ForceZip64();
+        //
+        // 摘要:
+        //     Test entry to see if data can be extracted.
+        //
+        // 返回结果:
+        //     Returns true if data can be extracted for this entry; false otherwise.
+        public bool IsCompressionMethodSupported();
+        //
+        // 摘要:
+        //     Get a value indicating whether Zip64 extensions were forced.
+        //
+        // 返回结果:
+        //     A System.Boolean value of true if Zip64 extensions have been forced on; false
+        //     if not.
+        public bool IsZip64Forced();
+        //
+        // 摘要:
+        //     Gets a string representation of this ZipEntry.
+        //
+        // 返回结果:
+        //     A readable textual representation of this ICSharpCode.SharpZipLib.Zip.ZipEntry
+        public override string ToString();
+    }
+}

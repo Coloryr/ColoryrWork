@@ -158,6 +158,7 @@ namespace ColoryrServer
                 Bitmap bitmap = new Bitmap(1, 1);
                 bitmap.Dispose();
                 Stream zip = ZipOutputStream.Null;
+                Stream zip1 = ZipInputStream.Null;
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 

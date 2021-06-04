@@ -154,18 +154,6 @@ namespace ColoryrServer {
         ///
         ///namespace ColoryrServer
         ///{
-        ///    public class Note : NotesSDK
-        ///    {
-        ///        public Note()
-        ///        {
-        ///            Name = &quot;test&quot;;
-        ///            Text = &quot;一个注释&quot;;
-        ///            var item = new INOUT();
-        ///            item.Input.Add(&quot;data&quot;, &quot;输入&quot;);
-        ///            item.Output.Add(&quot;String&quot;, &quot;结果&quot;);
-        ///            Function.Add(&quot;test&quot;, item);
-        ///        }
-        ///    }
         ///    public class {name}
         ///    {
         ///        public {name}()
@@ -173,8 +161,12 @@ namespace ColoryrServer {
         ///             
         ///        }
         ///
-        ///        public string test(string data)
-        ///    [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public string getString(string data)
+        ///        {
+        ///            return data + &quot;test&quot;;
+        ///        }
+        ///    }
+        ///} 的本地化字符串。
         /// </summary>
         internal static string ClassDemoCS {
             get {
@@ -200,7 +192,7 @@ namespace ColoryrServer {
         ///{
         ///    public class HttpMultipartFile
         ///    {
-        ///        public byte[] Data { get; set; }
+        ///        public Stream Data { get; set; }
         ///        public string FileName { get; set; }
         ///    }
         ///    publ [字符串的其余部分被截断]&quot;; 的本地化字符串。
@@ -891,6 +883,70 @@ namespace ColoryrServer {
         internal static string WebSocketSDK {
             get {
                 return ResourceManager.GetString("WebSocketSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73
+        ///// E:\NuGet\packages\sharpziplib\1.3.2\lib\netstandard2.1\ICSharpCode.SharpZipLib.dll
+        ///#endregion
+        ///
+        ///using System;
+        ///
+        ///namespace ICSharpCode.SharpZipLib.Zip
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     This class represents an entry in a zip archive. This can be a file or a directory
+        ///    //     ZipFile and ZipInputStream will give you instances of this class as information
+        ///    //     about the members in an archi [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ZipEntrySDK {
+            get {
+                return ResourceManager.GetString("ZipEntrySDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73
+        ///// E:\NuGet\packages\sharpziplib\1.3.2\lib\netstandard2.1\ICSharpCode.SharpZipLib.dll
+        ///#endregion
+        ///
+        ///using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+        ///using System.IO;
+        ///
+        ///namespace ICSharpCode.SharpZipLib.Zip
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     This is an InflaterInputStream that reads the files baseInputStream an zip archive
+        ///    //     one after another. It has a special method to get the zip entr [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ZipInputStreamSDK {
+            get {
+                return ResourceManager.GetString("ZipInputStreamSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73
+        ///// E:\NuGet\packages\sharpziplib\1.3.2\lib\netstandard2.1\ICSharpCode.SharpZipLib.dll
+        ///#endregion
+        ///
+        ///using ICSharpCode.SharpZipLib.Core;
+        ///using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+        ///using System.IO;
+        ///
+        ///namespace ICSharpCode.SharpZipLib.Zip
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     This is a DeflaterOutputStream that writes the files into a zip archive one after
+        ///    //     another. It has a special  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ZipOutputStreamSDK {
+            get {
+                return ResourceManager.GetString("ZipOutputStreamSDK", resourceCulture);
             }
         }
     }

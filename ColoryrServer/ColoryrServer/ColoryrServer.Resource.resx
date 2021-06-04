@@ -214,4 +214,13 @@
   <data name="WebSocketSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\WebSocketSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="ZipEntrySDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZipEntrySDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="ZipInputStreamSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZipInputStreamSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="ZipOutputStreamSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZipOutputStreamSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
 </root>

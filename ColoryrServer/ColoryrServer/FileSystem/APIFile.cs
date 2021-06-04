@@ -26,6 +26,9 @@ namespace ColoryrServer.FileSystem
             list.List.Add("RobotPacks", ColoryrServer_Resource.RobotPacks);
             list.List.Add("MqttSDK", ColoryrServer_Resource.MqttSDK);
             list.List.Add("WebHtmlSDK", ColoryrServer_Resource.WebHtmlSDK);
+            list.List.Add("ZipOutputStreamSDK", ColoryrServer_Resource.ZipOutputStreamSDK);
+            list.List.Add("ZipInputStreamSDK", ColoryrServer_Resource.ZipInputStreamSDK);
+            list.List.Add("ZipEntrySDK", ColoryrServer_Resource.ZipEntrySDK);
         }
     }
 }
