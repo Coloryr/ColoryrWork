@@ -86,7 +86,7 @@ namespace ColoryrServer.FileSystem
                 {
                     if (range.StartsWith("bytes="))
                     {
-                        var temp = Function.GetSrings(range, "bytes=", "-");
+                        var temp = Function.GetSrings(range, "bytes=", "-", true);
                         pos = int.Parse(temp);
                     }
                 }
@@ -103,7 +103,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new VarDump(e.ToString());
             }
         }
     }

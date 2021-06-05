@@ -96,6 +96,10 @@ namespace ColoryrServer.FileSystem
         /// 缓存保留时间
         /// </summary>
         public int TempTime { get; set; }
+        /// <summary>
+        /// 启用主页
+        /// </summary>
+        public bool EnableIndex { get; set; }
     }
     internal record MQTTConfig
     {
@@ -451,7 +455,8 @@ namespace ColoryrServer.FileSystem
                         ".jpge",
                         ".gif"
                     },
-                    TempTime = 1800
+                    TempTime = 1800,
+                    EnableIndex = true
                 },
                 HttpClientNumber = 100
             }, FilePath);

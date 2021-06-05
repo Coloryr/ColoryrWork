@@ -491,6 +491,10 @@ namespace ColoryrServer.SDK
                 {
                     return "no obj";
                 }
+                else if (obj.Length == 1 && obj[0] is string)
+                {
+                    return obj[0] as string;
+                }
                 var data = new Dictionary<string, object>(new RepeatDictionaryComparer());
                 foreach (var item in obj)
                 {

@@ -613,6 +613,7 @@ namespace ColoryrServer.Http
             {
                 if (HttpServer.Queue.TryTake(out HttpListenerContext Context))
                 {
+                    bool isstream = false;
                     try
                     {
                         HttpListenerRequest Request = Context.Request;
@@ -657,6 +658,7 @@ namespace ColoryrServer.Http
                                     Response.ContentLength64 = httpReturn.Data1.Length;
                                     httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
                                     Response.StatusCode = 206;
+                                    isstream = true;
                                     httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
                                 Response.OutputStream.Flush();
@@ -681,6 +683,7 @@ namespace ColoryrServer.Http
                                     Response.ContentLength64 = httpReturn.Data1.Length;
                                     httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
                                     Response.StatusCode = 206;
+                                    isstream = true;
                                     httpReturn.Data1.CopyTo(Response.OutputStream);
                                 }
                                 Response.OutputStream.Flush();
@@ -690,6 +693,8 @@ namespace ColoryrServer.Http
                     }
                     catch (Exception e)
                     {
+                        if (isstream)
+                            continue;
                         ServerMain.LogError(e);
                     }
                 }

@@ -84,6 +84,10 @@ namespace ColoryrServer.FileSystem
                 }
                 if (HtmlList.ContainsKey(uuid))
                 {
+                    if (!ServerMain.Config.Requset.EnableIndex)
+                    {
+                        return null;
+                    }
                     if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
                         return temp1;
                 }
@@ -91,6 +95,13 @@ namespace ColoryrServer.FileSystem
             else
             {
                 string name = temp[2];
+                if (name == "index.html")
+                {
+                    if (!ServerMain.Config.Requset.EnableIndex)
+                    {
+                        return null;
+                    }
+                }
                 int index = name.LastIndexOf(".");
                 string type = name[index..];
                 if (ServerMain.Config.Requset.Temp.Contains(type))

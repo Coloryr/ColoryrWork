@@ -5,7 +5,7 @@ namespace Lib.Server
 {
     class Function
     {
-        public static string GetSrings(string a, string b = null, string c = null)
+        public static string GetSrings(string a, string b = null, string c = null, bool remove = false)
         {
             int x, y;
             if (b != null)
@@ -18,7 +18,7 @@ namespace Lib.Server
                 if (y - x <= 0)
                     return a;
                 else
-                    return a[x..y];
+                    return remove ? a[(x + 1)..y] : a[x..y];
             }
             else
                 return a[x..];
