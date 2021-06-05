@@ -26,9 +26,9 @@ namespace ColoryrServer.FileSystem
     }
     internal class HtmlUtils
     {
-        private static readonly string HtmlLocal = ServerMain.RunLocal + @"Static\";
-        private static readonly string HtmlCodeLocal = ServerMain.RunLocal + @"Codes\Static\";
-        private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes\Static\";
+        private static readonly string HtmlLocal = ServerMain.RunLocal + @"Static/";
+        private static readonly string HtmlCodeLocal = ServerMain.RunLocal + @"Codes/Static/";
+        private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes/Static/";
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
         private static readonly ConcurrentDictionary<string, Dictionary<string, HtmlFileObj>> HtmlFileList = new();
@@ -345,6 +345,9 @@ Version:{obj.Version}
 
         public static void New(WebObj obj)
         {
+            string temp = HtmlLocal + obj.UUID + "\\";
+            if (!Directory.Exists(temp))
+                Directory.CreateDirectory(temp);
             HtmlCodeList.TryAdd(obj.UUID, obj);
             Save(obj.UUID, "index.html", obj.Codes["index.html"]);
             Save(obj.UUID, "js.js", obj.Codes["js.js"]);

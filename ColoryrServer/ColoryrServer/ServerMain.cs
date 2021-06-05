@@ -131,7 +131,7 @@ namespace ColoryrServer
             {
                 isGo = true;
                 //初始化运行路径
-                RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer\\";
+                RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
                 if (!Directory.Exists(RunLocal))
                 {
                     Directory.CreateDirectory(RunLocal);

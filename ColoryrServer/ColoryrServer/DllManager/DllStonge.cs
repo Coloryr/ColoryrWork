@@ -22,15 +22,15 @@ namespace ColoryrServer.DllManager
 
         private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
 
-        public static readonly string DllLocal = ServerMain.RunLocal + @"Dll\Dll\";
-        public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll\Class\";
-        public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll\IoT\";
-        public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll\WebSocket\";
-        public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll\Robot\";
-        public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll\Mqtt\";
-        public static readonly string TaskLocal = ServerMain.RunLocal + @"Dll\Task\";
+        public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
+        public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
+        public static readonly string IoTLocal = ServerMain.RunLocal + @"Dll/IoT/";
+        public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll/WebSocket/";
+        public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
+        public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll/Mqtt/";
+        public static readonly string TaskLocal = ServerMain.RunLocal + @"Dll/Task/";
 
-        public static readonly string AppLocal = ServerMain.RunLocal + @"Dll\App\";
+        public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
 
         private static void RemoveAll(string dir)
         {

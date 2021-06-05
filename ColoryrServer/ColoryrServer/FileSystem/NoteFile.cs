@@ -9,8 +9,8 @@ namespace ColoryrServer.FileSystem
 {
     internal class NoteFile
     {
-        private static readonly string DllFileLocal = ServerMain.RunLocal + @"Notes\Dll\";
-        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Notes\Class\";
+        private static readonly string DllFileLocal = ServerMain.RunLocal + @"Notes/Dll/";
+        private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Notes/Class/";
 
         public static void Start()
         {
