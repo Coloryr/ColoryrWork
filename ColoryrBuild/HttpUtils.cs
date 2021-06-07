@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -14,6 +16,8 @@ namespace ColoryrBuild
     public class HttpUtils
     {
         private HttpClient httpClient;
+        private byte[] keyArray;
+        private byte[] ivArray;
         public HttpUtils()
         {
             var Handler = new HttpClientHandler();
@@ -22,6 +26,59 @@ namespace ColoryrBuild
                 Timeout = TimeSpan.FromSeconds(10)
             };
             httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK, BuildKV.BuildV);
+            httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK1, App.Config.AES.ToString());
+
+            string key = App.Config.Key;
+            string iv = App.Config.IV;
+            if (key.Length != 32)
+            {
+                if (key.Length > 32)
+                {
+                    key = key[..31];
+                }
+                else
+                {
+                    key += new string(new char[32 - key.Length]);
+                }
+            }
+            if (iv.Length != 16)
+            {
+                if (iv.Length > 16)
+                {
+                    iv = iv[..15];
+                }
+                else
+                {
+                    iv += new string(new char[16 - iv.Length]);
+                }
+            }
+            keyArray = Encoding.UTF8.GetBytes(key);
+            ivArray = Encoding.UTF8.GetBytes(iv);
+        }
+
+        public byte[] AES(string data)
+        {
+            if (App.Config.AES)
+            {
+                byte[] toEncryptArray = Encoding.UTF8.GetBytes(data);
+
+                using var rDel = new RijndaelManaged
+                {
+                    BlockSize = 128,
+                    KeySize = 256,
+                    FeedbackSize = 128,
+                    Padding = PaddingMode.PKCS7,
+                    Mode = CipherMode.CBC,
+                    Key = keyArray,
+                    IV = ivArray
+                };
+
+                using var cTransform = rDel.CreateEncryptor();
+                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+
+                return resultArray;
+            }
+            return Encoding.Default.GetBytes(data);
         }
 
         public bool CheckLogin(string data)
@@ -51,7 +108,8 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = ReType.Check
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -94,7 +152,7 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = reType
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -120,7 +178,7 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = ReType.GetWeb
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -146,7 +204,7 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = ReType.GetApp
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -185,7 +243,7 @@ namespace ColoryrBuild
                     Mode = reType,
                     UUID = name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -224,7 +282,7 @@ namespace ColoryrBuild
                     Mode = reType,
                     UUID = obj.UUID
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -250,7 +308,7 @@ namespace ColoryrBuild
                     Code = Pass,
                     Mode = ReType.Login
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -297,7 +355,7 @@ namespace ColoryrBuild
                     Mode = reType,
                     UUID = name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -328,7 +386,7 @@ namespace ColoryrBuild
                     Mode = ReType.CodeApp,
                     UUID = name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -355,7 +413,7 @@ namespace ColoryrBuild
                     Mode = ReType.CodeWeb,
                     UUID = name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -386,7 +444,7 @@ namespace ColoryrBuild
                     Temp = file,
                     Code = JsonConvert.SerializeObject(list)
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -415,7 +473,7 @@ namespace ColoryrBuild
                     Version = obj.Version,
                     Code = file
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -455,7 +513,7 @@ namespace ColoryrBuild
                     Text = obj.Text,
                     Code = JsonConvert.SerializeObject(list)
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -486,7 +544,7 @@ namespace ColoryrBuild
                     Code = JsonConvert.SerializeObject(list),
                     Temp = Name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -516,7 +574,7 @@ namespace ColoryrBuild
                     Text = obj.Text,
                     Code = Name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -547,7 +605,7 @@ namespace ColoryrBuild
                     Code = Name,
                     Temp = by
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -576,7 +634,7 @@ namespace ColoryrBuild
                     Text = obj.Text,
                     Code = Name
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -602,7 +660,7 @@ namespace ColoryrBuild
                     Token = App.Config.Token,
                     Mode = ReType.GetApi
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
@@ -630,7 +688,7 @@ namespace ColoryrBuild
                     UUID = uuid,
                     Code = res
                 };
-                HttpContent Content = new StringContent(JsonConvert.SerializeObject(pack));
+                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();

@@ -22,7 +22,7 @@ namespace ColoryrBuild
         /// </summary>
         public static string RunLocal { get; private set; }
 
-        public static HttpUtils HttpUtils = new();
+        public static HttpUtils HttpUtils;
         public static bool IsLogin { get; private set; }
         public static ConfigObj Config { get; private set; }
         public static MainWindow MainWindow_;
@@ -42,9 +42,13 @@ namespace ColoryrBuild
             {
                 Name = "",
                 Token = "",
-                Http = "https://"
+                Http = "https://",
+                AES = false, 
+                Key = "Key",
+                IV = "IV"
             }, RunLocal + "Config.json");
             Logs = new Logs(RunLocal);
+            HttpUtils = new();
             DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);

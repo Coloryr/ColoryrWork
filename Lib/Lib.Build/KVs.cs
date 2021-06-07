@@ -4,6 +4,7 @@
     {
         public const string BuildK = "Build";
         public const string BuildV = "2.2.0";
+        public const string BuildK1 = "AES";
     }
     class UploadKV
     {

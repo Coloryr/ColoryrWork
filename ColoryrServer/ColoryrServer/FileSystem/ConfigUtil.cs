@@ -77,6 +77,15 @@ namespace ColoryrServer.FileSystem
         /// 请求选项
         /// </summary>
         public RequsetChoose Requset { get; set; }
+        /// <summary>
+        /// AES加密
+        /// </summary>
+        public AESConfig AES { get; set; }
+    }
+    internal record AESConfig
+    { 
+        public string Key { get; set; }
+        public string IV { get; set; }
     }
     internal record RequsetChoose
     {
@@ -458,7 +467,12 @@ namespace ColoryrServer.FileSystem
                     TempTime = 1800,
                     EnableIndex = true
                 },
-                HttpClientNumber = 100
+                HttpClientNumber = 100,
+                AES = new()
+                {
+                    Key = "Key",
+                    IV = "IV"
+                }
             }, FilePath);
         }
     }

@@ -44,15 +44,26 @@ namespace ColoryrServer.Http
         public static HttpReturn HttpPOST(Stream stream, long Length, string Url, NameValueCollection Hashtable, MyContentType type)
         {
             var Temp = new Dictionary<string, dynamic>();
+            string Str = "";
             switch (type)
             {
                 case MyContentType.Json:
-                    string Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
                     try
                     {
-                        JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                         if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
                         {
+                            if (Hashtable[BuildKV.BuildK1].ToLower() == "true")
+                            {
+                                byte[] buff = new byte[Length];
+                                stream.Read(buff);
+                                buff = DeCode.AES256(buff, ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+                                Str = Encoding.UTF8.GetString(buff);
+                            }
+                            else
+                            {
+                                Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+                            }
+                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                             var Json = obj.ToObject<BuildOBJ>();
                             var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
                             if (List.Any())
@@ -73,11 +84,15 @@ namespace ColoryrServer.Http
                         }
                         else if (Hashtable[APPKV.APPK] == APPKV.APPV)
                         {
+                            Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                             var Json = obj.ToObject<DownloadObj>();
                             return AppDownload.Download(Json);
                         }
                         else
                         {
+                            Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                             foreach (var item in obj)
                             {
                                 Temp.Add(item.Key, item.Value);

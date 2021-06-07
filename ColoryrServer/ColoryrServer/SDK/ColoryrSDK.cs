@@ -111,24 +111,104 @@ namespace ColoryrServer.SDK
         /// <param name="key">密匙</param>
         /// <param name="iv">盐</param>
         /// <returns>加密后的数据</returns>
-        public static byte[] AES128(string data, string key, byte[] iv)
+        public static byte[] AES128(byte[] data, string key, string iv)
+        {
+            if (key.Length != 16)
+            {
+                if (key.Length > 16)
+                {
+                    key = key[..15];
+                }
+                else
+                {
+                    key += new string(new char[16 - key.Length]);
+                }
+            }
+            if (iv.Length != 8)
+            {
+                if (iv.Length > 8)
+                {
+                    iv = iv[..7];
+                }
+                else
+                {
+                    iv += new string(new char[8 - iv.Length]);
+                }
+            }
+            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+        }
+        public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
         {
             try
             {
-                byte[] keyArray = Encoding.Default.GetBytes(key);
-                byte[] ivArray = iv;
-                byte[] toEncryptArray = Encoding.Default.GetBytes(data);
-
                 using var rDel = new RijndaelManaged
                 {
-                    Key = keyArray,
-                    IV = ivArray,
+                    Key = key,
+                    IV = iv,
                     Mode = CipherMode.CBC,
                     Padding = PaddingMode.PKCS7
                 };
 
                 using var cTransform = rDel.CreateEncryptor();
-                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
+
+                return resultArray;
+            }
+            catch (Exception e)
+            {
+                throw new VarDump("加密失败", e);
+            }
+        }
+        /// <summary>
+        /// AES-256-CBC加密
+        /// </summary>
+        /// <param name="data">原始数据</param>
+        /// <param name="key">密匙</param>
+        /// <param name="iv">盐</param>
+        /// <returns>加密后的数据</returns>
+        public static byte[] AES256(byte[] data, string key, string iv)
+        {
+            if (key.Length != 32)
+            {
+                if (key.Length > 32)
+                {
+                    key = key[..31];
+                }
+                else
+                {
+                    key += new string(new char[32 - key.Length]);
+                }
+            }
+            if (iv.Length != 16)
+            {
+                if (iv.Length > 16)
+                {
+                    iv = iv[..15];
+                }
+                else
+                {
+                    iv += new string(new char[16 - iv.Length]);
+                }
+            }
+            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+        }
+        public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
+        {
+            try
+            {
+                using var rDel = new RijndaelManaged
+                {
+                    BlockSize = 128,
+                    KeySize = 256,
+                    FeedbackSize = 128,
+                    Padding = PaddingMode.PKCS7,
+                    Mode = CipherMode.CBC,
+                    Key = key,
+                    IV = iv
+                };
+
+                using var cTransform = rDel.CreateEncryptor();
+                byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
 
                 return resultArray;
             }
@@ -154,13 +234,39 @@ namespace ColoryrServer.SDK
         /// <param name="key">密钥</param>
         /// <param name="iv">盐</param>
         /// <returns>解密后的数据</returns>
-        public static string AES128(byte[] data, string key, byte[] iv)
+        public static byte[] AES128(byte[] data, string key, string iv)
+        {
+            if (key.Length != 16)
+            {
+                if (key.Length > 16)
+                {
+                    key = key[..15];
+                }
+                else
+                {
+                    key += new string(new char[16 - key.Length]);
+                }
+            }
+            if (iv.Length != 8)
+            {
+                if (iv.Length > 8)
+                {
+                    iv = iv[..7];
+                }
+                else
+                {
+                    iv += new string(new char[8 - iv.Length]);
+                }
+            }
+            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+        }
+        public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
         {
             using var rijalg = new RijndaelManaged
             {
-                Padding = PaddingMode.None,
+                Padding = PaddingMode.PKCS7,
                 Mode = CipherMode.CBC,
-                Key = Encoding.Default.GetBytes(key),
+                Key = key,
                 IV = iv
             };
 
@@ -168,10 +274,9 @@ namespace ColoryrServer.SDK
 
             try
             {
-                using MemoryStream msDecrypt = new MemoryStream(data);
-                using CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
-                using StreamReader srDecrypt = new StreamReader(csDecrypt);
-                return srDecrypt.ReadToEnd();
+                byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
+
+                return resultArray;
             }
             catch (Exception e)
             {
@@ -185,27 +290,52 @@ namespace ColoryrServer.SDK
         /// <param name="key">密钥</param>
         /// <param name="iv">盐</param>
         /// <returns>解密后的数据</returns>
-        public static string AES256(byte[] data, string key, string iv)
+        public static byte[] AES256(byte[] data, string key, string iv)
+        {
+            if (key.Length != 32)
+            {
+                if (key.Length > 32)
+                {
+                    key = key[..31];
+                }
+                else
+                {
+                    key += new string(new char[32 - key.Length]);
+                }
+            }
+            if (iv.Length != 16)
+            {
+                if (iv.Length > 16)
+                {
+                    iv = iv[..15];
+                }
+                else
+                {
+                    iv += new string(new char[16 - iv.Length]);
+                }
+            }
+            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+        }
+        public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
         {
             using var rijalg = new RijndaelManaged
             {
                 BlockSize = 128,
                 KeySize = 256,
                 FeedbackSize = 128,
-                Padding = PaddingMode.None,
+                Padding = PaddingMode.PKCS7,
                 Mode = CipherMode.CBC,
-                Key = Encoding.Default.GetBytes(key),
-                IV = Encoding.Default.GetBytes(iv)
+                Key = key,
+                IV = iv
             };
 
             using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
             try
             {
-                using MemoryStream msDecrypt = new MemoryStream(data);
-                using CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
-                using StreamReader srDecrypt = new StreamReader(csDecrypt);
-                return srDecrypt.ReadToEnd();
+                byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
+
+                return resultArray;
             }
             catch (Exception e)
             {
