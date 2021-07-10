@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer", "ColoryrServer\ColoryrServer\ColoryrServer.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
 EndProject
@@ -18,12 +18,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.App", "Lib.App\Lib.App.shproj", "{870CB400-24DF-4510-9797-7B1965848BC8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp.Android", "ColoryrApp\ColoryrApp.Android\ColoryrApp.Android.csproj", "{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrApp.iOS", "ColoryrApp\ColoryrApp.iOS\ColoryrApp.iOS.csproj", "{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrApp", "ColoryrApp\ColoryrApp\ColoryrApp.csproj", "{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -107,58 +101,6 @@ Global
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|x64.ActiveCfg = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|x64.Build.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhone.Deploy.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|iPhoneSimulator.Deploy.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|x64.Build.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Debug|x64.Deploy.0 = Debug|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhone.Build.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhone.Deploy.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|x64.ActiveCfg = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|x64.Build.0 = Release|Any CPU
-		{15BDD0EC-73FA-4BF1-80C2-D96F6B28F1D0}.Release|x64.Deploy.0 = Release|Any CPU
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|iPhone.Build.0 = Debug|iPhone
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Debug|x64.ActiveCfg = Debug|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|iPhone.ActiveCfg = Release|iPhone
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|iPhone.Build.0 = Release|iPhone
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{C989849E-F4F1-4828-8DE5-0C76D9EEDF1B}.Release|x64.ActiveCfg = Release|iPhoneSimulator
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Debug|x64.Build.0 = Debug|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|iPhone.Build.0 = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|x64.ActiveCfg = Release|Any CPU
-		{5D358DB0-FD33-4ACC-8C51-4226D88A9B30}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
