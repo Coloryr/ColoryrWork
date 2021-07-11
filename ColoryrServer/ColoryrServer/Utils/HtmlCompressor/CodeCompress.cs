@@ -1,5 +1,4 @@
 ﻿using HtmlCompression.Core;
-using System.Text;
 using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Utils
@@ -8,10 +7,6 @@ namespace ColoryrServer.Utils
     {
         private static readonly HtmlCompressor html = new();
         private static readonly CssCompressor css = new();
-        private static readonly JavaScriptCompressor js = new()
-        {
-            Encoding = Encoding.UTF8
-        };
 
         public static string JS(string code)
         {
