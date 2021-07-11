@@ -116,7 +116,7 @@ namespace ColoryrServer.DataBase
                 var conn = new ExConn[config.ConnCount];
                 State.Add(a, false);
                 LockObj.Add(a, new());
-                bool isok = false;
+                bool isok = true;
                 for (int b = 0; b < config.ConnCount; b++)
                 {
                     try

@@ -98,7 +98,7 @@ namespace ColoryrServer.DataBase
             try
             {
                 item.Ms.Open();
-                new SqlCommand("select * from test", item.Ms).ExecuteNonQuery();
+                new SqlCommand("select TOP 1 id from test", item.Ms).ExecuteNonQuery();
                 item.Ms.Close();
                 item.State = ConnState.Ok;
                 return true;

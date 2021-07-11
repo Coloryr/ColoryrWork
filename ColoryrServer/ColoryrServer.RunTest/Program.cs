@@ -12,11 +12,16 @@ namespace ColoryrServer.RunTest
             TestRun.Start();
             while (true)
             {
-                var data = Console.ReadLine();
-                if (data == "stop")
+                var temp = Console.ReadLine();
+                var arg = temp.Split(' ');
+                if (arg[0] == "stop")
                 {
                     TestRun.Stop();
                     return;
+                }
+                else if (arg[0] == "database")
+                { 
+                    
                 }
             }
         }

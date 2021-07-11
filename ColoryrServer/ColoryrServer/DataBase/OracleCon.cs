@@ -97,19 +97,16 @@ namespace ColoryrServer.DataBase
         {
             try
             {
-                item.Mysql.Open();
-                new OracleCommand("select * from test", item.Oracle).ExecuteNonQuery();
-                item.Mysql.Close();
+                item.Oracle.Open();
+                new OracleCommand("select id from test where rownum<=1", item.Oracle).ExecuteNonQuery();
+                item.Oracle.Close();
                 return true;
             }
             catch (OracleException ex)
             {
                 switch (ex.Number)
                 {
-                    case 1146:
-                        item.Oracle.Close();
-                        return true;
-                    case 208:
+                    case 942:
                         item.Oracle.Close();
                         return true;
                     default:

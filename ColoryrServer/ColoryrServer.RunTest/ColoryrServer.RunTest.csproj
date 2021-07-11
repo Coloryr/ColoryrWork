@@ -10,7 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\..\build_out\ServerRun</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Optimize>false</Optimize>
   </PropertyGroup>
 
@@ -23,9 +23,5 @@
   <ItemGroup>
     <ProjectReference Include="..\ColoryrServer\ColoryrServer.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="del &quot;$(TargetDir)ColoryrServer.RunTest.deps.json&quot;&#xD;&#xA;del &quot;$(TargetDir)ColoryrServer.deps.json&quot;&#xD;&#xA;copy &quot;$(TargetDir)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll&quot; &quot;$(TargetDir)System.Drawing.Common.dll&quot;&#xD;&#xA;" />
-  </Target>
 
 </Project>

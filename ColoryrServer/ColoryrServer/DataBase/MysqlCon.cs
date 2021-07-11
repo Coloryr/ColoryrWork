@@ -98,7 +98,7 @@ namespace ColoryrServer.DataBase
             try
             {
                 item.Mysql.Open();
-                new MySqlCommand("select * from test", item.Mysql).ExecuteNonQuery();
+                new MySqlCommand("select id from test limit 1", item.Mysql).ExecuteNonQuery();
                 item.Mysql.Close();
                 return true;
             }

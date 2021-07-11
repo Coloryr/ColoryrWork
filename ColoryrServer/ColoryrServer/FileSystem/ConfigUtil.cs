@@ -155,10 +155,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int ConnCount { get; set; }
         /// <summary>
-        /// 服务器名
-        /// </summary>
-        public string ServerName { get; set; }
-        /// <summary>
         /// 连接超时
         /// </summary>
         public int TimeOut { get; set; }
@@ -418,7 +414,7 @@ namespace ColoryrServer.FileSystem
                         Password = "MTIzNDU2",
                         ConnCount = 20,
                         TimeOut = 1000,
-                        Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                        Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
                     }
                 },
                 Pipe = new()

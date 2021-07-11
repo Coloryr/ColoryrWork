@@ -3,15 +3,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <StartupObject></StartupObject>
     <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\build_out\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -20,6 +15,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\..\build_out\Server</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,15 +24,15 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
     <PackageReference Include="HtmlCompressor.Core" Version="1.0.8" />
     <PackageReference Include="HttpMultipartParser" Version="5.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0-1.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.0-1.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-    <PackageReference Include="MQTTnet" Version="3.0.15" />
+    <PackageReference Include="MQTTnet" Version="3.0.16" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.1" />
     <PackageReference Include="SharpZipLib" Version="1.3.2" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.50" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
@@ -63,8 +59,5 @@
   <Import Project="..\..\Lib\Lib.IoT\Lib.IoT.projitems" Label="Shared" />
   <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
   <Import Project="..\..\Lib.App\Lib.App.projitems" Label="Shared" />
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetDir)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll&quot; &quot;$(TargetDir)System.Drawing.Common.dll&quot;" />
-  </Target>
 
 </Project>
