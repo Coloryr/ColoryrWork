@@ -26,10 +26,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public SocketConfig Robot { get; set; }
         /// <summary>
-        /// 引用的using
-        /// </summary>
-        public List<string> Include { get; set; }
-        /// <summary>
         /// 非法的代码
         /// </summary>
         public List<string> NoCode { get; set; }
@@ -53,6 +49,10 @@ namespace ColoryrServer.FileSystem
         /// 用户路径
         /// </summary>
         public List<UserConfig> User { get; set; }
+        /// <summary>
+        /// 不参与动态编译的dll
+        /// </summary>
+        public List<string> NotInclude { get; set; }
         /// <summary>
         /// 分离管道设置
         /// </summary>
@@ -323,6 +323,10 @@ namespace ColoryrServer.FileSystem
         {
             ServerMain.Config = ConfigSave.Config(new MainConfig
             {
+                NotInclude = new()
+                {
+                    "sni.dll"
+                },
                 HttpThreadNumber = 200,
                 Http = new()
                 {
@@ -346,20 +350,6 @@ namespace ColoryrServer.FileSystem
                 {
                     IP = "127.0.0.1",
                     Port = 23333
-                },
-                Include = new()
-                {
-                    "using System;",
-                    "using System.Linq",
-                    "using System.Reflection;",
-                    "using System.Runtime.InteropServices;",
-                    "using System.Collections.Generic;",
-                    "using System.Runtime.CompilerServices;",
-                    "using System.Collections.Specialized;",
-                    "using ColoryrSDK;",
-                    "using Newtonsoft.Json;",
-                    "using Newtonsoft.Json.Linq;",
-                    "using HtmlAgilityPack;"
                 },
                 NoCode = new()
                 {

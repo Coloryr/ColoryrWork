@@ -410,6 +410,15 @@ namespace ColoryrServer.Http
             else if (Url.StartsWith(ServerMain.Config.Requset.Back))
             {
                 Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
+                if (Url.Length == 0)
+                {
+                    return new HttpReturn
+                    {
+                        Data = HtmlUtils.Html404,
+                        ContentType = ServerContentType.HTML,
+                        ReCode = 404
+                    };
+                }
                 if (Function.Constr(Url, '/') >= 2)
                 {
                     int tow = Url.IndexOf('/', 2);

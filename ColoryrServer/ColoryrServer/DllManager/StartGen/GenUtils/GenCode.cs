@@ -75,6 +75,16 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
                 add = true;
                 if (item.EndsWith(".dll"))
                 {
+                    foreach (var item2 in ServerMain.Config.NotInclude)
+                    {
+                        if (item.Contains(item2))
+                        { 
+                            add = false;
+                            break;
+                        }
+                    }
+                    if (!add)
+                        continue;
                     foreach (var item1 in list)
                     {
                         if (item1.IsDynamic)
