@@ -249,7 +249,7 @@ namespace ColoryrServer.SDK
             }
             catch
             {
-                throw new VarDump("选择" + NodeName + "_Class:" + ClassName + "出错");
+                throw new ErrorDump("选择" + NodeName + "_Class:" + ClassName + "出错");
             }
         }
         /// <summary>
@@ -270,7 +270,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("选择" + NodeName + "_" + NodeName + ":" + Attributes + "出错", e);
+                throw new ErrorDump("选择" + NodeName + "_" + NodeName + ":" + Attributes + "出错", e);
             }
         }
         /// <summary>
@@ -286,7 +286,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("选择" + NodeName + "出错", e);
+                throw new ErrorDump("选择" + NodeName + "出错", e);
             }
         }
     }

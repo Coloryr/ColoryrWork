@@ -89,7 +89,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("密钥错误", e);
+                throw new ErrorDump("密钥错误", e);
             }
         }
         /// <summary>
@@ -156,7 +156,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("加密失败", e);
+                throw new ErrorDump("加密失败", e);
             }
         }
         /// <summary>
@@ -214,7 +214,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("加密失败", e);
+                throw new ErrorDump("加密失败", e);
             }
         }
     }
@@ -280,7 +280,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("解密失败", e);
+                throw new ErrorDump("解密失败", e);
             }
         }
         /// <summary>
@@ -339,7 +339,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("解密失败", e);
+                throw new ErrorDump("解密失败", e);
             }
         }
         /// <summary>
@@ -358,7 +358,7 @@ namespace ColoryrServer.SDK
             }
             catch
             {
-                throw new VarDump("密钥错误");
+                throw new ErrorDump("密钥错误");
             }
         }
     }
@@ -458,7 +458,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("转成Json失败", e);
+                throw new ErrorDump("转成Json失败", e);
             }
         }
         /// <summary>
@@ -475,7 +475,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("转成对象失败", e);
+                throw new ErrorDump("转成对象失败", e);
             }
         }
         /// <summary>
@@ -491,7 +491,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("转成JSON对象失败", e);
+                throw new ErrorDump("转成JSON对象失败", e);
             }
         }
         /// <summary>
@@ -503,14 +503,14 @@ namespace ColoryrServer.SDK
         {
             var data = DllStonge.GetClass(classname);
             if (data == null)
-                throw new VarDump("没有这个类:" + classname);
+                throw new ErrorDump("没有这个类:" + classname);
             try
             {
                 return Activator.CreateInstance(data.DllType, obj);
             }
             catch (Exception e)
             {
-                throw new VarDump("创建类:" + classname + "失败", e);
+                throw new ErrorDump("创建类:" + classname + "失败", e);
             }
         }
         /// <summary>
@@ -537,7 +537,7 @@ namespace ColoryrServer.SDK
             }
             catch (Exception e)
             {
-                throw new VarDump("转码失败", e);
+                throw new ErrorDump("转码失败", e);
             }
         }
         /// <summary>
@@ -600,6 +600,18 @@ namespace ColoryrServer.SDK
         /// <returns>流</returns>
         public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
             => FileHttpStream.StartStream(http, local, name);
+    }
+    public class ErrorDump : Exception
+    { 
+        public string data { get; set; }
+        public ErrorDump(string data)
+        {
+            this.data = data;
+        }
+        public ErrorDump(string data, Exception ex)
+        {
+            this.data = data + "\n" + ex.ToString();
+        }
     }
     public class VarDump : Exception
     {

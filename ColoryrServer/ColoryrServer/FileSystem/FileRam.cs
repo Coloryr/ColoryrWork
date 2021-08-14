@@ -30,7 +30,8 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                ServerMain.LogError(e);
+                return null;
             }
         }
 
@@ -43,7 +44,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                ServerMain.LogError(e);
             }
         }
 
@@ -61,7 +62,8 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                ServerMain.LogError(e);
+                return new();
             }
         }
 
@@ -73,7 +75,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                ServerMain.LogError(e);
             }
         }
     }

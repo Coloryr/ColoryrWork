@@ -215,12 +215,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Redis数据库超时");
+                    throw new ErrorDump("Redis数据库超时");
                 }
             }
             catch (Exception e)
             {
-                throw new VarDump("Redis错误", e);
+                throw new ErrorDump("Redis错误", e);
             }
         }
 
@@ -257,12 +257,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Redis数据库超时");
+                    throw new ErrorDump("Redis数据库超时");
                 }
             }
             catch (Exception e)
             {
-                throw new VarDump("Redis错误", e);
+                throw new ErrorDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -289,12 +289,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Redis数据库超时");
+                    throw new ErrorDump("Redis数据库超时");
                 }
             }
             catch (Exception e)
             {
-                throw new VarDump("Redis错误", e);
+                throw new ErrorDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -321,12 +321,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Redis数据库超时");
+                    throw new ErrorDump("Redis数据库超时");
                 }
             }
             catch (Exception e)
             {
-                throw new VarDump("Redis错误", e);
+                throw new ErrorDump("Redis错误", e);
             }
         }
         /// <summary>
@@ -353,12 +353,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Redis数据库超时");
+                    throw new ErrorDump("Redis数据库超时");
                 }
             }
             catch (Exception e)
             {
-                throw new VarDump("Redis错误", e);
+                throw new ErrorDump("Redis错误", e);
             }
         }
     }

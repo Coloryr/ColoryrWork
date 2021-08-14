@@ -44,7 +44,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new ErrorDump("流处理发生错误", e);
             }
         }
 
@@ -103,7 +103,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e.ToString());
+                throw new ErrorDump("流处理发生错误", e);
             }
         }
     }

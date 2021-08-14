@@ -248,12 +248,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Oracle数据库超时");
+                    throw new ErrorDump("Oracle数据库超时");
                 }
             }
             catch (OracleException e)
             {
-                throw new VarDump("执行sql语句出错", e);
+                throw new ErrorDump("执行sql语句出错", e);
             }
         }
     }

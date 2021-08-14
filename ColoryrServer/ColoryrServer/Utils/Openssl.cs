@@ -25,15 +25,15 @@ namespace ColoryrServer
                 else if (twobytes == 0x8230)
                     binr.ReadInt16();
                 else
-                    throw new VarDump("Unexpected value read binr.ReadUInt16()");
+                    throw new ErrorDump("Unexpected value read binr.ReadUInt16()");
 
                 twobytes = binr.ReadUInt16();
                 if (twobytes != 0x0102)
-                    throw new VarDump("Unexpected version");
+                    throw new ErrorDump("Unexpected version");
 
                 bt = binr.ReadByte();
                 if (bt != 0x00)
-                    throw new VarDump("Unexpected value read binr.ReadByte()");
+                    throw new ErrorDump("Unexpected value read binr.ReadByte()");
 
                 RSAparams.Modulus = binr.ReadBytes(GetIntegerSize(binr));
                 RSAparams.Exponent = binr.ReadBytes(GetIntegerSize(binr));

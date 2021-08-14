@@ -235,12 +235,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("MS数据库超时");
+                    throw new ErrorDump("MS数据库超时");
                 }
             }
             catch (SqlException e)
             {
-                throw new VarDump("执行sql语句出错", e);
+                throw new ErrorDump("执行sql语句出错", e);
             }
         }
     }

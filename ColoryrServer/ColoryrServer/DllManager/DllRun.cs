@@ -130,6 +130,14 @@ namespace ColoryrServer.DllManager
                         ReCode = 200
                     };
                 }
+                else if (e.InnerException is ErrorDump dump1)
+                {
+                    return new HttpReturn
+                    {
+                        Data = StreamUtils.StringOBJ(dump1.data),
+                        ReCode = 200
+                    };
+                }
                 return new HttpReturn
                 {
                     Data = StreamUtils.StringOBJ(e.ToString()),

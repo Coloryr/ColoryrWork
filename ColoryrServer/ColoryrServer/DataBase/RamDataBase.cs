@@ -29,6 +29,8 @@ namespace ColoryrServer.DataBase
             foreach (var item in list)
             {
                 var data = FileRam.Load(item);
+                if (data == null)
+                    continue;
                 RamCache.TryAdd(item, data);
             }
             SaveThread = new Thread(() =>

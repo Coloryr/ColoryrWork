@@ -233,12 +233,12 @@ namespace ColoryrServer.DataBase
                 else
                 {
                     cancel.Cancel(false);
-                    throw new VarDump("Mysql数据库超时");
+                    throw new ErrorDump("Mysql数据库超时");
                 }
             }
             catch (MySqlException e)
             {
-                throw new VarDump("执行sql语句出错", e);
+                throw new ErrorDump("执行sql语句出错", e);
             }
         }
     }

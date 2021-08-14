@@ -29,7 +29,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new ErrorDump("读取文件错误", e);
             }
         }
 
@@ -48,7 +48,7 @@ namespace ColoryrServer.FileSystem
             }
             catch (Exception e)
             {
-                throw new VarDump(e);
+                throw new ErrorDump("读取文件错误", e);
             }
         }
     }
