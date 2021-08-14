@@ -170,7 +170,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Database">数据库名</param>
         /// <param name="ID">数据库ID</param>
-        public Oracle(string Database, int ID = 0)
+        public Oracle(string Database = "", int ID = 0)
         {
             this.ID = ID;
             if (!OracleCon.State.ContainsKey(ID))

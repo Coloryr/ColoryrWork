@@ -1,329 +1,260 @@
-using ColoryrServer.DataBase;
-using MySql.Data.MySqlClient;
+using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace ColoryrServer.SDK
+namespace ColoryrServer.DataBase
 {
-    public class Mysql
+    internal class OracleCon
     {
-        private string Database;
-        private int ID;
         /// <summary>
-        /// Mysql数据库
+        /// 连接状态
         /// </summary>
-        /// <param name="Database">数据库名</param>
-        /// <param name="ID">数据库ID</param>
-        public Mysql(string Database, int ID = 0)
-        {
-            this.ID = ID;
-            this.Database = Database;
-            if (!MysqlCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Mysql数据库{ID}");
-            if (MysqlCon.State[ID] == false)
-                throw new VarDump("Mysql未就绪");
-            if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
-        }
+        public static Dictionary<int, bool> State = new();
 
         /// <summary>
-        /// 执行sql语句
+        /// 连接池
         /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>返回的数据</returns>
-        public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
-        {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            return MysqlCon.MysqlSql(com, Database, ID);
-        }
+        private static Dictionary<int, ExConn[]> Conns = new();
+        private static Dictionary<int, object> LockObj = new();
+        private static Dictionary<int, int> LastIndex = new();
+        private static List<OracleConfig> Config;
+
         /// <summary>
-        /// 执行sql语句
+        /// 获取连接Task
         /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MysqlSql(string sql, MySqlParameter[] arg)
+        private static ExConn GetConn(int id)
         {
-            var com = new MySqlCommand(sql);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MysqlCon.MysqlSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="arg">Mysql命令语句</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MysqlSql(MySqlCommand arg)
-            => MysqlCon.MysqlSql(arg, Database, ID);
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            MysqlCon.MysqlSql(com, Database, ID);
-            return com;
-        }
-        private MySqlCommand GenCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = new MySqlCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
+            ExConn item;
+            while (true)
+            {
+                lock (LockObj[id])
                 {
-                    com.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    item = Conns[id][LastIndex[id]];
+                    LastIndex[id]++;
+                    if (LastIndex[id] >= Config[id].ConnCount)
+                        LastIndex[id] = 0;
                 }
-            return com;
-        }
-    }
-
-    public class MSsql
-    {
-        private string Database;
-        private int ID;
-        /// <summary>
-        /// MSsql数据库
-        /// </summary>
-        /// <param name="Database">数据库名</param>
-        /// <param name="ID">数据库ID</param>
-        public MSsql(string Database, int ID = 0)
-        {
-            this.Database = Database;
-            this.ID = ID;
-            if (!MSCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Mysql数据库{ID}");
-            if (MSCon.State[ID] == false)
-                throw new VarDump("MS数据库没有链接");
-            if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
-
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>返回的数据</returns>
-        public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg)
-        {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new VarDump("SQL语句参数非法");
-            return MSCon.MSsqlSql(a, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MSsqlSql(string sql, MySqlParameter[] arg)
-        {
-            var com = new SqlCommand(sql);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MSCon.MSsqlSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public SqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            MSCon.MSsqlSql(com, Database, ID);
-            return com;
-        }
-        private static SqlCommand GenCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = new SqlCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
+                if (item.State == ConnState.Ok)
                 {
-                    com.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    try
+                    {
+                        item.Oracle.Open();
+                        item.State = ConnState.Open;
+                        return item;
+                    }
+                    catch (OracleException e)
+                    {
+                        ServerMain.LogError(e);
+                        Task.Run(() => ConnReset(item));
+                    }
                 }
-            return com;
+                Thread.Sleep(1);
+            }
         }
-    }
 
-    public class Oracle
-    {
-        private string Database;
-        private int ID;
         /// <summary>
-        /// MSsql数据库
+        /// 开启重连Task
         /// </summary>
-        /// <param name="Database">数据库名</param>
-        /// <param name="ID">数据库ID</param>
-        public Oracle(string Database, int ID = 0)
+        /// <param name="item">连接池项目</param>
+        public static void ConnReset(ExConn item)
         {
-            this.ID = ID;
-            if (!OracleCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Oracle数据库{ID}");
-            if (OracleCon.State[ID] == false)
-                throw new VarDump("Oracle没有链接");
-            if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
-            this.Database = Database;
+            item.State = ConnState.Restart;
+            Config = ServerMain.Config.Oracle;
+            if (Config.Count <= item.id)
+            {
+                ServerMain.LogError($"Oracle配置出错，id:{item.id}");
+                item.State = ConnState.Stop;
+                return;
+            }
+            var config = Config[item.id];
+            var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
+            string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
+            var Conn = new OracleConnection(ConnectString);
+            item.Oracle.Dispose();
+            item.Oracle = Conn;
+            if (Test(item))
+            {
+                item.State = ConnState.Ok;
+                return;
+            }
+            else
+            {
+                ServerMain.LogError($"Oracle数据库连接失败，连接池{item.id}第{item.Index}个连接");
+            }
         }
+
         /// <summary>
-        /// 执行sql语句
+        /// 连接测试
         /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>返回的数据</returns>
-        public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg)
+        /// <param name="item">连接池项目</param>
+        /// <returns>是否测试成功</returns>
+        private static bool Test(ExConn item)
         {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new VarDump("SQL语句参数非法");
-            return OracleCon.OracleSql(a, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> OracleSql(string sql, OracleParameter[] arg)
-        {
-            var com = new OracleCommand(sql);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return OracleCon.OracleSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new VarDump("SQL语句参数非法");
-            OracleCon.OracleSql(com, Database, ID);
-            return com;
-        }
-        private static OracleCommand GenCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = new OracleCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
+            try
+            {
+                item.Oracle.Open();
+                new OracleCommand("select id from test where rownum<=1", item.Oracle).ExecuteNonQuery();
+                item.Oracle.Close();
+                return true;
+            }
+            catch (OracleException ex)
+            {
+                switch (ex.Number)
                 {
-                    com.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    case 942:
+                        item.Oracle.Close();
+                        return true;
+                    default:
+                        ServerMain.LogError(ex);
+                        return false;
                 }
-            return com;
+            }
         }
-    }
 
-    public class Redis
-    {
-        private int ID;
         /// <summary>
-        /// Redis数据库
+        /// Oracle初始化
         /// </summary>
-        /// <param name="ID">数据库ID</param>
-        public Redis(int ID = 0)
+        /// <returns>是否连接成功</returns>
+        public static void Start()
         {
-            this.ID = ID;
-            if (!RedisCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Redis数据库{ID}");
-            if (RedisCon.State[ID] == false)
-                throw new VarDump("Redis没有链接");
+            ServerMain.LogOut($"正在连接Oracle数据库");
+            Config = ServerMain.Config.Oracle;
+            for (int a = 0; a < Config.Count; a++)
+            {
+                var config = Config[a];
+                if (!config.Enable)
+                    continue;
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
+                string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
+                var conn = new ExConn[config.ConnCount];
+                State.Add(a, false);
+                LockObj.Add(a, new());
+                bool isok = false;
+                for (int b = 0; b < config.ConnCount; b++)
+                {
+                    try
+                    {
+                        var Conn = new OracleConnection(ConnectString);
+                        var item = new ExConn
+                        {
+                            id = a,
+                            State = ConnState.Close,
+                            Type = ConnType.Oracle,
+                            Oracle = Conn,
+                            Index = b
+                        };
+                        if (Test(item))
+                        {
+                            item.State = ConnState.Ok;
+                            conn[b] = item;
+                        }
+                        else
+                        {
+                            foreach (var item1 in conn)
+                            {
+                                if (item1 != null)
+                                    item1.Oracle?.Dispose();
+                            }
+                            ServerMain.LogError($"Oracle数据库{a}连接失败");
+                            isok = false;
+                            break;
+                        }
+                        isok = true;
+                    }
+                    catch (Exception e)
+                    {
+                        foreach (var item1 in conn)
+                        {
+                            if (item1 != null)
+                                item1.Oracle?.Dispose();
+                        }
+                        ServerMain.LogError(e);
+                        ServerMain.LogError($"Oracle数据库{a}连接失败");
+                        isok = false;
+                        break;
+                    }
+                }
+                if (!isok)
+                {
+                    continue;
+                }
+                State[a] = true;
+                Conns.Add(a, conn);
+                LastIndex.Add(a, 0);
+                ServerMain.LogOut($"Oracle数据库{a}已连接");
+            }
         }
-        /// <summary>
-        /// 获取数据
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <returns>值</returns>
-        public object Get(dynamic key)
-            => RedisCon.Get(key, ID);
 
         /// <summary>
-        /// 设置键值对
+        /// 关闭Oracle数据库连接
         /// </summary>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        /// <param name="Time">存在秒</param>
-        public bool Set(dynamic key, dynamic value, int Time = 0)
-            => RedisCon.Set(key, value, Time, ID);
-        /// <summary>
-        /// 是否存在键
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <returns>是否存在</returns>
-        public bool Exists(dynamic key)
-            => RedisCon.Exists(key, ID);
-        /// <summary>
-        /// 删除键值对
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <returns>是否成功</returns>
-        public bool Remove(dynamic key)
-            => RedisCon.Remove(key, ID);
-        /// <summary>
-        /// 累加
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <returns>累加后的数据</returns>
-        public long Increment(string key, long val = 1)
-            => RedisCon.Increment(key, ID, val);
-    }
-
-    public class RamData
-    {
-        public string Name { get; private set; }
-        /// <summary>
-        /// 启用缓存
-        /// </summary>
-        /// <param name="Name">缓存名</param>
-        public RamData(string Name)
+        public static void Stop()
         {
-            this.Name = RamDataBase.NewCache(Name);
+            foreach (var item in State)
+            {
+                State[item.Key] = false;
+            }
+            foreach (var item in Conns)
+            {
+                foreach (var item1 in item.Value)
+                {
+                    item1.State = ConnState.Close;
+                    item1.Oracle.Dispose();
+                }
+            }
+            ServerMain.LogOut("Oracle数据库已断开");
         }
+
         /// <summary>
-        /// 获取值
+        /// 执行sql语句
         /// </summary>
-        /// <param name="key">键</param>
-        /// <returns>返回值</returns>
-        public dynamic Get(string key)
-            => RamDataBase.GetCache(Name, key);
-        /// <summary>
-        /// 设置键值
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        public void Set(string key, dynamic value)
-            => RamDataBase.SetCache(Name, key, value);
-        /// <summary>
-        /// 检查是否有键
-        /// </summary>
-        /// <param name="key">键名</param>
-        /// <returns>是否存在</returns>
-        public bool HaveKey(string key)
-            => RamDataBase.HaveCacheKey(Name, key);
-        /// <summary>
-        /// 清理缓存
-        /// </summary>
-        public void Close()
-            => RamDataBase.CloseCache(Name);
+        /// <param name="Database">数据库</param>
+        /// <param name="Sql">SQL语句</param>
+        /// <returns>结果集</returns>
+        public static List<List<dynamic>> OracleSql(OracleCommand Sql, string Database, int id)
+        {
+            try
+            {
+                ExConn conn = null;
+                CancellationTokenSource cancel = new();
+                var task = Task.Run(() =>
+                {
+                    conn = GetConn(id);
+                }, cancel.Token);
+                if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
+                {
+                    Sql.Connection = conn.Oracle;
+                    if (!string.IsNullOrWhiteSpace(Database))
+                        Sql.Connection.ChangeDatabase(Database);
+                    OracleDataReader reader = Sql.ExecuteReader();
+                    var readlist = new List<List<dynamic>>();
+                    while (reader.Read())
+                    {
+                        var Item = new List<dynamic>();
+                        for (int b = 0; b < reader.FieldCount; b++)
+                            Item.Add(reader[b]);
+                        readlist.Add(Item);
+                    }
+                    reader.Close();
+                    Sql.Connection.Close();
+                    conn.State = ConnState.Ok;
+                    return readlist;
+                }
+                else
+                {
+                    cancel.Cancel(false);
+                    throw new VarDump("Oracle数据库超时");
+                }
+            }
+            catch (OracleException e)
+            {
+                throw new VarDump("执行sql语句出错", e);
+            }
+        }
     }
 }

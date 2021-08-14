@@ -229,7 +229,8 @@ namespace ColoryrServer.DataBase
                 if (Task.WhenAny(task, Task.Delay(Config[id].TimeOut)).Result == task)
                 {
                     Sql.Connection = conn.Oracle;
-                    Sql.Connection.ChangeDatabase(Database);
+                    if (!string.IsNullOrWhiteSpace(Database))
+                        Sql.Connection.ChangeDatabase(Database);
                     OracleDataReader reader = Sql.ExecuteReader();
                     var readlist = new List<List<dynamic>>();
                     while (reader.Read())

@@ -20,6 +20,8 @@ namespace Lib.Server
                 else
                     return remove ? a[(x + 1)..y] : a[x..y];
             }
+            else if (x < 0)
+                return a;
             else
                 return a[x..];
         }
