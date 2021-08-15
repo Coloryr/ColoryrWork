@@ -2,7 +2,6 @@
 using ColoryrServer.DllManager;
 using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
-using ColoryrServer.Html;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
 using ColoryrServer.MQTT;
@@ -148,7 +147,7 @@ namespace ColoryrServer
                 FileTemp.Start();
                 FileRam.Start();
                 TaskThread.Start();
-                HttpClientUtils.Start();
+                //HttpClientUtils.Start();
 
                 //给编译用的，防DLL找不到
                 new HtmlDocument();
@@ -237,7 +236,7 @@ namespace ColoryrServer
             RamDataBase.Stop();
             MQTTServer.Stop();
             TaskThread.Stop();
-            HttpClientUtils.Stop();
+            //HttpClientUtils.Stop();
             HtmlUtils.Stop();
             LogOut("已关闭");
         }

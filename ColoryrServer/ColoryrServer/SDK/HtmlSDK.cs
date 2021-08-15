@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Html;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,27 +11,37 @@ namespace ColoryrServer.SDK
 {
     public class HttpHtml
     {
-        private ExClient Http;
         public CancellationTokenSource Cancel;
+        private HttpClient Client;
 
-        public HttpHtml(ref CookieContainer Cookie,
+        public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
                     Dictionary<string, string> Head = null)
         {
-            Http = HttpClientUtils.Get();
             this.Cancel = Cancel ?? new();
-            Http.Init(ref Cookie, Head);
-        }
-
-        public HttpHtml()
-        {
-            Http = HttpClientUtils.Get();
-            Cancel = new();
+            Cookie ??= new();
+            var HttpClientHandler = new HttpClientHandler()
+            {
+                CookieContainer = Cookie
+            };
+            Client = new HttpClient(HttpClientHandler)
+            {
+                Timeout = TimeSpan.FromSeconds(5)
+            };
+            Client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
+            if (Head != null)
+            {
+                foreach (var item in Head)
+                {
+                    Client.DefaultRequestHeaders.Add(item.Key, item.Value);
+                }
+            }
         }
 
         ~HttpHtml()
         {
-            HttpClientUtils.Close(Http);
+            Client.CancelPendingRequests();
+            Client.Dispose();
         }
         /// <summary>
         /// 获取byte
@@ -40,14 +49,14 @@ namespace ColoryrServer.SDK
         /// <param name="url">网址</param>
         /// <returns>byte</returns>
         public byte[] GetByte(string url)
-            => Http.GetByteArray(url, Cancel);
+            => Client.GetByteArrayAsync(url, Cancel.Token).Result;
         /// <summary>
         /// 获取字符串
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>字符串</returns>
         public string GetString(string url)
-            => Http.GetString(url, Cancel);
+            => Client.GetStringAsync(url, Cancel.Token).Result;
         /// <summary>
         /// 发送表单获取字符串
         /// </summary>
@@ -55,7 +64,7 @@ namespace ColoryrServer.SDK
         /// <param name="arg">参数</param>
         /// <returns>字符串</returns>
         public string PostString(string url, Dictionary<string, string> arg)
-            => Http.PostAsync(url, Cancel, arg);
+            => Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
         /// <summary>
         /// 获取解析后的html
         /// </summary>
@@ -77,7 +86,7 @@ namespace ColoryrServer.SDK
         /// <param name="httpRequest">请求结构</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage Send(HttpRequestMessage httpRequest)
-            => Http.Send(httpRequest, Cancel);
+            => Client.SendAsync(httpRequest, Cancel.Token).Result;
         /// <summary>
         /// 发送数据
         /// </summary>
@@ -85,7 +94,7 @@ namespace ColoryrServer.SDK
         /// <param name="data">数据</param>
         /// <returns>返回的字符串</returns>
         public string PutString(string url, byte[] data)
-            => Http.Put(url, data, Cancel);
+            => Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
         /// <summary>
         /// 发送表单数据
         /// </summary>
@@ -93,14 +102,14 @@ namespace ColoryrServer.SDK
         /// <param name="arg">数据</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
-            => Http.Post(url, arg, Cancel);
+            => Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result;
         /// <summary>
         /// Get获取数据
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>返回结构</returns>
         public HttpResponseMessage GetData(string url)
-            => Http.Get(url, Cancel);
+            => Client.GetAsync(url, Cancel.Token).Result;
     }
 
     public class HtmlAsync
@@ -129,7 +138,7 @@ namespace ColoryrServer.SDK
             {
                 Timeout = timeOut
             };
-            Http.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
+            Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
             if (Head != null)
             {
                 foreach (var Item in Head)

@@ -72,7 +72,7 @@ namespace ColoryrServer.FileSystem
         /// <summary>
         /// HttpClient数量
         /// </summary>
-        public int HttpClientNumber { get; set; }
+        //public int HttpClientNumber { get; set; }
         /// <summary>
         /// 请求选项
         /// </summary>
@@ -453,7 +453,7 @@ namespace ColoryrServer.FileSystem
                     TempTime = 1800,
                     EnableIndex = true
                 },
-                HttpClientNumber = 100,
+                //HttpClientNumber = 100,
                 AES = new()
                 {
                     Key = "Key",
