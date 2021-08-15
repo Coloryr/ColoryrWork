@@ -14,16 +14,20 @@ namespace ColoryrServer.SDK
     {
         private ExClient Http;
         public CancellationTokenSource Cancel;
-        public CookieContainer Cookie;
 
-        public HttpHtml(CookieContainer Cookie = null,
+        public HttpHtml(ref CookieContainer Cookie,
                     CancellationTokenSource Cancel = null,
                     Dictionary<string, string> Head = null)
         {
             Http = HttpClientUtils.Get();
-            this.Cookie = Cookie ?? new();
             this.Cancel = Cancel ?? new();
-            Http.Init(this.Cookie, Head);
+            Http.Init(ref Cookie, Head);
+        }
+
+        public HttpHtml()
+        {
+            Http = HttpClientUtils.Get();
+            Cancel = new();
         }
 
         ~HttpHtml()

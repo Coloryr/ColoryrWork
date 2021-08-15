@@ -198,15 +198,15 @@ namespace ColoryrServer
                     MQTTServer.Start();
                     RobotUtils.Start();
                     DatabaseRun();
-                    //服务器启动
-                    HttpServer.Start();
-                    IoTSocketServer.Start();
-                    ServerWebSocket.Start();
                     //初始化动态编译
                     GenCode.Start();
                     DllStonge.Start();
                     HtmlUtils.Start();
                     FileHttpStream.Start();
+                    //服务器启动
+                    HttpServer.Start();
+                    IoTSocketServer.Start();
+                    ServerWebSocket.Start();
                 }
 
                 //等待初始化完成

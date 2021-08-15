@@ -19,41 +19,84 @@ namespace ColoryrServer.Html
         public ClientState State { get; set; }
         private readonly HttpClient Client;
         private readonly HttpClientHandler HttpClientHandler;
+        private readonly object l = new();
+        private readonly CookieContainer cookie = new();
+        private Dictionary<string, string> RequestHeaders;
         public ExClient()
         {
             State = ClientState.Ready;
             HttpClientHandler = new();
             Client = new(HttpClientHandler);
             Client.Timeout = TimeSpan.FromSeconds(5);
-            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
+            Client.DefaultRequestHeaders.UserAgent.ParseAdd(DefauleThing.Agent);
+            HttpClientHandler.CookieContainer = cookie;
         }
         public void Clear()
         {
-            Client.DefaultRequestHeaders.Clear();
-            Client.DefaultRequestHeaders.Add("User-Agent", DefauleThing.Agent);
-        }
-        public void Init(CookieContainer Cookie, Dictionary<string, string> RequestHeaders)
-        {
-            HttpClientHandler.CookieContainer = Cookie;
-            if (RequestHeaders != null)
+            lock (l)
             {
-                foreach (var item in RequestHeaders)
-                {
-                    Client.DefaultRequestHeaders.Add(item.Key, item.Value);
-                }
+                Client.CancelPendingRequests();
+            }
+        }
+        public void Init(ref CookieContainer Cookie, Dictionary<string, string> RequestHeaders)
+        {
+            lock (l)
+            {
+                Cookie = cookie;
+                this.RequestHeaders = RequestHeaders;
             }
         }
         public byte[] GetByteArray(string url, CancellationTokenSource Cancel)
         {
-            return Client.GetByteArrayAsync(url, Cancel.Token).Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Get;
+                message.RequestUri = new Uri(url);
+                var res = Client.SendAsync(message, Cancel.Token).Result;
+                return res.Content.ReadAsByteArrayAsync(Cancel.Token).Result;
+            }
+            else
+                return Client.GetByteArrayAsync(url, Cancel.Token).Result;
         }
         public string GetString(string url, CancellationTokenSource Cancel)
         {
-            return Client.GetStringAsync(url, Cancel.Token).Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Get;
+                message.RequestUri = new Uri(url);
+                var res = Client.SendAsync(message, Cancel.Token).Result;
+                return res.Content.ReadAsStringAsync(Cancel.Token).Result;
+            }
+            else
+                return Client.GetStringAsync(url, Cancel.Token).Result;
         }
         public string PostAsync(string url, CancellationTokenSource Cancel, Dictionary<string, string> arg)
         {
-            return Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Post;
+                message.RequestUri = new Uri(url);
+                message.Content = new FormUrlEncodedContent(arg);
+                var res = Client.SendAsync(message, Cancel.Token).Result;
+                return res.Content.ReadAsStringAsync(Cancel.Token).Result;
+            }
+            else
+                return Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
         }
         public HttpResponseMessage Send(HttpRequestMessage httpRequest, CancellationTokenSource Cancel)
         {
@@ -61,15 +104,54 @@ namespace ColoryrServer.Html
         }
         public string Put(string url, byte[] data, CancellationTokenSource Cancel)
         {
-            return Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Put;
+                message.RequestUri = new Uri(url);
+                message.Content = new ByteArrayContent(data);
+                var res = Client.SendAsync(message, Cancel.Token).Result;
+                return res.Content.ReadAsStringAsync(Cancel.Token).Result;
+            }
+            else
+                return Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
         }
         public HttpResponseMessage Post(string url, Dictionary<string, string> arg, CancellationTokenSource Cancel)
         {
-            return Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Post;
+                message.RequestUri = new Uri(url);
+                message.Content = new FormUrlEncodedContent(arg);
+                return Client.SendAsync(message, Cancel.Token).Result;
+            }
+            else
+                return Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result;
         }
         public HttpResponseMessage Get(string url, CancellationTokenSource Cancel)
         {
-            return Client.GetAsync(url, Cancel.Token).Result;
+            if (RequestHeaders != null)
+            {
+                HttpRequestMessage message = new();
+                foreach (var item in RequestHeaders)
+                {
+                    message.Headers.Add(item.Key, item.Value);
+                }
+                message.Method = HttpMethod.Get;
+                message.RequestUri = new Uri(url);
+                return Client.SendAsync(message, Cancel.Token).Result;
+            }
+            else
+                return Client.GetAsync(url, Cancel.Token).Result;
         }
         public void Stop()
         {
