@@ -1,9 +1,9 @@
 ﻿namespace HtmlCompression.Core
 {
-	public enum SurroundingSpaces
-	{
-		Keep,
-		RemoveForAllTags,
-		UseRemoveSurroundingSpacesForTags
-	}
+    public enum SurroundingSpaces
+    {
+        Keep,
+        RemoveForAllTags,
+        UseRemoveSurroundingSpacesForTags
+    }
 }

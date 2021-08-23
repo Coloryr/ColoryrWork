@@ -20,8 +20,8 @@ namespace ColoryrServer.RunTest
                     return;
                 }
                 else if (arg[0] == "database")
-                { 
-                    
+                {
+
                 }
             }
         }

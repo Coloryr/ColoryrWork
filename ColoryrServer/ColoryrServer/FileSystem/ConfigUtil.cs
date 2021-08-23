@@ -83,7 +83,7 @@ namespace ColoryrServer.FileSystem
         public AESConfig AES { get; set; }
     }
     internal record AESConfig
-    { 
+    {
         public string Key { get; set; }
         public string IV { get; set; }
     }

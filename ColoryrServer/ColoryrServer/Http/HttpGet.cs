@@ -6,9 +6,6 @@ using Lib.Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Http
 {
@@ -73,7 +70,7 @@ namespace ColoryrServer.Http
                     {
                         Data = HtmlUtils.Html404,
                         ContentType = ServerContentType.HTML,
-                        ReCode = 404
+                        ReCode = 200
                     };
                 }
                 if (Function.Constr(Url, '/') >= 2)
@@ -122,7 +119,7 @@ namespace ColoryrServer.Http
             {
                 Data = HtmlUtils.Html404,
                 ContentType = ServerContentType.HTML,
-                ReCode = 404
+                ReCode = 200
             };
         }
         public static PipeHttpData PipeHttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data)

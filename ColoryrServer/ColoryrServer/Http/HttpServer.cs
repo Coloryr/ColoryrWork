@@ -1,23 +1,8 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
-using ColoryrServer.Pipe;
-using ColoryrServer.SDK;
-using ColoryrServer.Utils;
-using HttpMultipartParser;
-using Lib.App;
-using Lib.Build;
-using Lib.Build.Object;
-using Lib.Server;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 
 namespace ColoryrServer.Http

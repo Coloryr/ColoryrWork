@@ -15,7 +15,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Http
 {
@@ -245,7 +244,7 @@ namespace ColoryrServer.Http
             {
                 Data = HtmlUtils.Html404,
                 ContentType = ServerContentType.HTML,
-                ReCode = 404
+                ReCode = 200
             };
         }
 

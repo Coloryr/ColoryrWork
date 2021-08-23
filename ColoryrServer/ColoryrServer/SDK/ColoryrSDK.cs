@@ -602,7 +602,7 @@ namespace ColoryrServer.SDK
             => FileHttpStream.StartStream(http, local, name);
     }
     public class ErrorDump : Exception
-    { 
+    {
         public string data { get; set; }
         public ErrorDump(string data)
         {

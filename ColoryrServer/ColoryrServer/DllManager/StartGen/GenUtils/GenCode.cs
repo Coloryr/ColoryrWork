@@ -78,7 +78,7 @@ namespace ColoryrServer.DllManager.StartGen.GenUtils
                     foreach (var item2 in ServerMain.Config.NotInclude)
                     {
                         if (item.Contains(item2))
-                        { 
+                        {
                             add = false;
                             break;
                         }

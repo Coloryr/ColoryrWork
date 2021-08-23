@@ -43,7 +43,7 @@ namespace ColoryrBuild
                 Name = "",
                 Token = "",
                 Http = "https://",
-                AES = false, 
+                AES = false,
                 Key = "Key",
                 IV = "IV"
             }, RunLocal + "Config.json");
