@@ -99,7 +99,7 @@ namespace ColoryrServer.WebSocket
         internal static void Stop()
         {
             IsRun = false;
-            source.Cancel();
+            source.Cancel(false);
             foreach (var item in Clients)
             {
                 try

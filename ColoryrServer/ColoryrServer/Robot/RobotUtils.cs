@@ -68,6 +68,7 @@ namespace ColoryrServer.Robot
                 Pack = new() { 21, 28, 35, 36, 47, 49, 50, 51 },
                 RunQQ = 0,
                 Time = 10000,
+                Check = true,
                 CallAction = Message,
                 LogAction = Log,
                 StateAction = State
