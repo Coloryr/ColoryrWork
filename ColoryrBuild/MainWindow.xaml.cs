@@ -256,14 +256,14 @@ namespace ColoryrBuild
         {
             if (ListDll.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListDll.SelectedItem;
+            var item = ListDll.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Dll);
         }
         private async void Delete_Dll_Click(object sender, RoutedEventArgs e)
         {
             if (ListDll.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListDll.SelectedItem;
+            var item = ListDll.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -311,14 +311,14 @@ namespace ColoryrBuild
         {
             if (ListClass.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListClass.SelectedItem;
+            var item = ListClass.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Class);
         }
         private async void Delete_Class_Click(object sender, RoutedEventArgs e)
         {
             if (ListClass.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListClass.SelectedItem;
+            var item = ListClass.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -365,14 +365,14 @@ namespace ColoryrBuild
         {
             if (ListIoT.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListIoT.SelectedItem;
+            var item = ListIoT.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.IoT);
         }
         private async void Delete_IoT_Click(object sender, RoutedEventArgs e)
         {
             if (ListIoT.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListIoT.SelectedItem;
+            var item = ListIoT.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -419,14 +419,14 @@ namespace ColoryrBuild
         {
             if (ListRobot.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListRobot.SelectedItem;
+            var item = ListRobot.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Robot);
         }
         private async void Delete_Robot_Click(object sender, RoutedEventArgs e)
         {
             if (ListRobot.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListRobot.SelectedItem;
+            var item = ListRobot.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -473,14 +473,14 @@ namespace ColoryrBuild
         {
             if (ListWebSocket.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListWebSocket.SelectedItem;
+            var item = ListWebSocket.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.WebSocket);
         }
         private async void Delete_WebSocket_Click(object sender, RoutedEventArgs e)
         {
             if (ListWebSocket.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListWebSocket.SelectedItem;
+            var item = ListWebSocket.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -527,14 +527,14 @@ namespace ColoryrBuild
         {
             if (ListMqtt.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListMqtt.SelectedItem;
+            var item = ListMqtt.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Mqtt);
         }
         private async void Delete_Mqtt_Click(object sender, RoutedEventArgs e)
         {
             if (ListMqtt.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListMqtt.SelectedItem;
+            var item = ListMqtt.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -581,14 +581,14 @@ namespace ColoryrBuild
         {
             if (ListWeb.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListWeb.SelectedItem;
+            var item = ListWeb.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Web);
         }
         private async void Delete_Web_Click(object sender, RoutedEventArgs e)
         {
             if (ListWeb.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListWeb.SelectedItem;
+            var item = ListWeb.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -635,14 +635,14 @@ namespace ColoryrBuild
         {
             if (ListTask.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListTask.SelectedItem;
+            var item = ListTask.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.Task);
         }
         private async void Delete_Task_Click(object sender, RoutedEventArgs e)
         {
             if (ListTask.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListTask.SelectedItem;
+            var item = ListTask.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
@@ -689,14 +689,14 @@ namespace ColoryrBuild
         {
             if (ListApp.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListApp.SelectedItem;
+            var item = ListApp.SelectedItem as CSFileObj;
             App.AddEdit(item, CodeType.App);
         }
         private async void Delete_App_Click(object sender, RoutedEventArgs e)
         {
             if (ListApp.SelectedItem == null)
                 return;
-            var item = (CSFileObj)ListApp.SelectedItem;
+            var item = ListApp.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {

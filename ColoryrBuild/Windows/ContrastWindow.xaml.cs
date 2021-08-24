@@ -37,17 +37,17 @@ namespace ColoryrBuild.Windows
             return DiffView.GetInlineDiffModel();
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            App.ContrastWindow_ = null;
-        }
-
         public void Clear()
         {
             Title = "代码对比";
             DiffView.OldText = " ";
             DiffView.NewText = " ";
             DiffView.Refresh();
+        }
+
+        private void Window_Closed(object sender, System.EventArgs e)
+        {
+            App.ContrastWindow_ = null;
         }
     }
 }

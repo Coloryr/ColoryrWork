@@ -38,7 +38,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             };
 
             DllStonge.AddApp(File.UUID, save);
-            File.Up();
 
             Res.MSPdb.Close();
             Res.MSPdb.Dispose();

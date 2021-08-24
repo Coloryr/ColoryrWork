@@ -14,7 +14,7 @@ namespace ColoryrServer.DllManager
 {
     internal class DllBuild
     {
-        public static readonly Dictionary<string, string> Token = new();
+        private static readonly Dictionary<string, string> Token = new();
         public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)
         {
             object resObj = null;
@@ -1108,7 +1108,7 @@ namespace ColoryrServer.DllManager
                             break;
                         }
 
-                        HtmlUtils.AddFile(File2, json.Code, Convert.FromBase64String(json.Temp));
+                        HtmlUtils.AddFile(File2, json.Code, BuildUtils.HexStringToByte(json.Temp));
                         resObj = new ReMessage
                         {
                             Build = true,

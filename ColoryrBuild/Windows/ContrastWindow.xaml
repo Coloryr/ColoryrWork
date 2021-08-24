@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
         mc:Ignorable="d"
-        Title="代码对比" Height="450" Width="800" Closing="Window_Closing">
+        Title="代码对比" Height="450" Width="800" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <diffplex:DiffViewer x:Name="DiffView" Margin="2,2,2,2" IgnoreWhiteSpace="False" IgnoreCase="False"/>

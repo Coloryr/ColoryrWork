@@ -29,19 +29,21 @@ namespace ColoryrBuild.Windows
 
         public EditWindow(CSFileObj obj, CodeType type)
         {
-            InitializeComponent();
             this.obj = obj;
+            this.type = type;
+
+            InitializeComponent();
+           
             var foldingManager = FoldingManager.Install(textEditor.TextArea);
             var foldingStrategy = new XmlFoldingStrategy();
             foldingStrategy.UpdateFoldings(foldingManager, textEditor.Document);
             textEditor.Options.ShowSpaces = true;
             textEditor.Options.ShowTabs = true;
 
-            this.type = type;
             Title = $"编辑窗口{type}[{obj.UUID}]";
-            if (type != CodeType.App && type != CodeType.Web)
+            if (type is not CodeType.App and not CodeType.Web)
                 CodeA.IsEnabled = false;
-            Local = CodeSave.FilePath + "\\" + type.ToString() + "\\" + obj.UUID + "\\";
+            Local = $"{CodeSave.FilePath}/{type}/{obj.UUID}/";
             if (!Directory.Exists(Local))
             {
                 Directory.CreateDirectory(Local);
@@ -66,7 +68,7 @@ namespace ColoryrBuild.Windows
             if (Write)
                 return;
             Write = true;
-            if (type != CodeType.App && type != CodeType.Web)
+            if (type is not CodeType.App and not CodeType.Web)
             {
                 if (e.Name == "main.cs")
                 {
@@ -90,7 +92,7 @@ namespace ColoryrBuild.Windows
             if (Write)
                 return;
             Write = true;
-            if (type != CodeType.App && type != CodeType.Web)
+            if (type is not CodeType.App and not CodeType.Web)
             {
                 var data = await App.HttpUtils.GetCode(type, obj.UUID);
                 if (data == null)
@@ -108,7 +110,12 @@ namespace ColoryrBuild.Windows
                 if (File.Exists(Local + "main.cs"))
                 {
                     string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
-                    File.Move(Local + "main.cs", Local + time + "-main.cs");
+                    var newLocal = Local + "backup/";
+                    if (!Directory.Exists(newLocal))
+                    {
+                        Directory.CreateDirectory(newLocal);
+                    }
+                    File.Move(Local + "main.cs", newLocal + time + ".cs");
                 }
                 CodeSave.Save(Local + "main.cs", obj1.Code);
                 App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取成功");
@@ -128,18 +135,20 @@ namespace ColoryrBuild.Windows
                 FileList.Items.Clear();
 
                 string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
+                var newLocal = Local + $"backup_{time}/";
+                if (!Directory.Exists(newLocal))
+                {
+                    Directory.CreateDirectory(newLocal);
+                }
 
                 foreach (var item in obj3.Codes)
                 {
-                    if (File.Exists(Local + $"{item.Key}"))
+                    if (File.Exists(Local + item.Key))
                     {
-                        File.Move(Local + $"{item.Key}", Local + time + $"-{item.Key}");
+                        File.Move(Local + item.Key, newLocal + item.Key);
                     }
-                    else
-                    {
-                        CodeSave.Save(Local + $"{item.Key}", item.Value);
-                    }
-                    FileList.Items.Add($"{item.Key}");
+                    CodeSave.Save(Local + item.Key, item.Value);
+                    FileList.Items.Add(item.Key);
                 }
                 foreach (var item in obj3.Files)
                 {
@@ -172,17 +181,19 @@ namespace ColoryrBuild.Windows
                 FileList.Items.Clear();
 
                 string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
+                var newLocal = Local + $"backup_{time}/";
+                if (!Directory.Exists(newLocal))
+                {
+                    Directory.CreateDirectory(newLocal);
+                }
 
                 foreach (var item in obj2.Codes)
                 {
                     if (File.Exists(Local + $"{item.Key}.cs"))
                     {
-                        File.Move(Local + $"{item.Key}.cs", Local + time + $"-{item.Key}.cs");
+                        File.Move(Local + $"{item.Key}.cs", newLocal + $"{item.Key}.cs");
                     }
-                    else
-                    {
-                        CodeSave.Save(Local + $"{item.Key}.cs", item.Value);
-                    }
+                    CodeSave.Save(Local + $"{item.Key}.cs", item.Value);
                     FileList.Items.Add($"{item.Key}.cs");
                 }
 
@@ -190,12 +201,9 @@ namespace ColoryrBuild.Windows
                 {
                     if (File.Exists(Local + $"{item.Key}.xaml"))
                     {
-                        File.Move(Local + $"{item.Key}.xaml", Local + time + $"-{item.Key}.xaml");
+                        File.Move(Local + $"{item.Key}.xaml", newLocal + $"{item.Key}.xaml");
                     }
-                    else
-                    {
-                        CodeSave.Save(Local + $"{item.Key}.xaml", item.Value);
-                    }
+                    CodeSave.Save(Local + $"{item.Key}.xaml", item.Value);
                     FileList.Items.Add($"{item.Key}.xaml");
                 }
                 foreach (var item in obj2.Files)
@@ -204,7 +212,7 @@ namespace ColoryrBuild.Windows
                 }
                 foreach (var item in FileList.Items)
                 {
-                    if ((string)item == "main.cs")
+                    if ((item as string) == "main.cs")
                     {
                         FileList.SelectedItem = item;
                         break;
@@ -441,17 +449,17 @@ namespace ColoryrBuild.Windows
                 return;
             Build_Button.IsEnabled = false;
             Write = true;
-            if (type != CodeType.App && type != CodeType.Web)
-            {
-                BuildOther();
-            }
-            else if (type == CodeType.Web)
+            if (type is CodeType.Web)
             {
                 BuildWeb();
             }
-            else
+            else if (type is CodeType.App)
             {
                 BuildApp();
+            }
+            else
+            {
+                BuildOther();
             }
             Build_Button.IsEnabled = true;
             Write = false;
@@ -459,30 +467,30 @@ namespace ColoryrBuild.Windows
 
         private async void Add_Click(object sender, RoutedEventArgs e)
         {
-            var data = new InputWindow("添加文件").Set();
+            var data = new InputWindow("文件名").Set();
             if (string.IsNullOrWhiteSpace(data))
                 return;
             ReMessage res = null;
             if (type == CodeType.App)
             {
-                ReType type = ReType.Check;
+                ReType fileType = ReType.Check;
                 if (data.EndsWith(".cs"))
                 {
                     data = data.Replace(".cs", "");
-                    type = ReType.AppAddCS;
+                    fileType = ReType.AppAddCS;
                 }
                 else if (data.EndsWith(".xaml"))
                 {
                     data = data.Replace(".xaml", "");
-                    type = ReType.AppAddXaml;
+                    fileType = ReType.AppAddXaml;
                 }
-                res = await App.HttpUtils.AddAppFile(obj2, type, data);
+                res = await App.HttpUtils.AddAppFile(obj2, fileType, data);
             }
             else if (type == CodeType.Web)
             {
                 if (data.EndsWith(".html") || data.EndsWith(".css")
-            || data.EndsWith(".js") || data.EndsWith(".json")
-            || data.EndsWith(".txt"))
+                || data.EndsWith(".js") || data.EndsWith(".json")
+                || data.EndsWith(".txt"))
                 {
                     res = await App.HttpUtils.AddWebCode(obj3, data);
                 }
@@ -498,7 +506,7 @@ namespace ColoryrBuild.Windows
                     if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         var by = File.ReadAllBytes(openFileDialog1.FileName);
-                        res = await App.HttpUtils.AddWebFile(obj3, data, Convert.ToBase64String(by));
+                        res = await App.HttpUtils.AddWebFile(obj3, data, BuildUtils.BytesToHexString(by));
                     }
                     else
                     {
@@ -521,7 +529,7 @@ namespace ColoryrBuild.Windows
         {
             if (FileList.SelectedItem == null)
                 return;
-            string data = (string)FileList.SelectedItem;
+            string data = FileList.SelectedItem as string;
             if (thisfile == data)
                 return;
             if (type == CodeType.Web)
@@ -561,7 +569,7 @@ namespace ColoryrBuild.Windows
         {
             if (FileList.SelectedItem == null)
                 return;
-            string data = (string)FileList.SelectedItem;
+            string data = FileList.SelectedItem as string;
             if (type == CodeType.Web)
             {
                 var data1 = await App.HttpUtils.WebRemoveFile(obj3, data);

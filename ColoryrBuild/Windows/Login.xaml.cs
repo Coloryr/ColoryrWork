@@ -1,4 +1,5 @@
 ﻿using Lib.Build;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +24,7 @@ namespace ColoryrBuild.Windows
             {
                 if (App.Config.SaveToken)
                 {
-                    Dispatcher.Invoke(() => App.LogShow("登录", "检查登录"));
+                    App.LogShow("登录", "检查登录");
                     var res = await App.AutoLogin();
                     if (res)
                     {
@@ -39,7 +40,7 @@ namespace ColoryrBuild.Windows
             App.Config.Http = Addr.Text;
             App.Config.Name = User.Text;
             App.Config.SaveToken = Token.IsChecked == true;
-            var res = await App.StartLogin(Utils.GetSHA1(Pass.Password));
+            var res = await App.StartLogin(BuildUtils.GetSHA1(Pass.Password));
             if (res)
             {
                 if (LoginTask.Status == TaskStatus.Running)
@@ -50,7 +51,7 @@ namespace ColoryrBuild.Windows
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (!App.IsLogin)
             {

@@ -10,8 +10,8 @@
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <TextBlock Text="信息" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,10,0"
                    TextAlignment="Center" Name="Text"/>
-        <Button Content="确定" Margin="25,0,124,10" Height="17" VerticalAlignment="Bottom" Click="Button_Click"/>
-        <Button Content="取消" Margin="124,0,25,10" Height="17" VerticalAlignment="Bottom" Click="Button_Click_1"/>
+        <Button Content="确定" Margin="25,0,124,10" Height="24" VerticalAlignment="Bottom" Click="Button_Click"/>
+        <Button Content="取消" Margin="124,0,25,10" Height="24" VerticalAlignment="Bottom" Click="Button_Click_1"/>
 
     </Grid>
 </Window>

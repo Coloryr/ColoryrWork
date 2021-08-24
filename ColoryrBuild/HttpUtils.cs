@@ -56,7 +56,7 @@ namespace ColoryrBuild
             ivArray = Encoding.UTF8.GetBytes(iv);
         }
 
-        public byte[] AES(string data)
+        private byte[] AES(string data)
         {
             if (App.Config.AES)
             {
