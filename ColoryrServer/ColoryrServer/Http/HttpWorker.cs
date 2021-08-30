@@ -50,7 +50,7 @@ namespace ColoryrServer.Http
                                 httpReturn = HttpPost.HttpPOST(stream, Request.ContentLength64, Request.RawUrl, Request.Headers, type);
                                 if (!Response.OutputStream.CanWrite)
                                 {
-                                    Response.Close();
+                                    Response.Abort();
                                     break;
                                 }
                                 Response.ContentType = httpReturn.ContentType;
@@ -80,7 +80,7 @@ namespace ColoryrServer.Http
                                 httpReturn = HttpGet.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
                                 if (!Response.OutputStream.CanWrite)
                                 {
-                                    Response.Close();
+                                    Response.Abort();
                                     break;
                                 }
                                 Response.ContentType = httpReturn.ContentType;
