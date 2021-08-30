@@ -1,33 +1,33 @@
 ﻿using System;
+using System.Net.Http;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Net;
 
-namespace CodeTest
+Dictionary<string, string> cookies = new();
+
+CookieContainer cookie1 = new();
+
+var handler = new HttpClientHandler() { UseCookies = false };
+var Client = new HttpClient(handler)
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class NotesSDK : Attribute
-    {
-        public string Text;
-        public string[] Input;
-        public string[] Output;
+    Timeout = TimeSpan.FromSeconds(5)
+};
+Client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
 
-        public NotesSDK(string Text, string[] Input = null, string[] Output = null)
-        {
-            this.Text = Text;
-            this.Input = Input ?? new string[1];
-            this.Output = Output ?? new string[1];
-        }
-    }
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
+var uri = new Uri("https://www.baidu.com/");
 
-        }
-
-        [NotesSDK("", null, null)]
-        public static void test()
-        {
-
-        }
-    }
+HttpRequestMessage requestMessage = new(HttpMethod.Get, uri);
+HttpResponseMessage result = Client.SendAsync(requestMessage).Result;
+var cookie = result.Headers.GetValues("Set-Cookie");
+foreach (var item in cookie)
+{
+    cookie1.SetCookies(uri, item);
 }
+
+foreach (Cookie item in cookie1.GetCookies(uri))
+{
+    cookies.Add(item.Name, item.Value);
+}
+
+Console.WriteLine(JsonConvert.SerializeObject(cookies));

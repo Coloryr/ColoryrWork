@@ -48,6 +48,11 @@ namespace ColoryrServer.Http
                                     type = MyContentType.Other;
                                 }
                                 httpReturn = HttpPost.HttpPOST(stream, Request.ContentLength64, Request.RawUrl, Request.Headers, type);
+                                if (!Response.OutputStream.CanWrite)
+                                {
+                                    Response.Close();
+                                    break;
+                                }
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
                                 Response.StatusCode = httpReturn.ReCode;
@@ -73,6 +78,11 @@ namespace ColoryrServer.Http
                                 break;
                             case "GET":
                                 httpReturn = HttpGet.HttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
+                                if (!Response.OutputStream.CanWrite)
+                                {
+                                    Response.Close();
+                                    break;
+                                }
                                 Response.ContentType = httpReturn.ContentType;
                                 Response.ContentEncoding = httpReturn.Encoding;
                                 Response.StatusCode = httpReturn.ReCode;

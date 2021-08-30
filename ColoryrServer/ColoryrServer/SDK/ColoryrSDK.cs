@@ -34,6 +34,7 @@ namespace ColoryrServer.SDK
         public const string MP3 = "audio/mp3";
         public const string MP4 = "video/mpeg4";
         public const string GIF = "image/gif";
+        public const string ICO = "application/x-ico";
     }
     public enum MyContentType
     {

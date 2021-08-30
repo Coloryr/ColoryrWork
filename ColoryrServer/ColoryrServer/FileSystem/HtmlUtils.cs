@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.SDK;
 using Lib.Build.Object;
+using Lib.Server;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -35,6 +36,7 @@ namespace ColoryrServer.FileSystem
         public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
         public static byte[] HtmlIndex { get; private set; }
+        public static byte[] HtmlIcon { get; private set; }
         public static byte[] Html404 { get; private set; }
         private static bool IsRun;
         private static readonly Thread Thread = new(TickTask);
@@ -82,7 +84,11 @@ namespace ColoryrServer.FileSystem
                 {
                     return HtmlIndex;
                 }
-                if (HtmlList.ContainsKey(uuid))
+                else if (uuid == "favicon.ico")
+                {
+                    return HtmlIcon;
+                }
+                else if (HtmlList.ContainsKey(uuid))
                 {
                     if (!ServerMain.Config.Requset.EnableIndex)
                     {
@@ -172,8 +178,14 @@ namespace ColoryrServer.FileSystem
                 File.WriteAllText(HtmlLocal + "404.html", ColoryrServer_Resource._404Html, Encoding.UTF8);
             }
 
+            if (!File.Exists(HtmlLocal + "favicon.ico"))
+            {
+                File.WriteAllBytes(HtmlLocal + "favicon.ico", Function.ToByte(ColoryrServer_Resource.ColoryrWork));
+            }
+
             HtmlIndex = File.ReadAllBytes(HtmlLocal + "index.html");
             Html404 = File.ReadAllBytes(HtmlLocal + "404.html");
+            HtmlIcon = File.ReadAllBytes(HtmlLocal + "favicon.ico");
 
             var list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)

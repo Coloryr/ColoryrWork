@@ -15,6 +15,14 @@ namespace ColoryrServer.Http
         {
             string UUID = "0";
             string FunctionName = null;
+            if (Url == "/favicon.ico")
+            {
+                return new HttpReturn
+                {
+                    Data = HtmlUtils.HtmlIcon,
+                    ContentType= ServerContentType.ICO
+            };
+            }
             if (Url.StartsWith("//"))
             {
                 Url = Url[1..];

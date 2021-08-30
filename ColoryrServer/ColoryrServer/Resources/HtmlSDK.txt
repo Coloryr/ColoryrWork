@@ -1,3 +1,4 @@
+using ColoryrServer.Html;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,195 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK
 {
+    public class NewHttpHtml
+    {
+        public CancellationTokenSource Cancel;
+        public CookieContainer Cookies { get; private set; }
+
+        private ExHttpClient Client;
+        private Dictionary<string, string> Head;
+
+        public NewHttpHtml(CookieContainer Cookie = null,
+                    CancellationTokenSource Cancel = null,
+                    Dictionary<string, string> Head = null)
+        {
+            this.Cancel = Cancel ?? new();
+            this.Cookies = Cookie ?? new();
+            this.Head = Head ?? new();
+            Client = HttpClientUtils.Get();
+        }
+
+        ~NewHttpHtml()
+        {
+            HttpClientUtils.Close(Client);
+        }
+        /// <summary>
+        /// 获取byte
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>byte</returns>
+        public byte[] GetByte(string url) 
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result.Content.ReadAsByteArrayAsync(Cancel.Token).Result;
+        }
+        /// <summary>
+        /// 获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>字符串</returns>
+        public string GetString(string url)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result.Content.ReadAsStringAsync(Cancel.Token).Result;
+        }
+        /// <summary>
+        /// 发送表单获取字符串
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">参数</param>
+        /// <returns>字符串</returns>
+        public string PostString(string url, Dictionary<string, string> arg)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Post, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data);
+            requestMessage.Content = new FormUrlEncodedContent(arg);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result.Content.ReadAsStringAsync(Cancel.Token).Result;
+        }
+        /// <summary>
+        /// 获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>解析后的html</returns>
+        public HtmlDoc GetWebHtml(string url)
+            => new(GetString(url));
+        /// <summary>
+        /// 发送表单获取解析后的html
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns></returns>
+        public HtmlDoc PostWebHtml(string url, Dictionary<string, string> arg)
+            => new(PostString(url, arg));
+        /// <summary>
+        /// 进行一次http请求
+        /// </summary>
+        /// <param name="httpRequest">请求结构</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage Send(HttpRequestMessage httpRequest)
+            => Client.Client.SendAsync(httpRequest, Cancel.Token).Result;
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="data">数据</param>
+        /// <returns>返回的字符串</returns>
+        public string PutString(string url, byte[] data)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Put, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data1 = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data1);
+            requestMessage.Content = new ByteArrayContent(data);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result.Content.ReadAsStringAsync(Cancel.Token).Result;
+        }
+        /// <summary>
+        /// 发送表单数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <param name="arg">数据</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Post, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data1 = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data1);
+            requestMessage.Content = new FormUrlEncodedContent(arg);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Get获取数据
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>返回结构</returns>
+        public HttpResponseMessage GetData(string url)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
+            foreach (var item in Head)
+            {
+                requestMessage.Headers.Add(item.Key, item.Value);
+            }
+            var data1 = Cookies.GetCookieHeader(requestMessage.RequestUri);
+            requestMessage.Headers.TryAddWithoutValidation("Cookie", data1);
+            var result = Client.Client.SendAsync(requestMessage, Cancel.Token).Result;
+            var uri = result.RequestMessage.RequestUri;
+            var cookie = result.Headers.GetValues("Set-Cookie");
+            foreach (var item in cookie)
+            {
+                Cookies.SetCookies(uri, item);
+            }
+            return result;
+        }
+    }
     public class HttpHtml
     {
         public CancellationTokenSource Cancel;
@@ -16,13 +206,15 @@ namespace ColoryrServer.SDK
 
         public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
-                    Dictionary<string, string> Head = null)
+                    Dictionary<string, string> Head = null,
+                    WebProxy proxy = null)
         {
             this.Cancel = Cancel ?? new();
             Cookie ??= new();
             var HttpClientHandler = new HttpClientHandler()
             {
-                CookieContainer = Cookie
+                CookieContainer = Cookie,
+                Proxy = proxy
             };
             Client = new HttpClient(HttpClientHandler)
             {
