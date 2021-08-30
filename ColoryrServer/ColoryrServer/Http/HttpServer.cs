@@ -46,7 +46,10 @@ namespace ColoryrServer.Http
                 // 启动工作线程
                 for (int i = 0; i < Workers.Length; i++)
                 {
-                    Workers[i] = new Thread(HttpWorker.Worker);
+                    Workers[i] = new Thread(HttpWorker.Worker)
+                    { 
+                        Name = "HttpWork" + i
+                    };
                     Workers[i].Start();
                 }
                 IsActive = true;
