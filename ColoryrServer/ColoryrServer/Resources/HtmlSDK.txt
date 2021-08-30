@@ -206,27 +206,11 @@ namespace ColoryrServer.SDK
 
         public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
-                    Dictionary<string, string> Head = null)
+                    Dictionary<string, string> Head = null) : this(Cookie, Cancel, Head, null)
         {
-            this.Cancel = Cancel ?? new();
-            Cookie ??= new();
-            var HttpClientHandler = new HttpClientHandler()
-            {
-                CookieContainer = Cookie
-            };
-            Client = new HttpClient(HttpClientHandler)
-            {
-                Timeout = TimeSpan.FromSeconds(5)
-            };
-            Client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
-            if (Head != null)
-            {
-                foreach (var item in Head)
-                {
-                    Client.DefaultRequestHeaders.Add(item.Key, item.Value);
-                }
-            }
+
         }
+
         public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
                     Dictionary<string, string> Head = null,
