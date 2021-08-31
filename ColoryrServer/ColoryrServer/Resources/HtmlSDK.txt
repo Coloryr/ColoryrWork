@@ -204,17 +204,11 @@ namespace ColoryrServer.SDK
         public CancellationTokenSource Cancel;
         private HttpClient Client;
 
-        public HttpHtml(CookieContainer Cookie = null,
-                    CancellationTokenSource Cancel = null,
-                    Dictionary<string, string> Head = null) : this(Cookie, Cancel, Head, null)
-        {
-
-        }
+        public WebProxy proxy { get; init; }
 
         public HttpHtml(CookieContainer Cookie = null,
                     CancellationTokenSource Cancel = null,
-                    Dictionary<string, string> Head = null,
-                    WebProxy proxy = null)
+                    Dictionary<string, string> Head = null)
         {
             this.Cancel = Cancel ?? new();
             Cookie ??= new();

@@ -108,6 +108,11 @@ namespace ColoryrServer.Http
                                 break;
                         }
                     }
+                    catch (HttpListenerException e)
+                    {
+                        if (e.ErrorCode == 64)
+                            continue;
+                    }
                     catch (Exception e)
                     {
                         if (isstream)
