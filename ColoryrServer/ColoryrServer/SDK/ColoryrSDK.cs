@@ -641,6 +641,10 @@ namespace ColoryrServer.SDK
                 var data = new Dictionary<string, object>(new RepeatDictionaryComparer());
                 foreach (var item in obj)
                 {
+                    if (item == null)
+                    {
+                        data.Add("null", "null");
+                    }
                     var name = item.GetType();
                     data.Add(name.Name, item);
                 }
