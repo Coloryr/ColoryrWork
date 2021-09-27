@@ -6,7 +6,7 @@ using ColoryrServer.Html;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
 using ColoryrServer.MQTT;
-using ColoryrServer.Pipe;
+//using ColoryrServer.Pipe;
 using ColoryrServer.Robot;
 using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
@@ -162,39 +162,39 @@ namespace ColoryrServer
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-                if (Config.Pipe.Enable)
-                {
-                    if (!Config.Pipe.ServerCore)
-                    {
-                        if (Config.Pipe.HttpServer)
-                        {
-                            HttpServer.StartPipe();
-                        }
-                        if (Config.Pipe.WebSocketServer)
-                        {
-                            ServerWebSocket.StartPipe();
-                        }
-                        if (Config.Pipe.IotServer)
-                        {
-                            IoTSocketServer.StartPipe();
-                        }
-                        if (Config.Pipe.MqttServer)
-                        {
-                            MQTTServer.StartPipe();
-                        }
-                    }
-                    else
-                    {
-                        RobotUtils.Start();
-                        DatabaseRun();
-                        //初始化动态编译
-                        GenCode.Start();
-                        DllStonge.Start();
-                        HtmlUtils.Start();
-                    }
-                }
-                else
-                {
+                //if (Config.Pipe.Enable)
+                //{
+                //    if (!Config.Pipe.ServerCore)
+                //    {
+                //        if (Config.Pipe.HttpServer)
+                //        {
+                //            HttpServer.StartPipe();
+                //        }
+                //        if (Config.Pipe.WebSocketServer)
+                //        {
+                //            ServerWebSocket.StartPipe();
+                //        }
+                //        if (Config.Pipe.IotServer)
+                //        {
+                //            IoTSocketServer.StartPipe();
+                //        }
+                //        if (Config.Pipe.MqttServer)
+                //        {
+                //            MQTTServer.StartPipe();
+                //        }
+                //    }
+                //    else
+                //    {
+                //        RobotUtils.Start();
+                //        DatabaseRun();
+                //        //初始化动态编译
+                //        GenCode.Start();
+                //        DllStonge.Start();
+                //        HtmlUtils.Start();
+                //    }
+                //}
+                //else
+                //{
                     MQTTServer.Start();
                     RobotUtils.Start();
                     DatabaseRun();
@@ -207,7 +207,7 @@ namespace ColoryrServer
                     HttpServer.Start();
                     IoTSocketServer.Start();
                     ServerWebSocket.Start();
-                }
+                //}
 
                 //等待初始化完成
                 Thread.Sleep(2000);
@@ -222,10 +222,10 @@ namespace ColoryrServer
         public static void Stop()
         {
             LogOut("正在关闭");
-            if (Config.Pipe.Enable)
-            {
-                PipeServer.Stop();
-            }
+            //if (Config.Pipe.Enable)
+            //{
+            //    PipeServer.Stop();
+            //}
             HttpServer.Stop();
             MysqlCon.Stop();
             MSCon.Stop();
