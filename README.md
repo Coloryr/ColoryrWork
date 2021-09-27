@@ -9,9 +9,9 @@ ColoryrServer
 ~~可以打开多管线，但是没测试过~~
 
 理论性能测试  
-- 测试机器：
+- 测试机器：  
 ![测试环境](./doc/pic3.png)
-测试环境：
+测试环境：  
 - 系统：Windows Server 2019
 - Net5：5.0.401
 - JAVA：JAVA14  
