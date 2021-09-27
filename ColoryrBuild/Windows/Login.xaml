@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrBuild.Windows"
         mc:Ignorable="d"
-        Title="ColoryrWork登录" Height="150" Width="260" ResizeMode="NoResize" Icon="/ColoryrWork.png" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+        Title="ColoryrWork登录" Height="150" Width="260" ResizeMode="NoResize" Icon="/ColoryrWork.png" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <Label Content="账户：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0"/>

@@ -114,7 +114,7 @@ namespace ColoryrBuild
                 var temp = await httpClient.PostAsync(App.Config.Http, Content);
                 var data = await temp.Content.ReadAsStringAsync();
                 ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
-                if (res.Build == true)
+                if (res?.Build == true)
                 {
                     return true;
                 }
@@ -315,10 +315,7 @@ namespace ColoryrBuild
                 ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
                 if (res.Build == true)
                 {
-                    if (App.Config.SaveToken)
-                    {
-                        App.Config.Token = res.Message;
-                    }
+                    App.Config.Token = res.Message;
                     App.LogShow("登录", "登录成功");
                     return true;
                 }

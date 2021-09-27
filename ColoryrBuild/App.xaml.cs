@@ -28,6 +28,7 @@ namespace ColoryrBuild
         public static MainWindow MainWindow_;
         public static ContrastWindow ContrastWindow_;
         public static LogWindow LogWindow_;
+        public static Login LoginWindow_;
 
         private static Dictionary<string, EditWindow> EditWindows = new();
         private static Logs Logs;
@@ -56,7 +57,10 @@ namespace ColoryrBuild
 
             while (!IsLogin)
             {
-                Login();
+                if (LoginWindow_ == null)
+                    LoginWindow_ = new Login();
+
+                LoginWindow_.ShowDialog();
             }
         }
 
@@ -74,7 +78,10 @@ namespace ColoryrBuild
         public static void Login()
         {
             IsLogin = false;
-            new Login().ShowDialog();
+            if (LoginWindow_ == null)
+                LoginWindow_ = new Login();
+
+            LoginWindow_.ShowDialog();
         }
 
         public static DiffPaneModel StartContrast(CSFileCode obj, string old)
