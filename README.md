@@ -32,3 +32,5 @@ ColoryrApp(在计划中)
 ColoryrBuild  
 框架编辑器
 
+![截图](./doc/pic6.png)
+![截图](./doc/pic7.png)
