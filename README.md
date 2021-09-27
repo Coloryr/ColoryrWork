@@ -10,18 +10,18 @@ ColoryrServer
 
 理论性能测试  
 - 测试机器：  
-![测试环境](./doc/pic3.png)
+![测试环境](./doc/pic3.png)  
 测试环境：  
 - 系统：Windows Server 2019
 - Net5：5.0.401
 - JAVA：JAVA14  
 简单的一个测试接口  
-![接口](./doc/pic1.png)
+![接口](./doc/pic1.png)  
 在postjson的压力测试下的性能  
-![结果](./doc/pic2.png)
+![结果](./doc/pic2.png)  
 在JMeter的压力测试下的性能  
-![配置](./doc/pic4.png)
-![结果](./doc/pic5.png)
+![配置](./doc/pic4.png)  
+![结果](./doc/pic5.png)  
 
 - 可以对接Mysql\Redis\MsSql\Oracle数据库
 - 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai) QQ机器人
