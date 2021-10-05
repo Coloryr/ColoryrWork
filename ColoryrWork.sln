@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuil
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.App", "Lib.App\Lib.App.shproj", "{870CB400-24DF-4510-9797-7B1965848BC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrServer.ASP", "ColoryrServer.ASP\ColoryrServer.ASP.csproj", "{EA55C632-D20E-40EB-87F9-06E97B3451FB}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
@@ -68,6 +70,14 @@ Global
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|x64.ActiveCfg = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|x64.Build.0 = Release|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA55C632-D20E-40EB-87F9-06E97B3451FB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
