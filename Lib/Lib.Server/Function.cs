@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Lib.Server
 {
-    class Function
+    public class Function
     {
         public static string GetSrings(string a, string b = null, string c = null, bool remove = false)
         {

@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer
 {
-    internal class ServerMain
+    public class ServerMain
     {
         /// <summary>
         /// 配置文件
@@ -40,7 +40,7 @@ namespace ColoryrServer
         /// <summary>
         /// 日志输出
         /// </summary>
-        private static Logs Logs;
+        public static Logs Logs;
 
         public static bool isGo { get; private set; } = false;
 
@@ -73,20 +73,6 @@ namespace ColoryrServer
             a = "[信息]" + a;
             Task.Run(() => Logs.LogWrite(a));
             Console.WriteLine(a);
-        }
-
-        private static void DatabaseRun()
-        {
-            //Mysql链接
-            MysqlCon.Start();
-            //MS链接
-            MSCon.Start();
-            //Redis链接
-            RedisCon.Start();
-            //Oracle链接
-            OracleCon.Start();
-            //内存数据库
-            RamDataBase.Start();
         }
 
         public static void Start()
@@ -124,20 +110,22 @@ namespace ColoryrServer
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;
 
+
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-                    MQTTServer.Start();
-                    RobotUtils.Start();
-                    DatabaseRun();
-                    //初始化动态编译
-                    GenCode.Start();
-                    DllStonge.Start();
-                    HtmlUtils.Start();
-                    FileHttpStream.Start();
-                    //服务器启动
-                    HttpServer.Start();
-                    IoTSocketServer.Start();
-                    ServerWebSocket.Start();
+                MQTTServer.Start();
+                RobotUtils.Start();
+                MysqlCon.Start();
+                MSCon.Start();
+                RedisCon.Start();
+                OracleCon.Start();
+                RamDataBase.Start();
+                GenCode.Start();
+                DllStonge.Start();
+                HtmlUtils.Start();
+                FileHttpStream.Start();
+                IoTSocketServer.Start();
+                ServerWebSocket.Start();
 
                 //等待初始化完成
                 Thread.Sleep(2000);
@@ -171,6 +159,8 @@ namespace ColoryrServer
         static void Main()
         {
             Start();
+
+            HttpServer.Start();
         }
     }
 }

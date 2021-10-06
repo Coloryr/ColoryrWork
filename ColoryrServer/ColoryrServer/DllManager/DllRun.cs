@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace ColoryrServer.DllManager
 {
-    internal class DllRun
+    public class DllRun
     {
         public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)
         {

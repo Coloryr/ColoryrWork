@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ColoryrServer.Utils
 {
-    class StreamUtils
+    public class StreamUtils
     {
         public static byte[] JsonOBJ(object obj, EncodeType encodeType = EncodeType.UTF8)
         {

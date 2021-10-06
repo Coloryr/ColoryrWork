@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ColoryrServer.Http
 {
-    internal record HttpReturn
+    public record HttpReturn
     {
         public Encoding Encoding = Encoding.UTF8;
         public string Cookie;

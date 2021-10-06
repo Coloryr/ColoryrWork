@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ColoryrServer.DllManager
 {
-    class AppDownload
+    public class AppDownload
     {
         public static HttpReturn Download(DownloadObj obj)
         {

@@ -55,13 +55,10 @@ namespace ColoryrBuild
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             LogShow("启动", "初始化");
 
-            while (!IsLogin)
-            {
-                if (LoginWindow_ == null)
-                    LoginWindow_ = new Login();
+            if (LoginWindow_ == null)
+                LoginWindow_ = new Login();
 
-                LoginWindow_.ShowDialog();
-            }
+            LoginWindow_.ShowDialog();
         }
 
         public static void Close()

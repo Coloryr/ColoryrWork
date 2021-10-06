@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 
 namespace ColoryrServer.Http
 {
-    class HttpGet
+    public class HttpGet
     {
         public static HttpReturn HttpGET(string Url, NameValueCollection Hashtable, NameValueCollection Data)
         {

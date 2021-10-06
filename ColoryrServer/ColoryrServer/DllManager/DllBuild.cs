@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace ColoryrServer.DllManager
 {
-    internal class DllBuild
+    public class DllBuild
     {
         private static readonly Dictionary<string, string> Token = new();
         public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)
