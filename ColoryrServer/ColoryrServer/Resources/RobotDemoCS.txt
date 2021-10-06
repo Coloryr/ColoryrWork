@@ -1,20 +1,17 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public void {RobotMessage}(RobotRequest head)
     {
-        public void {RobotMessage}(RobotRequest head)
-        {
              
-        }
-        public void {RobotSend}(RobotAfter head)
-        {
+    }
+    public void {RobotSend}(RobotAfter head)
+    {
              
-        }
-        public void {RobotEvent}(RobotEvent head)
-        {
+    }
+    public void {RobotEvent}(RobotEvent head)
+    {
             
-        }
     }
 }

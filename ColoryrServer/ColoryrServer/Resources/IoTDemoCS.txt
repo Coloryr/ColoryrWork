@@ -1,16 +1,13 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public void {IoTTcp}(TcpIoTRequest head)
     {
-        public void {IoTTcp}(TcpIoTRequest head)
-        {
                 
-        }
-        public void {IoTUdp}(UdpIoTRequest head)
-        {
+    }
+    public void {IoTUdp}(UdpIoTRequest head)
+    {
                 
-        }
     }
 }

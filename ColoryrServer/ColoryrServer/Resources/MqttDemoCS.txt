@@ -1,20 +1,17 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public void {MQTTMessage}(MqttMessage head)
     {
-        public void {MQTTMessage}(MqttMessage head)
-        {
              
-        }
-        public void {MQTTValidator}(MqttConnectionValidator head)
-        {
+    }
+    public void {MQTTValidator}(MqttConnectionValidator head)
+    {
              
-        }
-        public void {MQTTSubscription}(MqttSubscription head)
-        {
+    }
+    public void {MQTTSubscription}(MqttSubscription head)
+    {
             
-        }
     }
 }

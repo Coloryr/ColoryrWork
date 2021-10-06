@@ -1,17 +1,14 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public {name}()
     {
-        public {name}()
-        {
              
-        }
+    }
 
-        public string getString(string data)
-        {
-            return data + "test";
-        }
+    public string getString(string data)
+    {
+        return data + "test";
     }
 }

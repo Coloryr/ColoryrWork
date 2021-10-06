@@ -1,20 +1,17 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public void {WebSocketMessage}(WebSocketMessage head)
     {
-        public void {WebSocketMessage}(WebSocketMessage head)
-        {
              
-        }
-        public void {WebSocketOpen}(WebSocketOpen head)
-        {
+    }
+    public void {WebSocketOpen}(WebSocketOpen head)
+    {
              
-        }
-        public void {WebSocketClose}(WebSocketClose head)
-        {
+    }
+    public void {WebSocketClose}(WebSocketClose head)
+    {
             
-        }
     }
 }

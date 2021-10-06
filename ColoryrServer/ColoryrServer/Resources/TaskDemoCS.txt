@@ -1,12 +1,9 @@
 using ColoryrServer.SDK;
 
-namespace ColoryrServer
+public class {name}
 {
-    public class {name}
+    public void {TaskRun}(object[] args)
     {
-        public void {TaskRun}(object[] args)
-        {
              
-        }
     }
 }
