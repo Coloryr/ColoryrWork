@@ -8,7 +8,6 @@ namespace ColoryrServer.SDK
         public bool IsAvailable { get; init; }
         public IWebSocketConnectionInfo Info { get; init; }
         public string Data { get; init; }
-        private int Server { get; init; }
         /// <summary>
         /// WebSocket传来数据
         /// </summary>
@@ -20,23 +19,15 @@ namespace ColoryrServer.SDK
             Info = Client.ConnectionInfo;
             this.Data = Data;
         }
-        public WebSocketMessage(bool IsAvailable, IWebSocketConnectionInfo Info, string Data, int Server)
-        {
-            this.IsAvailable = IsAvailable;
-            this.Info = Info;
-            this.Data = Data;
-            this.Server = Server;
-        }
         public void Send(string data)
-            => ServerWebSocket.Send(Info.ClientPort, data, Server);
+            => ServerWebSocket.Send(Info.ClientPort, data);
         public void Send(byte[] data)
-            => ServerWebSocket.Send(Info.ClientPort, data, Server);
+            => ServerWebSocket.Send(Info.ClientPort, data);
         public void Close()
-            => ServerWebSocket.Close(Info.ClientPort, Server);
+            => ServerWebSocket.Close(Info.ClientPort);
     }
     public class WebSocketOpen
     {
-        private int Server { get; init; }
         public bool IsAvailable { get; init; }
         public IWebSocketConnectionInfo Info { get; init; }
         /// <summary>
@@ -48,18 +39,17 @@ namespace ColoryrServer.SDK
             IsAvailable = Client.IsAvailable;
             Info = Client.ConnectionInfo;
         }
-        public WebSocketOpen(bool IsAvailable, IWebSocketConnectionInfo Info, int Server)
+        public WebSocketOpen(bool IsAvailable, IWebSocketConnectionInfo Info)
         {
             this.IsAvailable = IsAvailable;
             this.Info = Info;
-            this.Server = Server;
         }
         public void Send(string data)
-            => ServerWebSocket.Send(Info.ClientPort, data, Server);
+            => ServerWebSocket.Send(Info.ClientPort, data);
         public void Send(byte[] data)
-            => ServerWebSocket.Send(Info.ClientPort, data, Server);
+            => ServerWebSocket.Send(Info.ClientPort, data);
         public void Close()
-            => ServerWebSocket.Close(Info.ClientPort, Server);
+            => ServerWebSocket.Close(Info.ClientPort);
     }
     public class WebSocketClose
     {

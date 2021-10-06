@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    internal class HtmlFileObj
+    public class HtmlFileObj
     {
         public byte[] Data { get; set; }
         public int Time { get; private set; }
@@ -25,7 +25,7 @@ namespace ColoryrServer.FileSystem
             Time--;
         }
     }
-    internal class HtmlUtils
+    public class HtmlUtils
     {
         private static readonly string HtmlLocal = ServerMain.RunLocal + @"Static/";
         private static readonly string HtmlCodeLocal = ServerMain.RunLocal + @"Codes/Static/";
@@ -35,9 +35,10 @@ namespace ColoryrServer.FileSystem
         private static readonly ConcurrentDictionary<string, Dictionary<string, HtmlFileObj>> HtmlFileList = new();
         public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
-        public static byte[] HtmlIndex { get; private set; }
+        private static Dictionary<string, byte[]> Index = new();
         public static byte[] HtmlIcon { get; private set; }
         public static byte[] Html404 { get; private set; }
+
         private static bool IsRun;
         private static readonly Thread Thread = new(TickTask);
         private static void TickTask()
@@ -82,7 +83,7 @@ namespace ColoryrServer.FileSystem
             {
                 if (string.IsNullOrWhiteSpace(uuid))
                 {
-                    return HtmlIndex;
+                    return Index["index.html"];
                 }
                 else if (uuid == "favicon.ico")
                 {
@@ -90,24 +91,19 @@ namespace ColoryrServer.FileSystem
                 }
                 else if (HtmlList.ContainsKey(uuid))
                 {
-                    if (!ServerMain.Config.Requset.EnableIndex)
-                    {
-                        return null;
-                    }
                     if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
                         return temp1;
                 }
+                else if (Index.TryGetValue(uuid, out var temp1))
+                {
+                    return temp1;
+                }
+                else
+                    return Html404;
             }
             else
             {
                 string name = temp[2];
-                if (name == "index.html")
-                {
-                    if (!ServerMain.Config.Requset.EnableIndex)
-                    {
-                        return null;
-                    }
-                }
                 int index = name.LastIndexOf(".");
                 string type = name[index..];
                 if (ServerMain.Config.Requset.Temp.Contains(type))
@@ -183,11 +179,16 @@ namespace ColoryrServer.FileSystem
                 File.WriteAllBytes(HtmlLocal + "favicon.ico", Function.ToByte(ColoryrServer_Resource.ColoryrWork));
             }
 
-            HtmlIndex = File.ReadAllBytes(HtmlLocal + "index.html");
+            var list = new DirectoryInfo(HtmlLocal).GetFiles();
+            foreach (var item in list)
+            {
+                Index.Add(item.Name, File.ReadAllBytes(item.FullName));
+            }
+
             Html404 = File.ReadAllBytes(HtmlLocal + "404.html");
             HtmlIcon = File.ReadAllBytes(HtmlLocal + "favicon.ico");
 
-            var list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
+            list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)
             {
                 try

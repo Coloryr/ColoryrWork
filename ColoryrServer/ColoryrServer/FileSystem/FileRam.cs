@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ColoryrServer.FileSystem
 {
-    internal class FileRam
+    public class FileRam
     {
         public static string Local;
 

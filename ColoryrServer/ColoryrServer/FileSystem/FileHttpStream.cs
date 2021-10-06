@@ -6,7 +6,7 @@ using System.IO;
 
 namespace ColoryrServer.FileSystem
 {
-    internal class FileHttpStream
+    public class FileHttpStream
     {
         private static readonly ConcurrentDictionary<string, Stream> CookieTemp = new();
         public static string Local;

@@ -1,6 +1,7 @@
-﻿using ColoryrServer.Pipe;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -10,7 +11,24 @@ namespace ColoryrServer.Http
 {
     class HttpWorker
     {
-        public static void Worker()
+        private Thread thread;
+        private ConcurrentStack<HttpListenerContext> list = new();
+        public HttpWorker(string name)
+        {
+            thread = new Thread(Worker)
+            { 
+            Name = name
+            };
+        }
+        public void Start()
+        {
+            thread.Start();
+        }
+        public void Add(HttpListenerContext context)
+        {
+            list.Push(context);
+        }
+        private void Worker()
         {
             while (!HttpServer.IsActive)
             {
@@ -18,7 +36,7 @@ namespace ColoryrServer.Http
             }
             while (HttpServer.IsActive)
             {
-                if (HttpServer.Queue.TryTake(out HttpListenerContext Context))
+                if (list.TryPop(out HttpListenerContext Context))
                 {
                     bool isstream = false;
                     try
@@ -121,75 +139,6 @@ namespace ColoryrServer.Http
                     }
                 }
                 Thread.Sleep(1);
-            }
-        }
-        public static void PipeWorker()
-        {
-            while (!HttpServer.IsActive)
-            {
-                Thread.Sleep(200);
-            }
-            while (HttpServer.IsActive)
-            {
-                if (HttpServer.Queue.TryTake(out HttpListenerContext Context))
-                {
-                    try
-                    {
-                        HttpListenerRequest Request = Context.Request;
-                        HttpListenerResponse Response = Context.Response;
-                        switch (Request.HttpMethod)
-                        {
-                            case "POST":
-                                StreamReader Reader = new(Context.Request.InputStream, Encoding.UTF8);
-                                MyContentType type;
-                                if (Context.Request.ContentType is ServerContentType.POSTXFORM)
-                                {
-                                    type = MyContentType.XFormData;
-                                }
-                                else if (Context.Request.ContentType is ServerContentType.POSTFORMDATA)
-                                {
-                                    type = MyContentType.MFormData;
-                                }
-                                else if (Context.Request.ContentType is ServerContentType.JSON)
-                                {
-                                    type = MyContentType.Json;
-                                }
-                                else
-                                {
-                                    Response.OutputStream.Write(Encoding.UTF8.GetBytes($"不支持{Context.Request.ContentType}"));
-                                    Response.OutputStream.Flush();
-                                    Response.StatusCode = 400;
-                                    Response.Close();
-                                    break;
-                                }
-                                dynamic httpReturn = HttpPost.PipeHttpPOST(Reader, Request.RawUrl, Request.Headers, type);
-                                if (httpReturn is HttpReturn)
-                                {
-                                    Response.ContentType = httpReturn.ContentType;
-                                    Response.ContentEncoding = httpReturn.Encoding;
-                                    Response.OutputStream.Write(httpReturn.Data);
-                                    Response.OutputStream.Flush();
-                                    Response.StatusCode = httpReturn.ReCode;
-                                    Response.Close();
-                                    break;
-                                }
-                                else
-                                {
-                                    PipeClient.Http(httpReturn, Response);
-                                }
-                                break;
-                            case "GET":
-                                httpReturn = HttpGet.PipeHttpGET(Request.RawUrl, Request.Headers, Request.QueryString);
-                                PipeClient.Http(httpReturn, Response);
-                                break;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        ServerMain.LogError(e);
-                    }
-                }
-                Thread.Sleep(TimeSpan.FromTicks(100));
             }
         }
     }

@@ -21,7 +21,7 @@
         </section>
     </div>
 </body>
-<script src="../{web}/{name}/js.js"></script>
+<script src="../{name}/js.js"></script>
 <script>
     start();
 </script>

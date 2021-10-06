@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.DllManager;
-using ColoryrServer.Pipe;
 using ColoryrServer.SDK;
 using Lib.IoT;
 using System;
@@ -63,27 +62,7 @@ namespace ColoryrServer.IoT
                 DllRun.IoTGo(new TcpIoTRequest(Port, Data, 0));
             });
         }
-        public static void PipeReadTcpPack(int Port, byte[] Data)
-        {
-            int a = 0;
-            for (; a < 5; a++)
-            {
-                if (Data[a] != IoTPack.ReadPack[a])
-                    return;
-            }
-            var Data1 = new byte[Data.Length - 1];
-            Data.CopyTo(Data, 5);
 
-            Task.Run(() =>
-            {
-                PipeClient.IoT(Port, new PipeIoTData
-                {
-                    Port = Port,
-                    IsTcp = true,
-                    Data = Convert.ToBase64String(Data)
-                });
-            });
-        }
         public static void ReadUdpPack(int Port, byte[] Data)
         {
             int a = 0;
@@ -97,26 +76,6 @@ namespace ColoryrServer.IoT
             Task.Run(() =>
             {
                 DllRun.IoTGo(new UdpIoTRequest(Port, Data, 0));
-            });
-        }
-
-        public static void PipeReadUdpPack(int Port, byte[] Data)
-        {
-            int a = 0;
-            for (; a < 5; a++)
-            {
-                if (Data[a] != IoTPack.ReadPack[a])
-                    return;
-            }
-            var Data1 = new byte[Data.Length - 1];
-            Data.CopyTo(Data, 5);
-
-            Task.Run(() =>
-            {
-                PipeClient.IoT(Port, new PipeIoTData
-                {
-                    Data = Convert.ToBase64String(Data)
-                });
             });
         }
     }

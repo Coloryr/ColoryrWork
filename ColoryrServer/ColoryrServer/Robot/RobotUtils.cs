@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.Robot
 {
-    internal class RobotUtils
+    public class RobotUtils
     {
         private static Robot robot = new();
         private static void Message(byte type, string data)
@@ -58,7 +58,7 @@ namespace ColoryrServer.Robot
             ServerMain.LogOut($"机器人:{type}");
         }
 
-        internal static void Start()
+        public static void Start()
         {
             RobotConfig config = new()
             {
@@ -176,7 +176,7 @@ namespace ColoryrServer.Robot
             }, 78);
             robot.AddTask(data);
         }
-        internal static void Stop()
+        public static void Stop()
         {
             ServerMain.LogOut("机器人正在断开");
             robot.Stop();

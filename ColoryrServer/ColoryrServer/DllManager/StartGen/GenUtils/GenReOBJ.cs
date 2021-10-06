@@ -2,7 +2,7 @@
 
 namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
-    internal record GenReOBJ
+    public record GenReOBJ
     {
         public bool Isok { get; set; }
         public string Res { get; set; }

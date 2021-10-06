@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    internal class NoteFile
+    public class NoteFile
     {
         private static readonly string DllFileLocal = ServerMain.RunLocal + @"Notes/Dll/";
         private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Notes/Class/";

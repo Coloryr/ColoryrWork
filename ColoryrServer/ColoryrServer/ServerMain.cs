@@ -6,7 +6,6 @@ using ColoryrServer.Html;
 using ColoryrServer.Http;
 using ColoryrServer.IoT;
 using ColoryrServer.MQTT;
-//using ColoryrServer.Pipe;
 using ColoryrServer.Robot;
 using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
@@ -28,41 +27,6 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer
 {
-    public class TestRun
-    {
-        public static void Start()
-        {
-            StackTrace st = new(true);
-            StackFrame[] sfs = st.GetFrames();
-            for (int i = 1; i < sfs.Length; ++i)
-            {
-                StackFrame item = sfs[i];
-                var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program"
-                    && item1.Module.Name is "ColoryrServer.RunTest.dll"
-                    && item1.Name is "Main")
-                {
-                    ServerMain.Start();
-                }
-            }
-        }
-        public static void Stop()
-        {
-            StackTrace st = new(true);
-            StackFrame[] sfs = st.GetFrames();
-            for (int i = 1; i < sfs.Length; ++i)
-            {
-                StackFrame item = sfs[i];
-                var item1 = item.GetMethod();
-                if (item1.DeclaringType.FullName is "ColoryrServer.RunTest.Program"
-                    && item1.Module.Name is "ColoryrServer.RunTest.dll"
-                    && item1.Name is "Main")
-                {
-                    ServerMain.Stop();
-                }
-            }
-        }
-    }
     internal class ServerMain
     {
         /// <summary>
@@ -162,39 +126,6 @@ namespace ColoryrServer
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-                //if (Config.Pipe.Enable)
-                //{
-                //    if (!Config.Pipe.ServerCore)
-                //    {
-                //        if (Config.Pipe.HttpServer)
-                //        {
-                //            HttpServer.StartPipe();
-                //        }
-                //        if (Config.Pipe.WebSocketServer)
-                //        {
-                //            ServerWebSocket.StartPipe();
-                //        }
-                //        if (Config.Pipe.IotServer)
-                //        {
-                //            IoTSocketServer.StartPipe();
-                //        }
-                //        if (Config.Pipe.MqttServer)
-                //        {
-                //            MQTTServer.StartPipe();
-                //        }
-                //    }
-                //    else
-                //    {
-                //        RobotUtils.Start();
-                //        DatabaseRun();
-                //        //初始化动态编译
-                //        GenCode.Start();
-                //        DllStonge.Start();
-                //        HtmlUtils.Start();
-                //    }
-                //}
-                //else
-                //{
                     MQTTServer.Start();
                     RobotUtils.Start();
                     DatabaseRun();
@@ -207,7 +138,6 @@ namespace ColoryrServer
                     HttpServer.Start();
                     IoTSocketServer.Start();
                     ServerWebSocket.Start();
-                //}
 
                 //等待初始化完成
                 Thread.Sleep(2000);
@@ -222,10 +152,6 @@ namespace ColoryrServer
         public static void Stop()
         {
             LogOut("正在关闭");
-            //if (Config.Pipe.Enable)
-            //{
-            //    PipeServer.Stop();
-            //}
             HttpServer.Stop();
             MysqlCon.Stop();
             MSCon.Stop();
@@ -244,77 +170,7 @@ namespace ColoryrServer
 
         static void Main()
         {
-            try
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    ServiceBase.Run(new ColoryrServer());
-                }
-                else
-                {
-                    Start();
-                }
-                Thread.Sleep(2000);
-            }
-            catch
-            {
-
-            }
-            if (isGo == false)
-            {
-                using Process myPro = new();
-                myPro.StartInfo.FileName = "cmd.exe";
-                myPro.StartInfo.UseShellExecute = false;
-                myPro.StartInfo.RedirectStandardInput = true;
-                myPro.StartInfo.RedirectStandardOutput = true;
-                myPro.StartInfo.RedirectStandardError = true;
-                myPro.StartInfo.CreateNoWindow = true;
-                myPro.Start();
-                string str = "sc create BuildServer binPath= \"" + AppDomain.CurrentDomain.BaseDirectory + "BuildServer.exe\"";
-
-                myPro.StandardInput.WriteLine(str);
-                myPro.StandardInput.WriteLine("exit");
-                myPro.StandardInput.AutoFlush = true;
-                string output = myPro.StandardOutput.ReadToEnd();
-                Console.WriteLine(output);
-                myPro.WaitForExit();
-                if (output.Contains("失败"))
-                {
-                    if (output.Contains("拒绝访问"))
-                    {
-                        Console.WriteLine("请用管理员启动");
-                        Console.Read();
-                        return;
-                    }
-                    else
-                    {
-                        if (output.Contains("指定的服务已存在"))
-                        {
-                            myPro.Start();
-                            myPro.StandardInput.WriteLine("sc stop BuildServer");
-                            myPro.StandardInput.WriteLine("sc delete BuildServer");
-                            myPro.StandardInput.WriteLine(str);
-                            myPro.StandardInput.WriteLine("exit");
-                            output = myPro.StandardOutput.ReadToEnd();
-                            Console.WriteLine(output);
-                            if (output.Contains("失败") && !output.Contains("成功"))
-                            {
-                                Console.WriteLine("服务安装失败");
-                                return;
-                            }
-                        }
-                    }
-                }
-                Console.WriteLine("服务已安装");
-                myPro.Start();
-                myPro.StandardInput.WriteLine("sc start BuildServer");
-                myPro.StandardInput.WriteLine("exit");
-                myPro.WaitForExit();
-                Console.WriteLine(myPro.StandardOutput.ReadToEnd());
-                Console.WriteLine("服务已启动");
-                Console.WriteLine("按任意键退出");
-                Console.Read();
-            }
+            Start();
         }
     }
 }

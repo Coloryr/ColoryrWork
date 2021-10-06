@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
-using ColoryrServer.Pipe;
 using ColoryrServer.SDK;
 using ColoryrServer.Utils;
 using HttpMultipartParser;
@@ -196,152 +195,55 @@ namespace ColoryrServer.Http
                     break;
             }
 
-            string UUID = "0";
-            string FunctionName = null;
-            Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
-            int thr = Url.IndexOf('?', 0);
-            if (Function.Constr(Url, '/') >= 2)
+            if (Url.StartsWith(ServerMain.Config.Requset.WebAPI))
             {
-                int tow = Url.IndexOf('/', 2);
-                if (thr == -1)
+                string UUID = "0";
+                string FunctionName = null;
+                Url = Url.Substring(ServerMain.Config.Requset.WebAPI.Length);
+                int thr = Url.IndexOf('?', 0);
+                if (Function.Constr(Url, '/') >= 2)
                 {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..].Remove(0, 1);
-                }
-                else if (tow < thr)
-                {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..thr];
+                    int tow = Url.IndexOf('/', 2);
+                    if (thr == -1)
+                    {
+                        UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                        FunctionName = Url[tow..].Remove(0, 1);
+                    }
+                    else if (tow < thr)
+                    {
+                        UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
+                        FunctionName = Url[tow..thr];
+                    }
+                    else
+                    {
+                        UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                    }
                 }
                 else
                 {
-                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                    if (thr != -1)
+                        UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
+                    else
+                        UUID = Function.GetSrings(Url, "/").Remove(0, 1);
                 }
-            }
-            else
-            {
-                if (thr != -1)
-                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
-                else
-                    UUID = Function.GetSrings(Url, "/").Remove(0, 1);
+
+                var Dll = DllStonge.GetDll(UUID);
+                if (Dll != null)
+                {
+                    var Http = new HttpRequest
+                    {
+                        Cookie = HttpUtils.HaveCookie(Hashtable),
+                        Parameter = Temp,
+                        RowRequest = Hashtable,
+                        ContentType = type,
+                        Stream = type == MyContentType.Other ? stream : null
+                    };
+                    var Data = DllRun.DllGo(Dll, Http, FunctionName);
+                    return Data;
+                }
             }
 
-            var Dll = DllStonge.GetDll(UUID);
-            if (Dll != null)
-            {
-                var Http = new HttpRequest
-                {
-                    Cookie = HttpUtils.HaveCookie(Hashtable),
-                    Parameter = Temp,
-                    RowRequest = Hashtable,
-                    ContentType = type,
-                    Stream = type == MyContentType.Other ? stream : null
-                };
-                var Data = DllRun.DllGo(Dll, Http, FunctionName);
-                return Data;
-            }
-            return new HttpReturn
-            {
-                Data = HtmlUtils.Html404,
-                ContentType = ServerContentType.HTML,
-                ReCode = 200
-            };
-        }
-
-        public static dynamic PipeHttpPOST(StreamReader streamReader, string Url, NameValueCollection Hashtable, MyContentType type)
-        {
-            var Temp = new Dictionary<string, dynamic>();
-            switch (type)
-            {
-                case MyContentType.Json:
-                    string Str = streamReader.ReadToEnd();
-                    try
-                    {
-                        JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                        if (Hashtable[APPKV.APPK] == APPKV.APPV)
-                        {
-                            var Json = obj.ToObject<DownloadObj>();
-                            return AppDownload.Download(Json);
-                        }
-                        else
-                        {
-                            foreach (var item in obj)
-                            {
-                                Temp.Add(item.Key, item.Value);
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        ServerMain.LogError(e);
-                        return new HttpReturn
-                        {
-                            Data = StreamUtils.JsonOBJ(new GetMeesage
-                            {
-                                Res = 123,
-                                Text = "Json解析发生错误",
-                                Data = e
-                            })
-                        };
-                    }
-                    break;
-                case MyContentType.XFormData:
-                    Str = streamReader.ReadToEnd();
-                    foreach (string Item in Str.Split('&'))
-                    {
-                        if (Item.Contains("="))
-                        {
-                            string[] KV = Item.Split('=');
-                            Temp.Add(KV[0], KV[1]);
-                        }
-                    }
-                    break;
-            }
-
-            string UUID = "0";
-            string FunctionName = null;
-            Url = Url.Substring(ServerMain.Config.Requset.Back.Length);
-            int thr = Url.IndexOf('?', 0);
-            if (Function.Constr(Url, '/') >= 2)
-            {
-                int tow = Url.IndexOf('/', 2);
-                if (thr == -1)
-                {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..].Remove(0, 1);
-                }
-                else if (tow < thr)
-                {
-                    UUID = Function.GetSrings(Url, "/", "/").Remove(0, 1);
-                    FunctionName = Url[tow..thr];
-                }
-                else
-                {
-                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
-                }
-            }
-            else
-            {
-                if (thr != -1)
-                    UUID = Function.GetSrings(Url, "/", "?").Remove(0, 1);
-                else
-                    UUID = Function.GetSrings(Url, "/").Remove(0, 1);
-            }
-            return new PipeHttpData
-            {
-                Request = new HttpRequest
-                {
-                    Cookie = HttpUtils.HaveCookie(Hashtable),
-                    Parameter = Temp,
-                    RowRequest = Hashtable,
-                    ContentType = type,
-                    Stream = type == MyContentType.Other ? streamReader.BaseStream : null
-                },
-                FunctionName = FunctionName,
-                UUID = UUID,
-                UID = Guid.NewGuid().ToString().Replace("-", ""),
-                Url = Url
-            };
+            return HttpStatic.Get(Url);
         }
     }
 }

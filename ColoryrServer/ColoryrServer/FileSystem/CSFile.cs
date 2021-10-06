@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    internal record MAP
+    public record MAP
     {
         public List<CSFileObj> DllList { get; set; }
         public List<CSFileObj> ClassList { get; set; }
@@ -22,7 +22,7 @@ namespace ColoryrServer.FileSystem
         public List<CSFileObj> TaskList { get; set; }
         public List<AppFileObj> AppList { get; set; }
     }
-    internal class CSFile
+    public class CSFile
     {
         private static readonly string DllFileLocal = ServerMain.RunLocal + @"Codes/Dll/";
         private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Codes/Class/";

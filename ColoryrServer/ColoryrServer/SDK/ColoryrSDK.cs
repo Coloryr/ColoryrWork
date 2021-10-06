@@ -70,7 +70,7 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的byte</returns>
         public static byte[] MD5_R(string data)
         {
-            using MD5 md5 = new MD5CryptoServiceProvider();
+            using MD5 md5 = System.Security.Cryptography.MD5.Create();
             byte[] buffer = Encoding.Default.GetBytes(data);
             return md5.ComputeHash(buffer);
         }
@@ -100,7 +100,7 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的数据</returns>
         public static string SHA1(string data)
         {
-            using var sha1 = new SHA1CryptoServiceProvider();
+            using var sha1 = System.Security.Cryptography.SHA1.Create();
             byte[] str01 = Encoding.Default.GetBytes(data);
             byte[] str02 = sha1.ComputeHash(str01);
             return BitConverter.ToString(str02).Replace("-", "");
@@ -142,13 +142,11 @@ namespace ColoryrServer.SDK
         {
             try
             {
-                using var rDel = new RijndaelManaged
-                {
-                    Key = key,
-                    IV = iv,
-                    Mode = CipherMode.CBC,
-                    Padding = PaddingMode.PKCS7
-                };
+                using var rDel = Aes.Create();
+                rDel.Key = key;
+                rDel.IV = iv;
+                rDel.Mode = CipherMode.CBC;
+                rDel.Padding = PaddingMode.PKCS7;
 
                 using var cTransform = rDel.CreateEncryptor();
                 byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
@@ -197,16 +195,14 @@ namespace ColoryrServer.SDK
         {
             try
             {
-                using var rDel = new RijndaelManaged
-                {
-                    BlockSize = 128,
-                    KeySize = 256,
-                    FeedbackSize = 128,
-                    Padding = PaddingMode.PKCS7,
-                    Mode = CipherMode.CBC,
-                    Key = key,
-                    IV = iv
-                };
+                using var rDel = Aes.Create();
+                rDel.BlockSize = 128;
+                rDel.KeySize = 256;
+                rDel.FeedbackSize = 128;
+                rDel.Padding = PaddingMode.PKCS7;
+                rDel.Mode = CipherMode.CBC;
+                rDel.Key = key;
+                rDel.IV = iv;
 
                 using var cTransform = rDel.CreateEncryptor();
                 byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
@@ -263,13 +259,11 @@ namespace ColoryrServer.SDK
         }
         public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
         {
-            using var rijalg = new RijndaelManaged
-            {
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC,
-                Key = key,
-                IV = iv
-            };
+            using var rijalg = Aes.Create();
+            rijalg.Padding = PaddingMode.PKCS7;
+            rijalg.Mode = CipherMode.CBC;
+            rijalg.Key = key;
+            rijalg.IV = iv;
 
             using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
@@ -319,16 +313,14 @@ namespace ColoryrServer.SDK
         }
         public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
         {
-            using var rijalg = new RijndaelManaged
-            {
-                BlockSize = 128,
-                KeySize = 256,
-                FeedbackSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC,
-                Key = key,
-                IV = iv
-            };
+            using var rijalg = Aes.Create();
+            rijalg.BlockSize = 128;
+            rijalg.KeySize = 256;
+            rijalg.FeedbackSize = 128;
+            rijalg.Padding = PaddingMode.PKCS7;
+            rijalg.Mode = CipherMode.CBC;
+            rijalg.Key = key;
+            rijalg.IV = iv;
 
             using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 

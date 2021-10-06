@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.FileSystem
 {
-    internal record MainConfig
+    public record MainConfig
     {
         /// <summary>
         /// Http处理线程
@@ -54,10 +54,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public List<string> NotInclude { get; set; }
         /// <summary>
-        /// 分离管道设置
-        /// </summary>
-        public Pipe Pipe { get; set; }
-        /// <summary>
         /// MQTT配置
         /// </summary>
         public MQTTConfig MQTTConfig { get; set; }
@@ -82,21 +78,17 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public AESConfig AES { get; set; }
     }
-    internal record AESConfig
+    public record AESConfig
     {
         public string Key { get; set; }
         public string IV { get; set; }
     }
-    internal record RequsetChoose
+    public record RequsetChoose
     {
-        /// <summary>
-        /// 前端
-        /// </summary>
-        public string Web { get; set; }
         /// <summary>
         /// 后端
         /// </summary>
-        public string Back { get; set; }
+        public string WebAPI { get; set; }
         /// <summary>
         /// 放进缓存的文件类型
         /// </summary>
@@ -105,19 +97,15 @@ namespace ColoryrServer.FileSystem
         /// 缓存保留时间
         /// </summary>
         public int TempTime { get; set; }
-        /// <summary>
-        /// 启用主页
-        /// </summary>
-        public bool EnableIndex { get; set; }
     }
-    internal record MQTTConfig
+    public record MQTTConfig
     {
         /// <summary>
         /// 端口
         /// </summary>
         public int Port { get; set; }
     }
-    internal record TaskUtilConfig
+    public record TaskUtilConfig
     {
         /// <summary>
         /// 线程数量
@@ -128,7 +116,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int MaxTime { get; set; }
     }
-    internal record OracleConfig
+    public record OracleConfig
     {
         /// <summary>
         /// 启用
@@ -163,7 +151,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    internal record UserConfig
+    public record UserConfig
     {
         /// <summary>
         /// 用户名
@@ -174,7 +162,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Password { get; set; }
     }
-    internal record SocketConfig
+    public record SocketConfig
     {
         /// <summary>
         /// socket设置的IP
@@ -185,10 +173,10 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int Port { get; set; }
     }
-    internal record HttpConfig : SocketConfig
+    public record HttpConfig : SocketConfig
     {
     }
-    internal record MysqlConfig
+    public record MysqlConfig
     {
         /// <summary>
         /// 启用
@@ -223,7 +211,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    internal record MSsqlConfig
+    public record MSsqlConfig
     {
         /// <summary>
         /// <summary>
@@ -255,7 +243,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    internal record RedisConfig
+    public record RedisConfig
     {
         /// <summary>
         /// 启用
@@ -282,38 +270,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Conn { get; set; }
     }
-    internal record Pipe
-    {
-        /// <summary>
-        /// 管道端口
-        /// </summary>
-        public SocketConfig Socket { get; set; }
-        /// <summary>
-        /// 启用管道
-        /// </summary>
-        public bool Enable { get; set; }
-        /// <summary>
-        /// 服务器核心
-        /// </summary>
-        public bool ServerCore { get; set; }
-        /// <summary>
-        /// Http服务器
-        /// </summary>
-        public bool HttpServer { get; set; }
-        /// <summary>
-        /// WebSocket服务器
-        /// </summary>
-        public bool WebSocketServer { get; set; }
-        /// <summary>
-        /// Iot服务器
-        /// </summary>
-        public bool IotServer { get; set; }
-        /// <summary>
-        /// Mqtt服务器
-        /// </summary>
-        public bool MqttServer { get; set; }
-    }
-    internal class ConfigUtil
+    public class ConfigUtil
     {
         public static string FilePath = ServerMain.RunLocal + @"MainConfig.json";
         /// <summary>
@@ -407,20 +364,6 @@ namespace ColoryrServer.FileSystem
                         Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
                     }
                 },
-                Pipe = new()
-                {
-                    Enable = false,
-                    ServerCore = true,
-                    HttpServer = false,
-                    IotServer = false,
-                    WebSocketServer = false,
-                    MqttServer = false,
-                    Socket = new()
-                    {
-                        IP = "127.0.0.1",
-                        Port = 23334
-                    }
-                },
                 User = new()
                 {
                     new()
@@ -440,8 +383,7 @@ namespace ColoryrServer.FileSystem
                 },
                 Requset = new()
                 {
-                    Web = "/Web",
-                    Back = "/Back",
+                    WebAPI = "/WebAPI",
                     Temp = new()
                     {
                         ".jpg",
@@ -451,7 +393,6 @@ namespace ColoryrServer.FileSystem
                         ".gif"
                     },
                     TempTime = 1800,
-                    EnableIndex = true
                 },
                 HttpClientNumber = 100,
                 AES = new()

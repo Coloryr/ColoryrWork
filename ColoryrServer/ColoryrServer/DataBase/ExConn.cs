@@ -8,21 +8,21 @@ namespace ColoryrServer.DataBase
     /// <summary>
     /// 状态
     /// </summary>
-    internal enum ConnState
+    public enum ConnState
     {
         Ok, Error, Restart, Open, Close, Stop
     }
     /// <summary>
     /// 存储类型
     /// </summary>
-    internal enum ConnType
+    public enum ConnType
     {
         Mysql, Ms, Oracle, Redis
     }
     /// <summary>
     /// 数据库连接存储
     /// </summary>
-    internal record ExConn
+    public record ExConn
     {
         public int id;
         public int Index;

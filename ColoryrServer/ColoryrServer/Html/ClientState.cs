@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Html
 {
-    enum ClientState
+    public enum ClientState
     {
         Ready, Using, Close
     }

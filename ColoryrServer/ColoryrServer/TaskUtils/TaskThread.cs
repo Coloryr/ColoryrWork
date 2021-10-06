@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.TaskUtils
 {
-    internal class TaskThread
+    public class TaskThread
     {
         private static Thread[] Threads;
         private static bool IsRun;

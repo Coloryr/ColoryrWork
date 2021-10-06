@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
-    internal class OracleCon
+    public class OracleCon
     {
         /// <summary>
         /// 连接状态

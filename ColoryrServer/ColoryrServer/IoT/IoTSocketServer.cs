@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Pipe;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.IoT
 {
-    internal class IoTSocketServer
+    public class IoTSocketServer
     {
         private static TcpListener TcpServer;
         private static Socket UdpServer;
@@ -242,11 +241,7 @@ namespace ColoryrServer.IoT
 
         public static void TcpSendData(int port, byte[] data, int Server)
         {
-            if (IsPipe)
-            {
-                PipeServer.IoTSend(port, Server, data);
-            }
-            else if (TcpClients.TryGetValue(port, out var socket))
+            if (TcpClients.TryGetValue(port, out var socket))
             {
                 if (socket.Connected)
                 {
@@ -259,59 +254,9 @@ namespace ColoryrServer.IoT
                 }
             }
         }
-
-        internal static void StartPipe()
-        {
-            try
-            {
-                ServerMain.LogOut("IoT服务器正在启动");
-                var ip = IPAddress.Parse(ServerMain.Config.IoT.IP);
-                TcpServer = new TcpListener(ip, ServerMain.Config.IoT.Port);
-                TcpServer.Start();
-
-                UdpServer = new Socket(SocketType.Dgram, ProtocolType.Udp);
-                UdpServer.Bind(new IPEndPoint(ip, ServerMain.Config.IoT.Port));
-
-                RunFlag = true;
-
-                Task.Run(async () =>
-                {
-                    while (RunFlag)
-                    {
-                        var socket = await TcpServer.AcceptSocketAsync();
-                        ThreadPool.UnsafeQueueUserWorkItem(PipeOnConnectRequest, socket);
-                    }
-                });
-                Task.Run(() =>
-                {
-                    while (RunFlag)
-                    {
-                        EndPoint point = new IPEndPoint(IPAddress.Any, 0);//用来保存发送方的ip和端口号
-                        byte[] buffer = new byte[2048];
-                        int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
-                        if (point is IPEndPoint temp)
-                        {
-                            UdpClients.Add(temp.Port, temp);
-                            IoTPackDo.PipeReadUdpPack(temp.Port, buffer);
-                        }
-                    }
-                });
-                ServerMain.LogOut("IoT服务器已启动");
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogOut("IoT服务器启动失败");
-                ServerMain.LogError(e);
-            }
-        }
-
         public static void UdpSendData(int port, byte[] data, int Server)
         {
-            if (IsPipe)
-            {
-                PipeServer.UdpSend(port, Server, data);
-            }
-            else if (UdpClients.TryGetValue(port, out var socket))
+            if (UdpClients.TryGetValue(port, out var socket))
             {
                 UdpServer.SendTo(data, socket);
             }

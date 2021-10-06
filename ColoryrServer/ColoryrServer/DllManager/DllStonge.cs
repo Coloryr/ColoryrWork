@@ -10,7 +10,7 @@ using System.Runtime.Loader;
 
 namespace ColoryrServer.DllManager
 {
-    internal class DllStonge
+    public class DllStonge
     {
         private static readonly ConcurrentDictionary<string, DllBuildSave> DllList = new();
         private static readonly ConcurrentDictionary<string, DllBuildSave> ClassList = new();

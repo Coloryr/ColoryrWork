@@ -61,17 +61,14 @@ namespace ColoryrBuild
             if (App.Config.AES)
             {
                 byte[] toEncryptArray = Encoding.UTF8.GetBytes(data);
-
-                using var rDel = new RijndaelManaged
-                {
-                    BlockSize = 128,
-                    KeySize = 256,
-                    FeedbackSize = 128,
-                    Padding = PaddingMode.PKCS7,
-                    Mode = CipherMode.CBC,
-                    Key = keyArray,
-                    IV = ivArray
-                };
+                using var rDel = Aes.Create();
+                rDel.BlockSize = 128;
+                rDel.KeySize = 256;
+                rDel.FeedbackSize = 128;
+                rDel.Padding = PaddingMode.PKCS7;
+                rDel.Mode = CipherMode.CBC;
+                rDel.Key = keyArray;
+                rDel.IV = ivArray;
 
                 using var cTransform = rDel.CreateEncryptor();
                 byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);

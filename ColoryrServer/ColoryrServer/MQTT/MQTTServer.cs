@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.MQTT
 {
-    class MQTTServer
+    public class MQTTServer
     {
         private static IMqttServer MqttServer;
         public static async void Start()

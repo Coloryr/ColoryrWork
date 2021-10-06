@@ -2,7 +2,7 @@
 
 namespace ColoryrServer.FileSystem
 {
-    internal class APIFile
+    public class APIFile
     {
         public static APIFileObj list;
         public static void Start()

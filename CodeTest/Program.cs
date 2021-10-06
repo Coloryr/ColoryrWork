@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Net;
 
+void test() { }
+
 Dictionary<string, string> cookies = new();
 
 CookieContainer cookie1 = new();

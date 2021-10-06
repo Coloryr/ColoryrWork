@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ColoryrServer.DataBase
 {
-    internal class RamDataBase
+    public class RamDataBase
     {
         internal static bool State;
         /// <summary>
@@ -19,7 +19,7 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 初始化缓存
         /// </summary>
-        internal static void Start()
+        public static void Start()
         {
             RamCache = new();
             QueueSave = new();
@@ -51,7 +51,7 @@ namespace ColoryrServer.DataBase
             SaveThread.Start();
         }
 
-        internal static void Stop()
+        public static void Stop()
         {
             State = false;
             if (RamCache != null)

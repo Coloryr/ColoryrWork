@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Html
 {
-    class HttpClientUtils
+    public class HttpClientUtils
     {
         private static ExHttpClient[] Clients;
         private static int now = 0;

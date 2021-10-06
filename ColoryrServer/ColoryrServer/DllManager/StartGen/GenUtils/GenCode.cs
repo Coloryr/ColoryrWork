@@ -8,11 +8,11 @@ using System.IO;
 
 namespace ColoryrServer.DllManager.StartGen.GenUtils
 {
-    internal enum GenLib
+    public enum GenLib
     {
         Dll, App
     }
-    internal class GenCode
+    public class GenCode
     {
         public static readonly List<MetadataReference> References = new();
         public static readonly List<MetadataReference> AppReferences = new();
