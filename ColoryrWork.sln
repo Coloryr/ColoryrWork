@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer", "ColoryrServer\ColoryrServer\ColoryrServer.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer", "ColoryrServer\ColoryrServer.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.Server", "Lib\Lib.Server\Lib.Server.shproj", "{013195F8-CD93-4C2E-B3F8-D1706C16EEBB}"
 EndProject
