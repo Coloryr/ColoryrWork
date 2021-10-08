@@ -150,5 +150,16 @@ namespace ColoryrServer
             HtmlUtils.Stop();
             LogOut("已关闭");
         }
+
+        public static void Command(string command)
+        {
+            var arg = command.Split(' ');
+            switch (arg[0])
+            {
+                case "html":
+                    break;
+
+            }
+        }
     }
 }

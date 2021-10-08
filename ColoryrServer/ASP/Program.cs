@@ -10,9 +10,47 @@ using Lib.Server;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
+using System.Collections.Concurrent;
 
 namespace ColoryrServer.ASP
 {
+    class ColoryrLogger : ILogger
+    {
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            return null;
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return true;
+        }
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
+                            Exception exception, Func<TState, Exception, string> formatter)
+        {
+            if (logLevel is LogLevel.Warning or LogLevel.Error)
+                ServerMain.LogError($"{logLevel}-{eventId.Id} {formatter(state, exception)}");
+            else
+                ServerMain.LogOut($"{logLevel}-{eventId.Id} {formatter(state, exception)}");
+        }
+    }
+
+    class ColoryrLoggerProvider : ILoggerProvider
+    {
+        private readonly ConcurrentDictionary<string, ColoryrLogger> _loggers = new();
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            return _loggers.GetOrAdd(categoryName, name => new ColoryrLogger());
+        }
+
+        public void Dispose()
+        {
+            _loggers.Clear();
+        }
+    }
+
     internal class ASPServer
     {
         public static ASPConfig Config { get; set; }
@@ -22,6 +60,8 @@ namespace ColoryrServer.ASP
         public static void Main()
         {
             var builder = WebApplication.CreateBuilder();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddProvider(new ColoryrLoggerProvider());
             Web = builder.Build();
 
             ServerMain.ConfigUtil = new ASPConfigUtils();

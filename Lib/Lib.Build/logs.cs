@@ -14,7 +14,7 @@ namespace Lib.Build
         {
             this.RunLocal = RunLocal;
             if (!File.Exists(RunLocal + log))
-                File.Create(RunLocal + log);
+                File.Create(RunLocal + log).Close();
         }
 
         public void LogWrite(string a)

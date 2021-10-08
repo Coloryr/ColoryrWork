@@ -130,14 +130,9 @@ namespace ColoryrServer.FileSystem
                 }
                 else
                 {
-                    if (HtmlList.ContainsKey(uuid))
-                    {
-                        if (HtmlList[uuid].TryGetValue(name, out var temp1))
-                            return temp1;
-                    }
+                    if (HtmlList[uuid].TryGetValue(name, out var temp1))
+                        return temp1;
                 }
-                if (HtmlList[uuid].TryGetValue(name, out var temp1))
-                    return temp1;
             }
             return null;
         }
@@ -175,8 +170,8 @@ namespace ColoryrServer.FileSystem
                     HtmlIcon = File.ReadAllBytes(item.FullName);
                 else if (item.Name.ToLower() is "index.html")
                     HtmlIndex = File.ReadAllBytes(item.FullName);
-                else
-                    Index.Add(item.Name, File.ReadAllBytes(item.FullName));
+
+                Index.Add(item.Name, File.ReadAllBytes(item.FullName));
             }
 
             list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
@@ -390,6 +385,17 @@ Version:{obj.Version}
 
             obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", HtmlCodeList[obj.UUID]);
+        }
+
+        public static void Command(string command)
+        {
+            var arg = command.Split(' ');
+            switch (arg[0])
+            {
+                case "html":
+                    break;
+
+            }
         }
     }
 }
