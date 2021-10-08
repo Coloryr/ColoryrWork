@@ -30,9 +30,9 @@
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
     <PackageReference Include="YUICompressor.NET" Version="3.1.0" />
     <PackageReference Include="YUICompressor.NET.MSBuild" Version="3.0.0" />
   </ItemGroup>
