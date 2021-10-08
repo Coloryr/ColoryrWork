@@ -19,7 +19,7 @@ namespace ColoryrServer.NoASP
     {
         public override void Start()
         {
-            NoASP.Config = new NoASPConfig
+            ServerMain.Config = NoASP.Config= ConfigSave.Config(new NoASPConfig
             {
                 NoInput = false,
                 HttpThreadNumber = 200,
@@ -143,8 +143,7 @@ namespace ColoryrServer.NoASP
                     Key = "Key",
                     IV = "IV"
                 }
-            };
-            ServerMain.Config = ConfigSave.Config(NoASP.Config, FilePath);
+            }, FilePath);
         }
     }
 }

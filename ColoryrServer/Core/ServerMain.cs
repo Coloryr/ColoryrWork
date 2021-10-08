@@ -153,6 +153,8 @@ namespace ColoryrServer
 
         public static void Command(string command)
         {
+            if (command == null)
+                return;
             var arg = command.Split(' ');
             switch (arg[0])
             {

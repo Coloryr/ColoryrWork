@@ -5,15 +5,23 @@ namespace ColoryrServer.ASP
 {
     internal record ASPConfig : MainConfig
     {
-
+        public bool Ssl { get; set; }
+        public string SslLocal { get; set; }
+        public string SslPassword { get; set; }
+        public bool NoInput { get; set; }
     }
 
     public class ASPConfigUtils : ConfigUtil
     {
         public override void Start()
         {
-            ASPServer.Config = new ASPConfig
+            ServerMain.Config = ASPServer.Config = ConfigSave.Config(new ASPConfig
             {
+                Ssl = false,
+                SslLocal = "",
+                SslPassword = "",
+                NoInput = false,
+
                 NotInclude = new()
                 {
                     "sni.dll"
@@ -133,8 +141,7 @@ namespace ColoryrServer.ASP
                     Key = "Key",
                     IV = "IV"
                 }
-            };
-            ServerMain.Config = ConfigSave.Config(ASPServer.Config, FilePath);
+            }, FilePath);
         }
     }
 }

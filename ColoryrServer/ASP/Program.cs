@@ -11,6 +11,7 @@ using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 using System.Collections.Concurrent;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ColoryrServer.ASP
 {
@@ -57,18 +58,78 @@ namespace ColoryrServer.ASP
 
         private static WebApplication Web;
 
+        private const string https = "https";
+        private const string http = "http";
+
         public static void Main()
         {
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(new ColoryrLoggerProvider());
-            Web = builder.Build();
 
             ServerMain.ConfigUtil = new ASPConfigUtils();
             ServerMain.Start();
 
-            //Web.UseHttpsRedirection();
             //Web.UseRouting();
+
+            if (Config.Ssl)
+            {
+                builder.Services.AddCertificateForwarding(options =>
+                {
+                    options.CertificateHeader = "X-SSL-CERT";
+                    options.HeaderConverter = (headerValue) =>
+                    {
+                        X509Certificate2 clientCertificate = null;
+
+                        if (!string.IsNullOrWhiteSpace(headerValue))
+                        {
+                            byte[] bytes = StringToByteArray(headerValue);
+                            clientCertificate = new X509Certificate2(bytes);
+                        }
+
+                        return clientCertificate;
+                    };
+                });
+                ServerMain.LogOut("正在加载SSL证书");
+                if (File.Exists(Config.SslLocal))
+                {
+                    builder.WebHost.UseKestrel(options =>
+                    {
+                        options.ConfigureHttpsDefaults(i =>
+                        {
+                            try
+                            {
+                                i.ServerCertificate = new X509Certificate2(Config.SslLocal, Config.SslPassword);
+                            }
+                            catch (Exception e)
+                            {
+                                ServerMain.LogError(e);
+                            }
+                        });
+                    });
+                    
+                }
+                else
+                {
+                    ServerMain.LogError("SSL证书找不到");
+                }
+            }
+            foreach (var item in ServerMain.Config.Http)
+            {
+                builder.WebHost.UseUrls($"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/");
+                ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
+            }
+            bool Run = true;
+            if (!Config.NoInput)
+                new Thread(() =>
+                {
+                    while (Run)
+                    {
+                        ServerMain.Command(Console.ReadLine());
+                    }
+                }).Start();
+
+            Web = builder.Build();
 
             Web.MapGet("/", GetIndex);
             Web.MapGet("/{name}", GetWeb);
@@ -82,15 +143,9 @@ namespace ColoryrServer.ASP
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
 
-            foreach (var item in ServerMain.Config.Http)
-            {
-                Web.Urls.Add("http://" + item.IP + ":" +
-                item.Port + "/");
-                ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
-            }
-
             Web.Run();
 
+            Run = false;
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
         }
@@ -275,6 +330,18 @@ namespace ColoryrServer.ASP
                 Response.StatusCode = 206;
                 await httpReturn.Data1.CopyToAsync(Response.Body);
             }
+        }
+        private static byte[] StringToByteArray(string hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+
+            for (int i = 0; i < NumberChars; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            }
+
+            return bytes;
         }
     }
 }
