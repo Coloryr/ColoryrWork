@@ -27,60 +27,29 @@ namespace ColoryrServer.ASP
                 case MyContentType.Json:
                     try
                     {
-                        if (Hashtable[BuildKV.BuildK] == BuildKV.BuildV)
+                        MemoryStream memoryStream = new();
+                        var data = new byte[2000000];
+                        long la = Length;
+                        while (la > 0)
                         {
-                            MemoryStream memoryStream = new();
-                            var data = new byte[2000000];
-                            long la = Length;
-                            while (la > 0)
-                            {
-                                int a = await stream.ReadAsync(data);
-                                la -= a;
-                                memoryStream.Write(data, 0, a);
-                            }
-                            if (Hashtable[BuildKV.BuildK1] == "true")
-                            {
-                                var receivedData = DeCode.AES256(memoryStream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-                                Str = Encoding.UTF8.GetString(receivedData);
-                            }
-                            else
-                            {
-                                Str = Encoding.UTF8.GetString(memoryStream.ToArray());
-                            }
-                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                            var Json = obj.ToObject<BuildOBJ>();
-                            var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
-                            if (List.Any())
-                            {
-                                return DllBuild.StartBuild(Json, List.First());
-                            }
-                            else
-                            {
-                                return new HttpReturn
-                                {
-                                    Data = StreamUtils.JsonOBJ(new ReMessage
-                                    {
-                                        Build = false,
-                                        Message = "账户错误"
-                                    })
-                                };
-                            }
+                            int a = await stream.ReadAsync(data);
+                            la -= a;
+                            memoryStream.Write(data, 0, a);
                         }
-                        else if (Hashtable[APPKV.APPK] == APPKV.APPV)
+                        if (Hashtable[BuildKV.BuildK1] == "true")
                         {
-                            Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
-                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                            var Json = obj.ToObject<DownloadObj>();
-                            return AppDownload.Download(Json);
+                            var receivedData = DeCode.AES256(memoryStream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+                            Str = Encoding.UTF8.GetString(receivedData);
                         }
                         else
                         {
-                            Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
-                            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                            foreach (var item in obj)
-                            {
-                                Temp.Add(item.Key, item.Value);
-                            }
+                            Str = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        }
+                        Str = new StreamReader(stream, Encoding.UTF8).ReadToEnd();
+                        JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+                        foreach (var item in obj)
+                        {
+                            Temp.Add(item.Key, item.Value);
                         }
                     }
                     catch (Exception e)

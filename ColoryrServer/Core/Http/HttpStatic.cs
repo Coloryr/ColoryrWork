@@ -12,7 +12,13 @@ namespace ColoryrServer.Http
     {
         public static HttpReturn Get(string Url)
         {
-            var temp = HtmlUtils.GetFile(Url);
+            byte[] temp;
+            if (Url.IndexOf('.') == 1)
+                temp = HtmlUtils.GetFileByName(Url);
+            else
+            {
+                temp = HtmlUtils.GetFile(Url);
+            }
             if (temp != null)
             {
                 string type = ServerContentType.HTML;

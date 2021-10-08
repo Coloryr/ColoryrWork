@@ -85,8 +85,7 @@ namespace ColoryrServer.DllManager
             }
             return new HttpReturn
             {
-                Data = StreamUtils.StringOBJ("Key或UUID错误"),
-                ReCode = 400
+                Data = StreamUtils.StringOBJ("Key或UUID错误")
             };
         }
     }

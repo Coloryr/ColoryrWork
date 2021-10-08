@@ -77,6 +77,16 @@ namespace ColoryrServer.FileSystem
             return item;
         }
 
+        public static byte[] GetFileByName(string name)
+        {
+            if (Index.TryGetValue(name, out var temp1))
+            {
+                return temp1;
+            }
+            else
+                return null;
+        }
+
         public static byte[] GetFile(string local)
         {
             var temp = local.Split('/');
@@ -190,7 +200,7 @@ namespace ColoryrServer.FileSystem
                     HtmlIcon = File.ReadAllBytes(item.FullName);
                 else if (item.Name.ToLower() is "index.html")
                     HtmlIndex = File.ReadAllBytes(item.FullName);
-                else 
+                else
                     Index.Add(item.Name, File.ReadAllBytes(item.FullName));
             }
 
