@@ -1,3 +1,4 @@
+using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -22,7 +23,7 @@ namespace ColoryrServer.ASP
             //Web.UseHttpsRedirection();
             //Web.UseRouting();
 
-            Web.MapGet("/", Get);
+            Web.MapGet("/", GetIndex);
             Web.MapGet("/{name}", Get);
             Web.MapGet("/{uuid}/{name}", Get1);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}", GetBack);
@@ -46,6 +47,12 @@ namespace ColoryrServer.ASP
 
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
+        }
+
+        private static async Task GetIndex(HttpContext context)
+        {
+            HttpResponse Response = context.Response;
+            await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
         }
 
         private static async Task GetBack(HttpContext context)

@@ -39,6 +39,7 @@ namespace ColoryrServer.FileSystem
         private static Dictionary<string, byte[]> Index = new();
         public static byte[] HtmlIcon { get; private set; }
         public static byte[] Html404 { get; private set; }
+        public static byte[] HtmlIndex { get; private set; }
 
         private static bool IsRun;
         private static readonly Thread Thread = new(TickTask);
@@ -84,7 +85,7 @@ namespace ColoryrServer.FileSystem
             {
                 if (string.IsNullOrWhiteSpace(uuid))
                 {
-                    return Index["index.html"];
+                    return HtmlIndex;
                 }
                 else if (uuid == "favicon.ico")
                 {
@@ -183,11 +184,15 @@ namespace ColoryrServer.FileSystem
             var list = new DirectoryInfo(HtmlLocal).GetFiles();
             foreach (var item in list)
             {
-                Index.Add(item.Name, File.ReadAllBytes(item.FullName));
+                if (item.Name.ToLower() is "404.html")
+                    Html404 = File.ReadAllBytes(item.FullName);
+                else if (item.Name.ToLower() is "favicon.ico")
+                    HtmlIcon = File.ReadAllBytes(item.FullName);
+                else if (item.Name.ToLower() is "index.html")
+                    HtmlIndex = File.ReadAllBytes(item.FullName);
+                else 
+                    Index.Add(item.Name, File.ReadAllBytes(item.FullName));
             }
-
-            Html404 = File.ReadAllBytes(HtmlLocal + "404.html");
-            HtmlIcon = File.ReadAllBytes(HtmlLocal + "favicon.ico");
 
             list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)
