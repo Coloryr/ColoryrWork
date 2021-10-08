@@ -87,35 +87,20 @@ namespace ColoryrServer.FileSystem
                 return null;
         }
 
-        public static byte[] GetFile(string local)
+        public static byte[] GetByUUID(string uuid)
         {
-            var temp = local.Split('/');
-            string uuid = temp[1];
-            if (temp.Length == 2)
+            if (HtmlList.ContainsKey(uuid))
             {
-                if (string.IsNullOrWhiteSpace(uuid))
-                {
-                    return HtmlIndex;
-                }
-                else if (uuid == "favicon.ico")
-                {
-                    return HtmlIcon;
-                }
-                else if (HtmlList.ContainsKey(uuid))
-                {
-                    if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
-                        return temp1;
-                }
-                else if (Index.TryGetValue(uuid, out var temp1))
-                {
+                if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
                     return temp1;
-                }
-                else
-                    return Html404;
             }
-            else
+            return null;
+        }
+
+        public static byte[] GetFile(string uuid, string name)
+        {
+            if (HtmlList.ContainsKey(uuid))
             {
-                string name = temp[2];
                 int index = name.LastIndexOf(".");
                 string type = name[index..];
                 if (ServerMain.Config.Requset.Temp.Contains(type))
@@ -130,10 +115,10 @@ namespace ColoryrServer.FileSystem
                     }
                     else
                     {
-                        string temp1 = HtmlLocal + uuid + "\\" + name;
-                        if (File.Exists(temp1))
+                        string local = HtmlLocal + uuid + "\\" + name;
+                        if (File.Exists(local))
                         {
-                            var data = File.ReadAllBytes(temp1);
+                            var data = File.ReadAllBytes(local);
                             var obj = new HtmlFileObj()
                             {
                                 Data = data
@@ -153,14 +138,6 @@ namespace ColoryrServer.FileSystem
                             return temp1;
                     }
                 }
-            }
-            return null;
-        }
-
-        public static byte[] GetFile(string uuid, string name)
-        {
-            if (HtmlList.ContainsKey(uuid))
-            {
                 if (HtmlList[uuid].TryGetValue(name, out var temp1))
                     return temp1;
             }

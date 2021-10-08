@@ -31,17 +31,16 @@ namespace ColoryrServer.ASP
             //Web.UseRouting();
 
             Web.MapGet("/", GetIndex);
-            Web.MapGet("/{name}", Get);
-            Web.MapGet("/{uuid}/{name}", Get1);
+            Web.MapGet("/{name}", GetWeb);
+            Web.MapGet("/{uuid}/{name}", GetGetWeb1);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}", GetBack);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", GetBack);
 
             Web.MapPost("/", PostBuild);
-            Web.MapPost("/{name}", Get);
-            Web.MapPost("/{uuid}/{name}", Get1);
-
-            Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POST);
-            Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POST);
+            Web.MapPost("/{name}", GetWeb);
+            Web.MapPost("/{uuid}/{name}", GetGetWeb1);
+            Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
+            Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
 
             foreach (var item in ServerMain.Config.Http)
             {
@@ -165,20 +164,19 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static async Task Get(HttpContext context)
+        private static async Task GetWeb(HttpContext context)
         {
-            HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
-            httpReturn = HttpStatic.Get(Request.Path);
+            var name = context.GetRouteValue("name") as string;
+            httpReturn = HttpStatic.Get(name);
             Response.ContentType = httpReturn.ContentType;
             Response.StatusCode = httpReturn.ReCode;
             await Response.BodyWriter.WriteAsync(httpReturn.Data);
         }
 
-        private static async Task Get1(HttpContext context)
+        private static async Task GetGetWeb1(HttpContext context)
         {
-            HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
             var uuid = context.GetRouteValue("uuid") as string;
@@ -189,7 +187,7 @@ namespace ColoryrServer.ASP
             await Response.BodyWriter.WriteAsync(httpReturn.Data);
         }
 
-        private static async Task POST(HttpContext context)
+        private static async Task POSTBack(HttpContext context)
         {
             HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;

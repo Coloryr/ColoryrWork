@@ -17,7 +17,7 @@ namespace ColoryrServer.Http
                 temp = HtmlUtils.GetFileByName(Url);
             else
             {
-                temp = HtmlUtils.GetFile(Url);
+                temp = HtmlUtils.GetByUUID(Url);
             }
             if (temp != null)
             {
