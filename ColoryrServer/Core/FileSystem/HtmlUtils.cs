@@ -80,9 +80,7 @@ namespace ColoryrServer.FileSystem
         public static byte[] GetFileByName(string name)
         {
             if (Index.TryGetValue(name, out var temp1))
-            {
                 return temp1;
-            }
             else
                 return null;
         }

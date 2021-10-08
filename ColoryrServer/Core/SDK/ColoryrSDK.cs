@@ -22,6 +22,7 @@ namespace ColoryrServer.SDK
     {
         public const string OSTREAM = "application/octet-stream";
         public const string POSTXFORM = "application/x-www-form-urlencoded";
+        public const string JPG = "application/x-jpg";
         public const string POSTFORMDATA = "multipart/form-data";
         public const string JSON = "application/json";
         public const string XML = "application/xml";

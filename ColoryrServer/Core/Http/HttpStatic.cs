@@ -10,61 +10,39 @@ namespace ColoryrServer.Http
 {
     public class HttpStatic
     {
-        public static HttpReturn Get(string Url)
+        public static HttpReturn Get(string url)
         {
             byte[] temp;
-            if (Url.IndexOf('.') == 1)
-                temp = HtmlUtils.GetFileByName(Url);
+            if (url.IndexOf('.') > 0)
+                temp = HtmlUtils.GetFileByName(url);
             else
-            {
-                temp = HtmlUtils.GetByUUID(Url);
-            }
+                temp = HtmlUtils.GetByUUID(url);
             if (temp != null)
             {
-                string type = ServerContentType.HTML;
-                if (Url.EndsWith(".jpg") || Url.EndsWith(".jpge"))
-                {
-                    type = ServerContentType.JPEG;
-                }
-                else if (Url.ToLower().EndsWith(".png"))
-                {
-                    type = ServerContentType.PNG;
-                }
-                else if (Url.ToLower().EndsWith(".json"))
-                {
-                    type = ServerContentType.JSON;
-                }
-                else if (Url.ToLower().EndsWith(".xml"))
-                {
-                    type = ServerContentType.XML;
-                }
-                else if (Url.ToLower().EndsWith(".mp3"))
-                {
-                    type = ServerContentType.MP3;
-                }
-                else if (Url.ToLower().EndsWith(".mp4"))
-                {
-                    type = ServerContentType.MP4;
-                }
-                else if (Url.ToLower().EndsWith(".gif"))
-                {
-                    type = ServerContentType.GIF;
-                }
-                else if (Url.ToLower().EndsWith(".icon"))
-                {
-                    type = ServerContentType.ICO;
-                }
-                return new HttpReturn
+                int a = url.IndexOf('.') > 0 ? url.LastIndexOf(".") : 0;
+                url = url.ToLower()[a..];
+                return new()
                 {
                     Data = temp,
-                    ContentType = type
+                    ContentType = url switch
+                    {
+                        ".jpg" => ServerContentType.JPG,
+                        ".jpge" => ServerContentType.JPEG,
+                        ".png" => ServerContentType.PNG,
+                        ".json" => ServerContentType.JSON,
+                        ".xml" => ServerContentType.XML,
+                        ".mp3" => ServerContentType.MP3,
+                        ".mp4" => ServerContentType.MP4,
+                        ".gif" => ServerContentType.GIF,
+                        ".icon" => ServerContentType.ICO,
+                        _ => ServerContentType.HTML,
+                    }
                 };
             }
-            return new HttpReturn
+            return new()
             {
                 Data = HtmlUtils.Html404,
-                ContentType = ServerContentType.HTML,
-                ReCode = 200
+                ContentType = ServerContentType.HTML
             };
         }
 
@@ -73,50 +51,30 @@ namespace ColoryrServer.Http
             var temp = HtmlUtils.GetFile(uuid, name);
             if (temp != null)
             {
-                string type = ServerContentType.HTML;
-                if (name.EndsWith(".jpg") || name.EndsWith(".jpge"))
-                {
-                    type = ServerContentType.JPEG;
-                }
-                else if (name.ToLower().EndsWith(".png"))
-                {
-                    type = ServerContentType.PNG;
-                }
-                else if (name.ToLower().EndsWith(".json"))
-                {
-                    type = ServerContentType.JSON;
-                }
-                else if (name.ToLower().EndsWith(".xml"))
-                {
-                    type = ServerContentType.XML;
-                }
-                else if (name.ToLower().EndsWith(".mp3"))
-                {
-                    type = ServerContentType.MP3;
-                }
-                else if (name.ToLower().EndsWith(".mp4"))
-                {
-                    type = ServerContentType.MP4;
-                }
-                else if (name.ToLower().EndsWith(".gif"))
-                {
-                    type = ServerContentType.GIF;
-                }
-                else if (name.ToLower().EndsWith(".icon"))
-                {
-                    type = ServerContentType.ICO;
-                }
-                return new HttpReturn
+                int a = name.LastIndexOf(".");
+                name = name.ToLower()[a..];
+                return new()
                 {
                     Data = temp,
-                    ContentType = type
+                    ContentType = name switch
+                    {
+                        ".jpg" => ServerContentType.JPG,
+                        ".jpge" => ServerContentType.JPEG,
+                        ".png" => ServerContentType.PNG,
+                        ".json" => ServerContentType.JSON,
+                        ".xml" => ServerContentType.XML,
+                        ".mp3" => ServerContentType.MP3,
+                        ".mp4" => ServerContentType.MP4,
+                        ".gif" => ServerContentType.GIF,
+                        ".icon" => ServerContentType.ICO,
+                        _ => ServerContentType.HTML,
+                    }
                 };
             }
-            return new HttpReturn
+            return new()
             {
                 Data = HtmlUtils.Html404,
-                ContentType = ServerContentType.HTML,
-                ReCode = 200
+                ContentType = ServerContentType.HTML
             };
         }
     }
