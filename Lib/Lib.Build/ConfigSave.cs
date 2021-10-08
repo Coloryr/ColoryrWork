@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Lib.Build
 {
-    class ConfigSave
+    public class ConfigSave
     {
         private static object Locker = new object();
         public static T Config<T>(T obj1, string FilePath) where T : new()

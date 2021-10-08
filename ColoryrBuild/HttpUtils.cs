@@ -135,7 +135,7 @@ namespace ColoryrBuild
                 var reType = type switch
                 {
                     CodeType.Class => ReType.GetClass,
-                    CodeType.IoT => ReType.GetIoT,
+                    CodeType.Socket => ReType.GetSocket,
                     CodeType.Robot => ReType.GetRobot,
                     CodeType.WebSocket => ReType.GetWebSocket,
                     CodeType.App => ReType.GetApp,
@@ -224,7 +224,7 @@ namespace ColoryrBuild
                 var reType = type switch
                 {
                     CodeType.Class => ReType.AddClass,
-                    CodeType.IoT => ReType.AddIoT,
+                    CodeType.Socket => ReType.AddSocket,
                     CodeType.Robot => ReType.AddRobot,
                     CodeType.WebSocket => ReType.AddWebSocket,
                     CodeType.App => ReType.AddApp,
@@ -263,7 +263,7 @@ namespace ColoryrBuild
                 var reType = type switch
                 {
                     CodeType.Class => ReType.RemoveClass,
-                    CodeType.IoT => ReType.RemoveIoT,
+                    CodeType.Socket => ReType.RemoveSocket,
                     CodeType.Robot => ReType.RemoveRobot,
                     CodeType.WebSocket => ReType.RemoveWebSocket,
                     CodeType.App => ReType.RemoveApp,
@@ -335,7 +335,7 @@ namespace ColoryrBuild
                 var reType = type switch
                 {
                     CodeType.Class => ReType.CodeClass,
-                    CodeType.IoT => ReType.CodeIoT,
+                    CodeType.Socket => ReType.CodeSocket,
                     CodeType.Robot => ReType.CodeRobot,
                     CodeType.WebSocket => ReType.CodeWebSocket,
                     CodeType.Mqtt => ReType.CodeMqtt,
@@ -490,7 +490,7 @@ namespace ColoryrBuild
                 var reType = type switch
                 {
                     CodeType.Class => ReType.UpdataClass,
-                    CodeType.IoT => ReType.UpdataIoT,
+                    CodeType.Socket => ReType.UpdataSocket,
                     CodeType.Robot => ReType.UpdataRobot,
                     CodeType.WebSocket => ReType.UpdataWebSocket,
                     CodeType.Mqtt => ReType.UpdataMqtt,

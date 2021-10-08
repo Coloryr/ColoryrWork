@@ -25,9 +25,9 @@ namespace ColoryrBuild
             {
                 Directory.CreateDirectory(FilePath + "Class");
             }
-            else if (!Directory.Exists(FilePath + "IoT"))
+            else if (!Directory.Exists(FilePath + "Socket"))
             {
-                Directory.CreateDirectory(FilePath + "IoT");
+                Directory.CreateDirectory(FilePath + "Socket");
             }
             else if (!Directory.Exists(FilePath + "WebSocket"))
             {

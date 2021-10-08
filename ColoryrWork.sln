@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer", "ColoryrServer\ColoryrServer.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.Core", "ColoryrServer\Core\ColoryrServer.Core.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.Server", "Lib\Lib.Server\Lib.Server.shproj", "{013195F8-CD93-4C2E-B3F8-D1706C16EEBB}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.Build", "Lib\Lib.Build\Lib.Build.shproj", "{42931492-DCC9-412A-B3FE-35733C8B6E8B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.IoT", "Lib\Lib.IoT\Lib.IoT.shproj", "{DB16BD52-51EE-43C3-B9A0-E0BA0CC0C2A0}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.Socket", "Lib\Lib.IoT\Lib.Socket.shproj", "{DB16BD52-51EE-43C3-B9A0-E0BA0CC0C2A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest", "CodeTest\CodeTest.csproj", "{44A0EB6C-080A-47FC-AB2F-5D214768DED5}"
 EndProject
@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuil
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.App", "Lib.App\Lib.App.shproj", "{870CB400-24DF-4510-9797-7B1965848BC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer.ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.NoASP", "ColoryrServer\NoASP\ColoryrServer.NoASP.csproj", "{BD201938-3655-45CB-8427-AE4D04B756F7}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -69,6 +71,14 @@ Global
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.ActiveCfg = Release|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.Build.0 = Release|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

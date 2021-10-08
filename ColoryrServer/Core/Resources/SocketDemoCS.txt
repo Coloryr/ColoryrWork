@@ -1,0 +1,13 @@
+using ColoryrServer.SDK;
+
+public class {name}
+{
+    public void {SocketTcp}(TcpSocketRequest head)
+    {
+                
+    }
+    public void {SocketUdp}(UdpSocketRequest head)
+    {
+                
+    }
+}

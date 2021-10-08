@@ -9,6 +9,6 @@
     <Import_RootNamespace>Lib.IoT</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)IoTPack.cs" />
+    <Compile Include="..\..\Lib\Lib.IoT\SocketPack.cs" />
   </ItemGroup>
 </Project>

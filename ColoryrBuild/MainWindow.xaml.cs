@@ -15,7 +15,7 @@ namespace ColoryrBuild
     {
         public Dictionary<string, CSFileObj> DllList;
         public Dictionary<string, CSFileObj> ClassList;
-        public Dictionary<string, CSFileObj> IoTList;
+        public Dictionary<string, CSFileObj> SocketList;
         public Dictionary<string, CSFileObj> RobotList;
         public Dictionary<string, CSFileObj> WebSocketList;
         public Dictionary<string, CSFileObj> MqttList;
@@ -52,7 +52,7 @@ namespace ColoryrBuild
         {
             ReDll();
             ReClass();
-            ReIoT();
+            ReSocket();
             ReRobot();
             ReWebSocket();
             ReApp();
@@ -93,21 +93,21 @@ namespace ColoryrBuild
             }
             App.LogShow("刷新", "Class刷新成功");
         }
-        private async void ReIoT()
+        private async void ReSocket()
         {
-            var list = await App.HttpUtils.GetList(CodeType.IoT);
+            var list = await App.HttpUtils.GetList(CodeType.Socket);
             if (list == null)
             {
-                App.LogShow("刷新", "IoT刷新失败");
+                App.LogShow("刷新", "Socket刷新失败");
                 return;
             }
-            IoTList = list.List;
-            ListIoT.Items.Clear();
-            foreach (var item in IoTList)
+            SocketList = list.List;
+            ListSocket.Items.Clear();
+            foreach (var item in SocketList)
             {
-                ListIoT.Items.Add(item.Value);
+                ListSocket.Items.Add(item.Value);
             }
-            App.LogShow("刷新", "IoT刷新成功");
+            App.LogShow("刷新", "Socket刷新成功");
         }
         private async void ReRobot()
         {
@@ -215,8 +215,8 @@ namespace ColoryrBuild
                 case CodeType.Class:
                     ReClass();
                     break;
-                case CodeType.IoT:
-                    ReIoT();
+                case CodeType.Socket:
+                    ReSocket();
                     break;
                 case CodeType.WebSocket:
                     ReWebSocket();
@@ -344,12 +344,12 @@ namespace ColoryrBuild
             InputClass.Text = "";
         }
 
-        private async void Add_IoT_Click(object sender, RoutedEventArgs e)
+        private async void Add_Socket_Click(object sender, RoutedEventArgs e)
         {
             var data = new InputWindow("UUID设置").Set();
             if (string.IsNullOrWhiteSpace(data))
                 return;
-            var list = await App.HttpUtils.Add(CodeType.IoT, data);
+            var list = await App.HttpUtils.Add(CodeType.Socket, data);
             if (list == null)
             {
                 App.LogShow("添加", "服务器返回错误");
@@ -358,25 +358,25 @@ namespace ColoryrBuild
             App.LogShow("创建", list.Message);
             if (list.Build)
             {
-                ReIoT();
+                ReSocket();
             }
         }
-        private void Change_IoT_Click(object sender, RoutedEventArgs e)
+        private void Change_Socket_Click(object sender, RoutedEventArgs e)
         {
-            if (ListIoT.SelectedItem == null)
+            if (ListSocket.SelectedItem == null)
                 return;
-            var item = ListIoT.SelectedItem as CSFileObj;
-            App.AddEdit(item, CodeType.IoT);
+            var item = ListSocket.SelectedItem as CSFileObj;
+            App.AddEdit(item, CodeType.Socket);
         }
-        private async void Delete_IoT_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Socket_Click(object sender, RoutedEventArgs e)
         {
-            if (ListIoT.SelectedItem == null)
+            if (ListSocket.SelectedItem == null)
                 return;
-            var item = ListIoT.SelectedItem as CSFileObj;
+            var item = ListSocket.SelectedItem as CSFileObj;
             var res = new ChoseWindow("删除确认", "是否要删除").Set();
             if (res)
             {
-                var data = await App.HttpUtils.Remove(CodeType.IoT, item);
+                var data = await App.HttpUtils.Remove(CodeType.Socket, item);
                 if (data == null)
                 {
                     App.LogShow("删除", "服务器返回错误");
@@ -385,17 +385,17 @@ namespace ColoryrBuild
                 App.LogShow("删除", data.Message);
                 if (data.Build)
                 {
-                    ReIoT();
+                    ReSocket();
                 }
             }
         }
-        private void Re_IoT_Click(object sender, RoutedEventArgs e)
+        private void Re_Socket_Click(object sender, RoutedEventArgs e)
         {
-            ReIoT();
+            ReSocket();
         }
-        private void Clear_IoT_Click(object sender, RoutedEventArgs e)
+        private void Clear_Socket_Click(object sender, RoutedEventArgs e)
         {
-            InputIoT.Text = "";
+            InputSocket.Text = "";
         }
 
         private async void Add_Robot_Click(object sender, RoutedEventArgs e)
@@ -784,24 +784,24 @@ namespace ColoryrBuild
                 }
             }
         }
-        private void Input_IoT_TextChanged(object sender, TextChangedEventArgs e)
+        private void Input_Socket_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(InputIoT.Text))
+            if (string.IsNullOrWhiteSpace(InputSocket.Text))
             {
-                ListIoT.Items.Clear();
-                foreach (var item in IoTList)
+                ListSocket.Items.Clear();
+                foreach (var item in SocketList)
                 {
-                    ListIoT.Items.Add(item.Value);
+                    ListSocket.Items.Add(item.Value);
                 }
             }
             else
             {
-                ListIoT.Items.Clear();
-                foreach (var item in IoTList)
+                ListSocket.Items.Clear();
+                foreach (var item in SocketList)
                 {
-                    if (item.Value.UUID.Contains(InputIoT.Text))
+                    if (item.Value.UUID.Contains(InputSocket.Text))
                     {
-                        ListIoT.Items.Add(item.Value);
+                        ListSocket.Items.Add(item.Value);
                     }
                 }
             }

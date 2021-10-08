@@ -68,10 +68,10 @@
                     <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Class_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="IoT" Style="{DynamicResource TabItem}">
+            <TabItem Header="Socket" Style="{DynamicResource TabItem}">
                 <Grid>
                     <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListIoT">
+                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListSocket">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
@@ -83,18 +83,18 @@
                         </ListView.View>
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_IoT_Click"/>
-                                <MenuItem Header="修改" Click="Change_IoT_Click"/>
-                                <MenuItem Header="删除" Click="Delete_IoT_Click"/>
+                                <MenuItem Header="添加" Click="Add_Socket_Click"/>
+                                <MenuItem Header="修改" Click="Change_Socket_Click"/>
+                                <MenuItem Header="删除" Click="Delete_Socket_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
                     <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputIoT" TextChanged="Input_IoT_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,368,0,0" Width="55" Click="Clear_IoT_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,368,0,0" Width="55" Click="Add_IoT_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,368,0,0" Width="54" Click="Change_IoT_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_IoT_Click"/>
+                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputSocket" TextChanged="Input_Socket_TextChanged"/>
+                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,368,0,0" Width="55" Click="Clear_Socket_Click"/>
+                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,368,0,0" Width="55" Click="Add_Socket_Click"/>
+                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,368,0,0" Width="54" Click="Change_Socket_Click"/>
+                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Socket_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="机器人" Style="{DynamicResource TabItem}">

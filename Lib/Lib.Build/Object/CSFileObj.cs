@@ -5,7 +5,7 @@ namespace Lib.Build.Object
 {
     public enum CodeType
     {
-        Dll, Class, IoT, WebSocket, Robot, App, Mqtt, Task, Web
+        Dll, Class, Socket, WebSocket, Robot, App, Mqtt, Task, Web
     }
     public class CSFileObj
     {
