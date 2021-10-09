@@ -6,8 +6,10 @@ using Lib.App;
 using Lib.Build;
 using Lib.Build.Object;
 using Lib.Server;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -107,7 +109,6 @@ namespace ColoryrServer.ASP
                             }
                         });
                     });
-
                 }
                 else
                 {
@@ -261,13 +262,48 @@ namespace ColoryrServer.ASP
 
         private static async Task GetWeb(HttpContext context)
         {
+            HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
             var name = context.GetRouteValue("name") as string;
-            httpReturn = HttpStatic.Get(name);
-            Response.ContentType = httpReturn.ContentType;
-            Response.StatusCode = httpReturn.ReCode;
-            await Response.BodyWriter.WriteAsync(httpReturn.Data);
+            if (name == "turn")
+            {
+                try
+                {
+                    HttpClient ProxyRequest = new();
+                    foreach (var item in Request.Headers)
+                    {
+                        ProxyRequest.DefaultRequestHeaders.Add(item.Key, (IEnumerable<string>)item.Value);
+                    }
+
+                    var res = await ProxyRequest.GetAsync("http://127.0.0.1:80");
+                    Response.StatusCode = (int)res.StatusCode;
+                    foreach (var item in res.Headers)
+                    {
+                        StringValues values = new(item.Value.ToArray());
+                        Response.Headers.Add(item.Key, values);
+                    }
+                    Stream StreamResponse = res.Content.ReadAsStream();
+                    int ResponseReadBufferSize = 256;
+                    byte[] ResponseReadBuffer = new byte[ResponseReadBufferSize];
+                    MemoryStream MemoryStreamResponse = new MemoryStream();
+
+                    byte[] ResponseData = MemoryStreamResponse.ToArray();
+
+                    await Response.BodyWriter.WriteAsync(ResponseData);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
+            }
+            else
+            {
+                httpReturn = HttpStatic.Get(name);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+            }
         }
 
         private static async Task GetGetWeb1(HttpContext context)
