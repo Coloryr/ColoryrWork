@@ -21,10 +21,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public SocketConfig Robot { get; set; }
         /// <summary>
-        /// 非法的代码
-        /// </summary>
-        public List<string> NoCode { get; set; }
-        /// <summary>
         /// Mysql配置
         /// </summary>
         public List<MysqlConfig> Mysql { get; set; }
@@ -41,7 +37,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public List<OracleConfig> Oracle { get; set; }
         /// <summary>
-        /// 用户路径
+        /// 编辑用户设置
         /// </summary>
         public List<UserConfig> User { get; set; }
         /// <summary>
@@ -69,7 +65,7 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public RequsetChoose Requset { get; set; }
         /// <summary>
-        /// AES加密
+        /// 编辑器AES加密
         /// </summary>
         public AESConfig AES { get; set; }
     }

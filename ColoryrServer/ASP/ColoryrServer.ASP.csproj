@@ -5,7 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BaseOutputPath>..\..\build_out\ASP</BaseOutputPath>
+    <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ColoryrWork.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\ColoryrServer.Core.csproj" />

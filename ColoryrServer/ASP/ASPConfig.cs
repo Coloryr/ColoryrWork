@@ -49,10 +49,6 @@ namespace ColoryrServer.ASP
                     IP = "127.0.0.1",
                     Port = 23333
                 },
-                NoCode = new()
-                {
-                    "System.IO"
-                },
                 Mysql = new()
                 {
                     new()
