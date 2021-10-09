@@ -33,7 +33,7 @@ namespace ColoryrBuild.Windows
             this.type = type;
 
             InitializeComponent();
-           
+
             var foldingManager = FoldingManager.Install(textEditor.TextArea);
             var foldingStrategy = new XmlFoldingStrategy();
             foldingStrategy.UpdateFoldings(foldingManager, textEditor.Document);

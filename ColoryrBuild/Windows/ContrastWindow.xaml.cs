@@ -1,6 +1,5 @@
 ﻿using DiffPlex.DiffBuilder.Model;
 using Lib.Build.Object;
-using System.ComponentModel;
 using System.Windows;
 
 namespace ColoryrBuild.Windows

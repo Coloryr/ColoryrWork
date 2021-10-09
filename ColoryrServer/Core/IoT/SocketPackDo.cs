@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
 using Lib.Socket;
-using System;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Socket

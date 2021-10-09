@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
 using Fleck;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +29,7 @@ namespace ColoryrServer.WebSocket
         }
         internal static void Send(int port, byte[] data)
         {
-           if (Clients.ContainsKey(port))
+            if (Clients.ContainsKey(port))
             {
                 Clients[port].Send(data);
             }

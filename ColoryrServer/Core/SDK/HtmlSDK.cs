@@ -37,7 +37,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="url">网址</param>
         /// <returns>byte</returns>
-        public byte[] GetByte(string url) 
+        public byte[] GetByte(string url)
         {
             HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
             foreach (var item in Head)

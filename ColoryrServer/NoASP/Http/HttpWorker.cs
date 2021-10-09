@@ -1,12 +1,7 @@
 ﻿using ColoryrServer.Http;
 using ColoryrServer.SDK;
-using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading;
 
 namespace ColoryrServer.NoASP
 {

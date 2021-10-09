@@ -1,7 +1,4 @@
-﻿using ColoryrServer;
-using ColoryrServer.NoASP;
-
-namespace ColoryrServer.NoASP
+﻿namespace ColoryrServer.NoASP
 {
     class NoASP
     {
