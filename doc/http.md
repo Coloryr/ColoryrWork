@@ -1,6 +1,6 @@
 # ColoyrServer
 
-## 接口编写
+## 接口代码编写
 [返回](code.md)
 
 默认的接口代码  
@@ -46,11 +46,11 @@ public dynamic main(HttpRequest http)
     return "true";
 }
 ```
-接口函数输入的参数必须是[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs)  
+接口函数输入的参数必须是[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs#L7)  
 并且需要带有[ColoryrServer.SDK.NotesSDK](../ColoryrServer/Core/SDK/NotesSDK.cs)的属性
 
-## 接口请求参数
-接口函数传入的对象为[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs)
+### 接口请求参数
+接口函数传入的对象为[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs#L7)
 ```C#
 public class HttpRequest
 {
@@ -68,14 +68,14 @@ public class HttpRequest
         => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
 }
 ```
-## 接口返回类型
+### 接口返回类型
 接口可以返回的类型可以是
 - string
 - Dictionary<string, object>
-- [ColoryrServer.SDK.HttpResponseString](../ColoryrServer/Core/SDK/HttpSDK.cs)
-- [ColoryrServer.SDK.HttpResponseDictionary](../ColoryrServer/Core/SDK/HttpSDK.cs)
-- [ColoryrServer.SDK.HttpResponseStream](../ColoryrServer/Core/SDK/HttpSDK.cs)
-- [ColoryrServer.SDK.HttpResponseBytes](../ColoryrServer/Core/SDK/HttpSDK.cs)
+- [ColoryrServer.SDK.HttpResponseString](../ColoryrServer/Core/SDK/HttpSDK.cs#L68)
+- [ColoryrServer.SDK.HttpResponseDictionary](../ColoryrServer/Core/SDK/HttpSDK.cs#L90)
+- [ColoryrServer.SDK.HttpResponseStream](../ColoryrServer/Core/SDK/HttpSDK.cs#L123)
+- [ColoryrServer.SDK.HttpResponseBytes](../ColoryrServer/Core/SDK/HttpSDK.cs#L139)
 
 其他返回类型均会报错
 
