@@ -10,6 +10,7 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Net;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -59,6 +60,7 @@ namespace ColoryrServer.ASP
         public static ASPConfig Config { get; set; }
 
         private static WebApplication Web;
+        private static IHttpClients Clients;
 
         private const string https = "https";
         private const string http = "http";
@@ -120,6 +122,10 @@ namespace ColoryrServer.ASP
                 builder.WebHost.UseUrls($"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/");
                 ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
             }
+
+            builder.Services.AddHttpClient<HttpClients>();
+            builder.Services.AddTransient<IHttpClients, HttpClients>();
+
             bool Run = true;
             if (!Config.NoInput)
                 new Thread(() =>
@@ -131,16 +137,17 @@ namespace ColoryrServer.ASP
                 }).Start();
 
             Web = builder.Build();
+            Clients = Web.Services.GetRequiredService<IHttpClients>();
 
             Web.MapGet("/", GetIndex);
-            Web.MapGet("/{name}", GetWeb);
-            Web.MapGet("/{uuid}/{name}", GetGetWeb1);
+            Web.MapGet("/{**name}", GetWeb);
+            //Web.MapGet("/{uuid}/{name}", GetGetWeb1);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}", GetBack);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", GetBack);
 
             Web.MapPost("/", PostBuild);
-            Web.MapPost("/{name}", GetWeb);
-            Web.MapPost("/{uuid}/{name}", GetGetWeb1);
+            Web.MapPost("/{**name}", GetWeb);
+           // Web.MapPost("/{uuid}/{name}", GetGetWeb1);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
 
@@ -266,36 +273,82 @@ namespace ColoryrServer.ASP
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
             var name = context.GetRouteValue("name") as string;
-            if (name == "turn")
+            if (name == null)
+                return;
+            var arg = name.Split('/');
+            if (arg[0] == "turn")
             {
-                try
+                //var httpClientHandler = new HttpClientHandler
+                //{
+                //    ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
+                //};
+                //using HttpClient ProxyRequest = new(httpClientHandler);
+                using HttpClient ProxyRequest = Clients.GetOne();
+                HttpRequestMessage message = new();
+                message.Method = new HttpMethod(Request.Method);
+                string url = "";
+                if (arg.Length > 1)
                 {
-                    HttpClient ProxyRequest = new();
-                    foreach (var item in Request.Headers)
+                    for (int a = 1; a < arg.Length; a++)
                     {
-                        ProxyRequest.DefaultRequestHeaders.Add(item.Key, (IEnumerable<string>)item.Value);
+                        url += $"/{arg[a]}";
                     }
+                }
 
-                    var res = await ProxyRequest.GetAsync("http://127.0.0.1:80");
+                message.RequestUri = new Uri($"http://127.0.0.1{url}");
+                if (Request.Method is "POST")
+                    message.Content = new StreamContent(Request.Body);
+                else
+                    message.Content = new ByteArrayContent(Array.Empty<byte>());
+
+                foreach (var item in Request.Headers)
+                {
+                    if (item.Key.StartsWith("Content"))
+                    {
+                        message.Content.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+                    }
+                    else
+                        message.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+                }
+
+                if (url.EndsWith(".php"))
+                {
+                    var res = ProxyRequest.Send(message);
                     Response.StatusCode = (int)res.StatusCode;
+                    Response.ContentType = res.Content.Headers.ContentType.ToString();
+
                     foreach (var item in res.Headers)
                     {
+                        if (item.Key is "Transfer-Encoding")
+                            continue;
                         StringValues values = new(item.Value.ToArray());
                         Response.Headers.Add(item.Key, values);
                     }
-                    Stream StreamResponse = res.Content.ReadAsStream();
-                    int ResponseReadBufferSize = 256;
-                    byte[] ResponseReadBuffer = new byte[ResponseReadBufferSize];
-                    MemoryStream MemoryStreamResponse = new MemoryStream();
 
-                    byte[] ResponseData = MemoryStreamResponse.ToArray();
-
-                    await Response.BodyWriter.WriteAsync(ResponseData);
+                    await res.Content.CopyToAsync(Response.Body);
                 }
-                catch (Exception e)
+                else
                 {
-                    ServerMain.LogError(e);
+                    var res = await ProxyRequest.SendAsync(message);
+
+                    Response.StatusCode = (int)res.StatusCode;
+                    Response.ContentType = res.Content.Headers.ContentType.ToString();
+
+                    foreach (var item in res.Headers)
+                    {
+                        
+                        StringValues values = new(item.Value.ToArray());
+                        Response.Headers.Add(item.Key, values);
+                    }
+                    await res.Content.CopyToAsync(Response.Body);
                 }
+            }
+            else if (arg.Length == 2)
+            {
+                httpReturn = HttpStatic.Get(arg[0], arg[1]);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data);
             }
             else
             {
@@ -303,19 +356,7 @@ namespace ColoryrServer.ASP
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
                 await Response.BodyWriter.WriteAsync(httpReturn.Data);
-            }
-        }
-
-        private static async Task GetGetWeb1(HttpContext context)
-        {
-            HttpResponse Response = context.Response;
-            HttpReturn httpReturn;
-            var uuid = context.GetRouteValue("uuid") as string;
-            var name = context.GetRouteValue("name") as string;
-            httpReturn = HttpStatic.Get(uuid, name);
-            Response.ContentType = httpReturn.ContentType;
-            Response.StatusCode = httpReturn.ReCode;
-            await Response.BodyWriter.WriteAsync(httpReturn.Data);
+            }   
         }
 
         private static async Task POSTBack(HttpContext context)
