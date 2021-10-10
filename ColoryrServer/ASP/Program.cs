@@ -2,6 +2,8 @@ using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
+using ColoryrServer.Utils;
+using HttpMultipartParser;
 using Lib.App;
 using Lib.Build;
 using Lib.Build.Object;
@@ -9,6 +11,7 @@ using Lib.Server;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -165,24 +168,17 @@ namespace ColoryrServer.ASP
             HttpReturn httpReturn;
             if (Request.Headers[BuildKV.BuildK] == BuildKV.BuildV)
             {
-                MemoryStream memoryStream = new();
-                var data = new byte[2000000];
-                long la = (long)Request.ContentLength;
                 string Str;
-                while (la > 0)
-                {
-                    int a = await Request.Body.ReadAsync(data);
-                    la -= a;
-                    memoryStream.Write(data, 0, a);
-                }
+                MemoryStream stream = new();
+                await Request.Body.CopyToAsync(stream);
                 if (Request.Headers[BuildKV.BuildK1] == "true")
                 {
-                    var receivedData = DeCode.AES256(memoryStream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+                    var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
                     Str = Encoding.UTF8.GetString(receivedData);
                 }
                 else
                 {
-                    Str = Encoding.UTF8.GetString(memoryStream.ToArray());
+                    Str = Encoding.UTF8.GetString(stream.ToArray());
                 }
                 JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                 var Json = obj.ToObject<BuildOBJ>();
@@ -202,24 +198,17 @@ namespace ColoryrServer.ASP
             }
             else if (Request.Headers[APPKV.APPK] == APPKV.APPV)
             {
-                MemoryStream memoryStream = new();
-                var data = new byte[2000000];
-                long la = (long)Request.ContentLength;
                 string Str;
-                while (la > 0)
-                {
-                    int a = await Request.Body.ReadAsync(data);
-                    la -= a;
-                    memoryStream.Write(data, 0, a);
-                }
+                MemoryStream stream = new();
+                await Request.Body.CopyToAsync(stream);
                 if (Request.Headers[BuildKV.BuildK1] == "true")
                 {
-                    var receivedData = DeCode.AES256(memoryStream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+                    var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
                     Str = Encoding.UTF8.GetString(receivedData);
                 }
                 else
                 {
-                    Str = Encoding.UTF8.GetString(memoryStream.ToArray());
+                    Str = Encoding.UTF8.GetString(stream.ToArray());
                 }
                 JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                 var Json = obj.ToObject<DownloadObj>();
@@ -313,7 +302,7 @@ namespace ColoryrServer.ASP
 
                 if (url.EndsWith(".php"))
                 {
-                    var res = ProxyRequest.Send(message);
+                    var res = await ProxyRequest.SendAsync(message);
                     Response.StatusCode = (int)res.StatusCode;
                     Response.ContentType = res.Content.Headers.ContentType.ToString();
 
@@ -367,20 +356,62 @@ namespace ColoryrServer.ASP
             var uuid = context.GetRouteValue("uuid") as string;
             var name = context.GetRouteValue("name") as string;
 
-            MyContentType type = MyContentType.Other;
+            MyContentType type = MyContentType.XFormData;
+            var temp = new Dictionary<string, dynamic>();
             if (Request.ContentType != null)
             {
-                if (Request.ContentType.StartsWith(ServerContentType.POSTXFORM))
+                if (Request.ContentType is ServerContentType.POSTXFORM)
                 {
-                    type = MyContentType.XFormData;
+                    foreach (var item in Request.Form)
+                    {
+                        temp.Add(item.Key, item.Value);
+                    }
+                    foreach (var item in Request.Form.Files)
+                    {
+                        temp.Add(item.Name, item);
+                    }
                 }
-                else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
+                else if (Request.ContentType is ServerContentType.POSTFORMDATA)
                 {
-                    type = MyContentType.MFormData;
+                    MemoryStream stream = new();
+                    await Request.Body.CopyToAsync(stream);
+                    var parser = MultipartFormDataParser.Parse(stream);
+                    if (parser == null)
+                    {
+                        httpReturn = new HttpReturn
+                        {
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            {
+                                Res = 123,
+                                Text = "表单解析发生错误"
+                            })
+                        };
+                        await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                        return;
+                    }
+                    foreach (var item in parser.Parameters)
+                    {
+                        temp.Add(item.Name, item.Data);
+                    }
+                    foreach (var item in parser.Files)
+                    {
+                        temp.Add(item.Name, new HttpMultipartFile()
+                        {
+                            Data = item.Data,
+                            FileName = item.FileName
+                        });
+                    }
                 }
                 else if (Request.ContentType.StartsWith(ServerContentType.JSON))
                 {
-                    type = MyContentType.Json;
+                    MemoryStream stream = new();
+                    await Request.Body.CopyToAsync(stream);
+                    var Str = Encoding.UTF8.GetString(stream.ToArray());
+                    JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+                    foreach (var item in obj)
+                    {
+                        temp.Add(item.Key, item.Value);
+                    }
                 }
                 else
                 {
@@ -388,7 +419,32 @@ namespace ColoryrServer.ASP
                 }
             }
 
-            httpReturn = await ASPHttpPOST.HttpPOST(Request.Body, (long)Request.ContentLength, Request.Path, Request.Headers, type, uuid, name);
+            var Dll = DllStonge.GetDll(uuid);
+            if (Dll != null)
+            {
+                NameValueCollection collection = new();
+                foreach (var item in Request.Headers)
+                {
+                    collection.Add(item.Key, item.Value);
+                }
+
+                httpReturn = DllRun.DllGo(Dll, new()
+                {
+                    Cookie = ASPHttpUtils.HaveCookie(Request.Headers),
+                    Parameter = temp,
+                    RowRequest = collection,
+                    ContentType = type,
+                    Stream = type == MyContentType.Other ? Request.Body : null
+                }, name);
+            }
+            else
+            {
+                httpReturn = new HttpReturn
+                {
+                    Data = HtmlUtils.Html404,
+                    ContentType = ServerContentType.HTML
+                };
+            }
             Response.ContentType = httpReturn.ContentType;
             Response.StatusCode = httpReturn.ReCode;
             if (httpReturn.Head != null)

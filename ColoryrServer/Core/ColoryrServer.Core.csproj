@@ -22,6 +22,7 @@
     <PackageReference Include="HttpMultipartParser" Version="5.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.0-4.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
     <PackageReference Include="MQTTnet" Version="3.0.16" />
     <PackageReference Include="MySql.Data" Version="8.0.26" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
