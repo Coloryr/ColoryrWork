@@ -270,11 +270,6 @@ namespace ColoryrServer.ASP
             var arg = name.Split('/');
             if (Config.Rotes.TryGetValue(arg[0], out var rote))
             {
-                //var httpClientHandler = new HttpClientHandler
-                //{
-                //    ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
-                //};
-                //using HttpClient ProxyRequest = new(httpClientHandler);
                 using HttpClient ProxyRequest = Clients.GetOne();
                 HttpRequestMessage message = new();
                 message.Method = new HttpMethod(Request.Method);
