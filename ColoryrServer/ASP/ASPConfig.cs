@@ -3,8 +3,13 @@ using Lib.Build;
 
 namespace ColoryrServer.ASP
 {
+    internal record Rote
+    { 
+        public string Url { get; set; }
+    }
     internal record ASPConfig : MainConfig
     {
+        public Dictionary<string, Rote> Rotes { get; set; }
         public bool Ssl { get; set; }
         public string SslLocal { get; set; }
         public string SslPassword { get; set; }
@@ -17,6 +22,16 @@ namespace ColoryrServer.ASP
         {
             ServerMain.Config = ASPServer.Config = ConfigSave.Config(new ASPConfig
             {
+                Rotes = new()
+                {
+                    {
+                        "turn",
+                        new()
+                        {
+                            Url = "http://127.0.0.1/"
+                        }
+                    }
+                },
                 Ssl = false,
                 SslLocal = "",
                 SslPassword = "",

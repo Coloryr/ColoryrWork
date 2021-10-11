@@ -12,8 +12,6 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Specialized;
-using System.Net;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -36,6 +34,8 @@ namespace ColoryrServer.ASP
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
                             Exception exception, Func<TState, Exception, string> formatter)
         {
+            if (eventId.Id == 100 || eventId.Id == 101)
+                return;
             if (logLevel is LogLevel.Warning or LogLevel.Error)
                 ServerMain.LogError($"{logLevel}-{eventId.Id} {formatter(state, exception)}");
             else
@@ -126,7 +126,10 @@ namespace ColoryrServer.ASP
                 ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
             }
 
-            builder.Services.AddHttpClient<HttpClients>();
+            builder.Services.AddHttpClient<HttpClients>(option =>
+            {
+
+            });
             builder.Services.AddTransient<IHttpClients, HttpClients>();
 
             bool Run = true;
@@ -265,7 +268,7 @@ namespace ColoryrServer.ASP
             if (name == null)
                 return;
             var arg = name.Split('/');
-            if (arg[0] == "turn")
+            if (Config.Rotes.TryGetValue(arg[0], out var rote))
             {
                 //var httpClientHandler = new HttpClientHandler
                 //{
@@ -284,7 +287,7 @@ namespace ColoryrServer.ASP
                     }
                 }
 
-                message.RequestUri = new Uri($"http://127.0.0.1{url}");
+                message.RequestUri = new Uri($"{rote.Url}{url}");
                 if (Request.Method is "POST")
                     message.Content = new StreamContent(Request.Body);
                 else
@@ -325,7 +328,7 @@ namespace ColoryrServer.ASP
 
                     foreach (var item in res.Headers)
                     {
-                        
+
                         StringValues values = new(item.Value.ToArray());
                         Response.Headers.Add(item.Key, values);
                     }
@@ -371,35 +374,49 @@ namespace ColoryrServer.ASP
                         temp.Add(item.Name, item);
                     }
                 }
-                else if (Request.ContentType is ServerContentType.POSTFORMDATA)
+                else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
                 {
                     MemoryStream stream = new();
-                    await Request.Body.CopyToAsync(stream);
-                    var parser = MultipartFormDataParser.Parse(stream);
-                    if (parser == null)
+                    var data1 = new byte[2000000];
+                    long la = (long)Request.ContentLength;
+                    while (la > 0)
                     {
-                        httpReturn = new HttpReturn
+                        int a = await Request.Body.ReadAsync(data1);
+                        la -= a;
+                        stream.Write(data1, 0, a);
+                    }
+                    try
+                    {
+                        var parser = await MultipartFormDataParser.ParseAsync(stream);
+                        if (parser == null)
                         {
-                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            httpReturn = new HttpReturn
                             {
-                                Res = 123,
-                                Text = "表单解析发生错误"
-                            })
-                        };
-                        await Response.BodyWriter.WriteAsync(httpReturn.Data);
-                        return;
-                    }
-                    foreach (var item in parser.Parameters)
-                    {
-                        temp.Add(item.Name, item.Data);
-                    }
-                    foreach (var item in parser.Files)
-                    {
-                        temp.Add(item.Name, new HttpMultipartFile()
+                                Data = StreamUtils.JsonOBJ(new GetMeesage
+                                {
+                                    Res = 123,
+                                    Text = "表单解析发生错误"
+                                })
+                            };
+                            await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                            return;
+                        }
+                        foreach (var item in parser.Parameters)
                         {
-                            Data = item.Data,
-                            FileName = item.FileName
-                        });
+                            temp.Add(item.Name, item.Data);
+                        }
+                        foreach (var item in parser.Files)
+                        {
+                            temp.Add(item.Name, new HttpMultipartFile()
+                            {
+                                Data = item.Data,
+                                FileName = item.FileName
+                            });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ServerMain.LogError(e);
                     }
                 }
                 else if (Request.ContentType.StartsWith(ServerContentType.JSON))
