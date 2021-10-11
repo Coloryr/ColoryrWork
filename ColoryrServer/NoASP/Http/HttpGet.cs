@@ -72,7 +72,7 @@ namespace ColoryrServer.NoASP
                 }
             }
 
-            return HttpStatic.Get(Url);
+            return HttpStatic.Get(Url[1..]);
         }
     }
 }

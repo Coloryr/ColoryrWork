@@ -201,16 +201,6 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
-        /// </summary>
-        public static System.Drawing.Icon ColoryrWork {
-            get {
-                object obj = ResourceManager.GetObject("ColoryrWork", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 using ColoryrServer.DataBase;
         ///using MySql.Data.MySqlClient;
         ///using Oracle.ManagedDataAccess.Client;
@@ -386,6 +376,16 @@ namespace ColoryrServer.Core {
         public static string HttpSDK {
             get {
                 return ResourceManager.GetString("HttpSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        public static byte[] Icon {
+            get {
+                object obj = ResourceManager.GetObject("Icon", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -683,7 +683,7 @@ namespace ColoryrServer.Core {
                 return ResourceManager.GetString("RobotSDK", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
@@ -704,7 +704,7 @@ namespace ColoryrServer.Core {
                 return ResourceManager.GetString("SocketDemoCS", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   查找类似 using ColoryrServer.Socket;
         ///using System.Collections.Generic;
@@ -722,8 +722,7 @@ namespace ColoryrServer.Core {
         ///        /// &lt;/summary&gt;
         ///        /// &lt;param name=&quot;Port&quot;&gt;Socket端口&lt;/param&gt;
         ///        /// &lt;param name=&quot;Data&quot;&gt;Socket发送的数据&lt;/param&gt;
-        ///        public TcpSocketRequest(int Port, byte[] Data, int Server)
-        ///  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public TcpSocketRequest(int Port, byte[] Data, int S [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string SocketSDK {
             get {

@@ -158,7 +158,7 @@ namespace ColoryrServer.FileSystem
 
             if (!File.Exists(HtmlLocal + "favicon.ico"))
             {
-                File.WriteAllBytes(HtmlLocal + "favicon.ico", Function.ToByte(ColoryrServer_Resource.ColoryrWork));
+                File.WriteAllBytes(HtmlLocal + "favicon.ico", ColoryrServer_Resource.Icon);
             }
 
             var list = new DirectoryInfo(HtmlLocal).GetFiles();

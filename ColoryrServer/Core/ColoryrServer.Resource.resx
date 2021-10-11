@@ -136,9 +136,6 @@
   <data name="ColoryrSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ColoryrSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="ColoryrWork" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ColoryrWork.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="DatabaseSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DatabaseSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
@@ -159,6 +156,9 @@
   </data>
   <data name="HttpSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\HttpSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="Icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ColoryrWork;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="IndexDemoJS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\IndexDemoJS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
