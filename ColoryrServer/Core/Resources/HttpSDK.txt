@@ -16,7 +16,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="arg">参数名</param>
         /// <returns>数据</returns>
-        public dynamic GetParameter(string arg)
+        public dynamic Get(string arg)
             => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
     }
     public abstract class HttpResponse

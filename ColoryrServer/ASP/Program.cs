@@ -404,7 +404,9 @@ namespace ColoryrServer.ASP
                             temp.Add(item.Name, new HttpMultipartFile()
                             {
                                 Data = item.Data,
-                                FileName = item.FileName
+                                FileName = item.FileName,
+                                ContentType = item.ContentType,
+                                ContentDisposition = item.ContentDisposition
                             });
                         }
                     }
