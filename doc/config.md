@@ -6,11 +6,25 @@
 ## 服务器核心配置文件
 ```JSON
 {
+    //反向代理(效率略低)
+    "Rotes": {
+        "turn": {
+            "Url": "http://127.0.0.1/"
+        }
+    },
+    //SSL模式，启用后会使用https
+    "Ssl": false,
+    //SSL证书路径
+    "SslLocal": ".\\xxx.pfx",
+    //SSL证书密码
+    "SslPassword": "123456",
+    //控制台输入无效
+    "NoInput": false,
     //Http服务器配置，可以添加监听数量
     "Http": [
         {
-        "IP": "127.0.0.1",
-        "Port": 25555
+            "IP": "127.0.0.1",
+            "Port": 25555
         }
     ],
     //Socket服务器配置
@@ -121,29 +135,5 @@
         "Key": "Key",
         "IV": "IV"
     }
-}
-```
-
-## ASP配置文件
-```JSON
-{
-    //SSL模式，启用后会使用https
-    "Ssl": false,
-    //SSL证书路径
-    "SslLocal": ".\\xxx.pfx",
-    //SSL证书密码
-    "SslPassword": "123456",
-    //控制台输入无效
-    "NoInput": false,
-}
-```
-
-## NoASP配置文件
-```JSON
-{
-    //Http管线数量
-    "HttpThreadNumber": 200,
-    //控制台输入无效
-    "NoInput": false,
 }
 ```
