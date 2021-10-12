@@ -4,7 +4,7 @@ using Lib.Build;
 namespace ColoryrServer.ASP
 {
     internal record Rote
-    { 
+    {
         public string Url { get; set; }
     }
     internal record ASPConfig : MainConfig

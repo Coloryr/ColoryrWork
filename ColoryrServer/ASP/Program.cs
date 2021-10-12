@@ -32,7 +32,7 @@ namespace ColoryrServer.ASP
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
-                            Exception exception, Func<TState, Exception, string> formatter)
+                            Exception? exception, Func<TState, Exception, string> formatter)
         {
             if (eventId.Id == 100 || eventId.Id == 101)
                 return;
@@ -153,7 +153,7 @@ namespace ColoryrServer.ASP
 
             Web.MapPost("/", PostBuild);
             Web.MapPost("/{**name}", GetWeb);
-           // Web.MapPost("/{uuid}/{name}", GetGetWeb1);
+            // Web.MapPost("/{uuid}/{name}", GetGetWeb1);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
 
@@ -168,7 +168,6 @@ namespace ColoryrServer.ASP
         {
             HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
-            HttpReturn httpReturn;
             if (Request.Headers[BuildKV.BuildK] == BuildKV.BuildV)
             {
                 string Str;
@@ -238,7 +237,45 @@ namespace ColoryrServer.ASP
             HttpReturn httpReturn;
             var uuid = context.GetRouteValue("uuid") as string;
             var name = context.GetRouteValue("name") as string;
-            httpReturn = ASPHttpGet.HttpGET(Request.Path, Request.Headers, Request.QueryString, uuid, name);
+            string Url = Request.Path;
+            if (Url.StartsWith("//"))
+            {
+                Url = Url[1..];
+            }
+            var Dll = DllStonge.GetDll(uuid);
+            if (Dll != null)
+            {
+                var Temp = new Dictionary<string, dynamic>();
+                if (Request.QueryString.HasValue)
+                {
+                    foreach (string a in Request.QueryString.Value.Split('&'))
+                    {
+                        var item = a.Split("=");
+                        Temp.Add(item[0], item[1]);
+                    }
+                }
+                NameValueCollection collection = new();
+                foreach (var item in Request.Headers)
+                {
+                    collection.Add(item.Key, item.Value);
+                }
+                httpReturn = DllRun.DllGo(Dll, new()
+                {
+                    Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
+                    RowRequest = collection,
+                    Parameter = Temp,
+                    ContentType = MyContentType.XFormData
+                }, name);
+            }
+            else
+            {
+                httpReturn = new()
+                {
+                    Data = HtmlUtils.Html404,
+                    ContentType = ServerContentType.HTML,
+                    ReCode = 200
+                };
+            }
             Response.ContentType = httpReturn.ContentType;
             Response.StatusCode = httpReturn.ReCode;
             if (httpReturn.Head != null)
@@ -343,7 +380,7 @@ namespace ColoryrServer.ASP
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
                 await Response.BodyWriter.WriteAsync(httpReturn.Data);
-            }   
+            }
         }
 
         private static async Task POSTBack(HttpContext context)
@@ -453,7 +490,7 @@ namespace ColoryrServer.ASP
 
                 httpReturn = DllRun.DllGo(Dll, new()
                 {
-                    Cookie = ASPHttpUtils.HaveCookie(Request.Headers),
+                    Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
                     Parameter = temp,
                     RowRequest = collection,
                     ContentType = type,

@@ -19,8 +19,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib.App", "Lib.App\Lib.App.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.NoASP", "ColoryrServer\NoASP\ColoryrServer.NoASP.csproj", "{BD201938-3655-45CB-8427-AE4D04B756F7}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
@@ -71,14 +69,6 @@ Global
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.ActiveCfg = Release|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.Build.0 = Release|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Debug|x64.Build.0 = Debug|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|x64.ActiveCfg = Release|Any CPU
-		{BD201938-3655-45CB-8427-AE4D04B756F7}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

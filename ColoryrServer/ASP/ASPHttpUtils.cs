@@ -2,12 +2,9 @@
 {
     public class ASPHttpUtils
     {
-        public static string HaveCookie(IHeaderDictionary hashtable)
+        public static string HaveCookie(string hashtable)
         {
-            string Temp = hashtable.Cookie;
-            if (Temp == null)
-                return null;
-            string[] Cookies = Temp.Split(';');
+            string[] Cookies = hashtable.Split(';');
             foreach (var Item in Cookies)
             {
                 var temp = Item.Replace(" ", "");
