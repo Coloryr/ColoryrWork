@@ -371,31 +371,30 @@ namespace ColoryrServer.ASP
                 }
                 else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
                 {
-                    MemoryStream stream = new();
-                    var data1 = new byte[2000000];
-                    long la = (long)Request.ContentLength;
-                    while (la > 0)
-                    {
-                        int a = await Request.Body.ReadAsync(data1);
-                        la -= a;
-                        stream.Write(data1, 0, a);
-                    }
                     try
                     {
-                        var parser = await MultipartFormDataParser.ParseAsync(stream);
-                        if (parser == null)
-                        {
-                            httpReturn = new HttpReturn
-                            {
-                                Data = StreamUtils.JsonOBJ(new GetMeesage
-                                {
-                                    Res = 123,
-                                    Text = "表单解析发生错误"
-                                })
-                            };
-                            await Response.BodyWriter.WriteAsync(httpReturn.Data);
-                            return;
-                        }
+                        //boundary??
+                        //var temp1 = Request.ContentType.Remove(0, ServerContentType.POSTFORMDATA.Length);
+                        //MemoryStream stream = new();
+                        //await Request.Body.CopyToAsync(stream);
+                        //var temp2 = Encoding.UTF8.GetString(stream.ToArray());
+                        //stream.Seek(0, SeekOrigin.Begin);
+                        //var parser = await MultipartFormDataParser.ParseAsync(stream);
+                        //if (parser == null)
+                        //{
+                        //    httpReturn = new HttpReturn
+                        //    {
+                        //        Data = StreamUtils.JsonOBJ(new GetMeesage
+                        //        {
+                        //            Res = 123,
+                        //            Text = "表单解析发生错误"
+                        //        })
+                        //    };
+                        //    await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                        //    return;
+                        //}
+
+                        var parser = await MultipartFormDataParser.ParseAsync(Request.Body);
                         foreach (var item in parser.Parameters)
                         {
                             temp.Add(item.Name, item.Data);
@@ -412,6 +411,16 @@ namespace ColoryrServer.ASP
                     catch (Exception e)
                     {
                         ServerMain.LogError(e);
+                        httpReturn = new HttpReturn
+                        {
+                            Data = StreamUtils.JsonOBJ(new GetMeesage
+                            {
+                                Res = 123,
+                                Text = "表单解析发生错误，请检查数据"
+                            })
+                        };
+                        await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                        return;
                     }
                 }
                 else if (Request.ContentType.StartsWith(ServerContentType.JSON))
