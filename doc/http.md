@@ -1,4 +1,4 @@
-# ColoyrServer
+# ColoryrServer
 
 ## 接口代码编写
 [返回](code.md)
