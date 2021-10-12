@@ -1,4 +1,4 @@
-# ColoyrServer
+# ColoryrServer
 
 ## 部署&启动
 [返回](../README.md)
@@ -31,7 +31,6 @@ $ dotnet build
   已还原 G:\ColoryrWork\ColoryrBuild\ColoryrBuild.csproj (用时 290 ms)。
   已还原 G:\ColoryrWork\CodeTest\CodeTest.csproj (用时 290 ms)。
   已还原 G:\ColoryrWork\ColoryrServer\ASP\ColoryrServer.ASP.csproj (用时 616 ms)。
-  已还原 G:\ColoryrWork\ColoryrServer\NoASP\ColoryrServer.NoASP.csproj (用时 615 ms)。
   已还原 G:\ColoryrWork\ColoryrServer\Core\ColoryrServer.Core.csproj (用时 616 ms)。
   你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
   你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
@@ -45,9 +44,9 @@ $ dotnet build
 已用时间 00:00:07.02
 ```
 在`ColoryrWork`文件夹下，你会得到一个`build_out`的构建文件夹  
-- `ASP`和`NoASP`是服务器文件  
+- `ASP`是服务器文件  
 - `Build`是编辑器
-- `ServerCore`是服务器核心
+- `Core`是服务器核心
 - ~~`Test`不用管~~
 
 ## 启动
@@ -55,8 +54,4 @@ Windows下直接双击exe启动
 Linux下
 ```
 $ dotnet ColoryrServer.ASP.dll
-```
-或
-```
-$ dotnet ColoryrServer.NoASP.dll
 ```
