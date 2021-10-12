@@ -1,4 +1,4 @@
-# ColoyrServer
+# ColoryrServer
 
 ## 业务代码编写
 [返回](../README.md)
