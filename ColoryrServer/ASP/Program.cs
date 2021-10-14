@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Connections;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -67,6 +68,8 @@ namespace ColoryrServer.ASP
 
         private const string https = "https";
         private const string http = "http";
+        private static Dictionary<string, X509Certificate2> Ssls = new();
+        private static X509Certificate2 DefaultSsl;
 
         public static void Main()
         {
@@ -98,26 +101,27 @@ namespace ColoryrServer.ASP
                     };
                 });
                 ServerMain.LogOut("正在加载SSL证书");
-                if (File.Exists(Config.SslLocal))
-                {
-                    builder.WebHost.UseKestrel(options =>
-                    {
+                builder.WebHost.UseKestrel(options =>
                         options.ConfigureHttpsDefaults(i =>
-                        {
-                            try
-                            {
-                                i.ServerCertificate = new X509Certificate2(Config.SslLocal, Config.SslPassword);
-                            }
-                            catch (Exception e)
-                            {
-                                ServerMain.LogError(e);
-                            }
-                        });
-                    });
-                }
-                else
+                              i.ServerCertificateSelector = ASPServer.Ssl));
+                foreach (var item in Config.Ssls)
                 {
-                    ServerMain.LogError("SSL证书找不到");
+                    if (File.Exists(item.Value.SslLocal))
+                    {
+                        try
+                        {
+                            var ssl = new X509Certificate2(item.Value.SslLocal, item.Value.SslPassword);
+                            Ssls.Add(item.Key, ssl);
+                        }
+                        catch (Exception e)
+                        {
+                            ServerMain.LogError(e);
+                        }
+                    }
+                    else
+                    {
+                        ServerMain.LogError($"SSL证书找不到:{item.Value.SslLocal}");
+                    }
                 }
             }
             foreach (var item in ServerMain.Config.Http)
@@ -162,6 +166,15 @@ namespace ColoryrServer.ASP
             Run = false;
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
+        }
+
+        public static X509Certificate2? Ssl(ConnectionContext? context, string? url)
+        {
+            if (Ssls.TryGetValue(url, out var item))
+            {
+                return item;
+            }
+            return DefaultSsl;
         }
 
         private static async Task PostBuild(HttpContext context)

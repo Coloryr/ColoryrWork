@@ -1,18 +1,25 @@
-﻿using ColoryrServer.FileSystem;
+﻿using System.Net.Security;
+using ColoryrServer.FileSystem;
 using Lib.Build;
 
 namespace ColoryrServer.ASP
 {
+    internal record Ssl
+    {
+        public string SslLocal { get; set; }
+        public string SslPassword { get; set; }
+    }
     internal record Rote
     {
         public string Url { get; set; }
+        public Dictionary<string, string> Heads { get; set; }
     }
     internal record ASPConfig : MainConfig
     {
         public Dictionary<string, Rote> Rotes { get; set; }
         public bool Ssl { get; set; }
-        public string SslLocal { get; set; }
-        public string SslPassword { get; set; }
+        public Dictionary<string, Ssl> Ssls { get; set; }
+        public Dictionary<string, Rote> UrlRotes { get; set; }
         public bool NoInput { get; set; }
     }
 
@@ -28,13 +35,34 @@ namespace ColoryrServer.ASP
                         "turn",
                         new()
                         {
-                            Url = "http://127.0.0.1/"
+                            Url = "http://127.0.0.1/",
+                            Heads = new()
+                        }
+                    }
+                },
+                UrlRotes = new()
+                {
+                    {
+                        "www.test.com",
+                        new()
+                        {
+                            Url = "http://localhost:81/",
+                            Heads = new()
                         }
                     }
                 },
                 Ssl = false,
-                SslLocal = "",
-                SslPassword = "",
+                Ssls = new()
+                {
+                    {
+                        "default",
+                        new()
+                        {
+                            SslLocal = "./test.sfx",
+                            SslPassword = "123456"
+                        }
+                    }
+                },
                 NoInput = false,
 
                 NotInclude = new()
@@ -46,7 +74,7 @@ namespace ColoryrServer.ASP
                     new()
                     {
                         IP = "127.0.0.1",
-                        Port = 25555
+                        Port = 80
                     }
                 },
                 Socket = new()
