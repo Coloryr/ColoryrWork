@@ -11,6 +11,7 @@ namespace ColoryrServer.SDK
         public string Cookie { get; init; }
         public MyContentType ContentType { get; init; }
         public Stream Stream { get; init; }
+        public string Method { get; init; }
 
         /// 获取参数
         /// </summary>

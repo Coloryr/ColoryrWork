@@ -124,16 +124,17 @@ namespace ColoryrServer.ASP
                     }
                 }
             }
-            foreach (var item in ServerMain.Config.Http)
+            string[] urls = new string[ServerMain.Config.Http.Count];
+            for (int a = 0; a < ServerMain.Config.Http.Count; a++)
             {
-                builder.WebHost.UseUrls($"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/");
+                var item = ServerMain.Config.Http[a];
+                urls[a] = $"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/";
                 ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
             }
 
-            builder.Services.AddHttpClient<HttpClients>(option =>
-            {
+            builder.WebHost.UseUrls(urls);
 
-            });
+            builder.Services.AddHttpClient<HttpClients>();
             builder.Services.AddTransient<IHttpClients, HttpClients>();
 
             bool Run = true;
@@ -142,7 +143,8 @@ namespace ColoryrServer.ASP
                 {
                     while (Run)
                     {
-                        ServerMain.Command(Console.ReadLine());
+                        if (Run)
+                            ServerMain.Command(Console.ReadLine());
                     }
                 }).Start();
 
@@ -166,6 +168,7 @@ namespace ColoryrServer.ASP
             Run = false;
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
+            ServerMain.LogOut("按下回车键退出");
         }
 
         public static X509Certificate2? Ssl(ConnectionContext? context, string? url)
@@ -242,10 +245,13 @@ namespace ColoryrServer.ASP
             HttpResponse Response = context.Response;
             if (Config.UrlRotes.TryGetValue(Request.Host.Host, out var rote1))
             {
-                await RoteDo(Request, new string[0], rote1, Response);
+                await RoteDo(Request, Array.Empty<string>(), rote1, Response);
             }
-            Response.ContentType = ServerContentType.HTML;
-            await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
+            else
+            {
+                Response.ContentType = ServerContentType.HTML;
+                await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
+            }
         }
 
         private static async Task GetBack(HttpContext context)
@@ -282,6 +288,7 @@ namespace ColoryrServer.ASP
                     Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
                     RowRequest = collection,
                     Parameter = Temp,
+                    Method = Request.Method,
                     ContentType = MyContentType.XFormData
                 }, name);
             }
@@ -314,7 +321,7 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static async Task RoteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response)
+        private static async Task RoteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response, int start = 1)
         {
             using HttpClient ProxyRequest = Clients.GetOne();
             HttpRequestMessage message = new();
@@ -322,7 +329,7 @@ namespace ColoryrServer.ASP
             string url = "";
             if (arg.Length > 1)
             {
-                for (int a = 1; a < arg.Length; a++)
+                for (int a = start; a < arg.Length; a++)
                 {
                     url += $"/{arg[a]}";
                 }
@@ -393,7 +400,7 @@ namespace ColoryrServer.ASP
             var arg = name.Split('/');
             if (Config.UrlRotes.TryGetValue(Request.Host.Host, out var rote1))
             {
-                await RoteDo(Request, arg, rote1, Response);
+                await RoteDo(Request, arg, rote1, Response, 0);
             }
             else if (Config.Rotes.TryGetValue(arg[0], out var rote))
             {
@@ -526,6 +533,7 @@ namespace ColoryrServer.ASP
                     Parameter = temp,
                     RowRequest = collection,
                     ContentType = type,
+                    Method = Request.Method,
                     Stream = type == MyContentType.Other ? Request.Body : null
                 }, name);
             }
