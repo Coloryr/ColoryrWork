@@ -238,7 +238,12 @@ namespace ColoryrServer.ASP
 
         private static async Task GetIndex(HttpContext context)
         {
+            HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
+            if (Config.UrlRotes.TryGetValue(Request.Host.Host, out var rote1))
+            {
+                await RoteDo(Request, new string[0], rote1, Response);
+            }
             Response.ContentType = ServerContentType.HTML;
             await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
         }
