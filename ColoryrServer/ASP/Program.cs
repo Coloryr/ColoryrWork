@@ -309,76 +309,90 @@ namespace ColoryrServer.ASP
             }
         }
 
+        private static async Task RoteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response)
+        {
+            using HttpClient ProxyRequest = Clients.GetOne();
+            HttpRequestMessage message = new();
+            message.Method = new HttpMethod(Request.Method);
+            string url = "";
+            if (arg.Length > 1)
+            {
+                for (int a = 1; a < arg.Length; a++)
+                {
+                    url += $"/{arg[a]}";
+                }
+            }
+
+            message.RequestUri = new Uri($"{rote.Url}{url}");
+            if (Request.Method is "POST")
+                message.Content = new StreamContent(Request.Body);
+            else
+                message.Content = new ByteArrayContent(Array.Empty<byte>());
+
+            foreach (var item in Request.Headers)
+            {
+                if (item.Key.StartsWith("Content"))
+                {
+                    message.Content.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+                }
+                else
+                    message.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+            }
+            foreach (var item in rote.Heads)
+            {
+                message.Headers.Add(item.Key, item.Value);
+            }
+
+            if (url.EndsWith(".php"))
+            {
+                var res = await ProxyRequest.SendAsync(message);
+                Response.StatusCode = (int)res.StatusCode;
+                Response.ContentType = res.Content.Headers.ContentType.ToString();
+
+                foreach (var item in res.Headers)
+                {
+                    if (item.Key is "Transfer-Encoding")
+                        continue;
+                    StringValues values = new(item.Value.ToArray());
+                    Response.Headers.Add(item.Key, values);
+                }
+
+                await res.Content.CopyToAsync(Response.Body);
+            }
+            else
+            {
+                var res = await ProxyRequest.SendAsync(message);
+
+                Response.StatusCode = (int)res.StatusCode;
+                Response.ContentType = res.Content.Headers.ContentType.ToString();
+
+                foreach (var item in res.Headers)
+                {
+
+                    StringValues values = new(item.Value.ToArray());
+                    Response.Headers.Add(item.Key, values);
+                }
+                await res.Content.CopyToAsync(Response.Body);
+            }
+        }
+
         private static async Task GetWeb(HttpContext context)
         {
             HttpRequest Request = context.Request;
+
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
             var name = context.GetRouteValue("name") as string;
             if (name == null)
                 return;
             var arg = name.Split('/');
-            if (Config.Rotes.TryGetValue(arg[0], out var rote))
+            if (Config.UrlRotes.TryGetValue(Request.Host.Host, out var rote1))
             {
-                using HttpClient ProxyRequest = Clients.GetOne();
-                HttpRequestMessage message = new();
-                message.Method = new HttpMethod(Request.Method);
-                string url = "";
-                if (arg.Length > 1)
-                {
-                    for (int a = 1; a < arg.Length; a++)
-                    {
-                        url += $"/{arg[a]}";
-                    }
-                }
-
-                message.RequestUri = new Uri($"{rote.Url}{url}");
-                if (Request.Method is "POST")
-                    message.Content = new StreamContent(Request.Body);
-                else
-                    message.Content = new ByteArrayContent(Array.Empty<byte>());
-
-                foreach (var item in Request.Headers)
-                {
-                    if (item.Key.StartsWith("Content"))
-                    {
-                        message.Content.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
-                    }
-                    else
-                        message.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
-                }
-
-                if (url.EndsWith(".php"))
-                {
-                    var res = await ProxyRequest.SendAsync(message);
-                    Response.StatusCode = (int)res.StatusCode;
-                    Response.ContentType = res.Content.Headers.ContentType.ToString();
-
-                    foreach (var item in res.Headers)
-                    {
-                        if (item.Key is "Transfer-Encoding")
-                            continue;
-                        StringValues values = new(item.Value.ToArray());
-                        Response.Headers.Add(item.Key, values);
-                    }
-
-                    await res.Content.CopyToAsync(Response.Body);
-                }
-                else
-                {
-                    var res = await ProxyRequest.SendAsync(message);
-
-                    Response.StatusCode = (int)res.StatusCode;
-                    Response.ContentType = res.Content.Headers.ContentType.ToString();
-
-                    foreach (var item in res.Headers)
-                    {
-
-                        StringValues values = new(item.Value.ToArray());
-                        Response.Headers.Add(item.Key, values);
-                    }
-                    await res.Content.CopyToAsync(Response.Body);
-                }
+                await RoteDo(Request, arg, rote1, Response);
+            }
+            else if (Config.Rotes.TryGetValue(arg[0], out var rote))
+            {
+                await RoteDo(Request, arg, rote, Response);
             }
             else if (arg.Length == 2)
             {
