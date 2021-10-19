@@ -330,11 +330,11 @@ namespace ColoryrServer.ASP
 
         private static async Task RoteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response, int start = 1)
         {
-            using HttpClient ProxyRequest = Clients.GetOne();
+            HttpClient ProxyRequest = Clients.GetOne();
             HttpRequestMessage message = new();
             message.Method = new HttpMethod(Request.Method);
             string url = "";
-            if (arg.Length > 1)
+            if (arg.Length >= start)
             {
                 for (int a = start; a < arg.Length; a++)
                 {
