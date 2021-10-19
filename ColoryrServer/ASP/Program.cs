@@ -151,15 +151,13 @@ namespace ColoryrServer.ASP
             Web = builder.Build();
             Clients = Web.Services.GetRequiredService<IHttpClients>();
 
-            Web.MapGet("/", GetIndex);
-            Web.MapGet("/{**name}", GetWeb);
-            //Web.MapGet("/{uuid}/{name}", GetGetWeb1);
+            Web.MapGet("/", Config.RoteEnable ? RoteGetIndex : GetIndex);
+            Web.MapGet("/{**name}", Config.RoteEnable ? RoteGetWeb : GetWeb);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}", GetBack);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", GetBack);
 
             Web.MapPost("/", PostBuild);
-            Web.MapPost("/{**name}", GetWeb);
-            // Web.MapPost("/{uuid}/{name}", GetGetWeb1);
+            Web.MapPost("/{**name}", Config.RoteEnable ? RoteGetWeb : GetWeb);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
 
@@ -239,19 +237,28 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static async Task GetIndex(HttpContext context)
+        private static string[] data1 = Array.Empty<string>();
+
+        private static async Task RoteGetIndex(HttpContext context)
         {
             HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
             if (Config.UrlRotes.TryGetValue(Request.Host.Host, out var rote1))
             {
-                await RoteDo(Request, Array.Empty<string>(), rote1, Response);
+                await RoteDo(Request, data1, rote1, Response);
             }
             else
             {
                 Response.ContentType = ServerContentType.HTML;
                 await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
             }
+        }
+
+        private static async Task GetIndex(HttpContext context)
+        {
+            HttpResponse Response = context.Response;
+            Response.ContentType = ServerContentType.HTML;
+            await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
         }
 
         private static async Task GetBack(HttpContext context)
@@ -388,10 +395,9 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static async Task GetWeb(HttpContext context)
+        private static async Task RoteGetWeb(HttpContext context)
         {
             HttpRequest Request = context.Request;
-
             HttpResponse Response = context.Response;
             HttpReturn httpReturn;
             var name = context.GetRouteValue("name") as string;
@@ -407,6 +413,31 @@ namespace ColoryrServer.ASP
                 await RoteDo(Request, arg, rote, Response);
             }
             else if (arg.Length == 2)
+            {
+                httpReturn = HttpStatic.Get(arg[0], arg[1]);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+            }
+            else
+            {
+                httpReturn = HttpStatic.Get(name);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+            }
+        }
+
+        private static async Task GetWeb(HttpContext context)
+        {
+            HttpRequest Request = context.Request;
+            HttpResponse Response = context.Response;
+            HttpReturn httpReturn;
+            var name = context.GetRouteValue("name") as string;
+            if (name == null)
+                return;
+            var arg = name.Split('/');
+            if (arg.Length == 2)
             {
                 httpReturn = HttpStatic.Get(arg[0], arg[1]);
                 Response.ContentType = httpReturn.ContentType;
