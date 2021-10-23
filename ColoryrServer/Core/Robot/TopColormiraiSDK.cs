@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -6,11 +6,140 @@ namespace ColoryrServer.Robot
 {
     public partial class RobotSDK
     {
+        private record QQGroup
+        {
+            public long QQ { get; set; }
+            public long Group { get; set; }
+        }
+        private record QQMember
+        {
+            public long QQ { get; set; }
+            public long Group { get; set; }
+            public long Member { get; set; }
+        }
+        private record QQFriend
+        {
+            public long QQ { get; set; }
+            public long Friend { get; set; }
+        }
+        private readonly Dictionary<long, Action<ListFriendPack>> GetFriendsMap = new();
+        private readonly Dictionary<QQGroup, Action<ListMemberPack>> GetMembersMap = new();
+        private readonly Dictionary<QQGroup, Action<GroupSettingPack>> GetGroupSettingMap = new();
+        private readonly Dictionary<long, Action<ListGroupPack>> GetGroupsMap = new();
+        private readonly Dictionary<string, Action<string>> GetImageUrlMap = new();
+        private readonly Dictionary<QQMember, Action<MemberInfoPack>> GetMemberInfoMap = new();
+        private readonly Dictionary<QQFriend, Action<FriendInfoPack>> GetFriendInfoMap = new();
+        private readonly Dictionary<QQGroup, Action<GroupFilesPack>> GetGroupFilesMap = new();
+        private readonly Dictionary<QQGroup, Action<GroupAnnouncementsPack>> GetGroupAnnouncementsMap = new();
+        private partial bool CallTop(byte index, string data)
+        {
+            switch (index)
+            {
+                case 55:
+                    {
+                        var pack = JsonConvert.DeserializeObject<ListGroupPack>(data);
+                        if (GetGroupsMap.TryGetValue(pack.qq, out var action))
+                        {
+                            GetGroupsMap.Remove(pack.qq);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 56:
+                    {
+                        var pack = JsonConvert.DeserializeObject<ListFriendPack>(data);
+                        if (GetFriendsMap.TryGetValue(pack.qq, out var action))
+                        {
+                            GetFriendsMap.Remove(pack.qq);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 57:
+                    {
+                        var pack = JsonConvert.DeserializeObject<ListMemberPack>(data);
+                        var key = new QQGroup() { QQ = pack.qq, Group = pack.id };
+                        if (GetMembersMap.TryGetValue(key, out var action))
+                        {
+                            GetMembersMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 58:
+                    {
+                        var pack = JsonConvert.DeserializeObject<GroupSettingPack>(data);
+                        var key = new QQGroup() { QQ = pack.qq, Group = pack.id };
+                        if (GetGroupSettingMap.TryGetValue(key, out var action))
+                        {
+                            GetGroupSettingMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 90:
+                    {
+                        var pack = JsonConvert.DeserializeObject<ReImagePack>(data);
+                        if (GetImageUrlMap.TryGetValue(pack.uuid, out var action))
+                        {
+                            GetImageUrlMap.Remove(pack.uuid);
+                            action.Invoke(pack.url);
+                        }
+                        return true;
+                    }
+                case 91:
+                    {
+                        var pack = JsonConvert.DeserializeObject<MemberInfoPack>(data);
+                        var key = new QQMember() { QQ = pack.qq, Group = pack.id, Member = pack.fid };
+                        if (GetMemberInfoMap.TryGetValue(key, out var action))
+                        {
+                            GetMemberInfoMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 92:
+                    {
+                        var pack = JsonConvert.DeserializeObject<FriendInfoPack>(data);
+                        var key = new QQFriend() { QQ = pack.qq, Friend = pack.id };
+                        if (GetFriendInfoMap.TryGetValue(key, out var action))
+                        {
+                            GetFriendInfoMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 101:
+                    {
+                        var pack = JsonConvert.DeserializeObject<GroupFilesPack>(data);
+                        var key = new QQGroup() { QQ = pack.qq, Group = pack.id };
+                        if (GetGroupFilesMap.TryGetValue(key, out var action))
+                        {
+                            GetGroupFilesMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                case 109:
+                    {
+                        var pack = JsonConvert.DeserializeObject<GroupAnnouncementsPack>(data);
+                        var key = new QQGroup() { QQ = pack.qq, Group = pack.id };
+                        if (GetGroupAnnouncementsMap.TryGetValue(key, out var action))
+                        {
+                            GetGroupAnnouncementsMap.Remove(key);
+                            action.Invoke(pack);
+                        }
+                        return true;
+                    }
+                default:
+                    return false;
+            }
+        }
         /// <summary>
-        /// 55 [²å¼ş]»ñÈ¡ÈºÁĞ±í
+        /// 55 [æ’ä»¶]è·å–ç¾¤åˆ—è¡¨
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="res">»ñÈ¡³É¹¦ºó»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="res">è·å–æˆåŠŸåå›è°ƒ</param>
         public void GetGroups(long qq, Action<ListGroupPack> res)
         {
             GetGroupsMap.Add(qq, res);
@@ -21,10 +150,10 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 56 [²å¼ş]»ñÈ¡ºÃÓÑÁĞ±í
+        /// 56 [æ’ä»¶]è·å–å¥½å‹åˆ—è¡¨
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="res">»ñÈ¡³É¹¦ºó»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="res">è·å–æˆåŠŸåå›è°ƒ</param>
         public void GetFriends(long qq, Action<ListFriendPack> res)
         {
             GetFriendsMap.Add(qq, res);
@@ -35,11 +164,11 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 57 [²å¼ş]»ñÈ¡Èº³ÉÔ±
+        /// 57 [æ’ä»¶]è·å–ç¾¤æˆå‘˜
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="res">»ñÈ¡³É¹¦ºó»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="res">è·å–æˆåŠŸåå›è°ƒ</param>
         public void GetMembers(long qq, long group, Action<ListMemberPack> res)
         {
             var key = new QQGroup() { QQ = qq, Group = group };
@@ -52,11 +181,11 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 58 [²å¼ş]»ñÈ¡ÈºÉèÖÃ
+        /// 58 [æ’ä»¶]è·å–ç¾¤è®¾ç½®
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="res">»ñÈ¡³É¹¦ºó»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="res">è·å–æˆåŠŸåå›è°ƒ</param>
         public void GetGroupSetting(long qq, long group, Action<GroupSettingPack> res)
         {
             var key = new QQGroup() { QQ = qq, Group = group };
@@ -69,11 +198,11 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 54 [²å¼ş]·¢ËÍºÃÓÑÏûÏ¢
+        /// 54 [æ’ä»¶]å‘é€å¥½å‹æ¶ˆæ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ºÃÓÑQQºÅ</param>
-        /// <param name="message">ÏûÏ¢</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">å¥½å‹QQå·</param>
+        /// <param name="message">æ¶ˆæ¯</param>
         public void SendFriendMessage(long qq, long friend, List<string> message)
         {
             var data = BuildPack.Build(new SendFriendMessagePack()
@@ -85,11 +214,11 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 52 [²å¼ş]·¢ËÍÈºÏûÏ¢
+        /// 52 [æ’ä»¶]å‘é€ç¾¤æ¶ˆæ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="message">ÏûÏ¢</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="message">æ¶ˆæ¯</param>
         public void SendGroupMessage(long qq, long group, List<string> message)
         {
             var data = BuildPack.Build(new SendGroupMessagePack()
@@ -102,12 +231,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 53 [²å¼ş]·¢ËÍË½ÁÄÏûÏ¢
+        /// 53 [æ’ä»¶]å‘é€ç§èŠæ¶ˆæ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
-        /// <param name="message">ÏûÏ¢</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
+        /// <param name="message">æ¶ˆæ¯</param>
         public void SendGroupTempMessage(long qq, long group, long member, List<string> message)
         {
             var data = BuildPack.Build(new SendGroupPrivateMessagePack()
@@ -121,12 +250,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 59 [²å¼ş]»ØÓ¦ÊÂ¼ş
+        /// 59 [æ’ä»¶]å›åº”äº‹ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="eventid">ÊÂ¼şID</param>
-        /// <param name="dofun">²Ù×÷·½Ê½</param>
-        /// <param name="arg">¸½¼Ó²ÎÊı</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="eventid">äº‹ä»¶ID</param>
+        /// <param name="dofun">æ“ä½œæ–¹å¼</param>
+        /// <param name="arg">é™„åŠ å‚æ•°</param>
         public void EventCall(long qq, long eventid, int dofun, List<object> arg)
         {
             var data = BuildPack.Build(new EventCallPack()
@@ -142,15 +271,15 @@ namespace ColoryrServer.Robot
         public enum GroupCallType
         {
             /// <summary>
-            /// Í¬Òâ
+            /// åŒæ„
             /// </summary>
             accept = 0,
             /// <summary>
-            /// ¾Ü¾ø
+            /// æ‹’ç»
             /// </summary>
             reject,
             /// <summary>
-            /// ²»Àí²Ç
+            /// ä¸ç†ç¬
             /// </summary>
             ignore
         }
@@ -158,57 +287,57 @@ namespace ColoryrServer.Robot
         public enum FriendCallType
         {
             /// <summary>
-            /// Í¬Òâ
+            /// åŒæ„
             /// </summary>
             accept = 0,
             /// <summary>
-            /// ¾Ü¾ø
+            /// æ‹’ç»
             /// </summary>
             reject
         }
 
         /// <summary>
-        /// Í¬ÒâÑûÇë¼ÓÈº
+        /// åŒæ„é‚€è¯·åŠ ç¾¤
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="eventid">ÊÂ¼şID</param>
-        /// <param name="accept">ÊÇ·ñÍ¬Òâ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="eventid">äº‹ä»¶ID</param>
+        /// <param name="accept">æ˜¯å¦åŒæ„</param>
         public void BotInvitedJoinGroupRequestCall(long qq, long eventid, bool accept)
         {
             EventCall(qq, eventid, accept ? 0 : 1, null);
         }
 
         /// <summary>
-        /// Í¬Òâ³ÉÔ±ÈëÈº
+        /// åŒæ„æˆå‘˜å…¥ç¾¤
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="eventid">ÊÂ¼şID</param>
-        /// <param name="type">²Ù×÷ÀàĞÍ</param>
-        /// <param name="blackList">ÊÇ·ñ¼ÓÈëºÚÃûµ¥</param>
-        /// <param name="message">¾Ü¾øÀíÓÉ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="eventid">äº‹ä»¶ID</param>
+        /// <param name="type">æ“ä½œç±»å‹</param>
+        /// <param name="blackList">æ˜¯å¦åŠ å…¥é»‘åå•</param>
+        /// <param name="message">æ‹’ç»ç†ç”±</param>
         public void MemberJoinRequestCall(long qq, long eventid, GroupCallType type, bool blackList = false, string message = "")
         {
             EventCall(qq, eventid, (int)type, new() { blackList, message });
         }
 
         /// <summary>
-        /// Í¬ÒâĞÂºÃÓÑÉêÇë
+        /// åŒæ„æ–°å¥½å‹ç”³è¯·
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="eventid">ÊÂ¼şID</param>
-        /// <param name="type">²Ù×÷ÀàĞÍ</param>
-        /// <param name="blackList">ÊÇ·ñ¼ÓÈëºÚÃûµ¥</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="eventid">äº‹ä»¶ID</param>
+        /// <param name="type">æ“ä½œç±»å‹</param>
+        /// <param name="blackList">æ˜¯å¦åŠ å…¥é»‘åå•</param>
         public void NewFriendRequestCall(long qq, long eventid, FriendCallType type, bool blackList = false)
         {
             EventCall(qq, eventid, (int)type, new() { blackList });
         }
 
         /// <summary>
-        /// 64 [²å¼ş]É¾³ıÈºÔ±
+        /// 64 [æ’ä»¶]åˆ é™¤ç¾¤å‘˜
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
         public void GroupDeleteMember(long qq, long group, long member)
         {
             var data = BuildPack.Build(new GroupKickMemberPack()
@@ -221,12 +350,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 65 [²å¼ş]½ûÑÔÈºÔ±
+        /// 65 [æ’ä»¶]ç¦è¨€ç¾¤å‘˜
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
-        /// <param name="time">½ûÑÔÊ±¼ä</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
+        /// <param name="time">ç¦è¨€æ—¶é—´</param>
         public void GroupMuteMember(long qq, long group, long member, int time)
         {
             var data = BuildPack.Build(new GroupMuteMemberPack()
@@ -240,11 +369,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 66 [²å¼ş]½â³ı½ûÑÔ
+        /// 66 [æ’ä»¶]è§£é™¤ç¦è¨€
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
         public void GroupUnmuteMember(long qq, long group, long member)
         {
             var data = BuildPack.Build(new GroupUnmuteMemberPack()
@@ -257,10 +386,10 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 67 [²å¼ş]¿ªÆôÈ«Ô±½ûÑÔ
+        /// 67 [æ’ä»¶]å¼€å¯å…¨å‘˜ç¦è¨€
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
         public void GroupMuteAll(long qq, long group)
         {
             var data = BuildPack.Build(new GroupMuteAllPack()
@@ -272,10 +401,10 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 68 [²å¼ş]¹Ø±ÕÈ«Ô±½ûÑÔ
+        /// 68 [æ’ä»¶]å…³é—­å…¨å‘˜ç¦è¨€
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
         public void GroupUnmuteAll(long qq, long group)
         {
             var data = BuildPack.Build(new GroupUnmuteAllPack()
@@ -287,12 +416,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 69 [²å¼ş]ÉèÖÃÈºÃûÆ¬
+        /// 69 [æ’ä»¶]è®¾ç½®ç¾¤åç‰‡
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
-        /// <param name="card">ÈºÃûÆ¬</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
+        /// <param name="card">ç¾¤åç‰‡</param>
         public void GroupSetMember(long qq, long group, long member, string card)
         {
             var data = BuildPack.Build(new GroupSetMemberCard()
@@ -306,11 +435,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 70 [²å¼ş]ÉèÖÃÈºÃû
+        /// 70 [æ’ä»¶]è®¾ç½®ç¾¤å
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="name">ÈºÃû×Ö</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="name">ç¾¤åå­—</param>
         public void GroupSetName(long qq, long group, string name)
         {
             var data = BuildPack.Build(new GroupSetNamePack()
@@ -323,10 +452,10 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 71 [²å¼ş]³·»ØÏûÏ¢
+        /// 71 [æ’ä»¶]æ’¤å›æ¶ˆæ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="id">ÏûÏ¢ID</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="id">æ¶ˆæ¯ID</param>
         public void ReCallMessage(long qq, int id)
         {
             var data = BuildPack.Build(new ReCallMessagePack()
@@ -338,11 +467,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 75 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½Èº
+        /// 75 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°ç¾¤
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="file">ÎÄ¼şÎ»ÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="file">æ–‡ä»¶ä½ç½®</param>
         public void SendGroupImageFile(long qq, long group, string file)
         {
             var data = BuildPack.Build(new SendGroupImageFilePack()
@@ -355,12 +484,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 76 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½ÈºË½ÁÄ
+        /// 76 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°ç¾¤ç§èŠ
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
-        /// <param name="file">ÎÄ¼şÎ»ÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
+        /// <param name="file">æ–‡ä»¶ä½ç½®</param>
         public void SendGroupPrivateImageFile(long qq, long group, long member, string file)
         {
             var data = BuildPack.Build(new SendGroupPrivateImageFilePack()
@@ -374,11 +503,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 77 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½ÅóÓÑ
+        /// 77 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°æœ‹å‹
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ºÃÓÑQQºÅ</param>
-        /// <param name="file">ÎÄ¼şÎ»ÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">å¥½å‹QQå·</param>
+        /// <param name="file">æ–‡ä»¶ä½ç½®</param>
         public void SendFriendImageFile(long qq, long friend, string file)
         {
             var data = BuildPack.Build(new SendFriendImageFilePack()
@@ -391,11 +520,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 78 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÓïÒô·¢ËÍµ½Èº
+        /// 78 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½è¯­éŸ³å‘é€åˆ°ç¾¤
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="file">ÎÄ¼şÎ»ÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="file">æ–‡ä»¶ä½ç½®</param>
         public void SendGroupSoundFile(long qq, long group, string file)
         {
             var data = BuildPack.Build(new SendGroupSoundFilePack()
@@ -408,10 +537,10 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 83 [²å¼ş]·¢ËÍÅóÓÑ´ÁÒ»´Á
+        /// 83 [æ’ä»¶]å‘é€æœ‹å‹æˆ³ä¸€æˆ³
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ºÃÓÑQQºÅ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">å¥½å‹QQå·</param>
         public void SendFriendNudge(long qq, long friend)
         {
             var data = BuildPack.Build(new SendFriendNudgePack()
@@ -423,11 +552,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 84 [²å¼ş]·¢ËÍÈº³ÉÔ±´ÁÒ»´Á
+        /// 84 [æ’ä»¶]å‘é€ç¾¤æˆå‘˜æˆ³ä¸€æˆ³
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
         public void SendGroupMemberNudge(long qq, long group, long member)
         {
             var data = BuildPack.Build(new SendGroupMemberNudgePack()
@@ -440,11 +569,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 90 [²å¼ş]»ñÈ¡Í¼Æ¬Url
+        /// 90 [æ’ä»¶]è·å–å›¾ç‰‡Url
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="uuid">Í¼Æ¬UUID</param>
-        /// <param name="res">·µ»Ø»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="uuid">å›¾ç‰‡UUID</param>
+        /// <param name="res">è¿”å›å›è°ƒ</param>
         public void GetImageUrls(long qq, string uuid, Action<string> res)
         {
             GetImageUrlMap.Add(uuid, res);
@@ -456,12 +585,12 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 91 [²å¼ş]»ñÈ¡Èº³ÉÔ±ĞÅÏ¢
+        /// 91 [æ’ä»¶]è·å–ç¾¤æˆå‘˜ä¿¡æ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">ÈºÔ±</param>
-        /// <param name="res">·µ»Ø»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤å‘˜</param>
+        /// <param name="res">è¿”å›å›è°ƒ</param>
         public void GetMemberInfo(long qq, long group, long member, Action<MemberInfoPack> res)
         {
             var key = new QQMember() { QQ = qq, Group = group, Member = member };
@@ -475,11 +604,11 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 92 [²å¼ş]»ñÈ¡ÅóÓÑĞÅÏ¢
+        /// 92 [æ’ä»¶]è·å–æœ‹å‹ä¿¡æ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ÈººÅ</param>
-        /// <param name="res">·µ»Ø»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">ç¾¤å·</param>
+        /// <param name="res">è¿”å›å›è°ƒ</param>
         public void GetFriendInfo(long qq, long friend, Action<FriendInfoPack> res)
         {
             var key = new QQFriend() { QQ = qq, Friend = friend };
@@ -504,18 +633,18 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 93 [²å¼ş]·¢ËÍÒôÀÖ·ÖÏí
+        /// 93 [æ’ä»¶]å‘é€éŸ³ä¹åˆ†äº«
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="id">·¢ËÍÄ¿±ê</param>
-        /// <param name="fid">·¢ËÍÄ¿±ê</param>
-        /// <param name="kind">ÒôÀÖÀàĞÍ</param>
-        /// <param name="type">Ä¿±êÀàĞÍ</param>
-        /// <param name="title">±êÌâ</param>
-        /// <param name="summary">¸ÅÒª</param>
-        /// <param name="jumpUrl">Ìø×ªUrl</param>
-        /// <param name="pictureUrl">Í¼Æ¬Url</param>
-        /// <param name="musicUrl">ÒôÀÖUrl</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="id">å‘é€ç›®æ ‡</param>
+        /// <param name="fid">å‘é€ç›®æ ‡</param>
+        /// <param name="kind">éŸ³ä¹ç±»å‹</param>
+        /// <param name="type">ç›®æ ‡ç±»å‹</param>
+        /// <param name="title">æ ‡é¢˜</param>
+        /// <param name="summary">æ¦‚è¦</param>
+        /// <param name="jumpUrl">è·³è½¬Url</param>
+        /// <param name="pictureUrl">å›¾ç‰‡Url</param>
+        /// <param name="musicUrl">éŸ³ä¹Url</param>
         public void SendMusicShare(long qq, long id, long fid, MusicKind kind,
             SendToType type, string title, string summary, string jumpUrl,
             string pictureUrl, string musicUrl)
@@ -537,11 +666,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 94 [²å¼ş]ÉèÖÃÈº¾«»ªÏûÏ¢
+        /// 94 [æ’ä»¶]è®¾ç½®ç¾¤ç²¾åæ¶ˆæ¯
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="mid">ÏûÏ¢ID</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="mid">æ¶ˆæ¯ID</param>
         public void GroupSetEssenceMessage(long qq, long group, int mid)
         {
             var data = BuildPack.Build(new GroupSetEssenceMessagePack()
@@ -554,15 +683,15 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 95 [²å¼ş]ÏûÏ¢¶ÓÁĞ
+        /// 95 [æ’ä»¶]æ¶ˆæ¯é˜Ÿåˆ—
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="id">·¢ËÍÄ¿±ê</param>
-        /// <param name="fid">·¢ËÍÄ¿±ê</param>
-        /// <param name="type">·¢ËÍÄ¿±êÀàĞÍ</param>
-        /// <param name="file">Í¼Æ¬ÎÄ¼şÎ»ÖÃ</param>
-        /// <param name="message">ÏûÏ¢ÄÚÈİ</param>
-        /// <param name="send">ÊÇ·ñ·¢ËÍ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="id">å‘é€ç›®æ ‡</param>
+        /// <param name="fid">å‘é€ç›®æ ‡</param>
+        /// <param name="type">å‘é€ç›®æ ‡ç±»å‹</param>
+        /// <param name="file">å›¾ç‰‡æ–‡ä»¶ä½ç½®</param>
+        /// <param name="message">æ¶ˆæ¯å†…å®¹</param>
+        /// <param name="send">æ˜¯å¦å‘é€</param>
         public void MessageBuff(long qq, long id, long fid, SendToType type,
             string file, List<string> message, bool send)
         {
@@ -580,11 +709,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 96 [²å¼ş]·¢ËÍÅóÓÑ÷»×Ó
+        /// 96 [æ’ä»¶]å‘é€æœ‹å‹éª°å­
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ºÃÓÑQQºÅ</param>
-        /// <param name="dice">µãÊı</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">å¥½å‹QQå·</param>
+        /// <param name="dice">ç‚¹æ•°</param>
         public void SendFriendDice(long qq, long friend, int dice)
         {
             var data = BuildPack.Build(new SendFriendDicePack()
@@ -597,11 +726,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 97 [²å¼ş]·¢ËÍÈº÷»×Ó
+        /// 97 [æ’ä»¶]å‘é€ç¾¤éª°å­
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="dice">µãÊı</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="dice">ç‚¹æ•°</param>
         public void SendGroupDice(long qq, long group, int dice)
         {
             var data = BuildPack.Build(new SendGroupDicePack()
@@ -614,12 +743,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 98 [²å¼ş]·¢ËÍÈºË½ÁÄ÷»×Ó
+        /// 98 [æ’ä»¶]å‘é€ç¾¤ç§èŠéª°å­
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">Èº³ÉÔ±</param>
-        /// <param name="dice">µãÊı</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤æˆå‘˜</param>
+        /// <param name="dice">ç‚¹æ•°</param>
         public void SendGroupPrivateDice(long qq, long group, long member, int dice)
         {
             var data = BuildPack.Build(new SendGroupPrivateDicePack()
@@ -633,12 +762,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 99 [²å¼ş]ÉÏ´«ÈºÎÄ¼ş
+        /// 99 [æ’ä»¶]ä¸Šä¼ ç¾¤æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="file">ÎÄ¼şÂ·¾¶</param>
-        /// <param name="name">ÈºÎÄ¼şÃû³Æ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="file">æ–‡ä»¶è·¯å¾„</param>
+        /// <param name="name">ç¾¤æ–‡ä»¶åç§°</param>
         public void GroupAddFilePack(long qq, long group, string file, string name)
         {
             var data = BuildPack.Build(new GroupAddFilePack()
@@ -652,11 +781,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 100 [²å¼ş]É¾³ıÈºÎÄ¼ş
+        /// 100 [æ’ä»¶]åˆ é™¤ç¾¤æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="fid">ÈºÎÄ¼şID</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="fid">ç¾¤æ–‡ä»¶ID</param>
         public void GroupDeleteFile(long qq, long group, string fid)
         {
             var data = BuildPack.Build(new GroupDeleteFilePack()
@@ -669,11 +798,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 101 [²å¼ş]»ñÈ¡ÈºÎÄ¼ş
+        /// 101 [æ’ä»¶]è·å–ç¾¤æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="res">»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="res">å›è°ƒ</param>
         public void GroupGetFiles(long qq, long group, Action<GroupFilesPack> res)
         {
             var key = new QQGroup() { QQ = qq, Group = group };
@@ -687,12 +816,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 102 [²å¼ş]ÒÆ¶¯ÈºÎÄ¼ş
+        /// 102 [æ’ä»¶]ç§»åŠ¨ç¾¤æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="fid">ÎÄ¼şID</param>
-        /// <param name="dir">ĞÂµÄÂ·¾¶</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="fid">æ–‡ä»¶ID</param>
+        /// <param name="dir">æ–°çš„è·¯å¾„</param>
         public void GroupMoveFile(long qq, long group, string fid, string dir)
         {
             var data = BuildPack.Build(new GroupMoveFilePack()
@@ -706,12 +835,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 103 [²å¼ş]ÖØÃüÃûÈºÎÄ¼ş
+        /// 103 [æ’ä»¶]é‡å‘½åç¾¤æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="fid">ÎÄ¼şID</param>
-        /// <param name="name">ĞÂÎÄ¼şÃû</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="fid">æ–‡ä»¶ID</param>
+        /// <param name="name">æ–°æ–‡ä»¶å</param>
         public void GroupRemoveFile(long qq, long group, string fid, string name)
         {
             var data = BuildPack.Build(new GroupRenameFilePack()
@@ -725,11 +854,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 104 [²å¼ş]´´ĞÂÈºÎÄ¼şÎÄ¼ş¼Ğ
+        /// 104 [æ’ä»¶]åˆ›æ–°ç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="dir">ÎÄ¼ş¼ĞÃû×Ö</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="dir">æ–‡ä»¶å¤¹åå­—</param>
         public void GroupAddDir(long qq, long group, string dir)
         {
             var data = BuildPack.Build(new GroupAddDirPack()
@@ -742,11 +871,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 105 [²å¼ş]É¾³ıÈºÎÄ¼şÎÄ¼ş¼Ğ
+        /// 105 [æ’ä»¶]åˆ é™¤ç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="dir">ÎÄ¼ş¼ĞÃû×Ö</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="dir">æ–‡ä»¶å¤¹åå­—</param>
         public void GroupRemoveDir(long qq, long group, string dir)
         {
             var data = BuildPack.Build(new GroupDeleteDirPack()
@@ -758,12 +887,12 @@ namespace ColoryrServer.Robot
             AddTask(data);
         }
         /// <summary>
-        /// 106 [²å¼ş]ÖØÃüÃûÈºÎÄ¼şÎÄ¼ş¼Ğ
+        /// 106 [æ’ä»¶]é‡å‘½åç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="old">¾ÉµÄÃû×Ö</param>
-        /// <param name="now">ĞÂµÄÃû×Ö</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="old">æ—§çš„åå­—</param>
+        /// <param name="now">æ–°çš„åå­—</param>
         public void GroupRenameDir(long qq, long group, string old, string now)
         {
             var data = BuildPack.Build(new GroupRenameDirPack()
@@ -777,12 +906,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 107 [²å¼ş]ÏÂÔØÈºÎÄ¼şµ½Ö¸¶¨Î»ÖÃ
+        /// 107 [æ’ä»¶]ä¸‹è½½ç¾¤æ–‡ä»¶åˆ°æŒ‡å®šä½ç½®
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="fid">ÎÄ¼şID</param>
-        /// <param name="file">ÏÂÔØµ½µÄÎ»ÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="fid">æ–‡ä»¶ID</param>
+        /// <param name="file">ä¸‹è½½åˆ°çš„ä½ç½®</param>
         public void GroupDownloadFile(long qq, long group, string fid, string file)
         {
             var data = BuildPack.Build(new GroupDownloadFilePack()
@@ -796,12 +925,12 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 108 [²å¼ş]ÉèÖÃÈ¡Ïû¹ÜÀíÔ±
+        /// 108 [æ’ä»¶]è®¾ç½®å–æ¶ˆç®¡ç†å‘˜
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="member">Èº³ÉÔ±QQºÅ</param>
-        /// <param name="set">ÊÇ·ñÉèÖÃ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="member">ç¾¤æˆå‘˜QQå·</param>
+        /// <param name="set">æ˜¯å¦è®¾ç½®</param>
         public void GroupSetAdmin(long qq, long group, long member, bool set)
         {
             var data = BuildPack.Build(new GroupSetAdminPack()
@@ -815,11 +944,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 109 [²å¼ş]»ñÈ¡Èº¹«¸æ
+        /// 109 [æ’ä»¶]è·å–ç¾¤å…¬å‘Š
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="res">»Øµ÷</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="res">å›è°ƒ</param>
         public void GroupGetAnnouncements(long qq, long group, Action<GroupAnnouncementsPack> res)
         {
             var key = new QQGroup() { QQ = qq, Group = group };
@@ -833,17 +962,17 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 110 [²å¼ş]ÉèÖÃÈº¹«¸æ
+        /// 110 [æ’ä»¶]è®¾ç½®ç¾¤å…¬å‘Š
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="imageFile">Í¼Æ¬Â·¾¶</param>
-        /// <param name="sendToNewMember">·¢ËÍ¸øĞÂÈºÔ±</param>
-        /// <param name="isPinned">¶¥ÖÃ</param>
-        /// <param name="showEditCard">ÏÔÊ¾ÄÜ¹»Òıµ¼Èº³ÉÔ±ĞŞ¸ÄêÇ³ÆµÄ´°¿Ú</param>
-        /// <param name="showPopup">Ê¹ÓÃµ¯´°</param>
-        /// <param name="requireConfirmation">ĞèÒªÈº³ÉÔ±È·ÈÏ</param>
-        /// <param name="text">¹«¸æÄÚÈİ</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="imageFile">å›¾ç‰‡è·¯å¾„</param>
+        /// <param name="sendToNewMember">å‘é€ç»™æ–°ç¾¤å‘˜</param>
+        /// <param name="isPinned">é¡¶ç½®</param>
+        /// <param name="showEditCard">æ˜¾ç¤ºèƒ½å¤Ÿå¼•å¯¼ç¾¤æˆå‘˜ä¿®æ”¹æ˜µç§°çš„çª—å£</param>
+        /// <param name="showPopup">ä½¿ç”¨å¼¹çª—</param>
+        /// <param name="requireConfirmation">éœ€è¦ç¾¤æˆå‘˜ç¡®è®¤</param>
+        /// <param name="text">å…¬å‘Šå†…å®¹</param>
         public void GroupAddAnnouncement(long qq, long group, string imageFile, string text,
             bool sendToNewMember = false, bool isPinned = false, bool showEditCard = false,
             bool showPopup = false, bool requireConfirmation = false)
@@ -864,11 +993,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 111 [²å¼ş]É¾³ıÈº¹«¸æ
+        /// 111 [æ’ä»¶]åˆ é™¤ç¾¤å…¬å‘Š
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="group">ÈººÅ</param>
-        /// <param name="fid">¹«¸æID</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="group">ç¾¤å·</param>
+        /// <param name="fid">å…¬å‘ŠID</param>
         public void GroupRemoveAnnouncement(long qq, long group, string fid)
         {
             var data = BuildPack.Build(new GroupDeleteAnnouncementPack()
@@ -881,11 +1010,11 @@ namespace ColoryrServer.Robot
         }
 
         /// <summary>
-        /// 112 [²å¼ş]·¢ËÍºÃÓÑÓïÑÔÎÄ¼ş
+        /// 112 [æ’ä»¶]å‘é€å¥½å‹è¯­è¨€æ–‡ä»¶
         /// </summary>
-        /// <param name="qq">qqºÅ</param>
-        /// <param name="friend">ºÃÓÑQQºÅ</param>
-        /// <param name="file">ÎÄ¼şÂ·¾¶</param>
+        /// <param name="qq">qqå·</param>
+        /// <param name="friend">å¥½å‹QQå·</param>
+        /// <param name="file">æ–‡ä»¶è·¯å¾„</param>
         public void SendFriendSoundFile(long qq, long friend, string file)
         {
             var data = BuildPack.Build(new SendFriendSoundFilePack()

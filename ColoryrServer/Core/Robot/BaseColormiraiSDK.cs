@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-
+//请用net5运行
+//并安装Newtonsoft.Json
 namespace ColoryrServer.Robot
 {
+    //机器人返回数据包
     /// <summary>
     /// 55 [插件]获取群列表
     /// </summary>
@@ -57,14 +59,32 @@ namespace ColoryrServer.Robot
         public GroupSettings setting { get; set; }
     }
     /// <summary>
+    /// 90 [插件]获取图片Url
+    /// </summary>
+    public record ReImagePack : PackBase
+    {
+        /// <summary>
+        /// 图片UUID
+        /// </summary>
+        public string uuid { get; set; }
+        /// <summary>
+        /// 图片地址
+        /// </summary>
+        public string url { get; set; }
+    }
+    /// <summary>
     /// 91 [插件]获取群成员信息
     /// </summary>
     public record MemberInfoPack : PackBase
     {
         /// <summary>
-        /// QQ号码
+        /// 群号
         /// </summary>
         public long id { get; set; }
+        /// <summary>
+        /// 群员QQ号
+        /// </summary>
+        public long fid { get; set; }
         /// <summary>
         /// 昵称
         /// </summary>
@@ -136,8 +156,23 @@ namespace ColoryrServer.Robot
         /// <summary>
         /// 文件列表
         /// </summary>
-        public List<string> files { get; set; }
+        public List<GroupFileInfo> files { get; set; }
     }
+    /// <summary>
+    /// 109 [插件]获取群公告
+    /// </summary>
+    public record GroupAnnouncementsPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 群公告
+        /// </summary>
+        public List<GroupAnnouncement> list { get; set; }
+    }
+    //机器人枚举
     /// <summary>
     /// 性别
     /// </summary>
@@ -155,6 +190,86 @@ namespace ColoryrServer.Robot
         MEMBER,
         ADMINISTRATOR,
         OWNER
+    }
+    //机器人数据类型
+    /// <summary>
+    /// 群公告
+    /// </summary>
+    public record GroupAnnouncement
+    {
+        /// <summary>
+        /// 发送者ID
+        /// </summary>
+        public long senderId;
+        public string fid;
+        public bool allConfirmed;
+        public int confirmedMembersCount;
+        public long publicationTime;
+        public string content;
+        public string image;
+        public bool sendToNewMember;
+        public bool isPinned;
+        public bool showEditCard;
+        public bool showPopup;
+        public bool requireConfirmation;
+    }
+    /// <summary>
+    /// 群文件信息
+    /// </summary>
+    public record GroupFileInfo
+    {
+        /// <summary>
+        /// 文件名
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// 文件ID
+        /// </summary>
+        public string id { get; set; }
+        /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string path { get; set; }
+        /// <summary>
+        /// 父层文件信息
+        /// </summary>
+        public GroupFileInfo parent { get; set; }
+        /// <summary>
+        /// 是否是文件
+        /// </summary>
+        public bool isFile { get; set; }
+        /// <summary>
+        /// 是否是文件夹
+        /// </summary>
+        public bool isDirectory { get; set; }
+        /// <summary>
+        /// 文件大小
+        /// </summary>
+        public long length { get; set; }
+        /// <summary>
+        /// 下载次数
+        /// </summary>
+        public int downloadTimes { get; set; }
+        /// <summary>
+        /// 上传者QQ号
+        /// </summary>
+        public long uploaderId { get; set; }
+        /// <summary>
+        /// 上传时间
+        /// </summary>
+        public long uploadTime { get; set; }
+        /// <summary>
+        /// 上次修改时间
+        /// </summary>
+        public long lastModifyTime { get; set; }
+        /// <summary>
+        /// SHA1
+        /// </summary>
+        public string sha1 { get; set; }
+        /// <summary>
+        /// MD5
+        /// </summary>
+        public string md5 { get; set; }
     }
     /// <summary>
     /// 用户信息
@@ -234,6 +349,7 @@ namespace ColoryrServer.Robot
         /// </summary>
         public bool isAnonymousChatEnabled { get; set; }
     }
+    //机器人公共数据包
     /// <summary>
     /// 基础包
     /// </summary>
@@ -1084,7 +1200,7 @@ namespace ColoryrServer.Robot
     }
     /// <summary>
     /// 55 [插件]获取群列表
-    /// 56 [插件] 获取好友列表
+    /// 56 [插件]获取好友列表
     /// </summary>
     public record GetPack : PackBase
     {
@@ -1093,7 +1209,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 57 [插件]获取群成员
     /// </summary>
-    public record GetGroupMemberInfoPack : PackBase
+    public record GroupGetMemberInfoPack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1103,7 +1219,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 58 [插件]获取群设置
     /// </summary>
-    public record GetGroupSettingPack : PackBase
+    public record GroupGetSettingPack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1131,7 +1247,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 64 [插件]删除群员
     /// </summary>
-    public record DeleteGroupMemberPack : PackBase
+    public record GroupKickMemberPack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1145,7 +1261,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 65 [插件]禁言群员
     /// </summary>
-    public record MuteGroupMemberPack : PackBase
+    public record GroupMuteMemberPack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1163,7 +1279,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 66 [插件]解除禁言
     /// </summary>
-    public record UnmuteGroupMemberPack : PackBase
+    public record GroupUnmuteMemberPack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1197,7 +1313,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 69 [插件]设置群名片
     /// </summary>
-    public record SetGroupMemberCard : PackBase
+    public record GroupSetMemberCard : PackBase
     {
         /// <summary>
         /// 群号
@@ -1215,7 +1331,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 70 [插件]设置群名
     /// </summary>
-    public record SetGroupNamePack : PackBase
+    public record GroupSetNamePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1271,7 +1387,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 75 [插件]从本地文件加载图片发送到群
     /// </summary>
-    public record LoadFileSendToGroupImagePack : PackBase
+    public record SendGroupImageFilePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1285,7 +1401,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 76 [插件]从本地文件加载图片发送到群私聊
     /// </summary>
-    public record LoadFileSendToGroupPrivateImagePack : PackBase
+    public record SendGroupPrivateImageFilePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1303,7 +1419,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 77 [插件]从本地文件加载图片发送到朋友
     /// </summary>
-    public record LoadFileSendToFriendImagePack : PackBase
+    public record SendFriendImageFilePack : PackBase
     {
         /// <summary>
         /// 朋友QQ号
@@ -1315,9 +1431,9 @@ namespace ColoryrServer.Robot
         public string file { get; set; }
     }
     /// <summary>
-    /// 78 [插件]从本地文件加载语音发送到群s
+    /// 78 [插件]从本地文件加载语音发送到群
     /// </summary>
-    public record LoadFileSendToGroupSoundPack : PackBase
+    public record SendGroupSoundFilePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1382,7 +1498,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 83 [插件]发送朋友戳一戳
     /// </summary>
-    public record FriendNudgePack : PackBase
+    public record SendFriendNudgePack : PackBase
     {
         /// <summary>
         /// 好友QQ号
@@ -1392,7 +1508,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 84 [插件]发送群成员戳一戳
     /// </summary>
-    public record MemberNudgePack : PackBase
+    public record SendGroupMemberNudgePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1402,6 +1518,24 @@ namespace ColoryrServer.Robot
         /// 成员QQ号
         /// </summary>
         public long fid { get; set; }
+    }
+    /// <summary>
+    /// 85 [机器人]龙王改变时（事件）
+    /// </summary>
+    public record GroupTalkativeChangePack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 当前龙王
+        /// </summary>
+        public long now { get; set; }
+        /// <summary>
+        /// 先前龙王
+        /// </summary>
+        public long old { get; set; }
     }
     /// <summary>
     /// 86 [机器人]其他客户端上线（事件）
@@ -1466,16 +1600,12 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 90 [插件]获取图片Url
     /// </summary>
-    public record ReImagePack : PackBase
+    public record GetImageUrlPack : PackBase
     {
         /// <summary>
         /// 图片UUID
         /// </summary>
         public string uuid { get; set; }
-        /// <summary>
-        /// 图片地址
-        /// </summary>
-        public string url { get; set; }
     }
     /// <summary>
     /// 91 [插件]获取群成员信息
@@ -1504,7 +1634,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 93 [插件]发送音乐分享
     /// </summary>
-    public record MusicSharePack : PackBase
+    public record SendMusicSharePack : PackBase
     {
         /// <summary>
         /// 发送目标
@@ -1543,11 +1673,10 @@ namespace ColoryrServer.Robot
         /// </summary>
         public string musicUrl { get; set; }
     }
-
     /// <summary>
-    /// 96 [插件]设置群精华消息
+    /// 94 [插件]设置群精华消息
     /// </summary>
-    public record EssenceMessagePack : PackBase
+    public record GroupSetEssenceMessagePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1556,10 +1685,10 @@ namespace ColoryrServer.Robot
         /// <summary>
         /// 消息ID
         /// </summary>
-        public long mid { get; set; }
+        public int mid { get; set; }
     }
     /// <summary>
-    /// 97 [插件]消息队列
+    /// 95 [插件]消息队列
     /// </summary>
     public record MessageBuffPack : PackBase
     {
@@ -1571,10 +1700,6 @@ namespace ColoryrServer.Robot
         /// 消息内容
         /// </summary>
         public List<string> text { get; set; }
-        /// <summary>
-        /// 图片内容
-        /// </summary>
-        public string img { get; set; }
         /// <summary>
         /// 图片路径
         /// </summary>
@@ -1592,31 +1717,14 @@ namespace ColoryrServer.Robot
         /// </summary>
         public long fid { get; set; }
     }
-    /// <summary>
-    /// 85 [机器人]龙王改变时（事件）
-    /// </summary>
-    public record GroupTalkativeChangePack : PackBase
-    {
-        /// <summary>
-        /// 群号
-        /// </summary>
-        public long id { get; set; }
-        /// <summary>
-        /// 当前龙王
-        /// </summary>
-        public long now { get; set; }
-        /// <summary>
-        /// 先前龙王
-        /// </summary>
-        public long old { get; set; }
-    }
+
     /// <summary>
     /// 96 [插件]发送朋友骰子
     /// </summary>
     public record SendFriendDicePack : PackBase
     {
         /// <summary>
-        /// 好友QQ号
+        /// 群号
         /// </summary>
         public long id { get; set; }
         /// <summary>
@@ -1659,7 +1767,7 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 99 [插件]上传群文件
     /// </summary>
-    public record AddGroupFilePack : PackBase
+    public record GroupAddFilePack : PackBase
     {
         /// <summary>
         /// 群号
@@ -1677,33 +1785,233 @@ namespace ColoryrServer.Robot
     /// <summary>
     /// 100 [插件]删除群文件
     /// </summary>
-    public record DeleteGroupFilePack : PackBase
+    public record GroupDeleteFilePack : PackBase
     {
         /// <summary>
         /// 群号
         /// </summary>
         public long id { get; set; }
         /// <summary>
-        /// 群文件名称
+        /// 群文件ID
         /// </summary>
-        public string name { get; set; }
+        public string fid { get; set; }
     }
     /// <summary>
     /// 101 [插件]获取群文件
     /// </summary>
-    public record GetGroupFilesPack : PackBase
+    public record GroupGetFilesPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+    }
+    /// <summary>
+    /// 102 [插件]移动群文件
+    /// </summary>
+    public record GroupMoveFilePack : PackBase
     {
         /// <summary>
         /// 群号
         /// </summary>
         public long id { get; set; }
         /// <summary>
-        /// 文件夹
+        /// 原群文件ID
         /// </summary>
-        public string name { get; set; }
+        public string fid { get; set; }
+        /// <summary>
+        /// 新群文件路径
+        /// </summary>
+        public string dir { get; set; }
+    }
+    /// <summary>
+    /// 103 [插件]重命名群文件
+    /// </summary>
+    public record GroupRenameFilePack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 旧群文件名
+        /// </summary>
+        public string fid { get; set; }
+        /// <summary>
+        /// 新群文件名
+        /// </summary>
+        public string now { get; set; }
+    }
+    /// <summary>
+    /// 104 [插件]创新群文件文件夹
+    /// </summary>
+    public record GroupAddDirPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 文件夹名字
+        /// </summary>
+        public string dir { get; set; }
+    }
+    /// <summary>
+    /// 105 [插件]删除群文件文件夹
+    /// </summary>
+    public record GroupDeleteDirPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 文件夹名字
+        /// </summary>
+        public string dir { get; set; }
+    }
+    /// <summary>
+    /// 106 [插件]重命名群文件文件夹
+    /// </summary>
+    public record GroupRenameDirPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 旧的名字
+        /// </summary>
+        public string old { get; set; }
+        /// <summary>
+        /// 新的名字
+        /// </summary>
+        public string now { get; set; }
+    }
+    /// <summary>
+    /// 107 [插件]下载群文件到指定位置
+    /// </summary>
+    public record GroupDownloadFilePack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 文件ID
+        /// </summary>
+        public string fid { get; set; }
+        /// <summary>
+        /// 下载到的路径
+        /// </summary>
+        public string dir { get; set; }
+    }
+    /// <summary>
+    /// 108 [插件]设置取消管理员
+    /// </summary>
+    public record GroupSetAdminPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 群员
+        /// </summary>
+        public long fid { get; set; }
+        /// <summary>
+        /// 设置或取消
+        /// </summary>
+        public bool type { get; set; }
+    }
+    /// <summary>
+    /// 109 [插件]获取群公告
+    /// </summary>
+    public record GroupGetAnnouncementsPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+    }
+    /// <summary>
+    /// 110 [插件]设置群公告
+    /// </summary>
+    public record GroupAddAnnouncementPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 图片路径
+        /// </summary>
+        public string imageFile { get; set; }
+        /// <summary>
+        /// 发送给新群员
+        /// </summary>
+        public bool sendToNewMember { get; set; }
+        /// <summary>
+        /// 顶置
+        /// </summary>
+        public bool isPinned { get; set; }
+        /// <summary>
+        /// 显示能够引导群成员修改昵称的窗口
+        /// </summary>
+        public bool showEditCard { get; set; }
+        /// <summary>
+        /// 使用弹窗
+        /// </summary>
+        public bool showPopup { get; set; }
+        /// <summary>
+        /// 需要群成员确认
+        /// </summary>
+        public bool requireConfirmation { get; set; }
+        /// <summary>
+        /// 公告内容
+        /// </summary>
+        public string text { get; set; }
+    }
+    /// <summary>
+    /// 111 [插件]删除群公告
+    /// </summary>
+    public record GroupDeleteAnnouncementPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 唯一识别属性
+        /// </summary>
+        public string fid { get; set; }
+    }
+    /// <summary>
+    /// 112 [插件]发送好友语言文件
+    /// </summary>
+    public record SendFriendSoundFilePack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
+        /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string file { get; set; }
+    }
+    /// <summary>
+    /// 113 [机器人]群解散消息（事件）
+    /// </summary>
+    public record GroupDisbandPack : PackBase
+    {
+        /// <summary>
+        /// 群号
+        /// </summary>
+        public long id { get; set; }
     }
 
-    public class BuildPack
+    public static class BuildPack
     {
         /// <summary>
         /// 构建一个包
@@ -1757,37 +2065,8 @@ namespace ColoryrServer.Robot
             data[^1] = index;
             return data;
         }
-        /// <summary>
-        /// 构建消息队列物图片包
-        /// </summary>
-        /// <param name="qq">运行的qq号</param>
-        /// <param name="id">发送给的id</param>
-        /// <param name="fid">发送给的fid</param>
-        /// <param name="type">消息类型</param>
-        /// <param name="img">图片BASE64流</param>
-        /// <returns>构建好的包</returns>
-        public static byte[] BuildBuffImage(long qq, long id, long fid, int type, string img, bool send)
-        {
-            string temp = "";
-            if (id != 0)
-            {
-                temp += $"id={id}&";
-            }
-            if (fid != 0)
-            {
-                temp += $"fid={fid}&";
-            }
-            temp += $"qq={qq}&img={img}&type={type}&send={send}";
-            byte[] data = Encoding.UTF8.GetBytes(temp + " ");
-            data[^1] = 97;
-            return data;
-        }
     }
-    record RobotTask
-    {
-        public byte index { get; set; }
-        public string data { get; set; }
-    }
+
     public record RobotConfig
     {
         /// <summary>
@@ -1829,7 +2108,7 @@ namespace ColoryrServer.Robot
         /// <summary>
         /// 机器人事件回调函数
         /// </summary>
-        public Action<byte, string> CallAction { get; init; }
+        public Action<byte, object> CallAction { get; init; }
         /// <summary>
         /// 机器人日志回调函数
         /// </summary>
@@ -1839,6 +2118,7 @@ namespace ColoryrServer.Robot
         /// </summary>
         public Action<StateType> StateAction { get; init; }
     }
+
     public enum LogType
     {
         Log, Error
@@ -1847,8 +2127,131 @@ namespace ColoryrServer.Robot
     {
         Disconnect, Connecting, Connect
     }
-    public class Robot
+
+    public static class RobotPackType
     {
+        public static readonly Dictionary<byte, Type> PackType = new()
+        {
+            { 1, typeof(BeforeImageUploadPack) },
+            { 2, typeof(BotAvatarChangedPack) },
+            { 3, typeof(BotGroupPermissionChangePack) },
+            { 4, typeof(BotInvitedJoinGroupRequestEventPack) },
+            { 5, typeof(BotJoinGroupEventAPack) },
+            { 6, typeof(BotJoinGroupEventBPack) },
+            { 7, typeof(BotLeaveEventAPack) },
+            { 8, typeof(BotLeaveEventBPack) },
+            { 9, typeof(BotMuteEventPack) },
+            { 10, typeof(BotOfflineEventAPack) },
+            { 11, typeof(BotOfflineEventBPack) },
+            { 12, typeof(BotOfflineEventAPack) },
+            { 13, typeof(BotOfflineEventAPack) },
+            { 14, typeof(BotOfflineEventCPack) },
+            { 15, typeof(BotOnlineEventPack) },
+            { 16, typeof(BotReloginEventPack) },
+            { 17, typeof(BotUnmuteEventPack) },
+            { 18, typeof(FriendAddEventPack) },
+            { 19, typeof(FriendAvatarChangedEventPack) },
+            { 20, typeof(FriendDeleteEventPack) },
+            { 21, typeof(FriendMessagePostSendEventPack) },
+            { 22, typeof(FriendMessagePreSendEventPack) },
+            { 23, typeof(FriendRemarkChangeEventPack) },
+            { 24, typeof(GroupAllowAnonymousChatEventPack) },
+            { 25, typeof(GroupAllowConfessTalkEventPack) },
+            { 26, typeof(GroupAllowMemberInviteEventPack) },
+            { 27, typeof(GroupEntranceAnnouncementChangeEventPack) },
+            { 28, typeof(GroupMessagePostSendEventPack) },
+            { 29, typeof(GroupMessagePreSendEventPack) },
+            { 30, typeof(GroupMuteAllEventPack) },
+            { 31, typeof(GroupNameChangeEventPack) },
+            { 32, typeof(ImageUploadEventAPack) },
+            { 33, typeof(ImageUploadEventBPack) },
+            { 34, typeof(MemberCardChangeEventPack) },
+            { 35, typeof(InviteMemberJoinEventPack) },
+            { 36, typeof(MemberJoinEventPack) },
+            { 37, typeof(MemberJoinRequestEventPack) },
+            { 38, typeof(MemberLeaveEventAPack) },
+            { 39, typeof(MemberLeaveEventBPack) },
+            { 40, typeof(MemberMuteEventPack) },
+            { 41, typeof(MemberPermissionChangeEventPack) },
+            { 42, typeof(MemberSpecialTitleChangeEventPack) },
+            { 43, typeof(MemberUnmuteEventPack) },
+            { 44, typeof(MessageRecallEventAPack) },
+            { 45, typeof(MessageRecallEventBPack) },
+            { 46, typeof(NewFriendRequestEventPack) },
+            { 47, typeof(TempMessagePostSendEventPack) },
+            { 48, typeof(TempMessagePreSendEventPack) },
+            { 49, typeof(GroupMessageEventPack) },
+            { 50, typeof(TempMessageEventPack) },
+            { 51, typeof(FriendMessageEventPack) },
+            { 52, typeof(SendGroupMessagePack) },
+            { 53, typeof(SendGroupPrivateMessagePack) },
+            { 54, typeof(SendFriendMessagePack) },
+            { 55, typeof(GetPack) },
+            { 56, typeof(GetPack) },
+            { 57, typeof(GroupGetMemberInfoPack) },
+            { 58, typeof(GroupGetSettingPack) },
+            { 59, typeof(EventCallPack) },
+            //60-63无
+            { 64, typeof(GroupKickMemberPack) },
+            { 65, typeof(GroupMuteMemberPack) },
+            { 66, typeof(GroupUnmuteMemberPack) },
+            { 67, typeof(GroupMuteAllPack) },
+            { 68, typeof(GroupUnmuteAllPack) },
+            { 69, typeof(GroupSetMemberCard) },
+            { 70, typeof(GroupSetNamePack) },
+            { 71, typeof(ReCallMessagePack) },
+            { 72, typeof(FriendInputStatusChangedEventPack) },
+            { 73, typeof(FriendNickChangedEventPack) },
+            //74无
+            { 75, typeof(SendGroupImageFilePack) },
+            { 76, typeof(SendGroupPrivateImageFilePack) },
+            { 77, typeof(SendFriendImageFilePack) },
+            { 78, typeof(SendGroupSoundFilePack) },
+            { 79, typeof(MemberJoinRetrieveEventPack) },
+            { 80, typeof(BotJoinGroupEventRetrieveEventPack) },
+            { 81, typeof(NudgedEventPack) },
+            { 82, typeof(NudgedEventPack) },
+            { 83, typeof(SendFriendNudgePack) },
+            { 84, typeof(SendGroupMemberNudgePack) },
+            { 85, typeof(GroupTalkativeChangePack) },
+            { 86, typeof(OtherClientOnlineEventPack) },
+            { 87, typeof(OtherClientOfflineEventPack) },
+            { 88, typeof(OtherClientMessageEventPack) },
+            { 89, typeof(GroupMessageSyncEventPack) },
+            { 90, typeof(GetImageUrlPack) },
+            { 91, typeof(GetMemberInfo) },
+            { 92, typeof(GetFriendInfoPack) },
+            { 93, typeof(SendMusicSharePack) },
+            { 94, typeof(GroupSetEssenceMessagePack) },
+            { 95, typeof(MessageBuffPack) },
+            { 96, typeof(SendFriendDicePack) },
+            { 97, typeof(SendGroupDicePack) },
+            { 98, typeof(SendGroupPrivateDicePack) },
+            { 99, typeof(GroupAddFilePack) },
+            { 100, typeof(GroupDeleteFilePack) },
+            { 101, typeof(GroupGetFilesPack) },
+            { 102, typeof(GroupMoveFilePack) },
+            { 103, typeof(GroupRenameFilePack) },
+            { 104, typeof(GroupAddDirPack) },
+            { 105, typeof(GroupDeleteDirPack) },
+            { 106, typeof(GroupRenameDirPack) },
+            { 107, typeof(GroupDownloadFilePack) },
+            { 108, typeof(GroupSetAdminPack) },
+            { 109, typeof(GroupGetAnnouncementsPack) },
+            { 110, typeof(GroupAddAnnouncementPack) },
+            { 111, typeof(GroupDeleteAnnouncementPack) },
+            { 112, typeof(SendFriendSoundFilePack) },
+            { 113, typeof(GroupDisbandPack) }
+        };
+    }
+
+    public partial class RobotSDK
+    {
+        private record RobotTask
+        {
+            public byte Index { get; set; }
+            public string Data { get; set; }
+        }
         /// <summary>
         /// 机器人登录的QQ号列表
         /// </summary>
@@ -1862,7 +2265,7 @@ namespace ColoryrServer.Robot
         /// </summary>
         public bool IsConnect { get; private set; }
 
-        private delegate void RobotCall(byte packid, string data);
+        private delegate void RobotCall(byte packid, object data);
         private delegate void RobotLog(LogType type, string data);
         private delegate void RobotState(StateType type);
         private RobotCall RobotCallEvent;
@@ -1876,6 +2279,8 @@ namespace ColoryrServer.Robot
         private ConcurrentBag<byte[]> QueueSend;
         private StartPack PackStart;
         private RobotConfig Config;
+
+        private partial bool CallTop(byte index, string data);
 
         /// <summary>
         /// 第一次连接检查
@@ -1921,7 +2326,18 @@ namespace ColoryrServer.Robot
                     {
                         if (QueueRead.TryTake(out RobotTask task))
                         {
-                            RobotCallEvent.Invoke(task.index, task.data);
+                            if (task.Index == 60)
+                                continue;
+                            if (CallTop(task.Index, task.Data))
+                                continue;
+                            if (RobotPackType.PackType.TryGetValue(task.Index, out var type))
+                            {
+                                RobotCallEvent.Invoke(task.Index, JsonConvert.DeserializeObject(task.Data, type));
+                            }
+                            else
+                            {
+                                LogError($"不认识的数据包{task.Index}");
+                            }
                         }
                         Thread.Sleep(10);
                     }
@@ -1959,8 +2375,8 @@ namespace ColoryrServer.Robot
                             data[^1] = 0;
                             QueueRead.Add(new RobotTask
                             {
-                                index = type,
-                                data = Encoding.UTF8.GetString(data)
+                                Index = type,
+                                Data = Encoding.UTF8.GetString(data)
                             });
                         }
                         else if (Config.Check && time >= 20)
@@ -2013,7 +2429,7 @@ namespace ColoryrServer.Robot
 
             RobotStateEvent.Invoke(StateType.Connecting);
 
-            Socket = new System.Net.Sockets.Socket(SocketType.Stream, ProtocolType.Tcp);
+            Socket = new(SocketType.Stream, ProtocolType.Tcp);
             Socket.Connect(Config.IP, Config.Port);
 
             var data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(PackStart) + " ");
@@ -2035,6 +2451,10 @@ namespace ColoryrServer.Robot
             LogOut("机器人已连接");
             IsConnect = true;
         }
+        /// <summary>
+        /// 添加数据包
+        /// </summary>
+        /// <param name="data">数据包</param>
         public void AddTask(byte[] data)
         {
             QueueSend.Add(data);
@@ -2046,6 +2466,9 @@ namespace ColoryrServer.Robot
             var data = BuildPack.Build(new object(), 127);
             Socket.Send(data);
         }
+        /// <summary>
+        /// 停止机器人
+        /// </summary>
         public void Stop()
         {
             LogOut("机器人正在断开");
