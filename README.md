@@ -12,7 +12,7 @@
 - 支持Linux和Windows下运行
 - 可以对接Mysql\Redis\MsSql\Oracle数据库
 - 自带Http\WebSocket\Socket\Mqtt支持
-- 可以添加ssl证书(ASP模式)
+- 可以添加Ssl证书
 - 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai) QQ机器人
 - 占用内存极少
 - 可以配置端口反向代理和域名反向代理
