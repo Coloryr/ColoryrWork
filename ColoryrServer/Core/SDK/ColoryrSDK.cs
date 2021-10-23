@@ -3,6 +3,7 @@ using ColoryrServer.FileSystem;
 using ColoryrServer.Robot;
 using ColoryrServer.Utils;
 using ColoryrServer.WebSocket;
+using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -570,6 +571,26 @@ namespace ColoryrServer.SDK
         /// <returns>压缩后的数据</returns>
         public static string CompressCSS(string css)
             => CodeCompress.CSS(css);
+        /// <summary>
+        /// 获取机器人
+        /// </summary>
+        /// <returns>机器人</returns>
+        public static RobotSDK GetRobot()
+            => RobotUtils.robot;
+        /// <summary>
+        /// 获取一个WebSocket客户端
+        /// </summary>
+        /// <param name="uuid">客户端UUID</param>
+        /// <returns>WebSocket客户端</returns>
+        public static IWebSocketConnection GetWebSocket(Guid uuid)
+            => ServerWebSocket.Get(uuid);
+        /// <summary>
+        /// 获取一个WebSocket客户端
+        /// </summary>
+        /// <param name="port">端口</param>
+        /// <returns>WebSocket客户端</returns>
+        public static IWebSocketConnection GetWebSocket(int port)
+            => ServerWebSocket.Get(port);
     }
     public class FileLoad
     {

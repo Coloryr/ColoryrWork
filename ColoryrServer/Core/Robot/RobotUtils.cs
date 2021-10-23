@@ -6,7 +6,7 @@ namespace ColoryrServer.Robot
 {
     public class RobotUtils
     {
-        private static RobotSDK robot = new();
+        public static RobotSDK robot { get; } = new();
         private static void Message(byte type, object data)
         {
             switch (type)
@@ -77,6 +77,9 @@ namespace ColoryrServer.Robot
             robot.Set(config);
             robot.Start();
         }
+
+        public static List<long> GetQQs()
+            => robot.QQs;
 
         public static void Stop()
         {

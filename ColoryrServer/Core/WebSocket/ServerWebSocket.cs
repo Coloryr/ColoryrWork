@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.DllManager;
 using ColoryrServer.SDK;
 using Fleck;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,6 +16,21 @@ namespace ColoryrServer.WebSocket
         private static CancellationTokenSource source;
         private static bool IsRun;
         private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
+        private static readonly Dictionary<Guid, IWebSocketConnection> ClientsID = new();
+        internal static IWebSocketConnection Get(int port)
+        {
+            var data = Clients.Where(a => a.Key == port);
+            if (data.Any())
+                return data.First().Value;
+            return null;
+        }
+        internal static IWebSocketConnection Get(Guid id)
+        {
+            var data = ClientsID.Where(a => a.Key == id);
+            if (data.Any())
+                return data.First().Value;
+            return null;
+        }
         internal static bool IsOnline(string id)
         {
             var data = Clients.Where(a => a.Value.ConnectionInfo.Id.ToString() == id);
@@ -53,11 +69,13 @@ namespace ColoryrServer.WebSocket
                 Socket.OnOpen = () =>
                 {
                     Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
+                    ClientsID.Add(Socket.ConnectionInfo.Id, Socket);
                     DllRun.WebSocketGo(new WebSocketOpen(Socket));
                 };
                 Socket.OnClose = () =>
                 {
                     Clients.Remove(Socket.ConnectionInfo.ClientPort);
+                    ClientsID.Remove(Socket.ConnectionInfo.Id);
                     DllRun.WebSocketGo(new WebSocketClose(Socket));
                 };
                 Socket.OnMessage = message =>
