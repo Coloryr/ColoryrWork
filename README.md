@@ -15,7 +15,9 @@
 - 可以添加ssl证书(ASP模式)
 - 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai) QQ机器人
 - 占用内存极少
+- 可以配置端口反向代理和域名反向代理
 - 业务代码修改无需重启
+- 可以自己添加DLL库，并在端口文件中调用
 
 [理论性能测试](./doc/test.md)
 

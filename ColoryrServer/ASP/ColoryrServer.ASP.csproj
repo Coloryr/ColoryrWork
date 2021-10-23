@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <BaseOutputPath>..\..\build_out\ASP</BaseOutputPath>
     <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
+    <DebugType>embedded</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

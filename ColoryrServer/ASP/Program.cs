@@ -171,10 +171,8 @@ namespace ColoryrServer.ASP
 
         public static X509Certificate2? Ssl(ConnectionContext? context, string? url)
         {
-            if (Ssls.TryGetValue(url, out var item))
-            {
+            if (url != null && Ssls.TryGetValue(url, out var item))
                 return item;
-            }
             return DefaultSsl;
         }
 
