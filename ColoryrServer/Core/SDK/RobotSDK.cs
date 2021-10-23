@@ -164,7 +164,7 @@ namespace ColoryrServer.SDK
         /// <param name="oid">管理者QQ号</param>
         /// <param name="type">事件类型</param>
         /// <param name="robot">机器人</param>
-        public RobotEvent(EventType etype, long qq, long id, long fid, string name, string oname, long oid, RobotSDK robot) : base (MessageType.group, qq, id, fid, null, null, robot)
+        public RobotEvent(EventType etype, long qq, long id, long fid, string name, string oname, long oid, RobotSDK robot) : base(MessageType.group, qq, id, fid, null, null, robot)
         {
             this.oname = oname;
             this.oid = oid;

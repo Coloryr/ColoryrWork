@@ -25,6 +25,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
+        public const string Version = "1.1.0";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -77,6 +78,7 @@ namespace ColoryrServer
         {
             try
             {
+                Console.WriteLine($"ColoryrServer版本:{Version}");
                 //初始化运行路径
                 RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
                 if (!Directory.Exists(RunLocal))
