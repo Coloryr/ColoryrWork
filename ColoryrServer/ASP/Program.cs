@@ -80,6 +80,8 @@ namespace ColoryrServer.ASP
             ServerMain.ConfigUtil = new ASPConfigUtils();
             ServerMain.Start();
 
+            HttpClients1.Start();
+
             //Web.UseRouting();
 
             if (Config.Ssl)
@@ -111,7 +113,10 @@ namespace ColoryrServer.ASP
                         try
                         {
                             var ssl = new X509Certificate2(item.Value.SslLocal, item.Value.SslPassword);
-                            Ssls.Add(item.Key, ssl);
+                            if (item.Key == "default")
+                                DefaultSsl = ssl;
+                            else
+                                Ssls.Add(item.Key, ssl);
                         }
                         catch (Exception e)
                         {
@@ -166,6 +171,7 @@ namespace ColoryrServer.ASP
             Run = false;
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
+            HttpClients1.Stop();
             ServerMain.LogOut("按下回车键退出");
         }
 
@@ -328,7 +334,7 @@ namespace ColoryrServer.ASP
 
         private static async Task RoteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response, int start = 1)
         {
-            HttpClient ProxyRequest = Clients.GetOne();
+            HttpClient ProxyRequest = HttpClients1.GetOne();
             HttpRequestMessage message = new();
             message.Method = new HttpMethod(Request.Method);
             string url = "";
