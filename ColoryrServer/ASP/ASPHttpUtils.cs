@@ -4,6 +4,8 @@
     {
         public static string HaveCookie(string hashtable)
         {
+            if (hashtable == null)
+                return null;
             string[] Cookies = hashtable.Split(';');
             foreach (var Item in Cookies)
             {
