@@ -25,7 +25,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -50,8 +50,11 @@ namespace ColoryrServer
         public static void LogError(Exception e)
         {
             string a = "[错误]" + e.ToString();
-            Task.Run(() => Logs.LogWrite(a));
-            Console.WriteLine(a);
+            Task.Run(() =>
+            {
+                Logs.LogWrite(a);
+                Console.WriteLine(a);
+            });
         }
         /// <summary>
         /// 写错误到日志中
@@ -60,8 +63,11 @@ namespace ColoryrServer
         public static void LogError(string a)
         {
             a = "[错误]" + a;
-            Task.Run(() => Logs.LogWrite(a));
-            Console.WriteLine(a);
+            Task.Run(() =>
+            {
+                Logs.LogWrite(a);
+                Console.WriteLine(a);
+            });
         }
         /// <summary>
         /// 写信息到日志中
@@ -70,8 +76,11 @@ namespace ColoryrServer
         public static void LogOut(string a)
         {
             a = "[信息]" + a;
-            Task.Run(() => Logs.LogWrite(a));
-            Console.WriteLine(a);
+            Task.Run(() =>
+            {
+                Logs.LogWrite(a);
+                Console.WriteLine(a);
+            });
         }
 
         public static void Start()

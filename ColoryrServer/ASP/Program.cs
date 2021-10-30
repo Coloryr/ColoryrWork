@@ -10,9 +10,11 @@ using Lib.Build.Object;
 using Lib.Server;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -79,10 +81,6 @@ namespace ColoryrServer.ASP
 
             ServerMain.ConfigUtil = new ASPConfigUtils();
             ServerMain.Start();
-
-            HttpClients1.Start();
-
-            //Web.UseRouting();
 
             if (Config.Ssl)
             {
@@ -171,7 +169,6 @@ namespace ColoryrServer.ASP
             Run = false;
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
-            HttpClients1.Stop();
             ServerMain.LogOut("按下回车键退出");
         }
 
@@ -472,6 +469,7 @@ namespace ColoryrServer.ASP
             {
                 if (Request.ContentType is ServerContentType.POSTXFORM)
                 {
+                    type = MyContentType.XFormData;
                     foreach (var item in Request.Form)
                     {
                         temp.Add(item.Key, item.Value);
@@ -485,27 +483,6 @@ namespace ColoryrServer.ASP
                 {
                     try
                     {
-                        //boundary??
-                        //var temp1 = Request.ContentType.Remove(0, ServerContentType.POSTFORMDATA.Length);
-                        //MemoryStream stream = new();
-                        //await Request.Body.CopyToAsync(stream);
-                        //var temp2 = Encoding.UTF8.GetString(stream.ToArray());
-                        //stream.Seek(0, SeekOrigin.Begin);
-                        //var parser = await MultipartFormDataParser.ParseAsync(stream);
-                        //if (parser == null)
-                        //{
-                        //    httpReturn = new HttpReturn
-                        //    {
-                        //        Data = StreamUtils.JsonOBJ(new GetMeesage
-                        //        {
-                        //            Res = 123,
-                        //            Text = "表单解析发生错误"
-                        //        })
-                        //    };
-                        //    await Response.BodyWriter.WriteAsync(httpReturn.Data);
-                        //    return;
-                        //}
-
                         var parser = await MultipartFormDataParser.ParseAsync(Request.Body);
                         foreach (var item in parser.Parameters)
                         {
@@ -521,19 +498,16 @@ namespace ColoryrServer.ASP
                                 ContentDisposition = item.ContentDisposition
                             });
                         }
+                        type = MyContentType.MFormData;
                     }
                     catch (Exception e)
                     {
                         ServerMain.LogError(e);
-                        httpReturn = new HttpReturn
+                        await Response.WriteAsJsonAsync(new GetMeesage
                         {
-                            Data = StreamUtils.JsonOBJ(new GetMeesage
-                            {
-                                Res = 123,
-                                Text = "表单解析发生错误，请检查数据"
-                            })
-                        };
-                        await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                            Res = 123,
+                            Text = "表单解析发生错误，请检查数据"
+                        });
                         return;
                     }
                 }
@@ -547,6 +521,7 @@ namespace ColoryrServer.ASP
                     {
                         temp.Add(item.Key, item.Value);
                     }
+                    type = MyContentType.Json;
                 }
                 else
                 {
