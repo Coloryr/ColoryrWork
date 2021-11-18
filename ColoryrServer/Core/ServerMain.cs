@@ -11,9 +11,10 @@ using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
 using Lib.Build;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -25,7 +26,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -109,11 +110,12 @@ namespace ColoryrServer
                 HttpClientUtils.Start();
 
                 //给编译用的，防DLL找不到
-                new HtmlDocument();
+                var test2 = new HtmlDocument();
                 dynamic test = new HttpResponseMessage();
                 var test1 = test.IsSuccessStatusCode;
+                test.Dispose();
                 Parallel.ForEach(new List<string>(), (i, b) => { });
-                Bitmap bitmap = new Bitmap(1, 1);
+                Image<Rgba32> bitmap = new(1, 1);
                 bitmap.Dispose();
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;

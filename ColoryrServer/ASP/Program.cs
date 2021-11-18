@@ -1,3 +1,4 @@
+using System;
 using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
@@ -13,54 +14,27 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
 namespace ColoryrServer.ASP
 {
-    class ColoryrLogger : ILogger
-    {
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return null;
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return true;
-        }
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
-                            Exception? exception, Func<TState, Exception, string> formatter)
-        {
-            if (eventId.Id == 100 || eventId.Id == 101)
-                return;
-            if (logLevel is LogLevel.Warning or LogLevel.Error)
-                ServerMain.LogError($"{logLevel}-{eventId.Id} {state} {exception} {exception.StackTrace}");
-            else
-                ServerMain.LogOut($"{logLevel}-{eventId.Id} {state} {exception}");
-        }
-    }
-
-    class ColoryrLoggerProvider : ILoggerProvider
-    {
-        private readonly ConcurrentDictionary<string, ColoryrLogger> _loggers = new();
-
-        public ILogger CreateLogger(string categoryName)
-        {
-            return _loggers.GetOrAdd(categoryName, name => new ColoryrLogger());
-        }
-
-        public void Dispose()
-        {
-            _loggers.Clear();
-        }
-    }
-
     internal class ASPServer
     {
         public static ASPConfig Config { get; set; }
@@ -199,10 +173,10 @@ namespace ColoryrServer.ASP
                 }
                 JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                 var Json = obj.ToObject<BuildOBJ>();
-                var List = ServerMain.Config.User.Where(a => a.Username == Json.User);
+                var List = ServerMain.Config.User.Where(a => a.Username == Json?.User);
                 if (List.Any())
                 {
-                    await Response.BodyWriter.WriteAsync(DllBuild.StartBuild(Json, List.First()).Data);
+                    await Response.WriteAsJsonAsync(DllBuild.StartBuild(Json, List.First()).Data);
                 }
                 else
                 {
@@ -229,7 +203,34 @@ namespace ColoryrServer.ASP
                 }
                 JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
                 var Json = obj.ToObject<DownloadObj>();
-                await Response.BodyWriter.WriteAsync(AppDownload.Download(Json).Data);
+                var httpReturn = AppDownload.Download(Json);
+                switch (httpReturn.Res)
+                {
+                    case ResType.String:
+                        await Response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
+                        break;
+                    case ResType.Byte:
+                        var bytes = httpReturn.Data as byte[];
+                        await Response.BodyWriter.WriteAsync(bytes);
+                        break;
+                    case ResType.Json:
+                        await Response.WriteAsJsonAsync(httpReturn.Data);
+                        break;
+                    case ResType.Stream:
+                        var stream1 = httpReturn.Data as Stream;
+                        if (stream1 == null)
+                        {
+                            Response.StatusCode = 500;
+                            await Response.WriteAsync("stream in null", httpReturn.Encoding);
+                        }
+                        else
+                        {
+                            stream1.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                            Response.StatusCode = 206;
+                            await stream.CopyToAsync(Response.Body);
+                        }
+                        break;
+                }
             }
             else
             {
@@ -280,7 +281,7 @@ namespace ColoryrServer.ASP
                 var Temp = new Dictionary<string, dynamic>();
                 if (Request.QueryString.HasValue)
                 {
-                    var b = Request.QueryString.Value[1..];
+                    var b = Request.QueryString.ToUriComponent();
                     foreach (string a in b.Split('&'))
                     {
                         var item = a.Split("=");
@@ -319,14 +320,32 @@ namespace ColoryrServer.ASP
                 }
             if (httpReturn.Cookie != null)
                 Response.Cookies.Append("cs", httpReturn.Cookie);
-            if (httpReturn.Data1 == null)
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
-            else
+            switch (httpReturn.Res)
             {
-                Response.ContentLength = httpReturn.Data1.Length;
-                httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
-                Response.StatusCode = 206;
-                await httpReturn.Data1.CopyToAsync(Response.Body);
+                case ResType.String:
+                    await Response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
+                    break;
+                case ResType.Byte:
+                    var bytes = httpReturn.Data as byte[];
+                    await Response.BodyWriter.WriteAsync(bytes);
+                    break;
+                case ResType.Json:
+                    await Response.WriteAsJsonAsync(httpReturn.Data);
+                    break;
+                case ResType.Stream:
+                    var stream = httpReturn.Data as Stream;
+                    if (stream == null)
+                    {
+                        Response.StatusCode = 500;
+                        await Response.WriteAsync("stream in null", httpReturn.Encoding);
+                    }
+                    else
+                    {
+                        stream.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                        Response.StatusCode = 206;
+                        await stream.CopyToAsync(Response.Body);
+                    }
+                    break;
             }
         }
 
@@ -419,14 +438,14 @@ namespace ColoryrServer.ASP
                 httpReturn = HttpStatic.Get(arg[0], arg[1]);
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
             }
             else
             {
                 httpReturn = HttpStatic.Get(name);
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
             }
         }
 
@@ -444,14 +463,14 @@ namespace ColoryrServer.ASP
                 httpReturn = HttpStatic.Get(arg[0], arg[1]);
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
             }
             else
             {
                 httpReturn = HttpStatic.Get(name);
                 Response.ContentType = httpReturn.ContentType;
                 Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
             }
         }
 
@@ -565,14 +584,32 @@ namespace ColoryrServer.ASP
                 }
             if (httpReturn.Cookie != null)
                 Response.Cookies.Append("cs", httpReturn.Cookie);
-            if (httpReturn.Data1 == null)
-                await Response.BodyWriter.WriteAsync(httpReturn.Data);
-            else
+            switch (httpReturn.Res)
             {
-                Response.ContentLength = httpReturn.Data1.Length;
-                httpReturn.Data1.Seek(httpReturn.Pos, SeekOrigin.Begin);
-                Response.StatusCode = 206;
-                await httpReturn.Data1.CopyToAsync(Response.Body);
+                case ResType.String:
+                    await Response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
+                    break;
+                case ResType.Byte:
+                    var bytes = httpReturn.Data as byte[];
+                    await Response.BodyWriter.WriteAsync(bytes);
+                    break;
+                case ResType.Json:
+                    await Response.WriteAsJsonAsync(httpReturn.Data);
+                    break;
+                case ResType.Stream:
+                    var stream = httpReturn.Data as Stream;
+                    if (stream == null)
+                    {
+                        Response.StatusCode = 500;
+                        await Response.WriteAsync("stream in null", httpReturn.Encoding);
+                    }
+                    else
+                    {
+                        stream.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                        Response.StatusCode = 206;
+                        await stream.CopyToAsync(Response.Body);
+                    }
+                    break;
             }
         }
         private static byte[] StringToByteArray(string hex)

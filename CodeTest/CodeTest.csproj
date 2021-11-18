@@ -14,4 +14,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ColoryrServer\Core\ColoryrServer.Core.csproj" />
+  </ItemGroup>
+
 </Project>

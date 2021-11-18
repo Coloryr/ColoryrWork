@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using Lib.Build.Object;
 using Newtonsoft.Json;
@@ -12,27 +13,16 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.FileSystem
 {
-    public class HtmlFileObj
-    {
-        public byte[] Data { get; set; }
-        public int Time { get; private set; }
-        public void Reset()
-        {
-            Time = ServerMain.Config.Requset.TempTime;
-        }
-        public void Tick()
-        {
-            Time--;
-        }
-    }
     public class HtmlUtils
     {
-        private static readonly string HtmlLocal = ServerMain.RunLocal + @"Static/";
+        private static readonly string HtmlStatic = ServerMain.RunLocal + @"Static/";
+        private static readonly string HtmlLocal = ServerMain.RunLocal + @"Web/";
         private static readonly string HtmlCodeLocal = ServerMain.RunLocal + @"Codes/Static/";
         private static readonly string HtmlRemoveLocal = ServerMain.RunLocal + @"Removes/Static/";
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
         private static readonly ConcurrentDictionary<string, Dictionary<string, HtmlFileObj>> HtmlFileList = new();
+        private static StaticDir BaseDir;
         public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
         private static Dictionary<string, byte[]> Index = new();
@@ -138,6 +128,8 @@ namespace ColoryrServer.FileSystem
 
         public static void Start()
         {
+            if (!Directory.Exists(HtmlStatic))
+                Directory.CreateDirectory(HtmlStatic);
             if (!Directory.Exists(HtmlLocal))
                 Directory.CreateDirectory(HtmlLocal);
             if (!Directory.Exists(HtmlCodeLocal))
@@ -145,22 +137,24 @@ namespace ColoryrServer.FileSystem
             if (!Directory.Exists(HtmlRemoveLocal))
                 Directory.CreateDirectory(HtmlRemoveLocal);
 
-            if (!File.Exists(HtmlLocal + "index.html"))
+            if (!File.Exists(HtmlStatic + "index.html"))
             {
-                File.WriteAllText(HtmlLocal + "index.html", ColoryrServer_Resource.IndexHtml, Encoding.UTF8);
+                File.WriteAllText(HtmlStatic + "index.html", ColoryrServer_Resource.IndexHtml, Encoding.UTF8);
             }
 
-            if (!File.Exists(HtmlLocal + "404.html"))
+            if (!File.Exists(HtmlStatic + "404.html"))
             {
-                File.WriteAllText(HtmlLocal + "404.html", ColoryrServer_Resource._404Html, Encoding.UTF8);
+                File.WriteAllText(HtmlStatic + "404.html", ColoryrServer_Resource._404Html, Encoding.UTF8);
             }
 
-            if (!File.Exists(HtmlLocal + "favicon.ico"))
+            if (!File.Exists(HtmlStatic + "favicon.ico"))
             {
-                File.WriteAllBytes(HtmlLocal + "favicon.ico", ColoryrServer_Resource.Icon);
+                File.WriteAllBytes(HtmlStatic + "favicon.ico", ColoryrServer_Resource.Icon);
             }
 
-            var list = new DirectoryInfo(HtmlLocal).GetFiles();
+            BaseDir = new StaticDir(HtmlStatic);
+
+            var list = new DirectoryInfo(HtmlStatic).GetFiles();
             foreach (var item in list)
             {
                 if (item.Name.ToLower() is "404.html")

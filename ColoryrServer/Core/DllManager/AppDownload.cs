@@ -62,14 +62,16 @@ namespace ColoryrServer.DllManager
                                 if (File.Exists(DllStonge.AppLocal + save.UUID + "\\" + obj.Name))
                                     return new HttpReturn
                                     {
-                                        Data1 = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name)
+                                        Data = File.OpenRead(DllStonge.AppLocal + save.UUID + "\\" + obj.Name),
+                                        Res = ResType.Stream
                                     };
                                 else
                                 {
                                     return new HttpReturn
                                     {
                                         ReCode = 400,
-                                        Data = StreamUtils.StringOBJ("文件被删除")
+                                        Data = "文件被删除",
+                                        Res = ResType.String
                                     };
                                 }
                             }
@@ -77,7 +79,9 @@ namespace ColoryrServer.DllManager
                             {
                                 return new HttpReturn
                                 {
-                                    ReCode = 404
+                                    Data = "找不到文件",
+                                    ReCode = 404,
+                                    Res = ResType.String
                                 };
                             }
                         }
@@ -85,7 +89,8 @@ namespace ColoryrServer.DllManager
             }
             return new HttpReturn
             {
-                Data = StreamUtils.StringOBJ("Key或UUID错误")
+                Data = "Key或UUID错误",
+                Res = ResType.String
             };
         }
     }

@@ -16,28 +16,18 @@ namespace ColoryrServer.DllManager
         {
             try
             {
-                if (function != null)
+                if (function != null && !dll.MethodInfos.ContainsKey(function))
                 {
-                    int index = function.LastIndexOf(".");
-                    if (index != -1)
+                    return new HttpReturn
                     {
-                        string temp = function[index..];
-                        function = function[..index];
-                        arg.Parameter.Add(".", temp);
-                    }
-                    if (!dll.MethodInfos.ContainsKey(function))
-                    {
-                        return new HttpReturn
+                        Data = StreamUtils.JsonOBJ(new GetMeesage
                         {
-                            Data = StreamUtils.JsonOBJ(new GetMeesage
-                            {
-                                Res = 90,
-                                Text = "找不到方法",
-                                Data = null
-                            }),
-                            ReCode = 404
-                        };
-                    }
+                            Res = 90,
+                            Text = "找不到方法",
+                            Data = null
+                        }),
+                        ReCode = 404
+                    };
                 }
                 else
                     function = CodeDemo.DllMain;
@@ -64,7 +54,8 @@ namespace ColoryrServer.DllManager
                     var dr = dllres as HttpResponseString;
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(dr.Data),
+                        Data = dr.Data,
+                        Res = ResType.String,
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,
@@ -76,7 +67,8 @@ namespace ColoryrServer.DllManager
                     var dr = dllres as HttpResponseDictionary;
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(dr.Data),
+                        Data = dr.Data,
+                        Res = ResType.Json,
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,
@@ -88,7 +80,8 @@ namespace ColoryrServer.DllManager
                     var dr = dllres as HttpResponseStream;
                     return new HttpReturn
                     {
-                        Data1 = dr.Data,
+                        Data = dr.Data,
+                        Res = ResType.Stream, 
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,
@@ -102,6 +95,7 @@ namespace ColoryrServer.DllManager
                     return new HttpReturn
                     {
                         Data = dr.Data,
+                        Res = ResType.Byte,
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,
@@ -112,12 +106,8 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(new GetMeesage
-                        {
-                            Res = 80,
-                            Text = "DLL返回错误",
-                            Data = dllres
-                        })
+                        Data = dllres,
+                        Res = ResType.Json
                     };
                 }
             }
@@ -127,7 +117,8 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(dump.Get()),
+                        Data = dump.Get(),
+                        Res = ResType.String,
                         ReCode = 200
                     };
                 }
@@ -135,13 +126,15 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(dump1.data),
+                        Data = dump1.data,
+                        Res = ResType.Json,
                         ReCode = 200
                     };
                 }
                 return new HttpReturn
                 {
-                    Data = StreamUtils.StringOBJ(e.ToString()),
+                    Data = e.ToString(),
+                    Res = ResType.String,
                     ReCode = 400
                 };
             }

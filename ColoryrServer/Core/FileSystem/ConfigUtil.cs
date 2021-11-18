@@ -77,6 +77,10 @@ namespace ColoryrServer.FileSystem
     public record RequsetChoose
     {
         /// <summary>
+        /// 前端
+        /// </summary>
+        public string Web { get; set; }
+        /// <summary>
         /// 后端
         /// </summary>
         public string WebAPI { get; set; }

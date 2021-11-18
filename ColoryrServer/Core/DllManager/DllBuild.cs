@@ -1146,7 +1146,8 @@ namespace ColoryrServer.DllManager
             }
             return new HttpReturn
             {
-                Data = StreamUtils.JsonOBJ(resObj)
+                Data = resObj,
+                Res = ResType.Json
             };
         }
     }

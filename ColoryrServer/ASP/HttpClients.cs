@@ -1,4 +1,6 @@
-﻿namespace ColoryrServer.ASP
+﻿using System.Net.Http;
+
+namespace ColoryrServer.ASP
 {
     public interface IHttpClients
     {
