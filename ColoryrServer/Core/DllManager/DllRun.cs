@@ -6,7 +6,6 @@ using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.DllManager
 {
@@ -81,7 +80,7 @@ namespace ColoryrServer.DllManager
                     return new HttpReturn
                     {
                         Data = dr.Data,
-                        Res = ResType.Stream, 
+                        Res = ResType.Stream,
                         Head = dr.Head,
                         ContentType = dr.ContentType,
                         ReCode = dr.ReCode,

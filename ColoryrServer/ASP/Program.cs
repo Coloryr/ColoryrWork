@@ -1,9 +1,7 @@
-using System;
 using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
-using ColoryrServer.Utils;
 using HttpMultipartParser;
 using Lib.App;
 using Lib.Build;
@@ -11,25 +9,10 @@ using Lib.Build.Object;
 using Lib.Server;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
@@ -495,7 +478,7 @@ namespace ColoryrServer.ASP
                 if (a != -1)
                 {
                     string type = name[a..];
-                    if(Config.Requset.StreamType.Contains(type))
+                    if (Config.Requset.StreamType.Contains(type))
                     {
                         NameValueCollection collection = new();
                         foreach (var item in Request.Headers)
@@ -521,7 +504,7 @@ namespace ColoryrServer.ASP
                         if (stream == null)
                         {
                             Response.StatusCode = 500;
-                            await Response.WriteAsync("stream in null",Encoding.UTF8);
+                            await Response.WriteAsync("stream in null", Encoding.UTF8);
                         }
                         else
                         {

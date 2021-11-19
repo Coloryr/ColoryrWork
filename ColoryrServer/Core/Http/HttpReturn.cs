@@ -1,13 +1,12 @@
 ﻿using ColoryrServer.SDK;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace ColoryrServer.Http
 {
     public enum ResType
-    { 
-        Json,String,Byte,Stream
+    {
+        Json, String, Byte, Stream
     }
     public record HttpReturn
     {

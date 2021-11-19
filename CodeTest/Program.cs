@@ -1,9 +1,5 @@
 ﻿using ColoryrServer.Core.FileSystem;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 
 var dir = new StaticDir(AppContext.BaseDirectory + "web/");
 

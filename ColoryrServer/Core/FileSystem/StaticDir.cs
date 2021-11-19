@@ -1,12 +1,8 @@
 ﻿using ColoryrServer.FileSystem;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem
 {
@@ -84,7 +80,7 @@ namespace ColoryrServer.Core.FileSystem
                     Console.WriteLine($"rename file:{e.FullPath}");
                 }
             }
-            else if(NextDir.ContainsKey(e.OldName))
+            else if (NextDir.ContainsKey(e.OldName))
             {
                 if (NextDir.TryRemove(e.OldName, out var v1))
                 {
@@ -113,7 +109,7 @@ namespace ColoryrServer.Core.FileSystem
 
         public void OnCreated(object sender, FileSystemEventArgs e)
         {
-            if(Directory.Exists(e.FullPath))
+            if (Directory.Exists(e.FullPath))
             {
                 var dir = new StaticDir(e.FullPath);
                 NextDir.TryAdd(e.Name, dir);
