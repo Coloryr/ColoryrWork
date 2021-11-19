@@ -12,8 +12,7 @@ namespace ColoryrServer.WebSocket
     public class ServerWebSocket
     {
         private static WebSocketServer Server;
-        private static Task PingThread;
-        private static CancellationTokenSource source;
+        private static Thread PingThread;
         private static bool IsRun;
         private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
         private static readonly Dictionary<Guid, IWebSocketConnection> ClientsID = new();
@@ -83,18 +82,22 @@ namespace ColoryrServer.WebSocket
                     DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
                 };
             });
-            source = new CancellationTokenSource();
-            PingThread = new Task(() =>
+            PingThread = new(() =>
             {
+                int i = 0;
                 while (IsRun)
                 {
-                    foreach (var item in Clients)
+                    if (i == 30)
                     {
-                        item.Value.Send("{\"type\":\"ping\"}");
+                        foreach (var item in Clients)
+                        {
+                            item.Value.Send("{\"type\":\"ping\"}");
+                        }
                     }
-                    Thread.Sleep(30000);
+                    Thread.Sleep(1000);
+                    i++;
                 }
-            }, source.Token);
+            });
             IsRun = true;
             PingThread.Start();
             ServerMain.LogOut("WebScoket服务器已启动");
@@ -102,7 +105,6 @@ namespace ColoryrServer.WebSocket
         public static void Stop()
         {
             IsRun = false;
-            source.Cancel(false);
             foreach (var item in Clients)
             {
                 try

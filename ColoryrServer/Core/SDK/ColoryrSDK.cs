@@ -39,6 +39,27 @@ namespace ColoryrServer.SDK
         public const string MP4 = "video/mpeg4";
         public const string GIF = "image/gif";
         public const string ICO = "application/x-ico";
+
+        public static string GetType(string type)
+        {
+            switch (type.ToLower())
+            {
+                case ".jpg":
+                    return JPG;
+                case ".json":
+                    return JSON;
+                case ".xml":
+                    return XML;
+                case ".png":
+                    return PNG;
+                case ".mp3":
+                    return MP3;
+                case ".mp4":
+                    return MP4;
+                default:
+                    return HTML;
+            }
+        }
     }
     public enum MyContentType
     {

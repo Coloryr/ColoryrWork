@@ -22,13 +22,9 @@ namespace ColoryrServer.FileSystem
 
         private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
         private static readonly ConcurrentDictionary<string, Dictionary<string, HtmlFileObj>> HtmlFileList = new();
-        private static StaticDir BaseDir;
-        public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
-        private static Dictionary<string, byte[]> Index = new();
-        public static byte[] HtmlIcon { get; private set; }
-        public static byte[] Html404 { get; private set; }
-        public static byte[] HtmlIndex { get; private set; }
+        public static StaticDir BaseDir { get; private set; }
+        public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
         private static bool IsRun;
         private static readonly Thread Thread = new(TickTask);
@@ -64,14 +60,6 @@ namespace ColoryrServer.FileSystem
                 return null;
             }
             return item;
-        }
-
-        public static byte[] GetFileByName(string name)
-        {
-            if (Index.TryGetValue(name, out var temp1))
-                return temp1;
-            else
-                return null;
         }
 
         public static byte[] GetByUUID(string uuid)
@@ -126,6 +114,11 @@ namespace ColoryrServer.FileSystem
             return null;
         }
 
+        public static HttpResponseStream GetStream(HttpRequest request, string arg)
+        {
+            return FileHttpStream.StartStream(request, $"{HtmlStatic}/{arg}");
+        }
+
         public static void Start()
         {
             if (!Directory.Exists(HtmlStatic))
@@ -154,20 +147,7 @@ namespace ColoryrServer.FileSystem
 
             BaseDir = new StaticDir(HtmlStatic);
 
-            var list = new DirectoryInfo(HtmlStatic).GetFiles();
-            foreach (var item in list)
-            {
-                if (item.Name.ToLower() is "404.html")
-                    Html404 = File.ReadAllBytes(item.FullName);
-                else if (item.Name.ToLower() is "favicon.ico")
-                    HtmlIcon = File.ReadAllBytes(item.FullName);
-                else if (item.Name.ToLower() is "index.html")
-                    HtmlIndex = File.ReadAllBytes(item.FullName);
-
-                Index.Add(item.Name, File.ReadAllBytes(item.FullName));
-            }
-
-            list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
+            var list = new DirectoryInfo(HtmlCodeLocal).GetFiles();
             foreach (var item in list)
             {
                 try
@@ -220,6 +200,7 @@ namespace ColoryrServer.FileSystem
         public static void Stop()
         {
             IsRun = false;
+            BaseDir.Stop();
         }
         public static void DeleteAll(WebObj obj)
         {

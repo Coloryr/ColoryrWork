@@ -38,13 +38,11 @@ namespace ColoryrServer.FileSystem
             try
             {
                 string name = IsTemp ? Local + filename : filename;
-                using (FileStream OpenFile = new FileStream(name, FileMode.Open, FileAccess.Read))
-                {
-                    Thread.Sleep(20);
-                    var outputdata = new byte[OpenFile.Length];
-                    OpenFile.Read(outputdata, 0, outputdata.Length);
-                    return outputdata;
-                }
+                using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                Thread.Sleep(20);
+                var outputdata = new byte[Stream.Length];
+                Stream.Read(outputdata, 0, outputdata.Length);
+                return outputdata;
             }
             catch (Exception e)
             {

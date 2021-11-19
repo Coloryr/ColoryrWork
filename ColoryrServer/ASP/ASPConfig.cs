@@ -166,6 +166,7 @@ namespace ColoryrServer.ASP
                 Requset = new()
                 {
                     WebAPI = "/WebAPI",
+                    Web = "/Web",
                     Temp = new()
                     {
                         ".jpg",
@@ -175,6 +176,11 @@ namespace ColoryrServer.ASP
                         ".gif"
                     },
                     TempTime = 1800,
+                    Stream = true,
+                    StreamType = new()
+                    {
+                        ".mp4"
+                    }
                 },
                 HttpClientNumber = 100,
                 AES = new()

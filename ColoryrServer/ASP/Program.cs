@@ -129,14 +129,20 @@ namespace ColoryrServer.ASP
             Clients = Web.Services.GetRequiredService<IHttpClients>();
 
             Web.MapGet("/", Config.RoteEnable ? RoteGetIndex : GetIndex);
-            Web.MapGet("/{**name}", Config.RoteEnable ? RoteGetWeb : GetWeb);
+
+            Web.MapGet("/{**name}", Config.RoteEnable ? RoteGetWeb : GetStatic);
+            Web.MapPost("/{**name}", Config.RoteEnable ? RoteGetWeb : GetStatic);
+
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}", GetBack);
             Web.MapGet(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", GetBack);
 
             Web.MapPost("/", PostBuild);
-            Web.MapPost("/{**name}", Config.RoteEnable ? RoteGetWeb : GetWeb);
+
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}", POSTBack);
             Web.MapPost(ServerMain.Config.Requset.WebAPI + "/{uuid}/{name}", POSTBack);
+
+            Web.MapGet(ServerMain.Config.Requset.Web + "/{**name}", GetWeb);
+            Web.MapPost(ServerMain.Config.Requset.Web + "/{**name}", GetWeb);
 
             Web.Run();
 
@@ -235,7 +241,7 @@ namespace ColoryrServer.ASP
             else
             {
                 Response.ContentType = ServerContentType.HTML;
-                await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
+                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
             }
         }
 
@@ -252,7 +258,7 @@ namespace ColoryrServer.ASP
             else
             {
                 Response.ContentType = ServerContentType.HTML;
-                await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
+                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.Html404);
             }
         }
 
@@ -260,7 +266,32 @@ namespace ColoryrServer.ASP
         {
             HttpResponse Response = context.Response;
             Response.ContentType = ServerContentType.HTML;
-            await Response.BodyWriter.WriteAsync(HtmlUtils.HtmlIndex);
+            await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
+        }
+
+        private static async Task GetWeb(HttpContext context)
+        {
+            HttpRequest Request = context.Request;
+            HttpResponse Response = context.Response;
+            HttpReturn httpReturn;
+            var name = context.GetRouteValue("name") as string;
+            if (name == null)
+                return;
+            var arg = name.Split('/');
+            if (arg.Length == 2)
+            {
+                httpReturn = HttpStatic.Get(arg[0], arg[1]);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
+            }
+            else
+            {
+                httpReturn = HttpStatic.Get(name);
+                Response.ContentType = httpReturn.ContentType;
+                Response.StatusCode = httpReturn.ReCode;
+                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
+            }
         }
 
         private static async Task GetBack(HttpContext context)
@@ -306,7 +337,7 @@ namespace ColoryrServer.ASP
             {
                 httpReturn = new()
                 {
-                    Data = HtmlUtils.Html404,
+                    Data = HtmlUtils.BaseDir.Html404,
                     ContentType = ServerContentType.HTML,
                     ReCode = 200
                 };
@@ -449,7 +480,7 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static async Task GetWeb(HttpContext context)
+        private static async Task GetStatic(HttpContext context)
         {
             HttpRequest Request = context.Request;
             HttpResponse Response = context.Response;
@@ -457,21 +488,63 @@ namespace ColoryrServer.ASP
             var name = context.GetRouteValue("name") as string;
             if (name == null)
                 return;
+
+            if (Config.Requset.Stream)
+            {
+                var a = name.LastIndexOf('.');
+                if (a != -1)
+                {
+                    string type = name[a..];
+                    if(Config.Requset.StreamType.Contains(type))
+                    {
+                        NameValueCollection collection = new();
+                        foreach (var item in Request.Headers)
+                        {
+                            collection.Add(item.Key, item.Value);
+                        }
+
+                        var res = HttpStatic.GetStream(new()
+                        {
+                            Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
+                            RowRequest = collection
+                        }, name);
+
+                        if (res == null)
+                        {
+                            Response.ContentType = ServerContentType.HTML;
+                            Response.StatusCode = 200;
+                            await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.Html404);
+                            return;
+                        }
+
+                        var stream = res.Data;
+                        if (stream == null)
+                        {
+                            Response.StatusCode = 500;
+                            await Response.WriteAsync("stream in null",Encoding.UTF8);
+                        }
+                        else
+                        {
+                            stream.Seek(res.Pos, SeekOrigin.Begin);
+                            foreach (var item in res.Head)
+                            {
+                                Response.Headers.Add(item.Key, item.Value);
+                            }
+                            Response.StatusCode = 206;
+                            Response.ContentType = ServerContentType.GetType(type);
+                            await stream.CopyToAsync(Response.Body, 1024);
+                        }
+
+                        return;
+                    }
+                }
+            }
+
             var arg = name.Split('/');
-            if (arg.Length == 2)
-            {
-                httpReturn = HttpStatic.Get(arg[0], arg[1]);
-                Response.ContentType = httpReturn.ContentType;
-                Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
-            }
-            else
-            {
-                httpReturn = HttpStatic.Get(name);
-                Response.ContentType = httpReturn.ContentType;
-                Response.StatusCode = httpReturn.ReCode;
-                await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
-            }
+            httpReturn = HttpStatic.GetStatic(arg);
+            Response.ContentType = httpReturn.ContentType;
+            Response.StatusCode = httpReturn.ReCode;
+            await Response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
         }
 
         private static async Task POSTBack(HttpContext context)
@@ -571,7 +644,7 @@ namespace ColoryrServer.ASP
             {
                 httpReturn = new HttpReturn
                 {
-                    Data = HtmlUtils.Html404,
+                    Data = HtmlUtils.BaseDir.Html404,
                     ContentType = ServerContentType.HTML
                 };
             }

@@ -3,13 +3,26 @@ using Lib.Server;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Threading;
 
 namespace ColoryrServer.FileSystem
 {
+    class StreamTemp
+    {
+        public Stream stream;
+        public int time;
+
+        public void tick() { time--; }
+    }
     public class FileHttpStream
     {
-        private static readonly ConcurrentDictionary<string, Stream> CookieTemp = new();
+        private static readonly ConcurrentDictionary<string, StreamTemp> EtagTemp = new();
         public static string Local;
+
+        private static bool IsRun;
+        private static Thread thread;
+
+        private const int ResetTime = 180;
 
         public static void Start()
         {
@@ -18,27 +31,46 @@ namespace ColoryrServer.FileSystem
             {
                 Directory.CreateDirectory(Local);
             }
+            IsRun = true;
+            thread = new(() =>
+            {
+                while (IsRun)
+                {
+                    Thread.Sleep(1000);
+                    foreach (var item in EtagTemp)
+                    {
+                        item.Value.tick();
+                        if (item.Value.time == 0)
+                            EtagTemp.TryRemove(item.Key, out var v);
+                    }
+                }
+            });
+            thread.Start();
         }
 
         public static void Stop()
         {
-            foreach (var item in CookieTemp.Values)
+            IsRun = false;
+            foreach (var item in EtagTemp.Values)
             {
-                item.Dispose();
+                item.stream.Dispose();
             }
         }
 
         public static bool Have(string cookie)
         {
-            return CookieTemp.ContainsKey(cookie);
+            return EtagTemp.ContainsKey(cookie);
         }
 
         public static Stream LoadStream(string cookie)
         {
             try
             {
-                if (CookieTemp.TryGetValue(cookie, out var stream))
-                    return stream;
+                if (EtagTemp.TryGetValue(cookie, out var stream))
+                {
+                    stream.time = ResetTime;
+                    return stream.stream;
+                }
                 else
                     return null;
             }
@@ -48,36 +80,40 @@ namespace ColoryrServer.FileSystem
             }
         }
 
-        public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
+        public static HttpResponseStream StartStream(HttpRequest http, string file)
         {
             try
             {
-                string cookie;
+                string etag = http.RowRequest["If-Match"];
                 Stream stream;
-                if (http.Cookie == null || http.Cookie == "")
+                if (etag == null || http.Cookie == "")
                 {
                     Guid guid = Guid.NewGuid();
-                    cookie = guid.ToString();
+                    etag = guid.ToString();
                 }
                 else
                 {
-                    cookie = http.Cookie;
+                    etag = http.Cookie;
                 }
-                string file = Local + local + "/" + name;
                 if (!File.Exists(file))
                 {
                     return null;
                 }
-                if (!Have(cookie))
+                if (!Have(etag))
                 {
                     stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    CookieTemp.TryAdd(cookie, stream);
+                    EtagTemp.TryAdd(etag, new()
+                    {
+                        stream = stream,
+                        time = ResetTime
+                    });
                 }
                 else
                 {
-                    CookieTemp[cookie].Dispose();
+                    EtagTemp[etag].stream.Dispose();
                     stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    CookieTemp[cookie] = stream;
+                    EtagTemp[etag].stream = stream;
+                    EtagTemp[etag].time = ResetTime;
                 }
 
                 int pos = 0;
@@ -93,18 +129,23 @@ namespace ColoryrServer.FileSystem
 
                 var res = new HttpResponseStream()
                 {
-                    SetCookie = true,
-                    Cookie = cookie,
                     Data = stream,
                     Pos = pos
                 };
                 res.AddHead("Content-Range", $"bytes {pos}-{stream.Length - 1}/{stream.Length}");
+                res.AddHead("Etag", $"{etag}");
                 return res;
             }
             catch (Exception e)
             {
                 throw new ErrorDump("流处理发生错误", e);
             }
+        }
+
+        public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
+        {
+            string file = Local + local + "/" + name;
+            return StartStream(http, file);
         }
     }
 }

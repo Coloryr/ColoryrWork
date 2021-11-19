@@ -5,38 +5,12 @@ namespace ColoryrServer.Http
 {
     public class HttpStatic
     {
-        public static HttpReturn Get(string url)
+        public static HttpReturn Get(string uuid)
         {
-            byte[] temp;
-            if (url.IndexOf('.') > 0)
-                temp = HtmlUtils.GetFileByName(url);
-            else
-                temp = HtmlUtils.GetByUUID(url);
-            if (temp != null)
-            {
-                int a = url.IndexOf('.') > 0 ? url.LastIndexOf(".") : 0;
-                url = url.ToLower()[a..];
-                return new()
-                {
-                    Data = temp,
-                    ContentType = url switch
-                    {
-                        ".jpg" => ServerContentType.JPG,
-                        ".jpge" => ServerContentType.JPEG,
-                        ".png" => ServerContentType.PNG,
-                        ".json" => ServerContentType.JSON,
-                        ".xml" => ServerContentType.XML,
-                        ".mp3" => ServerContentType.MP3,
-                        ".mp4" => ServerContentType.MP4,
-                        ".gif" => ServerContentType.GIF,
-                        ".icon" => ServerContentType.ICO,
-                        _ => ServerContentType.HTML,
-                    }
-                };
-            }
+            byte[] temp = HtmlUtils.GetByUUID(uuid);
             return new()
             {
-                Data = HtmlUtils.Html404,
+                Data = temp ?? HtmlUtils.BaseDir.Html404,
                 ContentType = ServerContentType.HTML
             };
         }
@@ -68,9 +42,55 @@ namespace ColoryrServer.Http
             }
             return new()
             {
-                Data = HtmlUtils.Html404,
+                Data = HtmlUtils.BaseDir.Html404,
                 ContentType = ServerContentType.HTML
             };
+        }
+
+        public static HttpReturn GetStatic(string[] arg)
+        {
+            var temp = HtmlUtils.BaseDir.GetFile(arg, 0);
+            if (temp != null)
+            {
+                var a = arg[^1].LastIndexOf(".");
+                if (a != -1)
+                {
+                    var name = arg[^1].ToLower()[a..];
+                    return new()
+                    {
+                        Data = temp,
+                        ContentType = name switch
+                        {
+                            ".jpg" => ServerContentType.JPG,
+                            ".jpge" => ServerContentType.JPEG,
+                            ".png" => ServerContentType.PNG,
+                            ".json" => ServerContentType.JSON,
+                            ".xml" => ServerContentType.XML,
+                            ".mp3" => ServerContentType.MP3,
+                            ".mp4" => ServerContentType.MP4,
+                            ".gif" => ServerContentType.GIF,
+                            ".ico" => ServerContentType.ICO,
+                            ".icon" => ServerContentType.ICO,
+                            _ => ServerContentType.HTML,
+                        }
+                    };
+                }
+                return new()
+                {
+                    Data = temp,
+                    ContentType = ServerContentType.HTML
+                };
+            }
+            return new()
+            {
+                Data = HtmlUtils.BaseDir.Html404,
+                ContentType = ServerContentType.HTML
+            };
+        }
+
+        public static HttpResponseStream GetStream(HttpRequest request, string arg)
+        {
+            return HtmlUtils.GetStream(request, arg);
         }
     }
 }

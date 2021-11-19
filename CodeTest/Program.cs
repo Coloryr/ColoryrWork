@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 
-var dir = new StaticDir(AppContext.BaseDirectory);
+var dir = new StaticDir(AppContext.BaseDirectory + "web/");
 
 while (true)
 {

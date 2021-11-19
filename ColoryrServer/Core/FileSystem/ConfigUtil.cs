@@ -92,6 +92,14 @@ namespace ColoryrServer.FileSystem
         /// 缓存保留时间
         /// </summary>
         public int TempTime { get; set; }
+        /// <summary>
+        /// 启用文件流
+        /// </summary>
+        public bool Stream { get; set; }
+        /// <summary>
+        /// 文件流的类型
+        /// </summary>
+        public List<string> StreamType { get; set; }
     }
     public record MQTTConfig
     {

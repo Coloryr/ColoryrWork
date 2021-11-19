@@ -17,6 +17,9 @@ namespace ColoryrServer.Socket
         private static readonly ReaderWriterLockSlim Lock2 = new();
         private static bool IsPipe;
 
+        private static Thread thread1;
+        private static Thread thread2;
+
         public static bool RunFlag;
 
         public static void Start()
@@ -33,28 +36,46 @@ namespace ColoryrServer.Socket
 
                 RunFlag = true;
 
-                Task.Run(async () =>
+                thread1 = new(() =>
                 {
                     while (RunFlag)
                     {
-                        var socket = await TcpServer.AcceptSocketAsync();
-                        ThreadPool.UnsafeQueueUserWorkItem(OnConnectRequest, socket);
-                    }
-                });
-                Task.Run(() =>
-                {
-                    while (RunFlag)
-                    {
-                        EndPoint point = new IPEndPoint(IPAddress.Any, 0);//用来保存发送方的ip和端口号
-                        byte[] buffer = new byte[2048];
-                        int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
-                        if (point is IPEndPoint temp)
+                        try
                         {
-                            UdpClients.Add(temp.Port, temp);
-                            SocketPackDo.ReadUdpPack(temp.Port, buffer);
+                            var socket = TcpServer.AcceptSocket();
+                            ThreadPool.UnsafeQueueUserWorkItem(OnConnectRequest, socket);
+                        }
+                        catch (Exception e)
+                        {
+                            if (RunFlag)
+                                ServerMain.LogError(e);
                         }
                     }
                 });
+                thread2 = new(() =>
+                {
+                    while (RunFlag)
+                    {
+                        try
+                        {
+                            EndPoint point = new IPEndPoint(IPAddress.Any, 0);//用来保存发送方的ip和端口号
+                            byte[] buffer = new byte[2048];
+                            int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
+                            if (point is IPEndPoint temp)
+                            {
+                                UdpClients.Add(temp.Port, temp);
+                                SocketPackDo.ReadUdpPack(temp.Port, buffer);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            if (RunFlag)
+                                ServerMain.LogError(e);
+                        }
+                    }
+                });
+                thread1.Start();
+                thread2.Start();
                 ServerMain.LogOut("Socket服务器已启动");
             }
             catch (Exception e)
