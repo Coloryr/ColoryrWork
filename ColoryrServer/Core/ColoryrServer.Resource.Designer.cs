@@ -177,6 +177,7 @@ namespace ColoryrServer.Core {
         ///using ColoryrServer.Robot;
         ///using ColoryrServer.Utils;
         ///using ColoryrServer.WebSocket;
+        ///using Fleck;
         ///using Newtonsoft.Json;
         ///using Newtonsoft.Json.Linq;
         ///using System;
@@ -191,8 +192,7 @@ namespace ColoryrServer.Core {
         ///    {
         ///        public Stream Data { get; set; }
         ///        public string FileName { get; set; }
-        ///    }
-        ///    publ [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///  [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string ColoryrSDK {
             get {
@@ -368,10 +368,9 @@ namespace ColoryrServer.Core {
         ///        public string Cookie { get; init; }
         ///        public MyContentType ContentType { get; init; }
         ///        public Stream Stream { get; init; }
+        ///        public string Method { get; init; }
         ///
-        ///        /// 获取参数
-        ///        /// &lt;/summary&gt;
-        ///        /// &lt;para [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        /// 获取 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string HttpSDK {
             get {
@@ -628,29 +627,25 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using System.Collections.Concurrent;
+        ///   查找类似 using Newtonsoft.Json;
+        ///using System;
         ///using System.Collections.Generic;
         ///
         ///namespace ColoryrServer.Robot
         ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 55 [插件]获取群列表
-        ///    /// &lt;/summary&gt;
-        ///    public record ListGroupPack : PackBase
+        ///    public partial class RobotSDK
         ///    {
         ///        /// &lt;summary&gt;
-        ///        /// 群列表
+        ///        /// 55 [插件]获取群列表
         ///        /// &lt;/summary&gt;
-        ///        public List&lt;GroupInfo&gt; groups { get; set; }
-        ///    }
-        ///    /// &lt;summary&gt;
-        ///    /// 56 [插件]获取好友列表
-        ///    /// &lt;/summary&gt;
-        ///    public record ListFriendPack : PackBase
-        ///    {
-        ///        /// &lt;summary&gt;
-        ///        /// 朋友列 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        /// &lt;param name=&quot;qq&quot;&gt;qq号&lt;/param&gt;
+        ///        /// &lt;param name=&quot;res&quot;&gt;获取成功后回调&lt;/param&gt;
+        ///        public void GetGroups(long qq, Action&lt;ListGroupPack&gt; res)
+        ///        {
+        ///            GetGroupsMap.Add(qq, res);
+        ///            var data = BuildPack.Build(new GetPack()
+        ///            {
+        ///            [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string RobotPacks {
             get {
@@ -660,7 +655,6 @@ namespace ColoryrServer.Core {
         
         /// <summary>
         ///   查找类似 using ColoryrServer.Robot;
-        ///using System;
         ///using System.Collections.Generic;
         ///
         ///namespace ColoryrServer.SDK
@@ -676,7 +670,7 @@ namespace ColoryrServer.Core {
         ///        public long id { get; private set; }
         ///        public long fid { get; private set; }
         ///        public bool res { get; private set; }
-        ///        public string error { g [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        public string error { get; private set [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string RobotSDK {
             get {
