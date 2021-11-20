@@ -13,12 +13,13 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Newtonsoft.Json;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
 namespace ColoryrServer.ASP
 {
-    internal class ASPServer
+    internal static class ASPServer
     {
         public static ASPConfig Config { get; set; }
 
@@ -165,15 +166,17 @@ namespace ColoryrServer.ASP
                 var List = ServerMain.Config.User.Where(a => a.Username == Json?.User);
                 if (List.Any())
                 {
-                    await Response.WriteAsJsonAsync(DllBuild.StartBuild(Json, List.First()).Data);
+                    var obj1 = DllBuild.StartBuild(Json, List.First()).Data;
+                    await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                 }
                 else
                 {
-                    await Response.WriteAsJsonAsync(new ReMessage
+                    var obj1 = new ReMessage
                     {
                         Build = false,
-                        Message = "账户错误"
-                    });
+                        Message = "账户或密码错误"
+                    };
+                    await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                 }
             }
             else if (Request.Headers[APPKV.APPK] == APPKV.APPV)
@@ -203,7 +206,8 @@ namespace ColoryrServer.ASP
                         await Response.BodyWriter.WriteAsync(bytes);
                         break;
                     case ResType.Json:
-                        await Response.WriteAsJsonAsync(httpReturn.Data);
+                        var obj1 = httpReturn.Data;
+                        await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                         break;
                     case ResType.Stream:
                         var stream1 = httpReturn.Data as Stream;
@@ -344,7 +348,8 @@ namespace ColoryrServer.ASP
                     await Response.BodyWriter.WriteAsync(bytes);
                     break;
                 case ResType.Json:
-                    await Response.WriteAsJsonAsync(httpReturn.Data);
+                    var obj1 = httpReturn.Data;
+                    await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                     break;
                 case ResType.Stream:
                     var stream = httpReturn.Data as Stream;
@@ -578,11 +583,13 @@ namespace ColoryrServer.ASP
                     catch (Exception e)
                     {
                         ServerMain.LogError(e);
-                        await Response.WriteAsJsonAsync(new GetMeesage
+                        var obj1 = new GetMeesage
                         {
                             Res = 123,
                             Text = "表单解析发生错误，请检查数据"
-                        });
+                        };
+                        Response.StatusCode = 500;
+                        await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                         return;
                     }
                 }
@@ -650,7 +657,8 @@ namespace ColoryrServer.ASP
                     await Response.BodyWriter.WriteAsync(bytes);
                     break;
                 case ResType.Json:
-                    await Response.WriteAsJsonAsync(httpReturn.Data);
+                    var obj1 = httpReturn.Data;
+                    await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                     break;
                 case ResType.Stream:
                     var stream = httpReturn.Data as Stream;

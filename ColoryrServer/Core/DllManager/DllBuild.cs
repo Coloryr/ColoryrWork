@@ -25,7 +25,7 @@ namespace ColoryrServer.DllManager
                     resObj = new ReMessage
                     {
                         Build = false,
-                        Message = "密码错误"
+                        Message = "账户或密码错误"
                     };
                 }
                 else if (user.Password.ToLower() == json.Code.ToLower())
@@ -45,7 +45,7 @@ namespace ColoryrServer.DllManager
                     resObj = new ReMessage
                     {
                         Build = false,
-                        Message = "密码错误"
+                        Message = "账户或密码错误"
                     };
             }
             else if (json.Mode == ReType.Check)

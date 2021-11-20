@@ -38,14 +38,16 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(dllres)
+                        Data = dllres,
+                        Res = ResType.Json
                     };
                 }
                 else if (dllres is string)
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.StringOBJ(dllres)
+                        Data = dllres,
+                        Res = ResType.String
                     };
                 }
                 else if (dllres is HttpResponseString)
