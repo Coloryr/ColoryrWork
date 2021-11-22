@@ -64,8 +64,6 @@ namespace ColoryrServer.DllManager.StartGen.GenType
             NoteFile.StorageClass(File.UUID, obj);
             DllStonge.AddClass(File.UUID, AssemblySave);
 
-            File.Up();
-
             Task.Run(() =>
             {
                 Res.MS.Seek(0, SeekOrigin.Begin);
