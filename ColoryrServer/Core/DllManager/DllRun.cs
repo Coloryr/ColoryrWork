@@ -15,22 +15,25 @@ namespace ColoryrServer.DllManager
         {
             try
             {
-                if (function != null && !dll.MethodInfos.ContainsKey(function))
+                if (function == null)
+                {
+                    function = CodeDemo.DllMain;
+                }
+                else if (!dll.MethodInfos.ContainsKey(function))
                 {
                     return new HttpReturn
                     {
-                        Data = StreamUtils.JsonOBJ(new GetMeesage
+                        Data = new GetMeesage
                         {
                             Res = 90,
                             Text = "找不到方法",
                             Data = null
-                        }),
+                        },
+                        Res = ResType.Json,
                         ReCode = 404
                     };
                 }
-                else
-                    function = CodeDemo.DllMain;
-
+                    
                 MethodInfo mi = dll.MethodInfos[function];
                 dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType),
                     new object[1] { arg });
