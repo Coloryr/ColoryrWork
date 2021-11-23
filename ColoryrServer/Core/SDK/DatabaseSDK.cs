@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.DataBase;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
+using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -254,7 +255,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>值</returns>
-        public object Get(string key)
+        public RedisValue Get(string key)
             => RedisCon.Get(key, ID);
 
         /// <summary>
