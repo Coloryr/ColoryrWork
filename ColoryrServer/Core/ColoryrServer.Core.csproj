@@ -8,8 +8,8 @@
     <StartupObject></StartupObject>
     <BaseOutputPath>..\..\build_out\Core</BaseOutputPath>
     <DebugType>embedded</DebugType>
-    <AssemblyVersion>1.2.1</AssemblyVersion>
-    <FileVersion>1.2.1</FileVersion>
+    <AssemblyVersion>1.2.2</AssemblyVersion>
+    <FileVersion>1.2.2</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

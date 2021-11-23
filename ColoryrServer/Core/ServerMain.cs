@@ -26,7 +26,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.2.1";
+        public const string Version = "1.2.2";
         /// <summary>
         /// 配置文件
         /// </summary>

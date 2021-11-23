@@ -20,11 +20,11 @@ namespace ColoryrServer.SDK
             this.ID = ID;
             this.Database = Database;
             if (!MysqlCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Mysql数据库{ID}");
+                throw new ErrorDump($"没有Mysql数据库{ID}");
             if (MysqlCon.State[ID] == false)
-                throw new VarDump("Mysql未就绪");
+                throw new ErrorDump("Mysql未就绪");
             if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
+                throw new ErrorDump("没有选择数据库");
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace ColoryrServer.SDK
         {
             var com = GenCommand(sql, arg);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             return MysqlCon.MysqlSql(com, Database, ID);
         }
         /// <summary>
@@ -50,7 +50,7 @@ namespace ColoryrServer.SDK
         {
             var com = new MySqlCommand(sql);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
             return MysqlCon.MysqlSql(com, Database, ID);
         }
@@ -71,7 +71,7 @@ namespace ColoryrServer.SDK
         {
             var com = GenCommand(sql, arg);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             MysqlCon.MysqlSql(com, Database, ID);
             return com;
         }
@@ -101,11 +101,11 @@ namespace ColoryrServer.SDK
             this.Database = Database;
             this.ID = ID;
             if (!MSCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Mysql数据库{ID}");
+                throw new ErrorDump($"没有Mysql数据库{ID}");
             if (MSCon.State[ID] == false)
-                throw new VarDump("MS数据库没有链接");
+                throw new ErrorDump("MS数据库没有链接");
             if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
+                throw new ErrorDump("没有选择数据库");
 
         }
         /// <summary>
@@ -118,7 +118,7 @@ namespace ColoryrServer.SDK
         {
             var a = GenCommand(sql, arg);
             if (a == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             return MSCon.MSsqlSql(a, Database, ID);
         }
         /// <summary>
@@ -131,7 +131,7 @@ namespace ColoryrServer.SDK
         {
             var com = new SqlCommand(sql);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
             return MSCon.MSsqlSql(com, Database, ID);
         }
@@ -145,7 +145,7 @@ namespace ColoryrServer.SDK
         {
             var com = GenCommand(sql, arg);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             MSCon.MSsqlSql(com, Database, ID);
             return com;
         }
@@ -174,11 +174,11 @@ namespace ColoryrServer.SDK
         {
             this.ID = ID;
             if (!OracleCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Oracle数据库{ID}");
+                throw new ErrorDump($"没有Oracle数据库{ID}");
             if (OracleCon.State[ID] == false)
-                throw new VarDump("Oracle没有链接");
+                throw new ErrorDump("Oracle没有链接");
             if (string.IsNullOrWhiteSpace(Database))
-                throw new VarDump("没有选择数据库");
+                throw new ErrorDump("没有选择数据库");
             this.Database = Database;
         }
         /// <summary>
@@ -191,7 +191,7 @@ namespace ColoryrServer.SDK
         {
             var a = GenCommand(sql, arg);
             if (a == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             return OracleCon.OracleSql(a, Database, ID);
         }
         /// <summary>
@@ -204,7 +204,7 @@ namespace ColoryrServer.SDK
         {
             var com = new OracleCommand(sql);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
             return OracleCon.OracleSql(com, Database, ID);
         }
@@ -218,7 +218,7 @@ namespace ColoryrServer.SDK
         {
             var com = GenCommand(sql, arg);
             if (com == null)
-                throw new VarDump("SQL语句参数非法");
+                throw new ErrorDump("SQL语句参数非法");
             OracleCon.OracleSql(com, Database, ID);
             return com;
         }
@@ -245,16 +245,16 @@ namespace ColoryrServer.SDK
         {
             this.ID = ID;
             if (!RedisCon.State.ContainsKey(ID))
-                throw new VarDump($"没有Redis数据库{ID}");
+                throw new ErrorDump($"没有Redis数据库{ID}");
             if (RedisCon.State[ID] == false)
-                throw new VarDump("Redis没有链接");
+                throw new ErrorDump("Redis没有链接");
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>值</returns>
-        public object Get(dynamic key)
+        public object Get(string key)
             => RedisCon.Get(key, ID);
 
         /// <summary>
@@ -263,21 +263,21 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="Time">存在秒</param>
-        public bool Set(dynamic key, dynamic value, int Time = 0)
+        public bool Set(string key, string value, int Time = 0)
             => RedisCon.Set(key, value, Time, ID);
         /// <summary>
         /// 是否存在键
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否存在</returns>
-        public bool Exists(dynamic key)
+        public bool Exists(string key)
             => RedisCon.Exists(key, ID);
         /// <summary>
         /// 删除键值对
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否成功</returns>
-        public bool Remove(dynamic key)
+        public bool Remove(string key)
             => RedisCon.Remove(key, ID);
         /// <summary>
         /// 累加

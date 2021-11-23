@@ -60,9 +60,10 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Key">键</param>
         /// <param name="Value">值</param>
-        public void AddHead(string Key, string Value)
+        public HttpResponse AddHead(string Key, string Value)
         {
             Head.Add(Key, Value);
+            return this;
         }
     }
 

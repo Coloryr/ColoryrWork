@@ -131,7 +131,7 @@ namespace ColoryrServer.DllManager
                     return new HttpReturn
                     {
                         Data = dump1.data,
-                        Res = ResType.Json,
+                        Res = ResType.String,
                         ReCode = 200
                     };
                 }

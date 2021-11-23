@@ -39,6 +39,27 @@ namespace ColoryrServer.SDK
         public const string MP4 = "video/mpeg4";
         public const string GIF = "image/gif";
         public const string ICO = "application/x-ico";
+
+        public static string GetType(string type)
+        {
+            switch (type.ToLower())
+            {
+                case ".jpg":
+                    return JPG;
+                case ".json":
+                    return JSON;
+                case ".xml":
+                    return XML;
+                case ".png":
+                    return PNG;
+                case ".mp3":
+                    return MP3;
+                case ".mp4":
+                    return MP4;
+                default:
+                    return HTML;
+            }
+        }
     }
     public enum MyContentType
     {
@@ -362,19 +383,52 @@ namespace ColoryrServer.SDK
     public class Tools
     {
         /// <summary>
-        /// HEX×Ö·û´®µ½HEX
+        /// Bytes×ªHEX×Ö·û´®
+        /// </summary>
+        /// <param name="src">Bytes</param>
+        /// <returns>×Ö·û´®</returns>
+        public static string BytesToHexString(byte[] src)
+        {
+            StringBuilder stringBuilder = new();
+            if (src == null || src.Length <= 0)
+            {
+                return "";
+            }
+            for (int i = 0; i < src.Length; i++)
+            {
+                int v = src[i] & 0xFF;
+                string hv = string.Format("{0:X2}", v);
+                stringBuilder.Append(hv);
+            }
+            return stringBuilder.ToString();
+        }
+        /// <summary>
+        /// HEX×Ö·û´®×ªBytes
         /// </summary>
         /// <param name="hexString">HEX×Ö·û´®</param>
         /// <returns>HEXÊý×é</returns>
-        public static byte[] StrToHexByte(string hexString)
+        public static byte[] HexStringToByte(string hex)
         {
-            hexString = hexString.Replace(" ", "");
-            if ((hexString.Length % 2) != 0)
-                hexString += " ";
-            byte[] returnBytes = new byte[hexString.Length / 2];
-            for (int i = 0; i < returnBytes.Length; i++)
-                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-            return returnBytes;
+            int len = hex.Length / 2;
+            byte[] result = new byte[len];
+            char[] achar = hex.ToCharArray();
+            for (int i = 0; i < len; i++)
+            {
+                int pos = i * 2;
+                result[i] = (byte)(ToByte(achar[pos]) << 4 | ToByte(achar[pos + 1]));
+            }
+            return result;
+        }
+        public const string bytelist = "0123456789ABCDEF";
+        /// <summary>
+        /// Byte×ªHEX×Ö·û
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static byte ToByte(char c)
+        {
+            byte b = (byte)bytelist.IndexOf(c);
+            return b;
         }
         /// <summary>
         /// ½ØÈ¡×Ö·û´®
@@ -661,8 +715,11 @@ namespace ColoryrServer.SDK
                     {
                         data.Add("null", "null");
                     }
-                    var name = item.GetType();
-                    data.Add(name.Name, item);
+                    else
+                    {
+                        var name = item.GetType();
+                        data.Add(name.Name, item);
+                    }
                 }
                 return JsonConvert.SerializeObject(data, Formatting.Indented).Replace("\\\"", "\"");
             }

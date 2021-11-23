@@ -254,7 +254,7 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>值</returns>
-        public object Get(dynamic key)
+        public object Get(string key)
             => RedisCon.Get(key, ID);
 
         /// <summary>
@@ -263,21 +263,21 @@ namespace ColoryrServer.SDK
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="Time">存在秒</param>
-        public bool Set(dynamic key, dynamic value, int Time = 0)
+        public bool Set(string key, string value, int Time = 0)
             => RedisCon.Set(key, value, Time, ID);
         /// <summary>
         /// 是否存在键
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否存在</returns>
-        public bool Exists(dynamic key)
+        public bool Exists(string key)
             => RedisCon.Exists(key, ID);
         /// <summary>
         /// 删除键值对
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>是否成功</returns>
-        public bool Remove(dynamic key)
+        public bool Remove(string key)
             => RedisCon.Remove(key, ID);
         /// <summary>
         /// 累加

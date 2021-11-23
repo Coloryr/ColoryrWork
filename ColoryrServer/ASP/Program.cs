@@ -299,7 +299,7 @@ namespace ColoryrServer.ASP
                 var Temp = new Dictionary<string, dynamic>();
                 if (Request.QueryString.HasValue)
                 {
-                    var b = Request.QueryString.ToUriComponent();
+                    var b = Request.QueryString.ToUriComponent()[1..];
                     foreach (string a in b.Split('&'))
                     {
                         var item = a.Split("=");

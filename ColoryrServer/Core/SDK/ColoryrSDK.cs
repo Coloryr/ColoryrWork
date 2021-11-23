@@ -383,19 +383,52 @@ namespace ColoryrServer.SDK
     public class Tools
     {
         /// <summary>
-        /// HEX字符串到HEX
+        /// Bytes转HEX字符串
+        /// </summary>
+        /// <param name="src">Bytes</param>
+        /// <returns>字符串</returns>
+        public static string BytesToHexString(byte[] src)
+        {
+            StringBuilder stringBuilder = new();
+            if (src == null || src.Length <= 0)
+            {
+                return "";
+            }
+            for (int i = 0; i < src.Length; i++)
+            {
+                int v = src[i] & 0xFF;
+                string hv = string.Format("{0:X2}", v);
+                stringBuilder.Append(hv);
+            }
+            return stringBuilder.ToString();
+        }
+        /// <summary>
+        /// HEX字符串转Bytes
         /// </summary>
         /// <param name="hexString">HEX字符串</param>
         /// <returns>HEX数组</returns>
-        public static byte[] StrToHexByte(string hexString)
+        public static byte[] HexStringToByte(string hex)
         {
-            hexString = hexString.Replace(" ", "");
-            if ((hexString.Length % 2) != 0)
-                hexString += " ";
-            byte[] returnBytes = new byte[hexString.Length / 2];
-            for (int i = 0; i < returnBytes.Length; i++)
-                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-            return returnBytes;
+            int len = hex.Length / 2;
+            byte[] result = new byte[len];
+            char[] achar = hex.ToCharArray();
+            for (int i = 0; i < len; i++)
+            {
+                int pos = i * 2;
+                result[i] = (byte)(ToByte(achar[pos]) << 4 | ToByte(achar[pos + 1]));
+            }
+            return result;
+        }
+        public const string bytelist = "0123456789ABCDEF";
+        /// <summary>
+        /// Byte转HEX字符
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static byte ToByte(char c)
+        {
+            byte b = (byte)bytelist.IndexOf(c);
+            return b;
         }
         /// <summary>
         /// 截取字符串
@@ -682,8 +715,11 @@ namespace ColoryrServer.SDK
                     {
                         data.Add("null", "null");
                     }
-                    var name = item.GetType();
-                    data.Add(name.Name, item);
+                    else
+                    {
+                        var name = item.GetType();
+                        data.Add(name.Name, item);
+                    }
                 }
                 return JsonConvert.SerializeObject(data, Formatting.Indented).Replace("\\\"", "\"");
             }
