@@ -5,6 +5,7 @@ using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -63,17 +64,26 @@ namespace ColoryrBuild.Windows
             }
         }
 
-        private void OnChanged(object source, FileSystemEventArgs e)
+        private async void OnChanged(object source, FileSystemEventArgs e)
         {
             if (Write)
                 return;
             Write = true;
-            if (type is not CodeType.App and not CodeType.Web)
+            if(type is CodeType.Web)
+            {
+                obj1.Code = CodeSave.Load(Local + e.Name);
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    Model = App.StartContrast(obj1, old);
+                    textEditor.Text = obj1.Code;
+                });
+            }
+            else if (type is not CodeType.App and not CodeType.Web)
             {
                 if (e.Name == "main.cs")
                 {
                     obj1.Code = CodeSave.Load(Local + "main.cs");
-                    Dispatcher.Invoke(() =>
+                    await Dispatcher.InvokeAsync(() =>
                     {
                         Model = App.StartContrast(obj1, old);
                         textEditor.Text = obj1.Code;
@@ -82,7 +92,7 @@ namespace ColoryrBuild.Windows
             }
             else
             {
-
+                
             }
             Write = false;
         }
@@ -225,7 +235,7 @@ namespace ColoryrBuild.Windows
             Write = false;
         }
 
-        private void Updata_Click(object sender, RoutedEventArgs e)
+        private async Task UpdateTask() 
         {
             Updata_Button.IsEnabled = false;
             if (type == CodeType.App)
@@ -267,9 +277,17 @@ namespace ColoryrBuild.Windows
             {
                 obj1.Text = Text.Text;
                 obj1.Code = textEditor.Text;
-                Model = App.StartContrast(obj1, old);
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    Model = App.StartContrast(obj1, old);
+                });
             }
             Updata_Button.IsEnabled = true;
+        }
+
+        private async void Updata_Click(object sender, RoutedEventArgs e)
+        {
+            await UpdateTask();
         }
 
         private void ReCode_Click(object sender, RoutedEventArgs e)
@@ -279,9 +297,14 @@ namespace ColoryrBuild.Windows
             ReCode_Button.IsEnabled = true;
         }
 
+        private bool IsBuild = false;
+
         private async void BuildOther()
         {
-            Updata_Click(null, null);
+            if (IsBuild)
+                return;
+            IsBuild = true;
+            await UpdateTask();
             old = obj1.Code;
             obj1.Text = Text.Text;
             List<CodeEditObj> list = new();
@@ -325,6 +348,7 @@ namespace ColoryrBuild.Windows
             App.MainWindow_.Re(type);
             CodeSave.Save(Local + "main.cs", obj1.Code);
             App.ClearContrast();
+            IsBuild = false;
         }
 
         private async void BuildApp()

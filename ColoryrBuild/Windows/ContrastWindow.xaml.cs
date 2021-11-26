@@ -20,7 +20,6 @@ namespace ColoryrBuild.Windows
             DiffView.OldText = oldText;
             DiffView.NewText = obj.Code;
             DiffView.Refresh();
-            DiffView.ShowSideBySide();
             Activate();
             return DiffView.GetInlineDiffModel();
         }
@@ -31,7 +30,6 @@ namespace ColoryrBuild.Windows
             DiffView.OldText = oldText;
             DiffView.NewText = new_;
             DiffView.Refresh();
-            DiffView.ShowSideBySide();
             Activate();
             return DiffView.GetInlineDiffModel();
         }

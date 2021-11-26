@@ -7,6 +7,14 @@ using System.Data.SqlClient;
 
 namespace ColoryrServer.SDK
 {
+    /// <summary>
+    /// SQL结果集
+    /// </summary>
+    public class SqlRes
+    {
+        public List<List<dynamic>> data { get; set; }
+        public List<Dictionary<string, dynamic>> data1 { get; set; }
+    }
     public class Mysql
     {
         private string Database;
@@ -45,9 +53,22 @@ namespace ColoryrServer.SDK
         /// 执行sql语句
         /// </summary>
         /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public SqlRes MysqlSqlRes(string sql, Dictionary<string, string> arg)
+        {
+            var com = GenCommand(sql, arg);
+            if (com == null)
+                throw new ErrorDump("SQL语句参数非法");
+            return MysqlCon.MysqlSqlRes(com, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
         /// <param name="arg">Mysql参数</param>
         /// <returns>执行结果</returns>
-        public List<List<dynamic>> MysqlSql(string sql, MySqlParameter[] arg)
+        public List<List<dynamic>> MysqlSqlP(string sql, MySqlParameter[] arg)
         {
             var com = new MySqlCommand(sql);
             if (com == null)
@@ -58,10 +79,31 @@ namespace ColoryrServer.SDK
         /// <summary>
         /// 执行sql语句
         /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public SqlRes MysqlSqlPRes(string sql, MySqlParameter[] arg)
+        {
+            var com = new MySqlCommand(sql);
+            if (com == null)
+                throw new ErrorDump("SQL语句参数非法");
+            com.Parameters.AddRange(arg);
+            return MysqlCon.MysqlSqlRes(com, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
         /// <param name="arg">Mysql命令语句</param>
         /// <returns>执行结果</returns>
         public List<List<dynamic>> MysqlSql(MySqlCommand arg)
             => MysqlCon.MysqlSql(arg, Database, ID);
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="arg">Mysql命令语句</param>
+        /// <returns>执行结果</returns>
+        public SqlRes MysqlSqlRes(MySqlCommand arg)
+            => MysqlCon.MysqlSqlRes(arg, Database, ID);
         /// <summary>
         /// 执行sql语句
         /// </summary>

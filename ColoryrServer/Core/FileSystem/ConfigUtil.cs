@@ -202,10 +202,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// 连接数
-        /// </summary>
-        public int ConnCount { get; set; }
-        /// <summary>
         /// 连接超时
         /// </summary>
         public int TimeOut { get; set; }

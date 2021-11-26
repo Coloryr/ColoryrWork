@@ -46,26 +46,22 @@ namespace ColoryrServer.DllManager
 
         public static void AddDll(string uuid, DllBuildSave save)
         {
-            if (DllList.ContainsKey(uuid))
+            if (DllList.TryRemove(uuid, out var v))
             {
-                DllList[uuid].Assembly.Unload();
-                DllList[uuid].DllType = null;
-                DllList[uuid].MethodInfos.Clear();
-                DllList[uuid] = save;
+                v.Assembly.Unload();
+                v.DllType = null;
+                v.MethodInfos.Clear();
             }
-            else
-            {
-                DllList.TryAdd(uuid, save);
-            }
+
+            DllList.TryAdd(uuid, save);
         }
         public static void RemoveDll(string uuid)
         {
-            if (DllList.ContainsKey(uuid))
+            if (DllList.TryRemove(uuid, out var v))
             {
-                DllList[uuid].Assembly.Unload();
-                DllList[uuid].DllType = null;
-                DllList[uuid].MethodInfos.Clear();
-                DllList.TryRemove(uuid, out var item);
+                v.Assembly.Unload();
+                v.DllType = null;
+                v.MethodInfos.Clear();
             }
             RemoveAll(DllLocal + uuid);
         }
