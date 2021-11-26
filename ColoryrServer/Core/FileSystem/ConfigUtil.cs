@@ -23,19 +23,19 @@ namespace ColoryrServer.FileSystem
         /// <summary>
         /// Mysql配置
         /// </summary>
-        public List<MysqlConfig> Mysql { get; set; }
+        public List<SQLConfig> Mysql { get; set; }
         /// <summary>
         /// MS sql设置
         /// </summary>
-        public List<MSsqlConfig> MSsql { get; set; }
+        public List<SQLConfig> MSsql { get; set; }
+        /// <summary>
+        /// Oracle配置
+        /// </summary>
+        public List<SQLConfig> Oracle { get; set; }
         /// <summary>
         /// Redis设置
         /// </summary>
         public List<RedisConfig> Redis { get; set; }
-        /// <summary>
-        /// Oracle配置
-        /// </summary>
-        public List<OracleConfig> Oracle { get; set; }
         /// <summary>
         /// 编辑用户设置
         /// </summary>
@@ -119,41 +119,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public int MaxTime { get; set; }
     }
-    public record OracleConfig
-    {
-        /// <summary>
-        /// 启用
-        /// </summary>
-        public bool Enable { get; set; }
-        /// <summary>
-        /// IP地址
-        /// </summary>
-        public string IP { get; set; }
-        /// <summary>
-        /// 端口
-        /// </summary>
-        public int Port { get; set; }
-        /// <summary>
-        /// 用户名
-        /// </summary>
-        public string User { get; set; }
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string Password { get; set; }
-        /// <summary>
-        /// 连接数
-        /// </summary>
-        public int ConnCount { get; set; }
-        /// <summary>
-        /// 连接超时
-        /// </summary>
-        public int TimeOut { get; set; }
-        /// <summary>
-        /// 连接字符串
-        /// </summary>
-        public string Conn { get; set; }
-    }
     public record UserConfig
     {
         /// <summary>
@@ -179,7 +144,7 @@ namespace ColoryrServer.FileSystem
     public record HttpConfig : SocketConfig
     {
     }
-    public record MysqlConfig
+    public record SQLConfig
     {
         /// <summary>
         /// 启用
@@ -207,38 +172,6 @@ namespace ColoryrServer.FileSystem
         public int TimeOut { get; set; }
         /// <summary>
         /// 连接字符串
-        /// </summary>
-        public string Conn { get; set; }
-    }
-    public record MSsqlConfig
-    {
-        /// <summary>
-        /// <summary>
-        /// 启用
-        /// </summary>
-        public bool Enable { get; set; }
-        /// <summary>
-        /// IP地址
-        /// </summary>
-        public string IP { get; set; }
-        /// <summary>
-        /// 用户名
-        /// </summary>
-        public string User { get; set; }
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string Password { get; set; }
-        /// <summary>
-        /// 连接数
-        /// </summary>
-        public int ConnCount { get; set; }
-        /// <summary>
-        /// 连接超时
-        /// </summary>
-        public int TimeOut { get; set; }
-        /// <summary>
-        /// 连接的字符串
         /// </summary>
         public string Conn { get; set; }
     }

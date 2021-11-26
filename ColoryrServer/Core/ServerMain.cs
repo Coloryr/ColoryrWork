@@ -124,10 +124,10 @@ namespace ColoryrServer
 
                 MQTTServer.Start();
                 RobotUtils.Start();
-                MysqlCon.Start();
-                MSCon.Start();
-                RedisCon.Start();
-                OracleCon.Start();
+                new Thread(MSCon.Start).Start();
+                new Thread(RedisCon.Start).Start();
+                new Thread(OracleCon.Start).Start();
+                new Thread(MysqlCon.Start).Start();
                 RamDataBase.Start();
                 GenCode.Start();
                 DllStonge.Start();

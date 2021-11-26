@@ -4,8 +4,6 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.DataBase
 {
@@ -19,7 +17,7 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 连接池
         /// </summary>
-        private static List<MysqlConfig> Config;
+        private static List<SQLConfig> Config;
         private static Dictionary<int, string> ConnectStr = new();
 
         /// <summary>
@@ -68,17 +66,15 @@ namespace ColoryrServer.DataBase
                 string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
                 State.Add(a, false);
                 var Conn = new MySqlConnection(ConnectString);
-                var isok = Test(Conn);
-                if (!isok)
-                {
-                    ServerMain.LogError($"Mysql数据库{a}连接失败");
-                    break;
-                }
-                else
+                if (Test(Conn))
                 {
                     ConnectStr.Add(a, ConnectString);
                     State[a] = true;
                     ServerMain.LogOut($"Mysql数据库{a}已连接");
+                }
+                else
+                {
+                    ServerMain.LogError($"Mysql数据库{a}连接失败");
                 }
             }
         }
@@ -97,7 +93,7 @@ namespace ColoryrServer.DataBase
         }
 
         /// <summary>
-        /// 执行mysql语句
+        /// 执行sql语句
         /// </summary>
         /// <param name="Database">数据库</param>
         /// <param name="Sql">SQL语句</param>

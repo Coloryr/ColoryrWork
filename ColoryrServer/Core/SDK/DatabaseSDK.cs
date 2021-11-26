@@ -118,7 +118,7 @@ namespace ColoryrServer.SDK
             MysqlCon.MysqlSql(com, Database, ID);
             return com;
         }
-        private MySqlCommand GenCommand(string sql, Dictionary<string, string> arg)
+        private static MySqlCommand GenCommand(string sql, Dictionary<string, string> arg)
         {
             var com = new MySqlCommand(sql);
             if (arg != null)
@@ -168,15 +168,42 @@ namespace ColoryrServer.SDK
         /// 执行sql语句
         /// </summary>
         /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public SqlRes MSsqlSqlRes(string sql, Dictionary<string, string> arg)
+        {
+            var a = GenCommand(sql, arg);
+            if (a == null)
+                throw new ErrorDump("SQL语句参数非法");
+            return MSCon.MSsqlSqlRes(a, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
         /// <param name="arg">Mysql参数</param>
         /// <returns>执行结果</returns>
-        public List<List<dynamic>> MSsqlSql(string sql, MySqlParameter[] arg)
+        public List<List<dynamic>> MSsqlSqlP(string sql, MySqlParameter[] arg)
         {
             var com = new SqlCommand(sql);
             if (com == null)
                 throw new ErrorDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
             return MSCon.MSsqlSql(com, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public SqlRes MSsqlSqlPRes(string sql, MySqlParameter[] arg)
+        {
+            var com = new SqlCommand(sql);
+            if (com == null)
+                throw new ErrorDump("SQL语句参数非法");
+            com.Parameters.AddRange(arg);
+            return MSCon.MSsqlSqlRes(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
@@ -241,15 +268,42 @@ namespace ColoryrServer.SDK
         /// 执行sql语句
         /// </summary>
         /// <param name="sql">sql语句</param>
+        /// <param name="arg">参数</param>
+        /// <returns>返回的数据</returns>
+        public SqlRes OracleSqlRes(string sql, Dictionary<string, string> arg)
+        {
+            var a = GenCommand(sql, arg);
+            if (a == null)
+                throw new ErrorDump("SQL语句参数非法");
+            return OracleCon.OracleSqlRes(a, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
         /// <param name="arg">Mysql参数</param>
         /// <returns>执行结果</returns>
-        public List<List<dynamic>> OracleSql(string sql, OracleParameter[] arg)
+        public List<List<dynamic>> OracleSqlP(string sql, OracleParameter[] arg)
         {
             var com = new OracleCommand(sql);
             if (com == null)
                 throw new ErrorDump("SQL语句参数非法");
             com.Parameters.AddRange(arg);
             return OracleCon.OracleSql(com, Database, ID);
+        }
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="arg">Mysql参数</param>
+        /// <returns>执行结果</returns>
+        public SqlRes OracleSqlPRes(string sql, OracleParameter[] arg)
+        {
+            var com = new OracleCommand(sql);
+            if (com == null)
+                throw new ErrorDump("SQL语句参数非法");
+            com.Parameters.AddRange(arg);
+            return OracleCon.OracleSqlRes(com, Database, ID);
         }
         /// <summary>
         /// 执行sql语句
