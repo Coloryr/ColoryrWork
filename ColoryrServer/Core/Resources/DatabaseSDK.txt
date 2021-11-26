@@ -28,10 +28,8 @@ namespace ColoryrServer.SDK
         {
             this.ID = ID;
             this.Database = Database;
-            if (!MysqlCon.State.ContainsKey(ID))
+            if (!MysqlCon.Contains(ID))
                 throw new ErrorDump($"没有Mysql数据库{ID}");
-            if (MysqlCon.State[ID] == false)
-                throw new ErrorDump("Mysql未就绪");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new ErrorDump("没有选择数据库");
         }
@@ -143,10 +141,8 @@ namespace ColoryrServer.SDK
         {
             this.Database = Database;
             this.ID = ID;
-            if (!MSCon.State.ContainsKey(ID))
-                throw new ErrorDump($"没有Mysql数据库{ID}");
-            if (MSCon.State[ID] == false)
-                throw new ErrorDump("MS数据库没有链接");
+            if (!MSCon.Contains(ID))
+                throw new ErrorDump($"没有MS数据库{ID}");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new ErrorDump("没有选择数据库");
 
@@ -243,10 +239,8 @@ namespace ColoryrServer.SDK
         public Oracle(string Database = "", int ID = 0)
         {
             this.ID = ID;
-            if (!OracleCon.State.ContainsKey(ID))
+            if (!OracleCon.Contains(ID))
                 throw new ErrorDump($"没有Oracle数据库{ID}");
-            if (OracleCon.State[ID] == false)
-                throw new ErrorDump("Oracle没有链接");
             if (string.IsNullOrWhiteSpace(Database))
                 throw new ErrorDump("没有选择数据库");
             this.Database = Database;

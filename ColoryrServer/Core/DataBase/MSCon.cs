@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
@@ -12,12 +13,12 @@ namespace ColoryrServer.DataBase
         /// <summary>
         /// 连接状态
         /// </summary>
-        public static Dictionary<int, bool> State = new();
-
+        private static Dictionary<int, bool> State = new();
         /// <summary>
         /// 连接池
         /// </summary>
         private static Dictionary<int, string> ConnectStr = new();
+        private static ConcurrentDictionary<int, bool> Connecting = new();
         private static List<SQLConfig> Config;
 
         /// <summary>
@@ -47,6 +48,44 @@ namespace ColoryrServer.DataBase
                         return false;
                 }
             }
+        }
+
+        /// <summary>
+        /// 尝试重连数据库
+        /// </summary>
+        /// <param name="id">数据库ID</param>
+        /// <returns>是否能连接</returns>
+        internal static bool Contains(int id)
+        {
+            if (State.ContainsKey(id) && State[id])
+                return true;
+            else if (Config.Count - 1 >= id)
+            {
+                if (Connecting.ContainsKey(id))
+                    return false;
+                if (!Connecting.TryAdd(id, true))
+                    return false;
+                var config = Config[id];
+                if (!config.Enable)
+                    return false;
+                var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
+                string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
+                State.Add(id, false);
+                var Conn = new SqlConnection(ConnectString);
+                if (Test(Conn))
+                {
+                    ConnectStr.Add(id, ConnectString);
+                    State[id] = true;
+                    ServerMain.LogOut($"Mysql数据库{id}已连接");
+                }
+                else
+                {
+                    ServerMain.LogError($"Mysql数据库{id}连接失败");
+                }
+                Connecting.TryRemove(id, out var v);
+                return State[id];
+            }
+            return false;
         }
 
         /// <summary>
