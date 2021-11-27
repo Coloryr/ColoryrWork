@@ -17,7 +17,7 @@ namespace ColoryrBuild
     /// </summary>
     public partial class App : Application
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
         /// <summary>
         /// 运行路径
         /// </summary>
