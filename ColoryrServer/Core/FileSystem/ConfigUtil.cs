@@ -190,14 +190,6 @@ namespace ColoryrServer.FileSystem
         /// </summary>
         public short Port { get; set; }
         /// <summary>
-        /// 连接数
-        /// </summary>
-        public int ConnCount { get; set; }
-        /// <summary>
-        /// 连接超时
-        /// </summary>
-        public int TimeOut { get; set; }
-        /// <summary>
         /// 连接字符串
         /// </summary>
         public string Conn { get; set; }

@@ -7,7 +7,7 @@ namespace ColoryrServer.FileSystem
     {
         public static string StartEdit(string old, List<CodeEditObj> editText)
         {
-            var temp = old.Split("\n");
+            var temp = old.Replace("\r", "").Split("\n");
             int arg = 0;
             var list = new List<string>(temp);
             foreach (var item in editText)

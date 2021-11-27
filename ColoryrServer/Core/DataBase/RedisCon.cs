@@ -59,19 +59,16 @@ namespace ColoryrServer.DataBase
                     continue;
                 string ConnectString = string.Format(config.Conn, config.IP, config.Port);
                 State.Add(a, false);
-                for (int b = 0; b < config.ConnCount; b++)
+                var Conn = ConnectionMultiplexer.Connect(ConnectString);
+                if (Test(Conn))
                 {
-                    var Conn = ConnectionMultiplexer.Connect(ConnectString);
-                    if (Test(Conn))
-                    {
-                        ConnectStr.Add(a, ConnectString);
-                        State[a] = true;
-                        ServerMain.LogOut($"Redis数据库{a}已连接");
-                    }
-                    else
-                    {
-                        ServerMain.LogError($"Redis数据库{a}连接失败");
-                    }
+                    ConnectStr.Add(a, ConnectString);
+                    State[a] = true;
+                    ServerMain.LogOut($"Redis数据库{a}已连接");
+                }
+                else
+                {
+                    ServerMain.LogError($"Redis数据库{a}连接失败");
                 }
             }
         }

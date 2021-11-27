@@ -102,7 +102,6 @@ namespace ColoryrServer.ASP
                         Port = 3306,
                         User = "root",
                         Password = "MTIzNDU2",
-                        ConnCount = 50,
                         TimeOut = 1000,
                         Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
                     }
@@ -115,7 +114,6 @@ namespace ColoryrServer.ASP
                         IP = "127.0.0.1",
                         User = "root",
                         Password = "MTIzNDU2",
-                        ConnCount = 50,
                         TimeOut = 1000,
                         Conn = "Server={0};UID={1};PWD={2};"
                     }
@@ -127,9 +125,7 @@ namespace ColoryrServer.ASP
                         Enable = false,
                         IP = "127.0.0.1",
                         Port = 6379,
-                        TimeOut = 1000,
-                        Conn = "{0}:{1}",
-                        ConnCount = 20
+                        Conn = "{0}:{1}"
                     }
                 },
                 Oracle = new()
@@ -140,7 +136,6 @@ namespace ColoryrServer.ASP
                         IP = "127.0.0.1",
                         User = "root",
                         Password = "MTIzNDU2",
-                        ConnCount = 20,
                         TimeOut = 1000,
                         Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
                     }

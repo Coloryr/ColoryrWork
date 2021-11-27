@@ -15,6 +15,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -119,6 +120,7 @@ namespace ColoryrServer
                 bitmap.Dispose();
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;
+                NameValueCollection nameValue = new();
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 

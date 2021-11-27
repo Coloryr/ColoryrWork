@@ -71,18 +71,18 @@ namespace ColoryrBuild.Windows
             Write = true;
             if(type is CodeType.Web)
             {
-                obj1.Code = CodeSave.Load(Local + e.Name);
+                obj3.Codes[e.Name] = CodeSave.Load(Local + e.Name).Replace("\r", "");
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    Model = App.StartContrast(obj1, old);
-                    textEditor.Text = obj1.Code;
+                    Model = App.StartContrast(type, obj3.UUID, obj3.Codes[e.Name], old);
+                    textEditor.Text = obj3.Codes[e.Name];
                 });
             }
             else if (type is not CodeType.App and not CodeType.Web)
             {
                 if (e.Name == "main.cs")
                 {
-                    obj1.Code = CodeSave.Load(Local + "main.cs");
+                    obj1.Code = CodeSave.Load(Local + "main.cs").Replace("\r", "");
                     await Dispatcher.InvokeAsync(() =>
                     {
                         Model = App.StartContrast(obj1, old);
@@ -114,18 +114,22 @@ namespace ColoryrBuild.Windows
                 else
                     obj1 = data;
 
+                obj1.Code = obj1.Code;
+
                 textEditor.Text = obj1.Code;
                 old = obj1.Code;
                 Text.Text = obj1.Text;
                 if (File.Exists(Local + "main.cs"))
                 {
                     string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
-                    var newLocal = Local + "backup/";
-                    if (!Directory.Exists(newLocal))
+                    try
                     {
-                        Directory.CreateDirectory(newLocal);
+                        ZIPUtils.Pack(Local, Local + "main.cs", time + ".cs");
                     }
-                    File.Move(Local + "main.cs", newLocal + time + ".cs");
+                    catch
+                    {
+                        MessageBox.Show("备份失败");
+                    }
                 }
                 CodeSave.Save(Local + "main.cs", obj1.Code);
                 App.LogShow("获取代码", $"代码{obj1.Type}[{obj1.UUID}]获取成功");
@@ -145,11 +149,13 @@ namespace ColoryrBuild.Windows
                 FileList.Items.Clear();
 
                 string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
-                var newLocal = Local + $"backup_{time}/";
-                if (!Directory.Exists(newLocal))
+
+                var newLocal = Local + $"backup/";
+                if (Directory.Exists(newLocal))
                 {
-                    Directory.CreateDirectory(newLocal);
+                    Directory.Delete(newLocal, true);
                 }
+                Directory.CreateDirectory(newLocal);
 
                 foreach (var item in obj3.Codes)
                 {
@@ -160,6 +166,17 @@ namespace ColoryrBuild.Windows
                     CodeSave.Save(Local + item.Key, item.Value);
                     FileList.Items.Add(item.Key);
                 }
+
+                try
+                {
+                    ZIPUtils.Pack1(Local, newLocal, $"backup_{time}");
+                }
+                catch
+                {
+                    MessageBox.Show("备份失败");
+                }
+                Directory.Delete(newLocal, true);
+
                 foreach (var item in obj3.Files)
                 {
                     FileList.Items.Add(item.Key);
@@ -244,13 +261,13 @@ namespace ColoryrBuild.Windows
                 if (thisfile.EndsWith(".cs"))
                 {
                     string temp = thisfile.Replace(".cs", "");
-                    obj2.Codes[temp] = textEditor.Text;
+                    obj2.Codes[temp] = textEditor.Text.Replace("\r", "");
                     Model = App.StartContrast(type, obj2.UUID, obj2.Codes[temp], old);
                 }
                 else if (thisfile.EndsWith(".xaml"))
                 {
                     string temp = thisfile.Replace(".xaml", "");
-                    obj2.Codes[temp] = textEditor.Text;
+                    obj2.Codes[temp] = textEditor.Text.Replace("\r", "");
                     Model = App.StartContrast(type, obj2.UUID, obj2.Xamls[temp], old);
                 }
                 else
@@ -265,7 +282,7 @@ namespace ColoryrBuild.Windows
                 || thisfile.EndsWith(".js") || thisfile.EndsWith(".json")
                 || thisfile.EndsWith(".txt"))
                 {
-                    obj3.Codes[thisfile] = textEditor.Text;
+                    obj3.Codes[thisfile] = textEditor.Text.Replace("\r", "");
                     Model = App.StartContrast(type, obj3.UUID, obj3.Codes[thisfile], old);
                 }
                 else
@@ -276,7 +293,7 @@ namespace ColoryrBuild.Windows
             else
             {
                 obj1.Text = Text.Text;
-                obj1.Code = textEditor.Text;
+                obj1.Code = textEditor.Text.Replace("\r", "");
                 await Dispatcher.InvokeAsync(() =>
                 {
                     Model = App.StartContrast(obj1, old);

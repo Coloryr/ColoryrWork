@@ -142,6 +142,7 @@ namespace ColoryrServer.DataBase
             try
             {
                 Sql.Connection = new SqlConnection(ConnectStr[id]);
+                Sql.Connection.Open();
                 Sql.Connection.ChangeDatabase(Database);
                 SqlDataReader reader = Sql.ExecuteReader();
                 var readlist = new List<List<dynamic>>();
@@ -184,6 +185,7 @@ namespace ColoryrServer.DataBase
             try
             {
                 Sql.Connection = new SqlConnection(ConnectStr[id]);
+                Sql.Connection.Open();
                 Sql.Connection.ChangeDatabase(Database);
                 SqlDataReader reader = Sql.ExecuteReader();
                 var readlist = new List<List<dynamic>>();
