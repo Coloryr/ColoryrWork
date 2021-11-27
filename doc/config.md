@@ -78,8 +78,6 @@
             "Port": 3306,
             "User": "root",
             "Password": "MTIzNDU2",
-            "ConnCount": 50,
-            "TimeOut": 1000,
             "Conn": "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
         }
     ],
@@ -90,8 +88,6 @@
             "IP": "127.0.0.1",
             "User": "root",
             "Password": "MTIzNDU2",
-            "ConnCount": 50,
-            "TimeOut": 1000,
             "Conn": "Server={0};UID={1};PWD={2};"
         }
     ],
@@ -101,8 +97,6 @@
             "Enable": false,
             "IP": "127.0.0.1",
             "Port": 6379,
-            "ConnCount": 20,
-            "TimeOut": 1000,
             "Conn": "{0}:{1}"
         }
     ],
@@ -111,11 +105,8 @@
         {
             "Enable": false,
             "IP": "127.0.0.1",
-            "Port": 0,
             "User": "root",
             "Password": "MTIzNDU2",
-            "ConnCount": 20,
-            "TimeOut": 1000,
             "Conn": "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
         }
     ],
@@ -148,6 +139,8 @@
     "Requset": {
         //后端路径（http://xxx:xxx/{WebAPI}）
         "WebAPI": "/WebAPI",
+        //网页路径（http://xxx:xxx/{Web}）
+        "Web": "/Web",
         //进入缓存的文件后缀
         "Temp": [
         ".jpg",
@@ -157,7 +150,13 @@
         ".gif"
         ],
         //缓存时间
-        "TempTime": 1800
+        "TempTime": 1800,
+        //自动流转换
+        "Stream": true,
+        //自动转换的文件类型
+        "StreamType": [
+            ".mp4"
+        ]
     },
     //编辑器AES加密
     "AES": {

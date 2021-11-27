@@ -46,8 +46,8 @@ public dynamic main(HttpRequest http)
     return "true";
 }
 ```
-接口函数输入的参数必须是[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs#L7)  
-并且需要带有[ColoryrServer.SDK.NotesSDK](../ColoryrServer/Core/SDK/NotesSDK.cs)的属性
+接口函数输入的参数**必须**是[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs#L7)  
+并且**必须**带有[ColoryrServer.SDK.NotesSDK](../ColoryrServer/Core/SDK/NotesSDK.cs)的属性
 
 ### 接口请求参数
 接口函数传入的对象为[ColoryrServer.SDK.HttpRequest](../ColoryrServer/Core/SDK/HttpSDK.cs#L7)

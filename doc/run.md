@@ -4,10 +4,10 @@
 [返回](../README.md)
 
 ## 部署
-1. 安装[net6](https://dotnet.microsoft.com/download/dotnet/6.0)
+1. 安装[.NET6_SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 ```
 $ dotnet --version
-6.0.100-rc.1.21463.6
+6.0.100
 ```
 2. 克隆并构建
 ```
@@ -24,24 +24,19 @@ Receiving objects: 100% (4246/4246), 15.66 MiB | 3.84 MiB/s, done.
 Resolving deltas: 100% (2516/2516), done.
 $ cd ColoryrWork
 $ dotnet build
-用于 .NET 的 Microsoft (R) 生成引擎版本 17.0.0-preview-21460-01+8f208e609
+用于 .NET 的 Microsoft (R) 生成引擎版本 17.0.0+c9eb9dd64
 版权所有(C) Microsoft Corporation。保留所有权利。
 
   正在确定要还原的项目…
-  已还原 G:\ColoryrWork\ColoryrBuild\ColoryrBuild.csproj (用时 290 ms)。
-  已还原 G:\ColoryrWork\CodeTest\CodeTest.csproj (用时 290 ms)。
-  已还原 G:\ColoryrWork\ColoryrServer\ASP\ColoryrServer.ASP.csproj (用时 616 ms)。
-  已还原 G:\ColoryrWork\ColoryrServer\Core\ColoryrServer.Core.csproj (用时 616 ms)。
-  你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
-  你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
-  你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
-  你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
-  你正在使用 .NET 的预览版。请查看 https://aka.ms/dotnet-core-preview
+  所有项目均是最新的，无法还原。
+  ColoryrServer.Core -> G:\code\ColoryrWork\build_out\Core\net6.0\ColoryrServer.Core.dll
+  ColoryrBuild -> G:\code\ColoryrWork\build_out\Build\net6.0-windows7.0\ColoryrBuild.dll
+  CodeTest -> G:\code\ColoryrWork\build_out\Test\net6.0\CodeTest.dll
   ......
-    37 个警告
+    23 个警告
     0 个错误
 
-已用时间 00:00:07.02
+已用时间 00:00:06.52
 ```
 在`ColoryrWork`文件夹下，你会得到一个`build_out`的构建文件夹  
 - `ASP`是服务器文件  

@@ -245,7 +245,7 @@ namespace ColoryrServer.ASP
             else
             {
                 Response.ContentType = ServerContentType.HTML;
-                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.Html404);
+                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
             }
         }
 
@@ -390,12 +390,19 @@ namespace ColoryrServer.ASP
 
             foreach (var item in Request.Headers)
             {
-                if (item.Key.StartsWith("Content"))
+                try
                 {
-                    message.Content.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+                    if (item.Key.StartsWith("Content"))
+                    {
+                        message.Content.Headers.Add(item.Key, item.Value as IEnumerable<string>);
+                    }
+                    else
+                        message.Headers.Add(item.Key, item.Value as IEnumerable<string>);
                 }
-                else
-                    message.Headers.Add(item.Key, (IEnumerable<string>)item.Value);
+                catch 
+                {
+                
+                }
             }
             foreach (var item in rote.Heads)
             {
@@ -427,7 +434,6 @@ namespace ColoryrServer.ASP
 
                 foreach (var item in res.Headers)
                 {
-
                     StringValues values = new(item.Value.ToArray());
                     Response.Headers.Add(item.Key, values);
                 }

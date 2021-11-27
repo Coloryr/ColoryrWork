@@ -7,22 +7,10 @@
 ### 测试环境：  
 - 系统：Ubuntu20(虚拟机，8G内存 4核心 8线程)  
   （宿主系统：Windows Server 2019）
-- .Net版本：6.0.100-rc.1
+- .Net版本：6.0.100
 -------------------
-### [wrk](https://github.com/wg/wrk)
-![结果](./pic/wrk.png)  
-### [postjson](http://coolaf.com/)  
-![结果](./pic/postjson.png)  
-### [JMeter](https://jmeter.apache.org/)
-![配置](./pic/jmeter1.png)  
-![结果](./pic/jmeter2.png)  
-### [webbench](https://github.com/EZLippi/WebBench)
-![结果](./pic/webbench.png)  
-### [siege](https://github.com/JoeDog/siege)
-```
-siege -c 255 -r 10 http://localhost:35555/
-```
-![结果](./pic/siege.png)  
+### [wrk测试](https://github.com/wg/wrk)
+![结果](./pic/wrk.png)   
 
 ## 反向代理测试
 
@@ -89,3 +77,73 @@ func main() {
 ### 域名映射测试
 
 ![结果](./pic/wrk2.png)  
+
+
+## 接口理论性能测试
+
+### 接口类1
+```C#
+using ColoryrServer.SDK;
+
+public class app_test
+{
+    [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public dynamic main(HttpRequest http)
+    {  
+        return "测试";
+    }
+    [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public dynamic go(HttpRequest http)
+    {  
+        return "测试11";
+    }
+}
+```
+### 接口类2
+```C#
+using ColoryrServer.SDK;
+
+public class app_classtest
+{
+    [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public dynamic main(HttpRequest http)
+    {  
+    var c = Tools.GetClass("test");
+        return c.getString("1");
+    }
+}
+```
+### 库类
+```C#
+using ColoryrServer.SDK;
+
+public class test
+{
+    public test()
+    {
+             
+    }
+
+    public string getString(string data)
+    {
+        return data + "test";
+    }
+}
+```
+
+### wrk测试
+![结果](./pic/wrk6.png)  
+![结果](./pic/wrk7.png)  
+![结果](./pic/wrk8.png)  
+
+## 前端网页测试
+
+### 静态网页
+![目录文件](./pic/dir.png)  
+
+### 动态编译网页
+![目录文件](./pic/pic1.png)  
+
+### wrk测试
+![结果](./pic/wrk4.png)  
+![结果](./pic/wrk5.png)  

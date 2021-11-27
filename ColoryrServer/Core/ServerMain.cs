@@ -20,6 +20,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -121,6 +122,7 @@ namespace ColoryrServer
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;
                 NameValueCollection nameValue = new();
+                Regex re;
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 

@@ -20,7 +20,7 @@ namespace ColoryrServer.ASP
             if (eventId.Id == 100 || eventId.Id == 101)
                 return;
             if (logLevel is LogLevel.Warning or LogLevel.Error)
-                ServerMain.LogError($"{logLevel}-{eventId.Id} {state} {exception} {exception.StackTrace}");
+                ServerMain.LogError($"{logLevel}-{eventId.Id} {state} {exception} {exception?.StackTrace}");
             else
                 ServerMain.LogOut($"{logLevel}-{eventId.Id} {state} {exception}");
         }
