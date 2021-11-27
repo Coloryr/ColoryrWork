@@ -90,7 +90,7 @@ namespace ColoryrServer.FileSystem
                     }
                     else
                     {
-                        string local = HtmlLocal + uuid + "\\" + name;
+                        string local = HtmlLocal + uuid + "/" + name;
                         if (File.Exists(local))
                         {
                             var data = File.ReadAllBytes(local);
@@ -154,7 +154,7 @@ namespace ColoryrServer.FileSystem
                 {
                     WebObj obj = JsonConvert.DeserializeObject<WebObj>(File.ReadAllText(item.FullName));
                     HtmlCodeList.TryAdd(obj.UUID, obj);
-                    string dir = HtmlLocal + obj.UUID + "\\";
+                    string dir = HtmlLocal + obj.UUID + "/";
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
@@ -205,7 +205,7 @@ namespace ColoryrServer.FileSystem
         public static void DeleteAll(WebObj obj)
         {
             string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
-            string dir = HtmlRemoveLocal + $"{obj.UUID}-{time}" + "\\";
+            string dir = HtmlRemoveLocal + $"{obj.UUID}-{time}" + "/";
             Directory.CreateDirectory(dir);
             string info =
 $@"UUID:{obj.UUID},
@@ -214,7 +214,7 @@ Version:{obj.Version}
 ";
             File.WriteAllText(dir + "info.txt", info);
             File.WriteAllText(dir + obj.UUID + ".json", JsonConvert.SerializeObject(obj));
-            string temp = HtmlLocal + obj.UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "/";
             foreach (var item in Directory.GetFiles(temp))
             {
                 File.Delete(item);
@@ -236,13 +236,13 @@ Version:{obj.Version}
         {
             obj.Codes[name] = code;
             Save(obj.UUID, name, code);
-            HtmlList[obj.UUID][name] = File.ReadAllBytes(HtmlLocal + obj.UUID + "\\" + name);
+            HtmlList[obj.UUID][name] = File.ReadAllBytes(HtmlLocal + obj.UUID + "/" + name);
             obj.Up();
             Storage(HtmlCodeLocal + obj.UUID + ".json", obj);
         }
         public static void SaveFile(WebObj obj, string name, byte[] data)
         {
-            string temp = HtmlLocal + obj.UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "/";
             if (File.Exists(temp + name))
                 File.Delete(temp + name);
             HtmlList[obj.UUID].Remove(name);
@@ -253,7 +253,7 @@ Version:{obj.Version}
         }
         private static void Save(string uuid, string name, string code)
         {
-            string temp = HtmlLocal + uuid + "\\";
+            string temp = HtmlLocal + uuid + "/";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
@@ -288,7 +288,7 @@ Version:{obj.Version}
 
         public static void AddFile(WebObj obj, string Name, byte[] data)
         {
-            string temp = HtmlLocal + obj.UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "/";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 
@@ -318,7 +318,7 @@ Version:{obj.Version}
 
         public static void New(WebObj obj)
         {
-            string temp = HtmlLocal + obj.UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "/";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
             HtmlCodeList.TryAdd(obj.UUID, obj);
@@ -342,7 +342,7 @@ Version:{obj.Version}
 
         public static void Remove(WebObj obj, string name)
         {
-            string temp = HtmlLocal + obj.UUID + "\\";
+            string temp = HtmlLocal + obj.UUID + "/";
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
             var temp1 = name.Split('.');

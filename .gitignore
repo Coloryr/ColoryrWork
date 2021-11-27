@@ -261,3 +261,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+ColoryrServer/ASP/Properties/PublishProfiles/FolderProfile1.pubxml
