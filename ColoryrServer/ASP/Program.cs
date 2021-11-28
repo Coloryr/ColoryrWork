@@ -386,7 +386,7 @@ namespace ColoryrServer.ASP
             if (Request.Method is "POST")
                 message.Content = new StreamContent(Request.Body);
             else
-                message.Content = new ByteArrayContent(Array.Empty<byte>());
+                message.Content = new StringContent("");
 
             foreach (var item in Request.Headers)
             {
@@ -399,9 +399,9 @@ namespace ColoryrServer.ASP
                     else
                         message.Headers.Add(item.Key, item.Value as IEnumerable<string>);
                 }
-                catch 
+                catch
                 {
-                
+
                 }
             }
             foreach (var item in rote.Heads)
@@ -430,7 +430,20 @@ namespace ColoryrServer.ASP
                 var res = await ProxyRequest.SendAsync(message);
 
                 Response.StatusCode = (int)res.StatusCode;
-                Response.ContentType = res.Content.Headers.ContentType.ToString();
+                if (res.Content == null)
+                {
+                    ServerMain.LogError("Content is null");
+                    return;
+                }
+                if (res.Content.Headers == null)
+                {
+                    ServerMain.LogError("Headers is null");
+                    return;
+                }
+                if (res.Content.Headers.ContentType != null)
+                {
+                    Response.ContentType = res.Content.Headers.ContentType.ToString();
+                }
 
                 foreach (var item in res.Headers)
                 {
