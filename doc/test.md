@@ -72,11 +72,11 @@ func main() {
 
 ### 端口转发测试
 
-![结果](./pic/wrk1.png)  
+![结果](./pic/wrk9.png)  
 
 ### 域名映射测试
 
-![结果](./pic/wrk2.png)  
+![结果](./pic/wrk10.png)  
 
 
 ## 接口理论性能测试
