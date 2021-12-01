@@ -411,9 +411,10 @@ namespace ColoryrServer.ASP
 
             if (url.EndsWith(".php"))
             {
-                var res = await ProxyRequest.SendAsync(message);
+                var res = await ProxyRequest.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
                 Response.StatusCode = (int)res.StatusCode;
-                Response.ContentType = res.Content.Headers.ContentType.ToString();
+                if (res.Content.Headers.ContentType != null)
+                    Response.ContentType = res.Content.Headers.ContentType.ToString();
 
                 foreach (var item in res.Headers)
                 {
@@ -427,7 +428,7 @@ namespace ColoryrServer.ASP
             }
             else
             {
-                var res = await ProxyRequest.SendAsync(message);
+                var res = await ProxyRequest.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
 
                 Response.StatusCode = (int)res.StatusCode;
                 if (res.Content == null)
@@ -450,7 +451,7 @@ namespace ColoryrServer.ASP
                     StringValues values = new(item.Value.ToArray());
                     Response.Headers.Add(item.Key, values);
                 }
-                await res.Content.CopyToAsync(Response.Body);
+                await HttpClientUtils.CopyToAsync(res.Content.ReadAsStream(), Response.Body, CancellationToken.None);
             }
         }
 
