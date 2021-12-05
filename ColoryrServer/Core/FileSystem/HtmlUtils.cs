@@ -114,7 +114,7 @@ namespace ColoryrServer.FileSystem
             return null;
         }
 
-        public static HttpResponseStream GetStream(HttpRequest request, string arg)
+        public static HttpResponseStream GetStream(CoreHttpRequest request, string arg)
         {
             return FileHttpStream.StartStream(request, $"{HtmlStatic}/{arg}");
         }

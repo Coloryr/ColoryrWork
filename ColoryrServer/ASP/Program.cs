@@ -14,8 +14,6 @@ using System.Collections.Specialized;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Newtonsoft.Json;
-using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
-using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
 namespace ColoryrServer.ASP
 {
@@ -28,7 +26,7 @@ namespace ColoryrServer.ASP
 
         private const string https = "https";
         private const string http = "http";
-        private static Dictionary<string, X509Certificate2> Ssls = new();
+        private static readonly Dictionary<string, X509Certificate2> Ssls = new();
         private static X509Certificate2 DefaultSsl;
 
         public static void Main()
@@ -232,7 +230,7 @@ namespace ColoryrServer.ASP
             }
         }
 
-        private static string[] data1 = Array.Empty<string>();
+        private static readonly string[] data1 = Array.Empty<string>();
 
         private static async Task RoteGetIndex(HttpContext context)
         {

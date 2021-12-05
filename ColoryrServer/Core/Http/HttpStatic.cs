@@ -88,7 +88,7 @@ namespace ColoryrServer.Http
             };
         }
 
-        public static HttpResponseStream GetStream(HttpRequest request, string arg)
+        public static HttpResponseStream GetStream(CoreHttpRequest request, string arg)
         {
             return HtmlUtils.GetStream(request, arg);
         }
