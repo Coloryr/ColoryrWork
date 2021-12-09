@@ -353,7 +353,7 @@ namespace ColoryrServer.SDK
             rijalg.BlockSize = 128;
             rijalg.KeySize = 256;
             rijalg.FeedbackSize = 128;
-            rijalg.Padding = PaddingMode.PKCS7;
+            rijalg.Padding = mode;
             rijalg.Mode = CipherMode.CBC;
             rijalg.Key = key;
             rijalg.IV = iv;
