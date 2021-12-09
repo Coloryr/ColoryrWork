@@ -11,7 +11,7 @@ namespace ColoryrServer.DllManager
 {
     public class DllRun
     {
-        public static HttpReturn DllGo(DllBuildSave dll, CoreHttpRequest arg, string function)
+        public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)
         {
             try
             {

@@ -80,7 +80,7 @@ namespace ColoryrServer.FileSystem
             }
         }
 
-        public static HttpResponseStream StartStream(CoreHttpRequest http, string file)
+        public static HttpResponseStream StartStream(HttpRequest http, string file)
         {
             try
             {
@@ -142,7 +142,7 @@ namespace ColoryrServer.FileSystem
             }
         }
 
-        public static HttpResponseStream StartStream(CoreHttpRequest http, string local, string name)
+        public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
         {
             string file = Local + local + "/" + name;
             return StartStream(http, file);

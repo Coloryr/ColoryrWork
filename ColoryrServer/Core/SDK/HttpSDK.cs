@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ColoryrServer.SDK
 {
-    public class CoreHttpRequest
+    public class HttpRequest
     {
         public Dictionary<string, dynamic> Parameter { get; init; }
         public NameValueCollection RowRequest { get; init; }//原始请求的字符串
@@ -20,7 +20,7 @@ namespace ColoryrServer.SDK
         public dynamic Get(string arg)
             => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
     }
-    public abstract class CoreHttpResponse
+    public abstract class HttpResponse
     {
         /// <summary>
         /// 返回码
@@ -46,7 +46,7 @@ namespace ColoryrServer.SDK
         /// 返回类型
         /// </summary>
         public string ContentType { get; init; }
-        public CoreHttpResponse()
+        public HttpResponse()
         {
             if (Head == null)
                 Head = new();
@@ -60,14 +60,14 @@ namespace ColoryrServer.SDK
         /// </summary>
         /// <param name="Key">键</param>
         /// <param name="Value">值</param>
-        public CoreHttpResponse AddHead(string Key, string Value)
+        public HttpResponse AddHead(string Key, string Value)
         {
             Head.Add(Key, Value);
             return this;
         }
     }
 
-    public class HttpResponseString : CoreHttpResponse
+    public class HttpResponseString : HttpResponse
     {
         /// <summary>
         /// 返回数据
@@ -89,7 +89,7 @@ namespace ColoryrServer.SDK
            => Data += data + "\n";
     }
 
-    public class HttpResponseDictionary : CoreHttpResponse
+    public class HttpResponseDictionary : HttpResponse
     {
         public Dictionary<string, object> Data { get; set; }
         /// <summary>
@@ -122,7 +122,7 @@ namespace ColoryrServer.SDK
             return this;
         }
     }
-    public class HttpResponseStream : CoreHttpResponse
+    public class HttpResponseStream : HttpResponse
     {
         /// <summary>
         /// 流
@@ -138,7 +138,7 @@ namespace ColoryrServer.SDK
                 Data = new MemoryStream();
         }
     }
-    public class HttpResponseBytes : CoreHttpResponse
+    public class HttpResponseBytes : HttpResponse
     {
         /// <summary>
         /// 二进制
