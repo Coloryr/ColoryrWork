@@ -130,7 +130,7 @@ namespace ColoryrServer.DllManager
                 {
                     return new HttpReturn
                     {
-                        Data = dump1.data,
+                        Data = dump1.data + "\n" + e.ToString(),
                         Res = ResType.String,
                         ReCode = 200
                     };

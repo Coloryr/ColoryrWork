@@ -108,15 +108,8 @@ namespace ColoryrServer.SDK
         /// <returns>加密后的数据</returns>
         public static string OpenSSL(string publicKey, string data, bool fOAEP = false)
         {
-            try
-            {
-                using var _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
-                return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(data), fOAEP));
-            }
-            catch (Exception e)
-            {
-                throw new ErrorDump("密钥错误", e);
-            }
+            using var _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
+            return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(data), fOAEP));
         }
         /// <summary>
         /// SHA1加密
@@ -136,8 +129,13 @@ namespace ColoryrServer.SDK
         /// <param name="data">原始数据</param>
         /// <param name="key">密匙</param>
         /// <param name="iv">盐</param>
+        /// <param name="mode">填充模式</param>
         /// <returns>加密后的数据</returns>
         public static byte[] AES128(byte[] data, string key, string iv)
+        {
+            return AES128(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
         {
             if (key.Length != 16)
             {
@@ -161,36 +159,40 @@ namespace ColoryrServer.SDK
                     iv += new string(new char[8 - iv.Length]);
                 }
             }
-            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
         }
         public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
         {
-            try
-            {
-                using var rDel = Aes.Create();
-                rDel.Key = key;
-                rDel.IV = iv;
-                rDel.Mode = CipherMode.CBC;
-                rDel.Padding = PaddingMode.PKCS7;
-
-                using var cTransform = rDel.CreateEncryptor();
-                byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
-
-                return resultArray;
-            }
-            catch (Exception e)
-            {
-                throw new ErrorDump("加密失败", e);
-            }
+            return AES128(data, key, iv, PaddingMode.PKCS7);
         }
+        public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+        {
+            using var rDel = Aes.Create();
+            rDel.Key = key;
+            rDel.IV = iv;
+            rDel.Mode = CipherMode.CBC;
+            rDel.Padding = mode;
+
+            using var cTransform = rDel.CreateEncryptor();
+            byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
+
+            return resultArray;
+        }
+
+
         /// <summary>
         /// AES-256-CBC加密
         /// </summary>
         /// <param name="data">原始数据</param>
         /// <param name="key">密匙</param>
         /// <param name="iv">盐</param>
+        /// <param name="mode">填充模式</param>
         /// <returns>加密后的数据</returns>
         public static byte[] AES256(byte[] data, string key, string iv)
+        {
+            return AES256(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
         {
             if (key.Length != 32)
             {
@@ -214,30 +216,28 @@ namespace ColoryrServer.SDK
                     iv += new string(new char[16 - iv.Length]);
                 }
             }
-            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
         }
         public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
         {
-            try
-            {
-                using var rDel = Aes.Create();
-                rDel.BlockSize = 128;
-                rDel.KeySize = 256;
-                rDel.FeedbackSize = 128;
-                rDel.Padding = PaddingMode.PKCS7;
-                rDel.Mode = CipherMode.CBC;
-                rDel.Key = key;
-                rDel.IV = iv;
+            return AES256(data, key, iv, PaddingMode.PKCS7);
+        }
 
-                using var cTransform = rDel.CreateEncryptor();
-                byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
+        public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+        {
+            using var rDel = Aes.Create();
+            rDel.BlockSize = 128;
+            rDel.KeySize = 256;
+            rDel.FeedbackSize = 128;
+            rDel.Padding = mode;
+            rDel.Mode = CipherMode.CBC;
+            rDel.Key = key;
+            rDel.IV = iv;
 
-                return resultArray;
-            }
-            catch (Exception e)
-            {
-                throw new ErrorDump("加密失败", e);
-            }
+            using var cTransform = rDel.CreateEncryptor();
+            byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
+
+            return resultArray;
         }
     }
     public class DeCode
@@ -255,8 +255,13 @@ namespace ColoryrServer.SDK
         /// <param name="data">数据</param>
         /// <param name="key">密钥</param>
         /// <param name="iv">盐</param>
+        /// <param name="mode">填充模式</param>
         /// <returns>解密后的数据</returns>
         public static byte[] AES128(byte[] data, string key, string iv)
+        {
+            return AES128(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
         {
             if (key.Length != 16)
             {
@@ -280,37 +285,39 @@ namespace ColoryrServer.SDK
                     iv += new string(new char[8 - iv.Length]);
                 }
             }
-            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+            return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
         }
         public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
         {
+            return AES128(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+        {
             using var rijalg = Aes.Create();
-            rijalg.Padding = PaddingMode.PKCS7;
+            rijalg.Padding = mode;
             rijalg.Mode = CipherMode.CBC;
             rijalg.Key = key;
             rijalg.IV = iv;
 
             using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
+            byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
-            try
-            {
-                byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
-
-                return resultArray;
-            }
-            catch (Exception e)
-            {
-                throw new ErrorDump("解密失败", e);
-            }
+            return resultArray;
         }
+
         /// <summary>
         /// AES256解密
         /// </summary>
         /// <param name="data">数据</param>
         /// <param name="key">密钥</param>
         /// <param name="iv">盐</param>
+        /// <param name="mode">填充模式</param>
         /// <returns>解密后的数据</returns>
         public static byte[] AES256(byte[] data, string key, string iv)
+        {
+            return AES256(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
         {
             if (key.Length != 32)
             {
@@ -334,9 +341,13 @@ namespace ColoryrServer.SDK
                     iv += new string(new char[16 - iv.Length]);
                 }
             }
-            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv));
+            return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
         }
         public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
+        {
+            return AES256(data, key, iv, PaddingMode.PKCS7);
+        }
+        public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
         {
             using var rijalg = Aes.Create();
             rijalg.BlockSize = 128;
@@ -349,17 +360,12 @@ namespace ColoryrServer.SDK
 
             using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
 
-            try
-            {
-                byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
+            byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
-                return resultArray;
-            }
-            catch (Exception e)
-            {
-                throw new ErrorDump("解密失败", e);
-            }
+            return resultArray;
         }
+
+
         /// <summary>
         /// OPENSSL解码
         /// </summary>
@@ -369,15 +375,8 @@ namespace ColoryrServer.SDK
         /// <returns>解密后的数据</returns>
         public static string OpenSSL(string privateKey, string data, bool fOAEP = false)
         {
-            try
-            {
-                using var _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
-                return Convert.ToBase64String(_privateKeyRsaProvider.Decrypt(Encoding.UTF8.GetBytes(data), fOAEP));
-            }
-            catch
-            {
-                throw new ErrorDump("密钥错误");
-            }
+            using var _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
+            return Convert.ToBase64String(_privateKeyRsaProvider.Decrypt(Encoding.UTF8.GetBytes(data), fOAEP));
         }
     }
     public class Tools

@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -28,7 +29,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.3.1";
+        public const string Version = "1.3.2";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -123,7 +124,8 @@ namespace ColoryrServer
                 Stream zip1 = ZipInputStream.Null;
                 NameValueCollection nameValue = new();
                 Regex re = new("");
-                Aes aes = aes.Create();
+                Aes aes = Aes.Create();
+                aes.Dispose();
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
