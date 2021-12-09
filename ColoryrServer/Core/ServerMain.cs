@@ -122,7 +122,8 @@ namespace ColoryrServer
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;
                 NameValueCollection nameValue = new();
-                Regex re;
+                Regex re = new("");
+                Aes aes = aes.Create();
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
