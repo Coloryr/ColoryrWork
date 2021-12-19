@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace Lib.Server
@@ -77,30 +75,6 @@ namespace Lib.Server
                 files.Add(f);
             }
             return files;
-        }
-        private static ImageCodecInfo GetEncoderInfo(string mimeType)
-        {
-            int j;
-            ImageCodecInfo[] encoders = ImageCodecInfo.GetImageEncoders();
-            for (j = 0; j < encoders.Length; ++j)
-            {
-                if (encoders[j].MimeType == mimeType)
-                    return encoders[j];
-            }
-            return null;
-        }
-
-        public static byte[] ToByte(Icon icon)
-        {
-            Encoder myEncoder = Encoder.Quality;
-            EncoderParameter myEncoderParameter = new(myEncoder, 100);
-            EncoderParameters encoders = new(1);
-            encoders.Param[0] = myEncoderParameter;
-            ImageCodecInfo myImageCodecInfo = GetEncoderInfo("image/png");
-
-            using MemoryStream ms = new();
-            icon.ToBitmap().Save(ms, myImageCodecInfo, encoders);
-            return ms.GetBuffer();
         }
     }
 }
