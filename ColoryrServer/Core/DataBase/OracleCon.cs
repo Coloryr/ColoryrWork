@@ -1,9 +1,9 @@
 ﻿using ColoryrServer.FileSystem;
-using ColoryrServer.SDK;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 namespace ColoryrServer.DataBase
@@ -131,79 +131,13 @@ namespace ColoryrServer.DataBase
         }
 
         /// <summary>
-        /// 执行sql语句
+        /// 获取数据库链接
         /// </summary>
-        /// <param name="Database">数据库</param>
-        /// <param name="Sql">SQL语句</param>
-        /// <returns>结果集</returns>
-        public static SqlRes OracleSqlRes(OracleCommand Sql, string Database, int id)
+        /// <param name="ID">数据库ID</param>
+        /// <returns>链接</returns>
+        public static DbConnection GetConnection(int id)
         {
-            try
-            {
-                Sql.Connection = new OracleConnection(ConnectStr[id]);
-                Sql.Connection.Open();
-                Sql.Connection.ChangeDatabase(Database);
-                OracleDataReader reader = Sql.ExecuteReader();
-                var readlist = new List<List<dynamic>>();
-                var readlist1 = new List<Dictionary<string, dynamic>>();
-                while (reader.Read())
-                {
-                    var item = new List<dynamic>();
-                    var item1 = new Dictionary<string, dynamic>();
-                    var data = reader.GetSchemaTable();
-                    for (int b = 0; b < reader.FieldCount; b++)
-                    {
-                        item1.Add(data.Rows[b][0] as string, reader[b]);
-                        item.Add(reader[b]);
-                    }
-                    readlist1.Add(item1);
-                    readlist.Add(item);
-                }
-                reader.Close();
-                Sql.Connection.Close();
-                return new SqlRes()
-                {
-                    data = readlist,
-                    data1 = readlist1
-                };
-            }
-            catch (OracleException e)
-            {
-                throw new ErrorDump("执行sql语句出错", e);
-            }
-        }
-
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="Database">数据库</param>
-        /// <param name="Sql">SQL语句</param>
-        /// <returns>结果集</returns>
-        public static List<List<dynamic>> OracleSql(OracleCommand Sql, string Database, int id)
-        {
-            try
-            {
-                Sql.Connection = new OracleConnection(ConnectStr[id]);
-                Sql.Connection.Open();
-                Sql.Connection.ChangeDatabase(Database);
-                OracleDataReader reader = Sql.ExecuteReader();
-                var readlist = new List<List<dynamic>>();
-                while (reader.Read())
-                {
-                    var item = new List<dynamic>();
-
-                    for (int b = 0; b < reader.FieldCount; b++)
-                        item.Add(reader[b]);
-                    readlist.Add(item);
-                }
-                reader.Close();
-                Sql.Connection.Close();
-                return readlist;
-            }
-            catch (OracleException e)
-            {
-                throw new ErrorDump("执行sql语句出错", e);
-            }
+            return new OracleConnection(ConnectStr[id]);
         }
     }
 }

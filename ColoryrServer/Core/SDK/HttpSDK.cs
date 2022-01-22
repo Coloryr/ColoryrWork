@@ -8,7 +8,7 @@ namespace ColoryrServer.SDK
     {
         public Dictionary<string, dynamic> Parameter { get; init; }
         public NameValueCollection RowRequest { get; init; }//原始请求的字符串
-        public string Cookie { get; init; }
+        public Dictionary<string, List<string>> Cookie { get; init; }
         public MyContentType ContentType { get; init; }
         public Stream Stream { get; init; }
         public string Method { get; init; }

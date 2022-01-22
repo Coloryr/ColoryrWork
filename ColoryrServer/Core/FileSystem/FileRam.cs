@@ -1,13 +1,15 @@
 ﻿using Lib.Server;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
 
 namespace ColoryrServer.FileSystem
 {
-    public class FileRam
+    public static class FileRam
     {
         public static string Local;
 
@@ -24,8 +26,21 @@ namespace ColoryrServer.FileSystem
         {
             try
             {
-                var data = File.ReadAllText(Local + uuid);
-                return JsonConvert.DeserializeObject<ConcurrentDictionary<string, dynamic>>(data);
+                if (!File.Exists(Local + uuid))
+                {
+                    return null;
+                }
+                FileStream fs = new(Local + uuid, FileMode.Open);
+                XmlDictionaryReader reader =
+                    XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
+                DataContractSerializer ser = new(typeof(ConcurrentDictionary<string, dynamic>));
+
+                ConcurrentDictionary<string, dynamic> deserializedPerson =
+                    (ConcurrentDictionary<string, dynamic>)ser.ReadObject(reader, true);
+                reader.Close();
+                fs.Close();
+
+                return deserializedPerson;
             }
             catch (Exception e)
             {
@@ -38,15 +53,21 @@ namespace ColoryrServer.FileSystem
         {
             try
             {
-                var temp = JsonConvert.SerializeObject(data);
-                File.WriteAllText(Local + uuid, temp);
+                if (File.Exists(Local + uuid))
+                {
+                    File.Delete(Local + uuid);
+                }
+                FileStream writer = new(Local + uuid, FileMode.Create);
+                IFormatter formatter = new BinaryFormatter();
+                DataContractSerializer ser = new(typeof(ConcurrentDictionary<string, dynamic>));
+                ser.WriteObject(writer, data);
+                writer.Close();
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-
         public static List<string> GetAll()
         {
             try

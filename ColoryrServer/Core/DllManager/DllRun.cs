@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
-using ColoryrServer.Utils;
 using Lib.Build.Object;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ namespace ColoryrServer.DllManager
                         ReCode = 404
                     };
                 }
-                    
+
                 MethodInfo mi = dll.MethodInfos[function];
                 dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType),
                     new object[1] { arg });

@@ -1,20 +1,12 @@
 ﻿using ColoryrServer.DataBase;
+using Dapper;
 using MySql.Data.MySqlClient;
-using Oracle.ManagedDataAccess.Client;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace ColoryrServer.SDK
 {
-    /// <summary>
-    /// SQL结果集
-    /// </summary>
-    public class SqlRes
-    {
-        public List<List<dynamic>> data { get; set; }
-        public List<Dictionary<string, dynamic>> data1 { get; set; }
-    }
     public class Mysql
     {
         private string Database;
@@ -35,96 +27,49 @@ namespace ColoryrServer.SDK
         }
 
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
+        public IEnumerable<dynamic> Query(string sql, object arg)
         {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return MysqlCon.MysqlSql(com, Database, ID);
+            var conn = MysqlCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query(sql, arg);
         }
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public SqlRes MysqlSqlRes(string sql, Dictionary<string, string> arg)
+        public IEnumerable<T> Query<T>(string sql, object arg)
         {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return MysqlCon.MysqlSqlRes(com, Database, ID);
+            var conn = MysqlCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query<T>(sql, arg);
         }
+
         /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MysqlSqlP(string sql, MySqlParameter[] arg)
-        {
-            var com = new MySqlCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MysqlCon.MysqlSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public SqlRes MysqlSqlPRes(string sql, MySqlParameter[] arg)
-        {
-            var com = new MySqlCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MysqlCon.MysqlSqlRes(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="arg">Mysql命令语句</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MysqlSql(MySqlCommand arg)
-            => MysqlCon.MysqlSql(arg, Database, ID);
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="arg">Mysql命令语句</param>
-        /// <returns>执行结果</returns>
-        public SqlRes MysqlSqlRes(MySqlCommand arg)
-            => MysqlCon.MysqlSqlRes(arg, Database, ID);
-        /// <summary>
-        /// 执行sql语句
+        /// 执行语句
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
+        /// <returns>返回的数据</returns>
+        public int Execute(string sql, object arg)
         {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            MysqlCon.MysqlSql(com, Database, ID);
-            return com;
+            var conn = MysqlCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Execute(sql, arg);
         }
-        private static MySqlCommand GenCommand(string sql, Dictionary<string, string> arg)
+        /// <summary>
+        /// 获取一个数据库链接
+        /// </summary>
+        /// <returns>链接</returns>
+        public MySqlConnection Get()
         {
-            var com = new MySqlCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    com.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            return com;
+            return MysqlCon.GetConnection(ID);
         }
     }
 
@@ -147,83 +92,51 @@ namespace ColoryrServer.SDK
                 throw new ErrorDump("没有选择数据库");
 
         }
+
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg)
+        public IEnumerable<dynamic> Query(string sql, object arg)
         {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return MSCon.MSsqlSql(a, Database, ID);
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query(sql, arg);
         }
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public SqlRes MSsqlSqlRes(string sql, Dictionary<string, string> arg)
+        public IEnumerable<T> Query<T>(string sql, object arg)
         {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return MSCon.MSsqlSqlRes(a, Database, ID);
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query<T>(sql, arg);
         }
+
         /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> MSsqlSqlP(string sql, MySqlParameter[] arg)
-        {
-            var com = new SqlCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MSCon.MSsqlSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public SqlRes MSsqlSqlPRes(string sql, MySqlParameter[] arg)
-        {
-            var com = new SqlCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return MSCon.MSsqlSqlRes(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
+        /// 执行语句
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public SqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
+        /// <returns>返回的数据</returns>
+        public int Execute(string sql, object arg)
         {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            MSCon.MSsqlSql(com, Database, ID);
-            return com;
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Execute(sql, arg);
         }
-        private static SqlCommand GenCommand(string sql, Dictionary<string, string> arg)
+        /// <summary>
+        /// 获取一个数据库链接
+        /// </summary>
+        /// <returns>链接</returns>
+        public SqlConnection Get()
         {
-            var com = new SqlCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    com.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            return com;
+            return MSCon.GetConnection(ID);
         }
     }
 
@@ -245,83 +158,43 @@ namespace ColoryrServer.SDK
                 throw new ErrorDump("没有选择数据库");
             this.Database = Database;
         }
+
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg)
+        public IEnumerable<dynamic> Query(string sql, object arg)
         {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return OracleCon.OracleSql(a, Database, ID);
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query(sql, arg);
         }
         /// <summary>
-        /// 执行sql语句
+        /// 执行查询
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
         /// <returns>返回的数据</returns>
-        public SqlRes OracleSqlRes(string sql, Dictionary<string, string> arg)
+        public IEnumerable<T> Query<T>(string sql, object arg)
         {
-            var a = GenCommand(sql, arg);
-            if (a == null)
-                throw new ErrorDump("SQL语句参数非法");
-            return OracleCon.OracleSqlRes(a, Database, ID);
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Query<T>(sql, arg);
         }
+
         /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public List<List<dynamic>> OracleSqlP(string sql, OracleParameter[] arg)
-        {
-            var com = new OracleCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return OracleCon.OracleSql(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
-        /// </summary>
-        /// <param name="sql">sql语句</param>
-        /// <param name="arg">Mysql参数</param>
-        /// <returns>执行结果</returns>
-        public SqlRes OracleSqlPRes(string sql, OracleParameter[] arg)
-        {
-            var com = new OracleCommand(sql);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            com.Parameters.AddRange(arg);
-            return OracleCon.OracleSqlRes(com, Database, ID);
-        }
-        /// <summary>
-        /// 执行sql语句
+        /// 执行语句
         /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="arg">参数</param>
-        /// <returns>Mysql命令语句</returns>
-        public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg)
+        /// <returns>返回的数据</returns>
+        public int Execute(string sql, object arg)
         {
-            var com = GenCommand(sql, arg);
-            if (com == null)
-                throw new ErrorDump("SQL语句参数非法");
-            OracleCon.OracleSql(com, Database, ID);
-            return com;
-        }
-        private static OracleCommand GenCommand(string sql, Dictionary<string, string> arg)
-        {
-            var com = new OracleCommand(sql);
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    com.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            return com;
+            var conn = MSCon.GetConnection(ID);
+            conn.ChangeDatabase(Database);
+            return conn.Execute(sql, arg);
         }
     }
 
