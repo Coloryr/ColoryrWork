@@ -6,7 +6,7 @@
     <SharedGUID>db16bd52-51ee-43c3-b9a0-e0ba0cc0c2a0</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Lib.IoT</Import_RootNamespace>
+    <Import_RootNamespace>ColoryrWork.Lib.Socket</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Lib\Lib.IoT\SocketPack.cs" />

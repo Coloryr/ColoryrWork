@@ -1,7 +1,7 @@
 ﻿using ColoryrBuild.Windows;
 using DiffPlex.DiffBuilder.Model;
-using Lib.Build;
-using Lib.Build.Object;
+using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Net;

@@ -1,4 +1,4 @@
-﻿namespace Lib.App
+﻿namespace ColoryrWork.Lib.App
 {
     public enum FileType
     {

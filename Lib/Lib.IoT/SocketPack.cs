@@ -1,4 +1,4 @@
-﻿namespace Lib.Socket
+﻿namespace ColoryrWork.Lib.Socket
 {
     class SocketPack
     {

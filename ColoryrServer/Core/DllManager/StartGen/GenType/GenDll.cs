@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
-using Lib.Build.Object;
+using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;

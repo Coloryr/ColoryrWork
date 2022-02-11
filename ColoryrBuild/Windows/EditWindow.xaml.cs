@@ -1,7 +1,7 @@
 ﻿using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
-using Lib.Build;
-using Lib.Build.Object;
+using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;

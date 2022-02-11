@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Lib.Server
+namespace ColoryrWork.Lib.Server
 {
     public class Function
     {

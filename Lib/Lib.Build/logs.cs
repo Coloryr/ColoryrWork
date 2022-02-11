@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Lib.Build
+namespace ColoryrWork.Lib.Build
 {
     public class Logs
     {

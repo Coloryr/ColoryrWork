@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
-using Lib.Build.Object;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

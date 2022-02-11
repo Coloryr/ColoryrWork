@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.DllManager;
-using Lib.Build;
-using Lib.Build.Object;
-using Lib.Server;
+using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
+using ColoryrWork.Lib.Server;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;

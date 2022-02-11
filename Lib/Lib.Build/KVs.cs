@@ -1,4 +1,4 @@
-﻿namespace Lib.Build
+﻿namespace ColoryrWork.Lib.Build
 {
     public class BuildKV
     {

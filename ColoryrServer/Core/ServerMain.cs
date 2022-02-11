@@ -10,7 +10,7 @@ using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
-using Lib.Build;
+using ColoryrWork.Lib.Build;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;

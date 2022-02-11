@@ -6,7 +6,7 @@
     <SharedGUID>42931492-dcc9-412a-b3fe-35733c8b6e8b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Lib.Build</Import_RootNamespace>
+    <Import_RootNamespace>ColoryrWork.Lib.Build</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)KVs.cs" />

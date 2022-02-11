@@ -1,4 +1,4 @@
-﻿namespace Lib.Build.Object
+﻿namespace ColoryrWork.Lib.Build.Object
 {
     public enum ReType
     {

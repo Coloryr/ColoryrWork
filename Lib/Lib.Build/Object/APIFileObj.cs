@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Lib.Build.Object
+namespace ColoryrWork.Lib.Build.Object
 {
     public record APIFileObj
     {
