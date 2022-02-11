@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.DataBase;
 using Dapper;
 using MySql.Data.MySqlClient;
+using Oracle.ManagedDataAccess.Client;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -63,6 +64,42 @@ namespace ColoryrServer.SDK
             conn.ChangeDatabase(Database);
             return conn.Execute(sql, arg);
         }
+
+        /// <summary>
+        /// 旧版执行语句
+        /// </summary>
+        public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
+        {
+            try
+            {
+                var conn = new MySqlCommand(sql, Get());
+                if (arg != null)
+                    foreach (var item in arg)
+                    {
+                        conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    }
+                conn.Connection.Open();
+                conn.Connection.ChangeDatabase(Database);
+                MySqlDataReader reader = conn.ExecuteReader();
+                var readlist = new List<List<dynamic>>();
+                while (reader.Read())
+                {
+                    var item = new List<dynamic>();
+
+                    for (int b = 0; b < reader.FieldCount; b++)
+                        item.Add(reader[b]);
+                    readlist.Add(item);
+                }
+                reader.Close();
+                conn.Connection.Close();
+                return readlist;
+            }
+            catch (MySqlException e)
+            {
+                throw new ErrorDump("执行sql语句出错", e);
+            }
+        }
+
         /// <summary>
         /// 获取一个数据库链接
         /// </summary>
@@ -130,6 +167,42 @@ namespace ColoryrServer.SDK
             conn.ChangeDatabase(Database);
             return conn.Execute(sql, arg);
         }
+
+        /// <summary>
+        /// 旧版执行语句
+        /// </summary>
+        public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg)
+        {
+            try
+            {
+                var conn = new SqlCommand(sql, Get());
+                if (arg != null)
+                    foreach (var item in arg)
+                    {
+                        conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    }
+                conn.Connection.Open();
+                conn.Connection.ChangeDatabase(Database);
+                SqlDataReader reader = conn.ExecuteReader();
+                var readlist = new List<List<dynamic>>();
+                while (reader.Read())
+                {
+                    var item = new List<dynamic>();
+
+                    for (int b = 0; b < reader.FieldCount; b++)
+                        item.Add(reader[b]);
+                    readlist.Add(item);
+                }
+                reader.Close();
+                conn.Connection.Close();
+                return readlist;
+            }
+            catch (SqlException e)
+            {
+                throw new ErrorDump("执行sql语句出错", e);
+            }
+        }
+
         /// <summary>
         /// 获取一个数据库链接
         /// </summary>
@@ -167,7 +240,7 @@ namespace ColoryrServer.SDK
         /// <returns>返回的数据</returns>
         public IEnumerable<dynamic> Query(string sql, object arg)
         {
-            var conn = MSCon.GetConnection(ID);
+            var conn = Get();
             conn.ChangeDatabase(Database);
             return conn.Query(sql, arg);
         }
@@ -179,7 +252,7 @@ namespace ColoryrServer.SDK
         /// <returns>返回的数据</returns>
         public IEnumerable<T> Query<T>(string sql, object arg)
         {
-            var conn = MSCon.GetConnection(ID);
+            var conn = Get();
             conn.ChangeDatabase(Database);
             return conn.Query<T>(sql, arg);
         }
@@ -192,9 +265,53 @@ namespace ColoryrServer.SDK
         /// <returns>返回的数据</returns>
         public int Execute(string sql, object arg)
         {
-            var conn = MSCon.GetConnection(ID);
+            var conn = Get();
             conn.ChangeDatabase(Database);
             return conn.Execute(sql, arg);
+        }
+
+        /// <summary>
+        /// 旧版执行语句
+        /// </summary>
+        public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg)
+        {
+            try
+            {
+                var conn = new OracleCommand(sql, Get());
+                if (arg != null)
+                    foreach (var item in arg)
+                    {
+                        conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                    }
+                conn.Connection.Open();
+                conn.Connection.ChangeDatabase(Database);
+                OracleDataReader reader = conn.ExecuteReader();
+                var readlist = new List<List<dynamic>>();
+                while (reader.Read())
+                {
+                    var item = new List<dynamic>();
+
+                    for (int b = 0; b < reader.FieldCount; b++)
+                        item.Add(reader[b]);
+                    readlist.Add(item);
+                }
+                reader.Close();
+                conn.Connection.Close();
+                return readlist;
+            }
+            catch (SqlException e)
+            {
+                throw new ErrorDump("执行sql语句出错", e);
+            }
+        }
+
+        /// <summary>
+        /// 获取一个数据库链接
+        /// </summary>
+        /// <returns>链接</returns>
+        public OracleConnection Get()
+        {
+            return OracleCon.GetConnection(ID);
         }
     }
 

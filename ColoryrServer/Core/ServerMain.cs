@@ -11,8 +11,11 @@ using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
 using Lib.Build;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -29,7 +32,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.4.0";
+        public const string Version = "1.5.0";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -119,9 +122,12 @@ namespace ColoryrServer
                 test.Dispose();
                 Parallel.ForEach(new List<string>(), (i, b) => { });
                 Image<Rgba32> bitmap = new(1, 1);
+                SystemFonts.Families.GetEnumerator();
+                bitmap.Mutate(a => { });
                 bitmap.Dispose();
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;
+                ZipEntry entry = new("1");
                 NameValueCollection nameValue = new();
                 Regex re = new("");
                 Aes aes = Aes.Create();

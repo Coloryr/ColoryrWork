@@ -75,11 +75,11 @@ namespace ColoryrServer.DataBase
                 {
                     ConnectStr.Add(id, ConnectString);
                     State[id] = true;
-                    ServerMain.LogOut($"Mysql数据库{id}已连接");
+                    ServerMain.LogOut($"Oracle数据库{id}已连接");
                 }
                 else
                 {
-                    ServerMain.LogError($"Mysql数据库{id}连接失败");
+                    ServerMain.LogError($"Oracle数据库{id}连接失败");
                 }
                 Connecting.TryRemove(id, out var v);
                 return State[id];
@@ -108,11 +108,11 @@ namespace ColoryrServer.DataBase
                 {
                     ConnectStr.Add(a, ConnectString);
                     State[a] = true;
-                    ServerMain.LogOut($"Mysql数据库{a}已连接");
+                    ServerMain.LogOut($"Oracle数据库{a}已连接");
                 }
                 else
                 {
-                    ServerMain.LogError($"Mysql数据库{a}连接失败");
+                    ServerMain.LogError($"Oracle数据库{a}连接失败");
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace ColoryrServer.DataBase
         /// </summary>
         /// <param name="ID">数据库ID</param>
         /// <returns>链接</returns>
-        public static DbConnection GetConnection(int id)
+        public static OracleConnection GetConnection(int id)
         {
             return new OracleConnection(ConnectStr[id]);
         }

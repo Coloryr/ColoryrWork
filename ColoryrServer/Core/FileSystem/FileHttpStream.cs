@@ -86,14 +86,23 @@ namespace ColoryrServer.FileSystem
             {
                 string etag = http.RowRequest["If-Match"];
                 Stream stream;
-                if (etag == null || http.Cookie == "")
+                if (etag == null || http.Cookie.Count == 0 || http.Cookie.ContainsKey("etag"))
                 {
                     Guid guid = Guid.NewGuid();
                     etag = guid.ToString();
                 }
                 else
                 {
-                    etag = http.Cookie;
+                    http.Cookie.TryGetValue("etag", out var list);
+                    if (list.Count == 0)
+                    {
+                        Guid guid = Guid.NewGuid();
+                        etag = guid.ToString();
+                    }
+                    else
+                    {
+                        etag = list[0];
+                    }
                 }
                 if (!File.Exists(file))
                 {
