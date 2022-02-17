@@ -1,27 +1,61 @@
 ﻿using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 
-namespace ColoryrServer.Http
+namespace ColoryrServer.Http;
+
+public class HttpStatic
 {
-    public class HttpStatic
+    public static HttpReturn Get(string uuid)
     {
-        public static HttpReturn Get(string uuid)
+        byte[] temp = HtmlUtils.GetByUUID(uuid);
+        return new()
         {
-            byte[] temp = HtmlUtils.GetByUUID(uuid);
+            Data = temp ?? HtmlUtils.BaseDir.Html404,
+            ContentType = ServerContentType.HTML
+        };
+    }
+
+    public static HttpReturn Get(string uuid, string name)
+    {
+        var temp = HtmlUtils.GetFile(uuid, name);
+        if (temp != null)
+        {
+            int a = name.LastIndexOf(".");
+            name = name.ToLower()[a..];
             return new()
             {
-                Data = temp ?? HtmlUtils.BaseDir.Html404,
-                ContentType = ServerContentType.HTML
+                Data = temp,
+                ContentType = name switch
+                {
+                    ".jpg" => ServerContentType.JPG,
+                    ".jpge" => ServerContentType.JPEG,
+                    ".png" => ServerContentType.PNG,
+                    ".json" => ServerContentType.JSON,
+                    ".xml" => ServerContentType.XML,
+                    ".mp3" => ServerContentType.MP3,
+                    ".mp4" => ServerContentType.MP4,
+                    ".gif" => ServerContentType.GIF,
+                    ".icon" => ServerContentType.ICO,
+                    _ => ServerContentType.HTML,
+                }
             };
         }
-
-        public static HttpReturn Get(string uuid, string name)
+        return new()
         {
-            var temp = HtmlUtils.GetFile(uuid, name);
-            if (temp != null)
+            Data = HtmlUtils.BaseDir.Html404,
+            ContentType = ServerContentType.HTML
+        };
+    }
+
+    public static HttpReturn GetStatic(string[] arg)
+    {
+        var temp = HtmlUtils.BaseDir.GetFile(arg, 0);
+        if (temp != null)
+        {
+            var a = arg[^1].LastIndexOf(".");
+            if (a != -1)
             {
-                int a = name.LastIndexOf(".");
-                name = name.ToLower()[a..];
+                var name = arg[^1].ToLower()[a..];
                 return new()
                 {
                     Data = temp,
@@ -35,6 +69,7 @@ namespace ColoryrServer.Http
                         ".mp3" => ServerContentType.MP3,
                         ".mp4" => ServerContentType.MP4,
                         ".gif" => ServerContentType.GIF,
+                        ".ico" => ServerContentType.ICO,
                         ".icon" => ServerContentType.ICO,
                         _ => ServerContentType.HTML,
                     }
@@ -42,55 +77,19 @@ namespace ColoryrServer.Http
             }
             return new()
             {
-                Data = HtmlUtils.BaseDir.Html404,
+                Data = temp,
                 ContentType = ServerContentType.HTML
             };
         }
-
-        public static HttpReturn GetStatic(string[] arg)
+        return new()
         {
-            var temp = HtmlUtils.BaseDir.GetFile(arg, 0);
-            if (temp != null)
-            {
-                var a = arg[^1].LastIndexOf(".");
-                if (a != -1)
-                {
-                    var name = arg[^1].ToLower()[a..];
-                    return new()
-                    {
-                        Data = temp,
-                        ContentType = name switch
-                        {
-                            ".jpg" => ServerContentType.JPG,
-                            ".jpge" => ServerContentType.JPEG,
-                            ".png" => ServerContentType.PNG,
-                            ".json" => ServerContentType.JSON,
-                            ".xml" => ServerContentType.XML,
-                            ".mp3" => ServerContentType.MP3,
-                            ".mp4" => ServerContentType.MP4,
-                            ".gif" => ServerContentType.GIF,
-                            ".ico" => ServerContentType.ICO,
-                            ".icon" => ServerContentType.ICO,
-                            _ => ServerContentType.HTML,
-                        }
-                    };
-                }
-                return new()
-                {
-                    Data = temp,
-                    ContentType = ServerContentType.HTML
-                };
-            }
-            return new()
-            {
-                Data = HtmlUtils.BaseDir.Html404,
-                ContentType = ServerContentType.HTML
-            };
-        }
+            Data = HtmlUtils.BaseDir.Html404,
+            ContentType = ServerContentType.HTML
+        };
+    }
 
-        public static HttpResponseStream GetStream(HttpRequest request, string arg)
-        {
-            return HtmlUtils.GetStream(request, arg);
-        }
+    public static HttpResponseStream GetStream(HttpRequest request, string arg)
+    {
+        return HtmlUtils.GetStream(request, arg);
     }
 }

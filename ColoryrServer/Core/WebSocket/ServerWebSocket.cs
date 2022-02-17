@@ -6,117 +6,116 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace ColoryrServer.WebSocket
+namespace ColoryrServer.WebSocket;
+
+internal class ServerWebSocket
 {
-    public class ServerWebSocket
+    private static WebSocketServer Server;
+    private static Thread PingThread;
+    private static bool IsRun;
+    private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
+    private static readonly Dictionary<Guid, IWebSocketConnection> ClientsID = new();
+    internal static IWebSocketConnection Get(int port)
     {
-        private static WebSocketServer Server;
-        private static Thread PingThread;
-        private static bool IsRun;
-        private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
-        private static readonly Dictionary<Guid, IWebSocketConnection> ClientsID = new();
-        internal static IWebSocketConnection Get(int port)
+        var data = Clients.Where(a => a.Key == port);
+        if (data.Any())
+            return data.First().Value;
+        return null;
+    }
+    internal static IWebSocketConnection Get(Guid id)
+    {
+        var data = ClientsID.Where(a => a.Key == id);
+        if (data.Any())
+            return data.First().Value;
+        return null;
+    }
+    internal static bool IsOnline(string id)
+    {
+        var data = Clients.Where(a => a.Value.ConnectionInfo.Id.ToString() == id);
+        return data.Any();
+    }
+    internal static void Send(int port, string data)
+    {
+        if (Clients.ContainsKey(port))
         {
-            var data = Clients.Where(a => a.Key == port);
-            if (data.Any())
-                return data.First().Value;
-            return null;
+            Clients[port].Send(data);
         }
-        internal static IWebSocketConnection Get(Guid id)
+    }
+    internal static void Send(int port, byte[] data)
+    {
+        if (Clients.ContainsKey(port))
         {
-            var data = ClientsID.Where(a => a.Key == id);
-            if (data.Any())
-                return data.First().Value;
-            return null;
+            Clients[port].Send(data);
         }
-        internal static bool IsOnline(string id)
+    }
+    internal static void Close(int port)
+    {
+        if (Clients.ContainsKey(port))
         {
-            var data = Clients.Where(a => a.Value.ConnectionInfo.Id.ToString() == id);
-            return data.Any();
+            Clients[port].Close();
         }
-        internal static void Send(int port, string data)
-        {
-            if (Clients.ContainsKey(port))
-            {
-                Clients[port].Send(data);
-            }
-        }
-        internal static void Send(int port, byte[] data)
-        {
-            if (Clients.ContainsKey(port))
-            {
-                Clients[port].Send(data);
-            }
-        }
-        internal static void Close(int port)
-        {
-            if (Clients.ContainsKey(port))
-            {
-                Clients[port].Close();
-            }
-        }
+    }
 
-        public static void Start()
+    public static void Start()
+    {
+        ServerMain.LogOut("WebScoket服务器正在启动");
+        FleckLog.Level = LogLevel.Error;
+        Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
+        ServerMain.LogOut($"WebScoket监听{ServerMain.Config.WebSocket.IP}:{ServerMain.Config.WebSocket.Port}");
+        Server.Start(Socket =>
         {
-            ServerMain.LogOut("WebScoket服务器正在启动");
-            FleckLog.Level = LogLevel.Error;
-            Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
-            ServerMain.LogOut($"WebScoket监听{ServerMain.Config.WebSocket.IP}:{ServerMain.Config.WebSocket.Port}");
-            Server.Start(Socket =>
+            Socket.OnOpen = () =>
             {
-                Socket.OnOpen = () =>
-                {
-                    Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
-                    ClientsID.Add(Socket.ConnectionInfo.Id, Socket);
-                    DllRun.WebSocketGo(new WebSocketOpen(Socket));
-                };
-                Socket.OnClose = () =>
-                {
-                    Clients.Remove(Socket.ConnectionInfo.ClientPort);
-                    ClientsID.Remove(Socket.ConnectionInfo.Id);
-                    DllRun.WebSocketGo(new WebSocketClose(Socket));
-                };
-                Socket.OnMessage = message =>
-                {
-                    DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
-                };
-            });
-            PingThread = new(() =>
+                Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
+                ClientsID.Add(Socket.ConnectionInfo.Id, Socket);
+                DllRun.WebSocketGo(new WebSocketOpen(Socket));
+            };
+            Socket.OnClose = () =>
             {
-                int i = 0;
-                while (IsRun)
+                Clients.Remove(Socket.ConnectionInfo.ClientPort);
+                ClientsID.Remove(Socket.ConnectionInfo.Id);
+                DllRun.WebSocketGo(new WebSocketClose(Socket));
+            };
+            Socket.OnMessage = message =>
+            {
+                DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
+            };
+        });
+        PingThread = new(() =>
+        {
+            int i = 0;
+            while (IsRun)
+            {
+                if (i == 30)
                 {
-                    if (i == 30)
+                    foreach (var item in Clients)
                     {
-                        foreach (var item in Clients)
-                        {
-                            item.Value.Send("{\"type\":\"ping\"}");
-                        }
+                        item.Value.Send("{\"type\":\"ping\"}");
                     }
-                    Thread.Sleep(1000);
-                    i++;
                 }
-            });
-            IsRun = true;
-            PingThread.Start();
-            ServerMain.LogOut("WebScoket服务器已启动");
-        }
-        public static void Stop()
-        {
-            IsRun = false;
-            foreach (var item in Clients)
-            {
-                try
-                {
-                    item.Value.Close();
-                }
-                catch
-                {
-
-                }
+                Thread.Sleep(1000);
+                i++;
             }
-            Server.Dispose();
-            ServerMain.LogOut("WebScoket已停止");
+        });
+        IsRun = true;
+        PingThread.Start();
+        ServerMain.LogOut("WebScoket服务器已启动");
+    }
+    public static void Stop()
+    {
+        IsRun = false;
+        foreach (var item in Clients)
+        {
+            try
+            {
+                item.Value.Close();
+            }
+            catch
+            {
+
+            }
         }
+        Server.Dispose();
+        ServerMain.LogOut("WebScoket已停止");
     }
 }

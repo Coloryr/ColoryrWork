@@ -1,7 +1,6 @@
-﻿namespace ColoryrServer.Html
+﻿namespace ColoryrServer.Html;
+
+internal enum ClientState
 {
-    public enum ClientState
-    {
-        Ready, Using, Close
-    }
+    Ready, Using, Close
 }

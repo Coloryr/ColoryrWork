@@ -6,193 +6,192 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.TaskUtils
+namespace ColoryrServer.TaskUtils;
+
+internal class TaskThread
 {
-    public class TaskThread
+    private static Thread[] Threads;
+    private static bool IsRun;
+    private static readonly ConcurrentDictionary<string, TaskObj> Tasks = new();
+    private static readonly CancellationTokenSource Cancel = new();
+    private static readonly EventWaitHandle eventWait = new(true, EventResetMode.ManualReset);
+
+    public static void Start()
     {
-        private static Thread[] Threads;
-        private static bool IsRun;
-        private static readonly ConcurrentDictionary<string, TaskObj> Tasks = new();
-        private static readonly CancellationTokenSource Cancel = new();
-        private static readonly EventWaitHandle eventWait = new(true, EventResetMode.ManualReset);
+        Threads = new Thread[ServerMain.Config.TaskConfig.ThreadNumber];
+        for (int a = 0; a < ServerMain.Config.TaskConfig.ThreadNumber; a++)
+        {
+            Thread item = new(ThreadDo);
+            Threads[a] = item;
+            item.Start();
+        }
+        IsRun = true;
+        //Task.Run(Remove, Cancel.Token);
+    }
 
-        public static void Start()
+    public static void Stop()
+    {
+        IsRun = false;
+        Cancel.Cancel(false);
+    }
+    private static void Remove()
+    {
+        while (!IsRun)
         {
-            Threads = new Thread[ServerMain.Config.TaskConfig.ThreadNumber];
-            for (int a = 0; a < ServerMain.Config.TaskConfig.ThreadNumber; a++)
-            {
-                Thread item = new(ThreadDo);
-                Threads[a] = item;
-                item.Start();
-            }
-            IsRun = true;
-            //Task.Run(Remove, Cancel.Token);
+            Thread.Sleep(50);
         }
-
-        public static void Stop()
+        while (IsRun)
         {
-            IsRun = false;
-            Cancel.Cancel(false);
-        }
-        private static void Remove()
-        {
-            while (!IsRun)
+            try
             {
-                Thread.Sleep(50);
-            }
-            while (IsRun)
-            {
-                try
+                eventWait.Reset();
+                var list = from items in Tasks.Values
+                           where items.State == TaskState.Done
+|| items.State == TaskState.Error || items.State == TaskState.TimeOut || items.State == TaskState.Cancel
+                           select items.Name;
+                foreach (var item in list)
                 {
-                    eventWait.Reset();
-                    var list = from items in Tasks.Values
-                               where items.State == TaskState.Done
-    || items.State == TaskState.Error || items.State == TaskState.TimeOut || items.State == TaskState.Cancel
-                               select items.Name;
-                    foreach (var item in list)
-                    {
-                        Tasks.TryRemove(item, out var temp);
-                    }
-                    eventWait.Set();
-                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                    Tasks.TryRemove(item, out var temp);
                 }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                }
+                eventWait.Set();
+                Thread.Sleep(TimeSpan.FromSeconds(30));
+            }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
             }
         }
-        private static void ThreadDo()
+    }
+    private static void ThreadDo()
+    {
+        while (!IsRun)
         {
-            while (!IsRun)
+            Thread.Sleep(50);
+        }
+        while (IsRun)
+        {
+            TaskObj obj = null;
+            try
             {
-                Thread.Sleep(50);
-            }
-            while (IsRun)
-            {
-                TaskObj obj = null;
-                try
+                eventWait.WaitOne();
+                if (!Tasks.IsEmpty)
                 {
-                    eventWait.WaitOne();
-                    if (!Tasks.IsEmpty)
+                    foreach (var item in Tasks)
                     {
-                        foreach (var item in Tasks)
+                        lock (item.Value)
                         {
-                            lock (item.Value)
+                            if (item.Value.State == TaskState.Ready)
                             {
-                                if (item.Value.State == TaskState.Ready)
-                                {
-                                    obj = item.Value;
-                                    obj.State = TaskState.Going;
-                                }
+                                obj = item.Value;
+                                obj.State = TaskState.Going;
                             }
-                            if (obj == null)
-                                break;
-                            obj.Cancel = CancellationTokenSource.CreateLinkedTokenSource(Cancel.Token);
-                            bool ok = false;
-                            obj.RunTask = Task.Run(() =>
-                            {
-                                ok = DllRun.TaskGo(obj);
-                            }, obj.Cancel.Token);
-                            var delay = Task.Delay(TimeSpan.FromSeconds(ServerMain.Config.TaskConfig.MaxTime));
-                            var res = Task.WhenAny(obj.RunTask, delay).Result;
-                            if (res == delay)
-                            {
-                                obj.State = TaskState.TimeOut;
-                                obj.Cancel.Cancel(false);
-                            }
-                            else if (obj.Cancel.IsCancellationRequested)
-                            {
-                                obj.State = TaskState.Cancel;
-                            }
-                            else if (!ok)
-                            {
-                                obj.State = TaskState.Error;
-                            }
-                            else if (obj.Times <= 0)
-                            {
-                                obj.State = TaskState.Done;
-                            }
-                            else
-                            {
-                                obj.Times--;
-                                obj.State = TaskState.Ready;
-                            }
+                        }
+                        if (obj == null)
+                            break;
+                        obj.Cancel = CancellationTokenSource.CreateLinkedTokenSource(Cancel.Token);
+                        bool ok = false;
+                        obj.RunTask = Task.Run(() =>
+                        {
+                            ok = DllRun.TaskGo(obj);
+                        }, obj.Cancel.Token);
+                        var delay = Task.Delay(TimeSpan.FromSeconds(ServerMain.Config.TaskConfig.MaxTime));
+                        var res = Task.WhenAny(obj.RunTask, delay).Result;
+                        if (res == delay)
+                        {
+                            obj.State = TaskState.TimeOut;
+                            obj.Cancel.Cancel(false);
+                        }
+                        else if (obj.Cancel.IsCancellationRequested)
+                        {
+                            obj.State = TaskState.Cancel;
+                        }
+                        else if (!ok)
+                        {
+                            obj.State = TaskState.Error;
+                        }
+                        else if (obj.Times <= 0)
+                        {
+                            obj.State = TaskState.Done;
+                        }
+                        else
+                        {
+                            obj.Times--;
+                            obj.State = TaskState.Ready;
                         }
                     }
                 }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                    if (obj != null)
-                    {
-                        obj.Cancel.Cancel();
-                        obj.State = TaskState.Error;
-                    }
-                }
-                Thread.Sleep(50);
             }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
+                if (obj != null)
+                {
+                    obj.Cancel.Cancel();
+                    obj.State = TaskState.Error;
+                }
+            }
+            Thread.Sleep(50);
         }
+    }
 
-        public static bool HaveTask(string name)
+    public static bool HaveTask(string name)
+    {
+        return Tasks.ContainsKey(name);
+    }
+    public static bool StartTask(TaskUserArg arg)
+    {
+        if (Tasks.ContainsKey(arg.Name))
         {
-            return Tasks.ContainsKey(name);
-        }
-        public static bool StartTask(TaskUserArg arg)
-        {
-            if (Tasks.ContainsKey(arg.Name))
+            var item = Tasks[arg.Name];
+            if (item.Name == arg.Name)
             {
-                var item = Tasks[arg.Name];
-                if (item.Name == arg.Name)
-                {
-                    item.State = TaskState.Ready;
-                    item.Dll = arg.Dll;
-                    item.Times = arg.Times;
-                    return true;
-                }
-                else
-                {
-                    Tasks.TryRemove(arg.Name, out var temp);
-                    temp.State = TaskState.Cancel;
-                    temp.Cancel.Cancel(false);
-                }
+                item.State = TaskState.Ready;
+                item.Dll = arg.Dll;
+                item.Times = arg.Times;
+                return true;
             }
-            TaskObj obj = new(arg)
+            else
             {
-                State = TaskState.Ready
-            };
-            Tasks.TryAdd(obj.Name, obj);
-            return true;
-        }
-        public static void StopTask(string name)
-        {
-            if (Tasks.ContainsKey(name))
-            {
-                Tasks[name].Cancel?.Cancel();
+                Tasks.TryRemove(arg.Name, out var temp);
+                temp.State = TaskState.Cancel;
+                temp.Cancel.Cancel(false);
             }
         }
-        public static TaskState GetTaskState(string name)
+        TaskObj obj = new(arg)
         {
-            if (!Tasks.ContainsKey(name))
-            {
-                return TaskState.Error;
-            }
-            return Tasks[name].State;
+            State = TaskState.Ready
+        };
+        Tasks.TryAdd(obj.Name, obj);
+        return true;
+    }
+    public static void StopTask(string name)
+    {
+        if (Tasks.ContainsKey(name))
+        {
+            Tasks[name].Cancel?.Cancel();
         }
-        public static int GetTaskTime(string name)
+    }
+    public static TaskState GetTaskState(string name)
+    {
+        if (!Tasks.ContainsKey(name))
         {
-            if (!Tasks.ContainsKey(name))
-            {
-                return -1;
-            }
-            return Tasks[name].Times;
+            return TaskState.Error;
         }
-        public static void SetArg(string name, object[] arg)
+        return Tasks[name].State;
+    }
+    public static int GetTaskTime(string name)
+    {
+        if (!Tasks.ContainsKey(name))
         {
-            if (Tasks.ContainsKey(name))
-            {
-                Tasks[name].Arg = arg;
-            }
+            return -1;
+        }
+        return Tasks[name].Times;
+    }
+    public static void SetArg(string name, object[] arg)
+    {
+        if (Tasks.ContainsKey(name))
+        {
+            Tasks[name].Arg = arg;
         }
     }
 }

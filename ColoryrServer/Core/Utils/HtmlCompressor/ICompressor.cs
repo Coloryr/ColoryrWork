@@ -1,7 +1,6 @@
-﻿namespace HtmlCompression.Core
+﻿namespace HtmlCompression.Core;
+
+public interface ICompressor
 {
-    public interface ICompressor
-    {
-        string Compress(string source);
-    }
+    string Compress(string source);
 }

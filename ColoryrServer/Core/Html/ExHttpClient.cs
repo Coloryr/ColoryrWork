@@ -1,10 +1,9 @@
 ﻿using System.Net.Http;
 
-namespace ColoryrServer.Html
+namespace ColoryrServer.Html;
+
+internal class ExHttpClient
 {
-    public class ExHttpClient
-    {
-        public HttpClient Client;
-        public ClientState State;
-    }
+    public HttpClient Client;
+    public ClientState State;
 }

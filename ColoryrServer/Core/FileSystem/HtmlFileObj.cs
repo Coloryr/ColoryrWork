@@ -1,16 +1,15 @@
-﻿namespace ColoryrServer.Core.FileSystem
+﻿namespace ColoryrServer.Core.FileSystem;
+
+internal class HtmlFileObj
 {
-    public class HtmlFileObj
+    public byte[] Data { get; set; }
+    public int Time { get; private set; }
+    public void Reset()
     {
-        public byte[] Data { get; set; }
-        public int Time { get; private set; }
-        public void Reset()
-        {
-            Time = ServerMain.Config.Requset.TempTime;
-        }
-        public void Tick()
-        {
-            Time--;
-        }
+        Time = ServerMain.Config.Requset.TempTime;
+    }
+    public void Tick()
+    {
+        Time--;
     }
 }

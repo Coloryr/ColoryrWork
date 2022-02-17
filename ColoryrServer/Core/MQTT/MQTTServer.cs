@@ -7,75 +7,74 @@ using MQTTnet.Server;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.MQTT
+namespace ColoryrServer.MQTT;
+
+internal class MQTTServer
 {
-    public class MQTTServer
+    private static IMqttServer MqttServer;
+    public static async void Start()
     {
-        private static IMqttServer MqttServer;
-        public static async void Start()
-        {
-            ServerMain.LogOut("Mqtt服务器正在启动");
-            var optionsBuilder = new MqttServerOptionsBuilder()
-                     .WithConnectionValidator(ConnectionValidator)
-                     .WithSubscriptionInterceptor(SubscriptionInterceptor)
-                     .WithApplicationMessageInterceptor(ApplicationMessageInterceptor)
-                     .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
-            ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MQTTConfig.Port}");
-            MqttServer = new MqttFactory().CreateMqttServer();
-            await MqttServer.StartAsync(optionsBuilder.Build());
-            ServerMain.LogOut("Mqtt服务器已启动");
-        }
+        ServerMain.LogOut("Mqtt服务器正在启动");
+        var optionsBuilder = new MqttServerOptionsBuilder()
+                 .WithConnectionValidator(ConnectionValidator)
+                 .WithSubscriptionInterceptor(SubscriptionInterceptor)
+                 .WithApplicationMessageInterceptor(ApplicationMessageInterceptor)
+                 .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
+        ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MQTTConfig.Port}");
+        MqttServer = new MqttFactory().CreateMqttServer();
+        await MqttServer.StartAsync(optionsBuilder.Build());
+        ServerMain.LogOut("Mqtt服务器已启动");
+    }
 
-        public static async void Send(string Topic, string data)
+    public static async void Send(string Topic, string data)
+    {
+        await MqttServer.PublishAsync(new MqttApplicationMessage()
         {
-            await MqttServer.PublishAsync(new MqttApplicationMessage()
-            {
-                Topic = Topic,
-                Payload = Encoding.UTF8.GetBytes(data),
-                QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce
-            });
-        }
+            Topic = Topic,
+            Payload = Encoding.UTF8.GetBytes(data),
+            QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce
+        });
+    }
 
-        private static void ConnectionValidator(MqttConnectionValidatorContext data)
+    private static void ConnectionValidator(MqttConnectionValidatorContext data)
+    => Task.Run(()
+         => DllRun.MqttGo(new MqttConnectionValidator(data)));
+
+
+    private static void ApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
         => Task.Run(()
-             => DllRun.MqttGo(new MqttConnectionValidator(data)));
+             => DllRun.MqttGo(new MqttMessage(data)));
+    private static void SubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
+        => Task.Run(()
+             => DllRun.MqttGo(new MqttSubscription(data)));
+    public static async void Stop()
+      => await MqttServer.StopAsync();
 
+    private static void PipeConnectionValidator(MqttConnectionValidatorContext data)
+    {
 
-        private static void ApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
-            => Task.Run(()
-                 => DllRun.MqttGo(new MqttMessage(data)));
-        private static void SubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
-            => Task.Run(()
-                 => DllRun.MqttGo(new MqttSubscription(data)));
-        public static async void Stop()
-          => await MqttServer.StopAsync();
+    }
 
-        private static void PipeConnectionValidator(MqttConnectionValidatorContext data)
-        {
+    private static void PipeApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
+    {
 
-        }
+    }
+    private static void PipeSubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
+    {
 
-        private static void PipeApplicationMessageInterceptor(MqttApplicationMessageInterceptorContext data)
-        {
+    }
 
-        }
-        private static void PipeSubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
-        {
+    public static async void StartPipe()
+    {
+        ServerMain.LogOut("正在启动Mqtt");
+        var optionsBuilder = new MqttServerOptionsBuilder()
+                .WithConnectionValidator(PipeConnectionValidator)
+                .WithSubscriptionInterceptor(PipeSubscriptionInterceptor)
+                .WithApplicationMessageInterceptor(PipeApplicationMessageInterceptor)
+                .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
 
-        }
-
-        public static async void StartPipe()
-        {
-            ServerMain.LogOut("正在启动Mqtt");
-            var optionsBuilder = new MqttServerOptionsBuilder()
-                    .WithConnectionValidator(PipeConnectionValidator)
-                    .WithSubscriptionInterceptor(PipeSubscriptionInterceptor)
-                    .WithApplicationMessageInterceptor(PipeApplicationMessageInterceptor)
-                    .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
-
-            MqttServer = new MqttFactory().CreateMqttServer();
-            await MqttServer.StartAsync(optionsBuilder.Build());
-            ServerMain.LogOut("已启动Mqtt");
-        }
+        MqttServer = new MqttFactory().CreateMqttServer();
+        await MqttServer.StartAsync(optionsBuilder.Build());
+        ServerMain.LogOut("已启动Mqtt");
     }
 }

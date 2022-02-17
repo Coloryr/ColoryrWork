@@ -5,7 +5,7 @@ using ColoryrServer.FileSystem;
 using ColoryrServer.Html;
 using ColoryrServer.MQTT;
 using ColoryrServer.Robot;
-using ColoryrServer.Socket;
+using ColoryrServer.IoTSocket;
 using ColoryrServer.TaskUtils;
 using ColoryrServer.WebSocket;
 using HtmlAgilityPack;
@@ -32,7 +32,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.5.0";
+        public const string Version = "1.5.1";
         /// <summary>
         /// 配置文件
         /// </summary>
