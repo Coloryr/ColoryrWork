@@ -137,28 +137,6 @@ public class EnCode
     }
     public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
     {
-        if (key.Length != 16)
-        {
-            if (key.Length > 16)
-            {
-                key = key[..15];
-            }
-            else
-            {
-                key += new string(new char[16 - key.Length]);
-            }
-        }
-        if (iv.Length != 8)
-        {
-            if (iv.Length > 8)
-            {
-                iv = iv[..7];
-            }
-            else
-            {
-                iv += new string(new char[8 - iv.Length]);
-            }
-        }
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
@@ -168,6 +146,17 @@ public class EnCode
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
     {
         using var rDel = Aes.Create();
+        var size = rDel.KeySize / 8;
+        if (key.Length != size)
+        {
+            Array.Resize(ref key, size);
+        }
+        size = rDel.BlockSize / 8;
+        if (iv.Length != size)
+        {
+            Array.Resize(ref iv, size);
+        }
+
         rDel.Key = key;
         rDel.IV = iv;
         rDel.Mode = CipherMode.CBC;
@@ -194,28 +183,6 @@ public class EnCode
     }
     public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
     {
-        if (key.Length != 32)
-        {
-            if (key.Length > 32)
-            {
-                key = key[..31];
-            }
-            else
-            {
-                key += new string(new char[32 - key.Length]);
-            }
-        }
-        if (iv.Length != 16)
-        {
-            if (iv.Length > 16)
-            {
-                iv = iv[..15];
-            }
-            else
-            {
-                iv += new string(new char[16 - iv.Length]);
-            }
-        }
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
@@ -226,6 +193,17 @@ public class EnCode
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
     {
         using var rDel = Aes.Create();
+        var size = rDel.KeySize / 8;
+        if (key.Length != size)
+        {
+            Array.Resize(ref key, size);
+        }
+        size = rDel.BlockSize / 8;
+        if (iv.Length != size)
+        {
+            Array.Resize(ref iv, size);
+        }
+
         rDel.BlockSize = 128;
         rDel.KeySize = 256;
         rDel.FeedbackSize = 128;
@@ -263,28 +241,6 @@ public class DeCode
     }
     public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
     {
-        if (key.Length != 16)
-        {
-            if (key.Length > 16)
-            {
-                key = key[..15];
-            }
-            else
-            {
-                key += new string(new char[16 - key.Length]);
-            }
-        }
-        if (iv.Length != 8)
-        {
-            if (iv.Length > 8)
-            {
-                iv = iv[..7];
-            }
-            else
-            {
-                iv += new string(new char[8 - iv.Length]);
-            }
-        }
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
@@ -294,12 +250,23 @@ public class DeCode
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
     {
         using var rijalg = Aes.Create();
+        var size = rijalg.KeySize / 8;
+        if (key.Length != size)
+        {
+            Array.Resize(ref key, size);
+        }
+        size = rijalg.BlockSize / 8;
+        if (iv.Length != size)
+        {
+            Array.Resize(ref iv, size);
+        }
+
         rijalg.Padding = mode;
         rijalg.Mode = CipherMode.CBC;
         rijalg.Key = key;
         rijalg.IV = iv;
 
-        using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
+        using var decryptor = rijalg.CreateDecryptor();
         byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
         return resultArray;
@@ -319,28 +286,6 @@ public class DeCode
     }
     public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
     {
-        if (key.Length != 32)
-        {
-            if (key.Length > 32)
-            {
-                key = key[..31];
-            }
-            else
-            {
-                key += new string(new char[32 - key.Length]);
-            }
-        }
-        if (iv.Length != 16)
-        {
-            if (iv.Length > 16)
-            {
-                iv = iv[..15];
-            }
-            else
-            {
-                iv += new string(new char[16 - iv.Length]);
-            }
-        }
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
@@ -350,6 +295,17 @@ public class DeCode
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
     {
         using var rijalg = Aes.Create();
+        var size = rijalg.KeySize / 8;
+        if (key.Length != size)
+        {
+            Array.Resize(ref key, size);
+        }
+        size = rijalg.BlockSize / 8;
+        if (iv.Length != size)
+        {
+            Array.Resize(ref iv, size);
+        }
+
         rijalg.BlockSize = 128;
         rijalg.KeySize = 256;
         rijalg.FeedbackSize = 128;
@@ -358,7 +314,7 @@ public class DeCode
         rijalg.Key = key;
         rijalg.IV = iv;
 
-        using var decryptor = rijalg.CreateDecryptor(rijalg.Key, rijalg.IV);
+        using var decryptor = rijalg.CreateDecryptor();
 
         byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
