@@ -155,9 +155,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -177,9 +177,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -199,9 +199,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -221,9 +221,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -243,9 +243,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -268,9 +268,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -293,9 +293,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -318,9 +318,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -368,9 +368,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -393,9 +393,9 @@ public class DllRun
             }
             catch (Exception e)
             {
-                if (e.InnerException is VarDump Dump)
+                if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.Get());
+                    ServerMain.LogError(Dump.data);
                 }
                 else
                     ServerMain.LogError(e);
@@ -417,9 +417,9 @@ public class DllRun
         }
         catch (Exception e)
         {
-            if (e.InnerException is VarDump Dump)
+            if (e.InnerException is ErrorDump Dump)
             {
-                ServerMain.LogError(Dump.Get());
+                ServerMain.LogError(Dump.data);
             }
             else
                 ServerMain.LogError(e);

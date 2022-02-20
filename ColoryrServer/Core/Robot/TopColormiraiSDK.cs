@@ -1095,7 +1095,7 @@ public partial class RobotSDK
     }
 
     /// <summary>
-    /// 
+    /// 121 [插件]从本地文件加载语音发送到陌生人
     /// </summary>
     /// <param name="qq">qq号</param>
     /// <param name="stranger">陌生人QQ号</param>
