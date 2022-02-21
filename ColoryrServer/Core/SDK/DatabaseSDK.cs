@@ -101,6 +101,34 @@ public class Mysql
     }
 
     /// <summary>
+    /// 执行sql语句
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>Mysql命令语句</returns>
+    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
+    {
+        try
+        {
+            var conn = new MySqlCommand(sql, Get());
+            if (arg != null)
+                foreach (var item in arg)
+                {
+                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                }
+            conn.Connection.Open();
+            conn.Connection.ChangeDatabase(Database);
+            conn.ExecuteNonQuery();
+            conn.Connection.Close();
+            return conn;
+        }
+        catch (MySqlException e)
+        {
+            throw new ErrorDump("执行sql语句出错", e);
+        }
+    }
+
+    /// <summary>
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
@@ -204,6 +232,34 @@ public class MSsql
     }
 
     /// <summary>
+    /// 执行sql语句
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>MSsql命令语句</returns>
+    public SqlCommand MSsqlCommand(string sql, Dictionary<string, string> arg)
+    {
+        try
+        {
+            var conn = new SqlCommand(sql, Get());
+            if (arg != null)
+                foreach (var item in arg)
+                {
+                    conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                }
+            conn.Connection.Open();
+            conn.Connection.ChangeDatabase(Database);
+            conn.ExecuteNonQuery();
+            conn.Connection.Close();
+            return conn;
+        }
+        catch (SqlException e)
+        {
+            throw new ErrorDump("执行sql语句出错", e);
+        }
+    }
+
+    /// <summary>
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
@@ -299,7 +355,35 @@ public class Oracle
             conn.Connection.Close();
             return readlist;
         }
-        catch (SqlException e)
+        catch (OracleException e)
+        {
+            throw new ErrorDump("执行sql语句出错", e);
+        }
+    }
+
+    /// <summary>
+    /// 执行sql语句
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>Oracle命令语句</returns>
+    public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg)
+    {
+        try
+        {
+            var conn = new OracleCommand(sql, Get());
+            if (arg != null)
+                foreach (var item in arg)
+                {
+                    conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                }
+            conn.Connection.Open();
+            conn.Connection.ChangeDatabase(Database);
+            conn.ExecuteNonQuery();
+            conn.Connection.Close();
+            return conn;
+        }
+        catch (OracleException e)
         {
             throw new ErrorDump("执行sql语句出错", e);
         }
