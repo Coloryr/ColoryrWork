@@ -10,8 +10,10 @@ namespace ColoryrServer.DllManager;
 
 public class DllRun
 {
+    private readonly static Dictionary<string, object> ErrorObj = new(){ {"res", 0 }, {"text", "服务器内部错误"}  };
     public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)
     {
+        bool isDebug = false;
         try
         {
             if (function == null)
@@ -32,6 +34,8 @@ public class DllRun
                     ReCode = 404
                 };
             }
+
+            isDebug = dll.MethodInfos.ContainsKey("debug");
 
             MethodInfo mi = dll.MethodInfos[function];
             dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType),
@@ -127,12 +131,20 @@ public class DllRun
             }
             else if (e.InnerException is ErrorDump dump1)
             {
+                if(isDebug)
                 return new HttpReturn
                 {
                     Data = dump1.data + "\n" + e.ToString(),
                     Res = ResType.String,
                     ReCode = 200
                 };
+                else
+                    return new HttpReturn
+                    {
+                        Data = ErrorObj,
+                        Res = ResType.Json,
+                        ReCode = 200
+                    };
             }
             return new HttpReturn
             {
@@ -151,7 +163,9 @@ public class DllRun
                 MethodInfo MI = Dll.MethodInfos[CodeDemo.SocketTcp];
                 var Tran = new object[1] { Head };
                 var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                var res = MI.Invoke(Assembly, Tran);
+                if (res is true)
+                    return;
             }
             catch (Exception e)
             {
@@ -173,7 +187,9 @@ public class DllRun
                 MethodInfo MI = Dll.MethodInfos[CodeDemo.SocketUdp];
                 var Tran = new object[1] { Head };
                 var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                var res = MI.Invoke(Assembly, Tran);
+                if (res is true)
+                    return;
             }
             catch (Exception e)
             {
@@ -195,7 +211,9 @@ public class DllRun
                 MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketMessage];
                 var Tran = new object[1] { Head };
                 var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                var res = MI.Invoke(Assembly, Tran);
+                if (res is true)
+                    return;
             }
             catch (Exception e)
             {
@@ -217,7 +235,9 @@ public class DllRun
                 MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketOpen];
                 var Tran = new object[1] { Head };
                 var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                var res = MI.Invoke(Assembly, Tran);
+                if (res is true)
+                    return;
             }
             catch (Exception e)
             {
@@ -239,7 +259,9 @@ public class DllRun
                 MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketClose];
                 var Tran = new object[1] { Head };
                 var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                MI.Invoke(Assembly, Tran);
+                var res = MI.Invoke(Assembly, Tran);
+                if (res is true)
+                    return;
             }
             catch (Exception e)
             {
@@ -263,7 +285,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.RobotMessage];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)
@@ -288,7 +312,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos["robot"];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)
@@ -313,7 +339,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos["after"];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)
@@ -338,7 +366,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTValidator];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)
@@ -363,7 +393,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTMessage];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)
@@ -388,7 +420,9 @@ public class DllRun
                     MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTSubscription];
                     var Tran = new object[1] { Head };
                     var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
-                    MI.Invoke(Assembly, Tran);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
                 }
             }
             catch (Exception e)

@@ -14,14 +14,14 @@ using System.Text;
 
 namespace ColoryrServer.SDK;
 
-public class HttpMultipartFile
+public partial class HttpMultipartFile
 {
     public Stream Data { get; set; }
     public string FileName { get; set; }
     public string ContentType { get; set; }
     public string ContentDisposition { get; set; }
 }
-public class ServerContentType
+public partial class ServerContentType
 {
     public const string OSTREAM = "application/octet-stream";
     public const string POSTXFORM = "application/x-www-form-urlencoded";
@@ -69,7 +69,7 @@ public enum EncodeType
 {
     UTF8, Default, ASCII
 }
-public class EnCode
+public partial class EnCode
 {
     /// <summary>
     /// Base64编码
@@ -218,7 +218,7 @@ public class EnCode
         return resultArray;
     }
 }
-public class DeCode
+public partial class DeCode
 {
     /// <summary>
     /// BASE64解码
@@ -335,7 +335,7 @@ public class DeCode
         return Convert.ToBase64String(_privateKeyRsaProvider.Decrypt(Encoding.UTF8.GetBytes(data), fOAEP));
     }
 }
-public class Tools
+public partial class Tools
 {
     /// <summary>
     /// Bytes转HEX字符串
@@ -601,7 +601,7 @@ public class Tools
     public static IWebSocketConnection GetWebSocket(int port)
         => ServerWebSocket.Get(port);
 }
-public class FileLoad
+public partial class FileLoad
 {
     /// <summary>
     /// 从文件加载字符串
@@ -627,7 +627,7 @@ public class FileLoad
     public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
         => FileHttpStream.StartStream(http, local, name);
 }
-public class ErrorDump : Exception
+public partial class ErrorDump : Exception
 {
     public string data { get; init; }
     public ErrorDump(string data)
@@ -697,7 +697,7 @@ public class VarDump : Exception
         }
     }
 }
-internal class RepeatDictionaryComparer : IEqualityComparer<string>
+class RepeatDictionaryComparer : IEqualityComparer<string>
 {
     public bool Equals(string x, string y)
     {

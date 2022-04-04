@@ -2,11 +2,16 @@
 
 namespace ColoryrServer.ASP
 {
-    internal class ColoryrLogger : ILogger
+    internal class ColoryrLogger : ILogger, IDisposable
     {
         public IDisposable BeginScope<TState>(TState state)
         {
-            return null;
+            return this;
+        }
+
+        public void Dispose()
+        {
+            
         }
 
         public bool IsEnabled(LogLevel logLevel)

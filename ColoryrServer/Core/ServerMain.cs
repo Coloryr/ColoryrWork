@@ -14,7 +14,6 @@ using ColoryrWork.Lib.Build;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ namespace ColoryrServer
 {
     public class ServerMain
     {
-        public const string Version = "1.5.1";
+        public const string Version = "1.5.2";
         /// <summary>
         /// 配置文件
         /// </summary>
@@ -123,7 +122,7 @@ namespace ColoryrServer
                 Parallel.ForEach(new List<string>(), (i, b) => { });
                 Image<Rgba32> bitmap = new(1, 1);
                 SystemFonts.Families.GetEnumerator();
-                bitmap.Mutate(a => { });
+                bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
                 bitmap.Dispose();
                 Stream zip = ZipOutputStream.Null;
                 Stream zip1 = ZipInputStream.Null;

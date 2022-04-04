@@ -19,11 +19,11 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="DiffPlex" Version="1.7.0" />
+    <PackageReference Include="DiffPlex" Version="1.7.1" />
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="HttpMultipartParser" Version="5.0.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-3.final" />
+    <PackageReference Include="HttpMultipartParser" Version="5.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0-2.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
     <PackageReference Include="MQTTnet" Version="3.1.2" />
@@ -32,9 +32,9 @@
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.50" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.0.1-alpha.0.3" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14.3" />
-    <PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.0-alpha.0.18" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+    <PackageReference Include="SixLabors.ImageSharp.Web" Version="1.0.5" />
+    <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />

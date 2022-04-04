@@ -47,15 +47,13 @@ namespace ColoryrServer.ASP
                     options.CertificateHeader = "X-SSL-CERT";
                     options.HeaderConverter = (headerValue) =>
                     {
-                        X509Certificate2 clientCertificate = null;
-
                         if (!string.IsNullOrWhiteSpace(headerValue))
                         {
                             byte[] bytes = StringToByteArray(headerValue);
-                            clientCertificate = new X509Certificate2(bytes);
+                            var clientCertificate = new X509Certificate2(bytes);
+                            return clientCertificate;
                         }
-
-                        return clientCertificate;
+                        return null;
                     };
                 });
                 ServerMain.LogOut("正在加载SSL证书");
@@ -288,11 +286,6 @@ namespace ColoryrServer.ASP
             HttpReturn httpReturn;
             var uuid = context.GetRouteValue("uuid") as string;
             var name = context.GetRouteValue("name") as string;
-            string Url = Request.Path;
-            if (Url.StartsWith("//"))
-            {
-                Url = Url[1..];
-            }
             var Dll = DllStonge.GetDll(uuid);
             if (Dll != null)
             {
