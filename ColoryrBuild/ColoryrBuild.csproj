@@ -16,12 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MainWindow.xaml.cs~RFe8460b3.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
-    <PackageReference Include="DiffPlex" Version="1.7.0" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+    <PackageReference Include="DiffPlex" Version="1.7.1" />
     <PackageReference Include="DiffPlex.Wpf" Version="1.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NotifyIconWpf" Version="1.0.0" />
