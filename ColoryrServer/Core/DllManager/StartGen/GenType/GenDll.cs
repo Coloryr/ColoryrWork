@@ -50,7 +50,7 @@ internal class GenDll
 
         foreach (var item in AssemblySave.DllType.GetMethods())
         {
-            if (item.Name is "Main" or "GetType" or "ToString"
+            if (item.Name is "Main" or "GetType" or "ToString" or "debug"
                 or "Equals" or "GetHashCode" || !item.IsPublic)
                 continue;
             AssemblySave.MethodInfos.Add(item.Name, item);
