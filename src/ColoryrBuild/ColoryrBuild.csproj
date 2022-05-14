@@ -9,6 +9,7 @@
     <AssemblyVersion>1.2.0</AssemblyVersion>
     <FileVersion>1.2.0</FileVersion>
     <DebugType>embedded</DebugType>
+    <BaseOutputPath>..\build_out\Build</BaseOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,6 +27,19 @@
 
   <ItemGroup>
     <Resource Include="ColoryrWork.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\TableView2.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\TableView2.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <Import Project="..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />

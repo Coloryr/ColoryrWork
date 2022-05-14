@@ -1,4 +1,5 @@
-﻿using ColoryrBuild.Windows;
+﻿using ColoryrBuild.Views;
+using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +14,9 @@ namespace ColoryrBuild
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Dictionary<string, CSFileObj> DllList;
-        public Dictionary<string, CSFileObj> ClassList;
+        public delegate void Refresh();
+        public static event Refresh CallRefresh;
+        
         public Dictionary<string, CSFileObj> SocketList;
         public Dictionary<string, CSFileObj> RobotList;
         public Dictionary<string, CSFileObj> WebSocketList;
@@ -50,8 +52,7 @@ namespace ColoryrBuild
 
         private void ReList()
         {
-            ReDll();
-            ReClass();
+            CallRefresh.Invoke();
             ReSocket();
             ReRobot();
             ReWebSocket();
@@ -61,38 +62,6 @@ namespace ColoryrBuild
             ReWeb();
         }
 
-        private async void ReDll()
-        {
-            var list = await App.HttpUtils.GetList(CodeType.Dll);
-            if (list == null)
-            {
-                App.LogShow("刷新", "DLL刷新失败");
-                return;
-            }
-            DllList = list.List;
-            ListDll.Items.Clear();
-            foreach (var item in DllList)
-            {
-                ListDll.Items.Add(item.Value);
-            }
-            App.LogShow("刷新", "DLL刷新成功");
-        }
-        private async void ReClass()
-        {
-            var list = await App.HttpUtils.GetList(CodeType.Class);
-            if (list == null)
-            {
-                App.LogShow("刷新", "Class刷新失败");
-                return;
-            }
-            ClassList = list.List;
-            ListClass.Items.Clear();
-            foreach (var item in ClassList)
-            {
-                ListClass.Items.Add(item.Value);
-            }
-            App.LogShow("刷新", "Class刷新成功");
-        }
         private async void ReSocket()
         {
             var list = await App.HttpUtils.GetList(CodeType.Socket);
@@ -210,10 +179,10 @@ namespace ColoryrBuild
             switch (type)
             {
                 case CodeType.Dll:
-                    ReDll();
+                    TableView1.Action();
                     break;
                 case CodeType.Class:
-                    ReClass();
+                    TableView2.Action();
                     break;
                 case CodeType.Socket:
                     ReSocket();
@@ -235,115 +204,6 @@ namespace ColoryrBuild
                     break;
             }
         }
-        private async void Add_Dll_Click(object sender, RoutedEventArgs e)
-        {
-            var data = new InputWindow("UUID设置").Set();
-            if (string.IsNullOrWhiteSpace(data))
-                return;
-            var list = await App.HttpUtils.Add(CodeType.Dll, data);
-            if (list == null)
-            {
-                App.LogShow("添加", "服务器返回错误");
-                return;
-            }
-            App.LogShow("创建", list.Message);
-            if (list.Build)
-            {
-                ReDll();
-            }
-        }
-        private void Change_Dll_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListDll.SelectedItem == null)
-                return;
-            var item = ListDll.SelectedItem as CSFileObj;
-            App.AddEdit(item, CodeType.Dll);
-        }
-        private async void Delete_Dll_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListDll.SelectedItem == null)
-                return;
-            var item = ListDll.SelectedItem as CSFileObj;
-            var res = new ChoseWindow("删除确认", "是否要删除").Set();
-            if (res)
-            {
-                var data = await App.HttpUtils.Remove(CodeType.Dll, item);
-                if (data == null)
-                {
-                    App.LogShow("删除", "服务器返回错误");
-                    return;
-                }
-                App.LogShow("删除", data.Message);
-                if (data.Build)
-                {
-                    ReDll();
-                }
-            }
-        }
-
-        private void Re_Dll_Click(object sender, RoutedEventArgs e)
-        {
-            ReDll();
-        }
-        private void Clear_Dll_Click(object sender, RoutedEventArgs e)
-        {
-            InputDll.Text = "";
-        }
-
-        private async void Add_Class_Click(object sender, RoutedEventArgs e)
-        {
-            var data = new InputWindow("UUID设置").Set();
-            if (string.IsNullOrWhiteSpace(data))
-                return;
-            var list = await App.HttpUtils.Add(CodeType.Class, data);
-            if (list == null)
-            {
-                App.LogShow("添加", "服务器返回错误");
-                return;
-            }
-            App.LogShow("创建", list.Message);
-            if (list.Build)
-            {
-                ReClass();
-            }
-        }
-        private void Change_Class_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListClass.SelectedItem == null)
-                return;
-            var item = ListClass.SelectedItem as CSFileObj;
-            App.AddEdit(item, CodeType.Class);
-        }
-        private async void Delete_Class_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListClass.SelectedItem == null)
-                return;
-            var item = ListClass.SelectedItem as CSFileObj;
-            var res = new ChoseWindow("删除确认", "是否要删除").Set();
-            if (res)
-            {
-                var data = await App.HttpUtils.Remove(CodeType.Class, item);
-                if (data == null)
-                {
-                    App.LogShow("删除", "服务器返回错误");
-                    return;
-                }
-                App.LogShow("删除", data.Message);
-                if (data.Build)
-                {
-                    ReClass();
-                }
-            }
-        }
-        private void Re_Class_Click(object sender, RoutedEventArgs e)
-        {
-            ReClass();
-        }
-        private void Clear_Class_Click(object sender, RoutedEventArgs e)
-        {
-            InputClass.Text = "";
-        }
-
         private async void Add_Socket_Click(object sender, RoutedEventArgs e)
         {
             var data = new InputWindow("UUID设置").Set();
@@ -740,50 +600,8 @@ namespace ColoryrBuild
                 ReApp();
             }
         }
-        private void Input_Dll_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(InputDll.Text))
-            {
-                ListDll.Items.Clear();
-                foreach (var item in DllList)
-                {
-                    ListDll.Items.Add(item.Value);
-                }
-            }
-            else
-            {
-                ListDll.Items.Clear();
-                foreach (var item in DllList)
-                {
-                    if (item.Value.UUID.Contains(InputDll.Text))
-                    {
-                        ListDll.Items.Add(item.Value);
-                    }
-                }
-            }
-        }
-        private void Input_Class_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(InputClass.Text))
-            {
-                ListClass.Items.Clear();
-                foreach (var item in ClassList)
-                {
-                    ListClass.Items.Add(item.Value);
-                }
-            }
-            else
-            {
-                ListClass.Items.Clear();
-                foreach (var item in ClassList)
-                {
-                    if (item.Value.UUID.Contains(InputClass.Text))
-                    {
-                        ListClass.Items.Add(item.Value);
-                    }
-                }
-            }
-        }
+        
+        
         private void Input_Socket_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(InputSocket.Text))

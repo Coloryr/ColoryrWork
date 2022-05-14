@@ -14,7 +14,7 @@ namespace ColoryrBuild.Windows
     /// <summary>
     /// EditWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class EditWindow : Window
+    public partial class EditWindow : UserControl
     {
         private string old;
         private string thisfile;
@@ -41,7 +41,7 @@ namespace ColoryrBuild.Windows
             textEditor.Options.ShowSpaces = true;
             textEditor.Options.ShowTabs = true;
 
-            Title = $"编辑窗口{type}[{obj.UUID}]";
+            //Title = $"编辑窗口{type}[{obj.UUID}]";
             if (type is not CodeType.App and not CodeType.Web)
                 CodeA.IsEnabled = false;
             Local = $"{CodeSave.FilePath}/{type}/{obj.UUID}/";

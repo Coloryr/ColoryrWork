@@ -6,7 +6,7 @@
     <Platforms>x64</Platforms>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <StartupObject></StartupObject>
-    <BaseOutputPath>..\..\build_out\Core</BaseOutputPath>
+    <BaseOutputPath>..\..\..\build_out\Core</BaseOutputPath>
     <DebugType>embedded</DebugType>
     <AssemblyVersion>1.5.1</AssemblyVersion>
     <FileVersion>1.5.1</FileVersion>

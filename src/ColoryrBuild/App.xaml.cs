@@ -136,14 +136,14 @@ namespace ColoryrBuild
             if (EditWindows.ContainsKey(name))
             {
                 var temp = EditWindows[name];
-                temp.Show();
+                //temp.Show();
                 temp.GetCode();
             }
             else
             {
                 var window = new EditWindow(code, type);
                 EditWindows.Add(name, window);
-                window.Show();
+                //window.Show();
             }
         }
 

@@ -1,279 +1,644 @@
-﻿<Window x:Class="ColoryrBuild.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ColoryrBuild"
-        mc:Ignorable="d"
-        Title="ColoryrWork编辑器" MinHeight="474" Height="474" MinWidth="930" Width="930"
-        Icon="/ColoryrWork.png" ResizeMode="CanMinimize" Closing="Window_Closed">
+﻿<Window
+    x:Class="ColoryrBuild.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ColoryrBuild.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ColoryrWork编辑器"
+    Width="1200"
+    Height="800"
+    MinWidth="930"
+    MinHeight="474"
+    Closing="Window_Closed"
+    Icon="/ColoryrWork.png"
+    ResizeMode="CanMinimize"
+    mc:Ignorable="d">
     <Grid>
-        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+        <Rectangle
+            Fill="#FFF4F4F5"
+            Stroke="#FF5ABED6"
+            StrokeThickness="2" />
         <TabControl Margin="2,2,2,2">
-            <TabItem Header="接口" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListDll">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Dll_Click"/>
-                                <MenuItem Header="修改" Click="Change_Dll_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Dll_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputDll" TextChanged="Input_Dll_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,368,0,0" Width="55" Click="Clear_Dll_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,368,0,0" Width="55" Click="Add_Dll_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,368,0,0" Width="54" Click="Change_Dll_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Dll_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="类" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListClass">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Class_Click"/>
-                                <MenuItem Header="修改" Click="Change_Class_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Class_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputClass" TextChanged="Input_Class_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_Class_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_Class_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_Class_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Class_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Socket" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListSocket">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Socket_Click"/>
-                                <MenuItem Header="修改" Click="Change_Socket_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Socket_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputSocket" TextChanged="Input_Socket_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,368,0,0" Width="55" Click="Clear_Socket_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,368,0,0" Width="55" Click="Add_Socket_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,368,0,0" Width="54" Click="Change_Socket_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Socket_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="机器人" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListRobot">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Robot_Click"/>
-                                <MenuItem Header="修改" Click="Change_Robot_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Robot_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputRobot" TextChanged="Input_Robot_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_Robot_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_Robot_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_Robot_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Robot_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="WebSocket" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListWebSocket">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_WebSocket_Click"/>
-                                <MenuItem Header="修改" Click="Change_WebSocket_Click"/>
-                                <MenuItem Header="删除" Click="Delete_WebSocket_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputWebSocket" TextChanged="Input_WebSocket_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_WebSocket_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_WebSocket_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_WebSocket_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_WebSocket_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="MQTT" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListMqtt">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Mqtt_Click"/>
-                                <MenuItem Header="修改" Click="Change_Mqtt_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Mqtt_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputMqtt" TextChanged="Input_Mqtt_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="54" Click="Clear_Mqtt_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="54" Click="Add_Mqtt_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_Mqtt_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Mqtt_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Task" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListTask">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Task_Click"/>
-                                <MenuItem Header="修改" Click="Change_Task_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Task_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputTask" TextChanged="Input_Task_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_Task_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_Task_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_Task_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Task_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="手机APP" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListApp">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="Key" Width="180" DisplayMemberBinding="{Binding Key}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_App_Click"/>
-                                <MenuItem Header="修改" Click="Change_App_Click"/>
-                                <MenuItem Header="删除" Click="Delete_App_Click"/>
-                                <MenuItem Header="修改Key" Click="Key_App_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputApp" TextChanged="Input_App_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_App_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_App_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_App_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_App_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="网页" Style="{DynamicResource TabItem}">
-                <Grid>
-                    <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-                    <ListView Margin="2,2,2,0" Height="361" VerticalAlignment="Top" Name="ListWeb">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                                <GridViewColumn Header="说明" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                                <GridViewColumn Header="版本" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                                <GridViewColumn Header="创建时间" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                                <GridViewColumn Header="修改时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="添加" Click="Add_Web_Click"/>
-                                <MenuItem Header="修改" Click="Change_Web_Click"/>
-                                <MenuItem Header="删除" Click="Delete_Web_Click"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
-                    <Label Content="搜索" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,363,0,0"/>
-                    <TextBox TextWrapping="Wrap" Width="594" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,367,0,0" Name="InputWeb" TextChanged="Input_Web_TextChanged"/>
-                    <Button Content="清空" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="643,367,0,0" Width="55" Click="Clear_Web_Click"/>
-                    <Button Content="添加" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="703,367,0,0" Width="55" Click="Add_Web_Click"/>
-                    <Button Content="修改" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="763,367,0,0" Width="54" Click="Change_Web_Click"/>
-                    <Button Content="刷新" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="822,367,0,0" Width="55" Click="Re_Web_Click"/>
-                </Grid>
+            <TabItem Header="代码选择" Style="{DynamicResource TabItem}">
+                <TabControl Margin="2,2,2,2">
+                    <TabItem Header="接口" Style="{DynamicResource TabItem}">
+                        <local:TableView1 />
+                    </TabItem>
+                    <TabItem Header="类" Style="{DynamicResource TabItem}">
+                        <local:TableView2 />
+                    </TabItem>
+                    <TabItem Header="Socket" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListSocket"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_Socket_Click" Header="添加" />
+                                        <MenuItem Click="Change_Socket_Click" Header="修改" />
+                                        <MenuItem Click="Delete_Socket_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputSocket"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_Socket_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,368,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_Socket_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,368,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_Socket_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,368,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_Socket_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_Socket_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="机器人" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListRobot"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_Robot_Click" Header="添加" />
+                                        <MenuItem Click="Change_Robot_Click" Header="修改" />
+                                        <MenuItem Click="Delete_Robot_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputRobot"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_Robot_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_Robot_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_Robot_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_Robot_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_Robot_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="WebSocket" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListWebSocket"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_WebSocket_Click" Header="添加" />
+                                        <MenuItem Click="Change_WebSocket_Click" Header="修改" />
+                                        <MenuItem Click="Delete_WebSocket_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputWebSocket"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_WebSocket_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_WebSocket_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_WebSocket_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_WebSocket_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_WebSocket_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="MQTT" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListMqtt"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_Mqtt_Click" Header="添加" />
+                                        <MenuItem Click="Change_Mqtt_Click" Header="修改" />
+                                        <MenuItem Click="Delete_Mqtt_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputMqtt"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_Mqtt_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="54"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_Mqtt_Click"
+                                Content="清空" />
+                            <Button
+                                Width="54"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_Mqtt_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_Mqtt_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_Mqtt_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Task" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListTask"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_Task_Click" Header="添加" />
+                                        <MenuItem Click="Change_Task_Click" Header="修改" />
+                                        <MenuItem Click="Delete_Task_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputTask"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_Task_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_Task_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_Task_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_Task_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_Task_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="手机APP" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListApp"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding Key}"
+                                            Header="Key" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_App_Click" Header="添加" />
+                                        <MenuItem Click="Change_App_Click" Header="修改" />
+                                        <MenuItem Click="Delete_App_Click" Header="删除" />
+                                        <MenuItem Click="Key_App_Click" Header="修改Key" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputApp"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_App_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_App_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_App_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_App_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_App_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="网页" Style="{DynamicResource TabItem}">
+                        <Grid>
+                            <Rectangle
+                                Fill="#FFF4F4F5"
+                                Stroke="#FF5ABED6"
+                                StrokeThickness="2" />
+                            <ListView
+                                Name="ListWeb"
+                                Height="361"
+                                Margin="2,2,2,0"
+                                VerticalAlignment="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="280"
+                                            DisplayMemberBinding="{Binding UUID}"
+                                            Header="UUID" />
+                                        <GridViewColumn
+                                            Width="240"
+                                            DisplayMemberBinding="{Binding Text}"
+                                            Header="说明" />
+                                        <GridViewColumn
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Version}"
+                                            Header="版本" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding CreateTime}"
+                                            Header="创建时间" />
+                                        <GridViewColumn
+                                            Width="180"
+                                            DisplayMemberBinding="{Binding UpdataTime}"
+                                            Header="修改时间" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="Add_Web_Click" Header="添加" />
+                                        <MenuItem Click="Change_Web_Click" Header="修改" />
+                                        <MenuItem Click="Delete_Web_Click" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                            <Label
+                                Margin="2,363,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="搜索" />
+                            <TextBox
+                                Name="InputWeb"
+                                Width="594"
+                                Margin="44,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                TextChanged="Input_Web_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Width="55"
+                                Margin="643,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Clear_Web_Click"
+                                Content="清空" />
+                            <Button
+                                Width="55"
+                                Margin="703,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Add_Web_Click"
+                                Content="添加" />
+                            <Button
+                                Width="54"
+                                Margin="763,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Change_Web_Click"
+                                Content="修改" />
+                            <Button
+                                Width="55"
+                                Margin="822,367,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="Re_Web_Click"
+                                Content="刷新" />
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </TabItem>
         </TabControl>
+
 
     </Grid>
 </Window>
