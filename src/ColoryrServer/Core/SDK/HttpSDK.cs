@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 
@@ -147,6 +148,6 @@ public class HttpResponseBytes : HttpResponse
     public HttpResponseBytes() : base()
     {
         if (Data == null)
-            Data = new byte[0];
+            Data = Array.Empty<byte>();
     }
 }

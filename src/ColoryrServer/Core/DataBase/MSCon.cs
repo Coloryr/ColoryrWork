@@ -1,14 +1,14 @@
 ﻿using ColoryrServer.FileSystem;
-using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Data.SqlClient;
 using System.Text;
+using Dapper;
 
 namespace ColoryrServer.DataBase;
 
-public class OracleCon
+public class MSCon
 {
     /// <summary>
     /// 连接状态
@@ -17,30 +17,28 @@ public class OracleCon
     /// <summary>
     /// 连接池
     /// </summary>
-    private static List<SQLConfig> Config;
-    private static ConcurrentDictionary<int, bool> Connecting = new();
     private static Dictionary<int, string> ConnectStr = new();
+    private static ConcurrentDictionary<int, bool> Connecting = new();
+    private static List<SQLConfig> Config;
 
     /// <summary>
     /// 连接测试
     /// </summary>
     /// <param name="item">连接池项目</param>
     /// <returns>是否测试成功</returns>
-    private static bool Test(OracleConnection item)
+    private static bool Test(string conn)
     {
         try
         {
-            item.Open();
-            new OracleCommand("select id from test where rownum<=1", item).ExecuteNonQuery();
-            item.Close();
+            new SqlConnection(conn).Execute("select TOP 1 id from test");
             return true;
         }
-        catch (OracleException ex)
+        catch (SqlException ex)
         {
             switch (ex.Number)
             {
-                case 942:
-                    item.Close();
+                case 1146:
+                case 208:
                     return true;
                 default:
                     ServerMain.LogError(ex);
@@ -68,18 +66,17 @@ public class OracleCon
             if (!config.Enable)
                 return false;
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
-            string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
+            string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
             State.Add(id, false);
-            var Conn = new OracleConnection(ConnectString);
-            if (Test(Conn))
+            if (Test(ConnectString))
             {
                 ConnectStr.Add(id, ConnectString);
                 State[id] = true;
-                ServerMain.LogOut($"Oracle数据库{id}已连接");
+                ServerMain.LogOut($"Ms数据库{id}已连接");
             }
             else
             {
-                ServerMain.LogError($"Oracle数据库{id}连接失败");
+                ServerMain.LogError($"Ms数据库{id}连接失败");
             }
             Connecting.TryRemove(id, out var v);
             return State[id];
@@ -88,37 +85,36 @@ public class OracleCon
     }
 
     /// <summary>
-    /// Oracle初始化
+    /// MSCon初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
     public static void Start()
     {
-        ServerMain.LogOut($"正在连接Oracle数据库");
-        Config = ServerMain.Config.Oracle;
+        ServerMain.LogOut($"正在连接Ms数据库");
+        Config = ServerMain.Config.MSsql;
         for (int a = 0; a < Config.Count; a++)
         {
             var config = Config[a];
             if (!config.Enable)
                 continue;
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
-            string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
+            string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
             State.Add(a, false);
-            var Conn = new OracleConnection(ConnectString);
-            if (Test(Conn))
+            if (Test(ConnectString))
             {
                 ConnectStr.Add(a, ConnectString);
                 State[a] = true;
-                ServerMain.LogOut($"Oracle数据库{a}已连接");
+                ServerMain.LogOut($"Ms数据库{a}已连接");
             }
             else
             {
-                ServerMain.LogError($"Oracle数据库{a}连接失败");
+                ServerMain.LogError($"Ms数据库{a}连接失败");
             }
         }
     }
 
     /// <summary>
-    /// 关闭Oracle数据库连接
+    /// 关闭Ms数据库连接
     /// </summary>
     public static void Stop()
     {
@@ -126,8 +122,8 @@ public class OracleCon
         {
             State[item.Key] = false;
         }
-        OracleConnection.ClearAllPools();
-        ServerMain.LogOut("Oracle数据库已断开");
+        SqlConnection.ClearAllPools();
+        ServerMain.LogOut("Ms数据库已断开");
     }
 
     /// <summary>
@@ -135,8 +131,9 @@ public class OracleCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    public static OracleConnection GetConnection(int id)
+    public static SqlConnection GetConnection(int id)
     {
-        return new OracleConnection(ConnectStr[id]);
+        return new SqlConnection(ConnectStr[id]);
     }
 }
+

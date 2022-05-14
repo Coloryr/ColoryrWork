@@ -10,7 +10,7 @@ public class RamDataBase
     /// <summary>
     /// 缓存数据
     /// </summary>
-    private static ConcurrentDictionary<string, ConcurrentDictionary<string, dynamic>> RamCache;
+    private static ConcurrentDictionary<string, RamDataObj> RamCache;
 
     private static ConcurrentBag<string> QueueSave;
     private static ConcurrentBag<string> QueueRemove;
@@ -31,7 +31,7 @@ public class RamDataBase
             var data = FileRam.Load(item);
             if (data == null)
                 continue;
-            RamCache.TryAdd(item, data);
+            RamCache.TryAdd(item, new RamDataObj(data));
         }
         SaveThread = new Thread(() =>
         {
@@ -40,7 +40,7 @@ public class RamDataBase
                 Thread.Sleep(100);
                 if (QueueSave.TryTake(out var temp))
                 {
-                    FileRam.Save(temp, RamCache[temp]);
+                    FileRam.Save(temp, RamCache[temp].list);
                 }
                 if (QueueRemove.TryTake(out var temp1))
                 {
@@ -58,7 +58,8 @@ public class RamDataBase
         {
             foreach (var item in RamCache)
             {
-                FileRam.Save(item.Key, item.Value);
+                if (item.Value.IsSave)
+                    FileRam.Save(item.Key, item.Value.list);
             }
         }
     }
@@ -66,82 +67,89 @@ public class RamDataBase
     /// <summary>
     /// 获取缓存
     /// </summary>
-    /// <param name="Name">缓存名</param>
+    /// <param name="name">缓存名</param>
     /// <param name="key">键</param>
     /// <returns>值</returns>
-    internal static dynamic GetCache(string Name, string key)
+    internal static dynamic GetCache(string name, string key)
     {
-        RamCache.TryGetValue(Name, out var temp);
+        RamCache.TryGetValue(name, out var temp);
         if (temp == null)
             return null;
-        temp.TryGetValue(key, out var temp1);
+        temp.list.TryGetValue(key, out var temp1);
         return temp1;
     }
     /// <summary>
     /// 检测是否有缓存名
     /// </summary>
-    /// <param name="Name">缓存名</param>
+    /// <param name="name">缓存名</param>
     /// <returns>是否存在</returns>
-    internal static bool HaveCache(string Name)
+    internal static bool HaveCache(string name)
     {
-        return RamCache.ContainsKey(Name);
+        return RamCache.ContainsKey(name);
     }
     /// <summary>
     /// 检测是否有缓存名的键
     /// </summary>
-    /// <param name="Name">缓存名</param>
+    /// <param name="name">缓存名</param>
     /// <param name="key">键</param>
     /// <returns>是否存在</returns>
-    internal static bool HaveCacheKey(string Name, string Key)
+    internal static bool HaveCacheKey(string name, string Key)
     {
-        if (!HaveCache(Name))
+        if (!HaveCache(name))
             return false;
-        return RamCache[Name].ContainsKey(Key);
+        return RamCache[name].list.ContainsKey(Key);
     }
     /// <summary>
     /// 设置缓存，若缓存名不存在新建一个
     /// </summary>
-    /// <param name="Name">缓存名</param>
+    /// <param name="name">缓存名</param>
     /// <param name="key">键</param>
-    /// <param name="Value">值</param>
-    internal static void SetCache(string Name, string key, dynamic Value)
+    /// <param name="value">值</param>
+    internal static void SetCache(string name, string key, dynamic value)
     {
-        if (!RamCache.ContainsKey(Name))
+        if (!RamCache.ContainsKey(name))
         {
-            var list = new ConcurrentDictionary<string, dynamic>();
-            list.TryAdd(key, Value);
-            RamCache.TryAdd(Name, list);
+            var item = new RamDataObj();
+            item.list.TryAdd(key, value);
+            RamCache.TryAdd(name, item);
         }
-        if (!RamCache[Name].ContainsKey(key))
-            RamCache[Name].TryAdd(key, Value);
-        RamCache[Name][key] = Value;
-        QueueSave.Add(Name);
+        if (!RamCache[name].list.ContainsKey(key))
+            RamCache[name].list.TryAdd(key, value);
+        RamCache[name].list[key] = value;
+        QueueSave.Add(name);
     }
     /// <summary>
     /// 检测缓存名是否存在，不存在创建
     /// </summary>
-    /// <param name="Name">缓存名</param>
+    /// <param name="name">缓存名</param>
     /// <returns>缓存名</returns>
-    internal static string NewCache(string Name)
+    internal static string NewCache(string name, bool save = false)
     {
-        if (!RamCache.ContainsKey(Name))
+        var item = new RamDataObj()
         {
-            var list = new ConcurrentDictionary<string, dynamic>();
-            RamCache.TryAdd(Name, list);
+            IsSave = save
+        };
+        if (!RamCache.ContainsKey(name))
+        {
+            RamCache.TryAdd(name, item);
         }
-        QueueSave.Add(Name);
-        return Name;
+        else
+        {
+            RamCache[name].IsSave = save;
+        }
+        QueueSave.Add(name);
+        return name;
     }
     /// <summary>
     /// 清空缓存
     /// </summary>
     /// <param name="Name">缓存名</param>
-    internal static void CloseCache(string Name)
+    internal static void CloseCache(string name)
     {
-        if (!RamCache.ContainsKey(Name))
+        if (!RamCache.ContainsKey(name))
             return;
-        RamCache.TryRemove(Name, out var temp);
-        temp.Clear();
-        QueueRemove.Add(Name);
+        RamCache.TryRemove(name, out var temp);
+        temp.list.Clear();
+        QueueRemove.Add(name);
     }
 }

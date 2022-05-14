@@ -453,14 +453,14 @@ public class Redis
         => RedisCon.Increment(key, ID, val);
 }
 
-public class RamData
+public partial class RamData
 {
     public string Name { get; private set; }
     /// <summary>
     /// 启用缓存
     /// </summary>
     /// <param name="Name">缓存名</param>
-    public RamData(string Name)
+    public RamData(string Name, bool save = false)
     {
         this.Name = RamDataBase.NewCache(Name);
     }

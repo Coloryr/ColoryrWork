@@ -11,8 +11,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Build", "Li
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Socket", "Lib\Lib.IoT\ColoryrWork.Lib.Socket.shproj", "{DB16BD52-51EE-43C3-B9A0-E0BA0CC0C2A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest", "CodeTest\CodeTest.csproj", "{44A0EB6C-080A-47FC-AB2F-5D214768DED5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.App", "Lib.App\ColoryrWork.Lib.App.shproj", "{870CB400-24DF-4510-9797-7B1965848BC8}"
@@ -20,17 +18,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
-		Lib\Lib.Build\Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
-		Lib\Lib.Build\Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
-		Lib.App\Lib.App.projitems*{870cb400-24df-4510-9797-7b1965848bc8}*SharedItemsImports = 13
-		Lib\Lib.IoT\Lib.IoT.projitems*{db16bd52-51ee-43c3-b9a0-e0ba0cc0c2a0}*SharedItemsImports = 13
-		Lib.App\Lib.App.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.Build\Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.IoT\Lib.IoT.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.Server\Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -45,14 +32,6 @@ Global
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Release|Any CPU.ActiveCfg = Release|x64
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Release|x64.ActiveCfg = Release|x64
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Release|x64.Build.0 = Release|x64
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Debug|x64.Build.0 = Debug|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Release|x64.ActiveCfg = Release|Any CPU
-		{44A0EB6C-080A-47FC-AB2F-5D214768DED5}.Release|x64.Build.0 = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -73,5 +52,16 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D4365924-469B-4DB5-AD81-4B4C10D6E826}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
+		Lib\Lib.Build\Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
+		Lib\Lib.Build\Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
+		Lib.App\Lib.App.projitems*{870cb400-24df-4510-9797-7b1965848bc8}*SharedItemsImports = 13
+		Lib\Lib.IoT\Lib.IoT.projitems*{db16bd52-51ee-43c3-b9a0-e0ba0cc0c2a0}*SharedItemsImports = 13
+		Lib.App\Lib.App.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
+		Lib\Lib.Build\Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
+		Lib\Lib.IoT\Lib.IoT.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
+		Lib\Lib.Server\Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

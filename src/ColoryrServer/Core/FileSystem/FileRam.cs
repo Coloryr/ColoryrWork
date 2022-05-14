@@ -58,7 +58,6 @@ internal static class FileRam
                 File.Delete(Local + uuid);
             }
             FileStream writer = new(Local + uuid, FileMode.Create);
-            IFormatter formatter = new BinaryFormatter();
             DataContractSerializer ser = new(typeof(ConcurrentDictionary<string, dynamic>));
             ser.WriteObject(writer, data);
             writer.Close();
