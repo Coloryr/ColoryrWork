@@ -19,10 +19,11 @@ namespace ColoryrBuild
     {
         public delegate void Refresh();
         public static event Refresh CallRefresh;
-        public static Action<CodeEdit> SwitchTo;
-        public static Action<CodeEdit> AddCodeEdit;
+        public static Action<CodeEditView> SwitchTo;
+        public static Action<CodeEditView> AddCodeEdit;
+        public static Action<CodeEditView> CloseCodeEdit;
 
-        private Dictionary<CodeEdit, TabItem> Views = new();
+        private Dictionary<CodeEditView, TabItem> Views = new();
 
         public MainWindow()
         {
@@ -30,6 +31,7 @@ namespace ColoryrBuild
             App.MainWindow_ = this;
             SwitchTo = FSwitchTo;
             AddCodeEdit = FAddCodeEdit;
+            CloseCodeEdit = FCloseCodeEdit;
             GetApi();
             CallRefresh.Invoke();
         }
@@ -95,7 +97,7 @@ namespace ColoryrBuild
             }
         }
 
-        private void FSwitchTo(CodeEdit view)
+        private void FSwitchTo(CodeEditView view)
         {
             if (Views.TryGetValue(view, out var temp))
             {
@@ -103,11 +105,12 @@ namespace ColoryrBuild
             }
         }
 
-        private void FAddCodeEdit(CodeEdit view)
+        private void FAddCodeEdit(CodeEditView view)
         {
             TabItem item = new()
             {
-                Content = view
+                Content = view,
+                Header = $"代码编辑{view.type}[{view.obj.UUID}]"
             };
             item.SetValue(StyleProperty, Application.Current.Resources["TabItem"]);
             Tabs.Items.Add(item);
@@ -115,12 +118,15 @@ namespace ColoryrBuild
             Tabs.SelectedItem = item;
         }
 
-        private void FCloseCodeEdit(CodeEdit view) 
+        private void FCloseCodeEdit(CodeEditView view) 
         {
             if (Views.TryGetValue(view, out var temp))
             {
                 Tabs.Items.Remove(temp);
             }
+            Views.Remove(view);
+            view.Close();
+            GC.Collect();
         }
     }
 }

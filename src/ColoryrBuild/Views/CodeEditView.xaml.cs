@@ -13,14 +13,14 @@ using ColoryrBuild.Windows;
 namespace ColoryrBuild.View;
 
 /// <summary>
-/// EditWindow.xaml 的交互逻辑
+/// CodeEditView.xaml 的交互逻辑
 /// </summary>
-public partial class CodeEdit : UserControl
+public partial class CodeEditView : UserControl
 {
     private string old;
     private string thisfile;
-    private readonly CSFileObj obj;
-    private readonly CodeType type;
+    public readonly CSFileObj obj;
+    public readonly CodeType type;
     private CSFileCode obj1;
     private WebObj obj3;
     private DiffPaneModel Model;
@@ -28,7 +28,7 @@ public partial class CodeEdit : UserControl
     private readonly string Local;
     private bool Write;
 
-    public CodeEdit(CSFileObj obj, CodeType type)
+    public CodeEditView(CSFileObj obj, CodeType type)
     {
         this.obj = obj;
         this.type = type;
@@ -61,6 +61,11 @@ public partial class CodeEdit : UserControl
         {
             MessageBox.Show(e.ToString());
         }
+    }
+
+    public void Close()
+    {
+        FileSystemWatcher.Dispose();
     }
 
     private async void OnChanged(object source, FileSystemEventArgs e)
@@ -446,13 +451,13 @@ public partial class CodeEdit : UserControl
         }
     }
 
-    private void Window_Closed(object sender, EventArgs e)
-    {
-        App.CloseEdit(obj, type);
-    }
-
     private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         Change_Click(null, null);
+    }
+
+    private void Close_Button_Click(object sender, RoutedEventArgs e)
+    {
+        App.CloseEdit(this);
     }
 }

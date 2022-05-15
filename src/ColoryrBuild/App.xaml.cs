@@ -32,7 +32,13 @@ public partial class App : Application
     public static LogWindow LogWindow_;
     public static Login LoginWindow_;
 
-    private static Dictionary<string, CodeEdit> EditWindows = new();
+    private record CodeInfo 
+    {
+        public string UUID { get; set; }
+        public CodeType Type { get; set; }
+    }
+
+    private static Dictionary<CodeInfo, CodeEditView> CodeEdits = new();
     private static Logs Logs;
 
     private void Application_Startup(object sender, StartupEventArgs e)
@@ -133,28 +139,38 @@ public partial class App : Application
 
     public static void AddEdit(CSFileObj code, CodeType type)
     {
-        string name = type.ToString() + code.UUID;
-        if (EditWindows.ContainsKey(name))
+        var info = new CodeInfo
         {
-            var temp = EditWindows[name];
+            UUID = code.UUID,
+            Type = type
+        };
+        string name = type.ToString() + code.UUID;
+        if (CodeEdits.ContainsKey(info))
+        {
+            var temp = CodeEdits[info];
             ColoryrBuild.MainWindow.SwitchTo(temp);
             temp.GetCode();
         }
         else
         {
-            var view = new CodeEdit(code, type);
-            EditWindows.Add(name, view);
+            var view = new CodeEditView(code, type);
+            CodeEdits.Add(info, view);
             ColoryrBuild.MainWindow.AddCodeEdit(view);
         }
     }
 
-    public static void CloseEdit(CSFileObj code, CodeType type)
+    public static void CloseEdit(CodeEditView view)
     {
-        string name = type.ToString() + code.UUID;
-        if (EditWindows.ContainsKey(name))
+        var info = new CodeInfo
         {
-            EditWindows.Remove(name);
+            UUID = view.obj.UUID,
+            Type = view.type
+        };
+        if (CodeEdits.ContainsKey(info))
+        {
+            CodeEdits.Remove(info);
         }
+        ColoryrBuild.MainWindow.CloseCodeEdit(view);
     }
 
     private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

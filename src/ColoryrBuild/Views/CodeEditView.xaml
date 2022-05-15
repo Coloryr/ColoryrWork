@@ -1,27 +1,21 @@
 ﻿<UserControl
-    x:Class="ColoryrBuild.View.CodeEdit"
+    x:Class="ColoryrBuild.View.CodeEditView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ColoryrBuild.Windows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="700"
-    Height="470"
-    MinWidth="700"
-    MinHeight="470"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
-        <GroupBox Margin="10,27,165,10" Header="代码编辑">
+        <GroupBox Margin="10,32,165,10" Header="代码编辑">
             <avalonEdit:TextEditor
                 xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
                 Name="textEditor"
                 Background="#55DADADA"
                 FontFamily="Consolas"
-                FontSize="12px"
+                FontSize="14px"
                 ShowLineNumbers="True"
                 SyntaxHighlighting="C#" />
         </GroupBox>
@@ -32,32 +26,30 @@
             Content="说明" />
         <TextBox
             x:Name="Text"
-            Width="314"
-            Margin="36,6,0,0"
-            HorizontalAlignment="Left"
+            Margin="46,6,425,0"
             VerticalAlignment="Top"
             TextWrapping="Wrap" />
         <Button
             Name="ReCode_Button"
-            Width="50"
-            Margin="465,6,0,0"
-            HorizontalAlignment="Left"
+            Width="60"
+            Margin="0,6,165,0"
+            HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ReCode_Click"
             Content="刷新" />
         <Button
             Name="Updata_Button"
-            Width="50"
-            Margin="355,6,0,0"
-            HorizontalAlignment="Left"
+            Width="60"
+            Margin="0,6,295,0"
+            HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="Updata_Click"
             Content="更新" />
         <Button
             Name="Build_Button"
-            Width="50"
-            Margin="410,6,0,0"
-            HorizontalAlignment="Left"
+            Width="60"
+            Margin="0,6,230,0"
+            HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="Build_Click"
             Content="编译" />
@@ -82,5 +74,13 @@
                 </ListView.ContextMenu>
             </ListView>
         </GroupBox>
+        <Button
+            x:Name="Close_Button"
+            Width="60"
+            Margin="0,6,360,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="Close_Button_Click"
+            Content="关闭" />
     </Grid>
 </UserControl>
