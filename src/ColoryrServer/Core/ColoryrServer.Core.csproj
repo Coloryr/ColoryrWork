@@ -58,8 +58,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Import Project="..\..\Lib.App\Lib.App.projitems" Label="Shared" />
-
   <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
 
   <Import Project="..\..\Lib\Lib.IoT\Lib.IoT.projitems" Label="Shared" />

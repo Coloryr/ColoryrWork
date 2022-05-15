@@ -20,7 +20,6 @@ internal record MAP
     public List<CSFileObj> RobotList { get; set; }
     public List<CSFileObj> MqttList { get; set; }
     public List<CSFileObj> TaskList { get; set; }
-    public List<AppFileObj> AppList { get; set; }
 }
 internal class CSFile
 {
@@ -31,7 +30,6 @@ internal class CSFile
     private static readonly string RobotFileLocal = ServerMain.RunLocal + @"Codes/Robot/";
     private static readonly string MqttFileLocal = ServerMain.RunLocal + @"Codes/Mqtt/";
     private static readonly string TaskFileLocal = ServerMain.RunLocal + @"Codes/Task/";
-    private static readonly string AppFileLocal = ServerMain.RunLocal + @"Codes/App/";
 
     private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
     private static readonly string RemoveDir = ServerMain.RunLocal + @"Removes/";
@@ -43,7 +41,6 @@ internal class CSFile
     public static readonly ConcurrentDictionary<string, CSFileCode> RobotFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> MqttFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> TaskFileList = new();
-    public static readonly ConcurrentDictionary<string, AppFileObj> AppFileList = new();
 
     public static void Start()
     {
@@ -70,10 +67,6 @@ internal class CSFile
         if (!Directory.Exists(RemoveDir))
         {
             Directory.CreateDirectory(RemoveDir);
-        }
-        if (!Directory.Exists(AppFileLocal))
-        {
-            Directory.CreateDirectory(AppFileLocal);
         }
         if (!Directory.Exists(MqttFileLocal))
         {
@@ -171,34 +164,6 @@ internal class CSFile
         Storage(url, obj);
         UpdataMAP();
     }
-
-    public static bool AddFileApp(AppFileObj item, UploadObj obj, Stream baseStream)
-    {
-        var file = DllStonge.AppLocal + obj.UUID + "\\" + obj.FileName;
-        if (File.Exists(file))
-        {
-            return false;
-        }
-        else
-        {
-            using FileStream data = File.Open(file, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
-            baseStream.CopyTo(data);
-            data.Flush();
-            item.Files.Add(obj.FileName, obj.FileName);
-            StorageApp(item);
-            return true;
-        }
-    }
-    public static void StorageApp(AppFileObj obj)
-    {
-        var url = AppFileLocal + obj.UUID + ".json";
-        if (AppFileList.ContainsKey(obj.UUID))
-            AppFileList[obj.UUID] = obj;
-        else
-            AppFileList.TryAdd(obj.UUID, obj);
-        Storage(url, obj);
-        UpdataMAP();
-    }
     public static CSFileCode GetDll(string uuid)
     {
         if (DllFileList.TryGetValue(uuid, out var save))
@@ -250,14 +215,6 @@ internal class CSFile
     public static CSFileCode GetTask(string uuid)
     {
         if (TaskFileList.TryGetValue(uuid, out var save))
-        {
-            return save;
-        }
-        return null;
-    }
-    public static AppFileObj GetApp(string uuid)
-    {
-        if (AppFileList.TryGetValue(uuid, out var save))
         {
             return save;
         }
@@ -315,13 +272,6 @@ internal class CSFile
                     MqttFileList.TryRemove(uuid, out var item7);
                     DllStonge.RemoveTask(uuid);
                     break;
-                case CodeType.App:
-                    Name = AppFileLocal + uuid + ".json";
-                    obj = GetApp(uuid);
-                    AppFileList.TryRemove(uuid, out var item5);
-                    DllStonge.RemoveApp(uuid);
-                    IsDir = true;
-                    break;
             }
             if (obj == null)
             {
@@ -368,10 +318,6 @@ Key:{obj.Key}
                 foreach (var item in obj.Codes)
                 {
                     File.WriteAllText(dir + item.Key + ".cs", item.Value);
-                }
-                foreach (var item in obj.Files)
-                {
-                    File.Move(DllStonge.AppLocal + obj.uuid + "\\" + item, dir + item);
                 }
             }
         }
@@ -474,19 +420,6 @@ Key:{obj.Key}
                 ServerMain.LogError(e);
             }
         }
-        foreach (var item in Function.GetPathFileName(AppFileLocal))
-        {
-            try
-            {
-                var obj = JsonConvert.DeserializeObject<AppFileObj>(File.ReadAllText(item.FullName));
-                string name = item.Name.Replace(".json", "");
-                AppFileList.TryAdd(name, obj);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
         UpdataMAP();
     }
     public static void UpdataMAP()
@@ -503,8 +436,7 @@ Key:{obj.Key}
                     WebSocketList = new(WebSocketFileList.Values),
                     RobotList = new(RobotFileList.Values),
                     MqttList = new(MqttFileList.Values),
-                    TaskList = new(TaskFileList.Values),
-                    AppList = new(AppFileList.Values)
+                    TaskList = new(TaskFileList.Values)
                 };
                 File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));
             }
@@ -513,27 +445,5 @@ Key:{obj.Key}
                 ServerMain.LogError(e);
             }
         });
-    }
-
-    internal static ReMessage RemoveAppFile(string uuid, string text)
-    {
-        var file = DllStonge.AppLocal + uuid + "\\" + text;
-        if (File.Exists(file))
-        {
-            File.Delete(file);
-            return new ReMessage
-            {
-                Build = true,
-                Message = "删除"
-            };
-        }
-        else
-        {
-            return new ReMessage
-            {
-                Build = true,
-                Message = "不存在文件"
-            };
-        }
     }
 }

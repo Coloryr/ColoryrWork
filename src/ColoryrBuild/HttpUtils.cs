@@ -138,7 +138,6 @@ namespace ColoryrBuild
                     CodeType.Socket => ReType.GetSocket,
                     CodeType.Robot => ReType.GetRobot,
                     CodeType.WebSocket => ReType.GetWebSocket,
-                    CodeType.App => ReType.GetApp,
                     CodeType.Mqtt => ReType.GetMqtt,
                     CodeType.Task => ReType.GetTask,
                     _ => ReType.GetDll,
@@ -191,32 +190,6 @@ namespace ColoryrBuild
             }
         }
 
-        public async Task<AppFileList> GetAppList()
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.GetApp
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await GetAppList();
-                }
-                return JsonConvert.DeserializeObject<AppFileList>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public async Task<ReMessage> Add(CodeType type, string name)
         {
             try
@@ -227,7 +200,6 @@ namespace ColoryrBuild
                     CodeType.Socket => ReType.AddSocket,
                     CodeType.Robot => ReType.AddRobot,
                     CodeType.WebSocket => ReType.AddWebSocket,
-                    CodeType.App => ReType.AddApp,
                     CodeType.Mqtt => ReType.AddMqtt,
                     CodeType.Task => ReType.AddTask,
                     CodeType.Web => ReType.AddWeb,
@@ -266,7 +238,6 @@ namespace ColoryrBuild
                     CodeType.Socket => ReType.RemoveSocket,
                     CodeType.Robot => ReType.RemoveRobot,
                     CodeType.WebSocket => ReType.RemoveWebSocket,
-                    CodeType.App => ReType.RemoveApp,
                     CodeType.Mqtt => ReType.RemoveMqtt,
                     CodeType.Task => ReType.RemoveTask,
                     CodeType.Web => ReType.RemoveWeb,
@@ -369,33 +340,6 @@ namespace ColoryrBuild
             }
         }
 
-        public async Task<AppFileObj> GetAppCode(string name)
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.CodeApp,
-                    UUID = name
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await GetAppCode(name);
-                }
-                return JsonConvert.DeserializeObject<AppFileObj>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public async Task<WebObj> GetWebCode(string name)
         {
             try
@@ -422,67 +366,6 @@ namespace ColoryrBuild
                 return null;
             }
         }
-
-        public async Task<ReMessage> BuildApp(AppFileObj obj, ReType type, string file, List<CodeEditObj> list)
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.AppCsUpdata,
-                    UUID = obj.UUID,
-                    Version = obj.Version,
-                    Text = obj.Text,
-                    Temp = file,
-                    Code = JsonConvert.SerializeObject(list)
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await BuildApp(obj, type, file, list);
-                }
-                return JsonConvert.DeserializeObject<ReMessage>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<ReMessage> AddAppFile(AppFileObj obj, ReType type, string file)
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.AppAddCS,
-                    UUID = obj.UUID,
-                    Version = obj.Version,
-                    Code = file
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await AddAppFile(obj, type, file);
-                }
-                return JsonConvert.DeserializeObject<ReMessage>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public async Task<ReMessage> Build(CSFileObj obj, CodeType type, List<CodeEditObj> list)
         {
             try
@@ -663,34 +546,6 @@ namespace ColoryrBuild
                     return await GetApi();
                 }
                 return JsonConvert.DeserializeObject<APIFileObj>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<ReMessage> SetAppKey(string uuid, string res)
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.SetAppKey,
-                    UUID = uuid,
-                    Code = res
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await SetAppKey(uuid, res);
-                }
-                return JsonConvert.DeserializeObject<ReMessage>(data);
             }
             catch
             {

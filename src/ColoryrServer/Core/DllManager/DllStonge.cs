@@ -20,8 +20,6 @@ public class DllStonge
     private static readonly ConcurrentDictionary<string, DllBuildSave> MqttList = new();
     private static readonly ConcurrentDictionary<string, DllBuildSave> TaskList = new();
 
-    private static readonly ConcurrentDictionary<string, AppBuildSave> AppList = new();
-
     public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
     public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
     public static readonly string SocketLocal = ServerMain.RunLocal + @"Dll/Socket/";
@@ -29,8 +27,6 @@ public class DllStonge
     public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
     public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll/Mqtt/";
     public static readonly string TaskLocal = ServerMain.RunLocal + @"Dll/Task/";
-
-    public static readonly string AppLocal = ServerMain.RunLocal + @"Dll/App/";
 
     private static void RemoveAll(string dir)
     {
@@ -255,41 +251,6 @@ public class DllStonge
     {
         return TaskList.TryGetValue(uuid, out var dll) ? dll : null;
     }
-
-    public static void AddApp(string uuid, AppBuildSave save)
-    {
-        if (AppList.ContainsKey(uuid))
-        {
-            AppList.TryRemove(uuid, out var item);
-        }
-        AppList.TryAdd(uuid, save);
-    }
-    public static void RemoveApp(string uuid)
-    {
-        if (AppList.ContainsKey(uuid))
-        {
-            AppList.TryRemove(uuid, out var item);
-        }
-        string local = AppLocal + uuid + "\\";
-        if (File.Exists(local + "app.dll"))
-        {
-            File.Delete(local + "app.dll");
-        }
-        if (File.Exists(local + "app.pdb"))
-        {
-            File.Delete(local + "app.pdb");
-        }
-    }
-    public static AppBuildSave GetApp(string uuid)
-    {
-        if (AppList.TryGetValue(uuid, out var save))
-        {
-            return save;
-        }
-        else
-            return null;
-    }
-
     public static void Start()
     {
         if (!Directory.Exists(DllLocal))
@@ -315,10 +276,6 @@ public class DllStonge
         if (!Directory.Exists(MqttLocal))
         {
             Directory.CreateDirectory(MqttLocal);
-        }
-        if (!Directory.Exists(AppLocal))
-        {
-            Directory.CreateDirectory(AppLocal);
         }
         if (!Directory.Exists(TaskLocal))
         {
@@ -586,37 +543,6 @@ public class DllStonge
                         AssemblySave.MethodInfos.Add(Item.Name, Item);
                 }
                 AddTask(Name, AssemblySave);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        var Dirs = Function.GetPathName(AppLocal);
-        foreach (var FileItem in DllName)
-        {
-            try
-            {
-                var save = new AppBuildSave();
-                string Name = FileItem.Name;
-                var obj = CSFile.GetApp(Name);
-                if (obj == null)
-                    continue;
-                ServerMain.LogOut("加载App：" + Name);
-                using (var FileStream = new FileStream(FileItem.FullName + "\\app.dll", FileMode.Open, FileAccess.Read))
-                {
-                    save.Dll = new byte[FileStream.Length];
-                    var pdb = FileItem.FullName + "app.pdb";
-                    if (File.Exists(pdb))
-                        using (var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read))
-                        {
-                            save.Pdb = new byte[FileStream1.Length];
-                            FileStream1.Read(save.Pdb);
-                        }
-                    else
-                        FileStream.Read(save.Dll);
-                }
-                AddApp(Name, save);
             }
             catch (Exception e)
             {

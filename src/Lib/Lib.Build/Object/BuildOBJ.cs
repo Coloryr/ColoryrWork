@@ -2,16 +2,13 @@
 {
     public enum ReType
     {
-        AddDll, AddClass, AddSocket, AddWebSocket, AddRobot, AddMqtt, AddApp, AddTask, AddWeb,
-        GetDll, GetClass, GetSocket, GetWebSocket, GetRobot, GetMqtt, GetApp, GetTask, GetWeb,
-        CodeDll, CodeClass, CodeSocket, CodeWebSocket, CodeRobot, CodeMqtt, CodeApp, CodeTask, CodeWeb,
-        RemoveDll, RemoveClass, RemoveSocket, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveApp, RemoveTask, RemoveWeb,
+        AddDll, AddClass, AddSocket, AddWebSocket, AddRobot, AddMqtt, AddTask, AddWeb,
+        GetDll, GetClass, GetSocket, GetWebSocket, GetRobot, GetMqtt, GetTask, GetWeb,
+        CodeDll, CodeClass, CodeSocket, CodeWebSocket, CodeRobot, CodeMqtt, CodeTask, CodeWeb,
+        RemoveDll, RemoveClass, RemoveSocket, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveTask, RemoveWeb,
         UpdataDll, UpdataClass, UpdataSocket, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask, UpdataWeb,
-        AppRemoveFile, AppAddCS, AppAddXaml, RemoveAppCS, RemoveAppXaml,
-        AppCsUpdata, AppXamlUpdata, AppUpdata,
         WebRemoveFile, WebAddFile, WebAddCode,
-        Check, Login, GetApi,
-        SetAppKey
+        Check, Login, GetApi
     }
     public class BuildOBJ
     {

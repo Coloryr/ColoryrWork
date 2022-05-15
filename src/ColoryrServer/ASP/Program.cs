@@ -15,7 +15,6 @@ using System.Text;
 using Newtonsoft.Json;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
-using ColoryrWork.Lib.App;
 
 namespace ColoryrServer.ASP
 {
@@ -175,52 +174,6 @@ namespace ColoryrServer.ASP
                         Message = "账户或密码错误"
                     };
                     await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-                }
-            }
-            else if (Request.Headers[APPKV.APPK] == APPKV.APPV)
-            {
-                string Str;
-                MemoryStream stream = new();
-                await Request.Body.CopyToAsync(stream);
-                if (Request.Headers[BuildKV.BuildK1] == "true")
-                {
-                    var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-                    Str = Encoding.UTF8.GetString(receivedData);
-                }
-                else
-                {
-                    Str = Encoding.UTF8.GetString(stream.ToArray());
-                }
-                JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                var Json = obj.ToObject<DownloadObj>();
-                var httpReturn = AppDownload.Download(Json);
-                switch (httpReturn.Res)
-                {
-                    case ResType.String:
-                        await Response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
-                        break;
-                    case ResType.Byte:
-                        var bytes = httpReturn.Data as byte[];
-                        await Response.BodyWriter.WriteAsync(bytes);
-                        break;
-                    case ResType.Json:
-                        var obj1 = httpReturn.Data;
-                        await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-                        break;
-                    case ResType.Stream:
-                        var stream1 = httpReturn.Data as Stream;
-                        if (stream1 == null)
-                        {
-                            Response.StatusCode = 500;
-                            await Response.WriteAsync("stream in null", httpReturn.Encoding);
-                        }
-                        else
-                        {
-                            stream1.Seek(httpReturn.Pos, SeekOrigin.Begin);
-                            Response.StatusCode = 206;
-                            await stream.CopyToAsync(Response.Body);
-                        }
-                        break;
                 }
             }
             else

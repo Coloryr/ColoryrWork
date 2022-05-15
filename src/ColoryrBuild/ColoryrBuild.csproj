@@ -29,19 +29,6 @@
     <Resource Include="ColoryrWork.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Views\TableView2.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Views\TableView2.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-
   <Import Project="..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
 
 </Project>
