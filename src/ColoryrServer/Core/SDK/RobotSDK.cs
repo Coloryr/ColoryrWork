@@ -153,30 +153,21 @@ public class RobotRequest
         }
     }
 }
-public class RobotEvent : RobotRequest
+public class RobotEvent 
 {
-    public enum EventType
-    {
-        GroupMemberJoin, GroupMemberQuit, GroupMemberKick
-    };
-    public string oname { get; private set; }
-    public long oid { get; private set; }
-    public EventType etype { get; private set; }
+    public int Type { get; init; }
+    public PackBase Pack { get; init; }
+    public RobotSDK Robot { get; init; }
     /// <summary>
     /// 机器人事件
     /// </summary>
-    /// <param name="qq">QQ机器人账户</param>
-    /// <param name="id">群号</param>
-    /// <param name="fid">用户QQ号</param>
-    /// <param name="name">用户昵称</param>
-    /// <param name="oname">管理者昵称</param>
-    /// <param name="oid">管理者QQ号</param>
-    /// <param name="type">事件类型</param>
+    /// <param name="type">QQ机器人账户</param>
+    /// <param name="pack">群号</param>
     /// <param name="robot">机器人</param>
-    public RobotEvent(EventType etype, long qq, long id, long fid, string name, string oname, long oid, RobotSDK robot) : base(MessageType.group, qq, id, fid, null, null, robot)
+    public RobotEvent(int type, PackBase pack, RobotSDK robot) 
     {
-        this.oname = oname;
-        this.oid = oid;
-        this.etype = etype;
+        Type = type;
+        Pack = pack;
+        Robot = robot;
     }
 }

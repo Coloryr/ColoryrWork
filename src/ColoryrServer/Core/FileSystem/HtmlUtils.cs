@@ -132,17 +132,17 @@ public class HtmlUtils
 
         if (!File.Exists(HtmlStatic + "index.html"))
         {
-            File.WriteAllText(HtmlStatic + "index.html", ColoryrServer_Resource.IndexHtml, Encoding.UTF8);
+            File.WriteAllText(HtmlStatic + "index.html", WebResource.IndexHtml, Encoding.UTF8);
         }
 
         if (!File.Exists(HtmlStatic + "404.html"))
         {
-            File.WriteAllText(HtmlStatic + "404.html", ColoryrServer_Resource._404Html, Encoding.UTF8);
+            File.WriteAllText(HtmlStatic + "404.html", WebResource._404Html, Encoding.UTF8);
         }
 
         if (!File.Exists(HtmlStatic + "favicon.ico"))
         {
-            File.WriteAllBytes(HtmlStatic + "favicon.ico", ColoryrServer_Resource.Icon);
+            File.WriteAllBytes(HtmlStatic + "favicon.ico", WebResource.Icon);
         }
 
         BaseDir = new StaticDir(HtmlStatic);

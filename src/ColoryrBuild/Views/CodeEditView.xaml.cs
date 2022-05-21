@@ -248,6 +248,7 @@ public partial class CodeEditView : UserControl
     {
         if (IsBuild)
             return;
+        Logs.Text = "";
         IsBuild = true;
         await UpdateTask();
         old = obj1.Code;
@@ -282,11 +283,10 @@ public partial class CodeEditView : UserControl
         var data = await App.HttpUtils.Build(obj1, type, list);
         if (data == null)
         {
-            App.LogShow("编译", "服务器返回错误");
+            Logs.AppendText("服务器返回错误");
             return;
         }
-        App.LogShow("编译", "编译后\n" +
-            $"结果:{data.Message}\n" +
+        Logs.AppendText($"结果:{data.Message}\n" +
             $"用时:{data.UseTime}\n" +
             $"最后更新时间:{data.Time}");
         obj1.Next();
@@ -294,6 +294,7 @@ public partial class CodeEditView : UserControl
         CodeSave.Save(Local + "main.cs", obj1.Code);
         App.ClearContrast();
         IsBuild = false;
+        await Dispatcher.BeginInvoke(() => MainWindow.SwitchTo(this));
     }
 
     private async void BuildWeb()
@@ -302,7 +303,7 @@ public partial class CodeEditView : UserControl
         Updata_Click(null, null);
         if (Model == null)
         {
-            App.LogShow("编译", "代码对比错误");
+            Logs.AppendText("代码对比错误");
             return;
         }
         List<CodeEditObj> list = new();
@@ -345,6 +346,7 @@ public partial class CodeEditView : UserControl
         App.MainWindow_.RefreshCode(type);
         CodeSave.Save(Local + $"{thisfile}", obj3.Codes[temp]);
         App.ClearContrast();
+        await Dispatcher.BeginInvoke(() => MainWindow.SwitchTo(this));
     }
 
     private void Build_Click(object sender, RoutedEventArgs e)

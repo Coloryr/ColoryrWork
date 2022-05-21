@@ -9,14 +9,6 @@ public class RobotUtils
     {
         switch (type)
         {
-            case 35:
-                var pack7 = data as InviteMemberJoinEventPack;
-                DllManager.DllRun.RobotGo(new RobotEvent(RobotEvent.EventType.GroupMemberJoin, pack7.qq, pack7.id, pack7.fid, pack7.name, null, 0, robot));
-                break;
-            case 36:
-                var pack6 = data as MemberJoinEventPack;
-                DllManager.DllRun.RobotGo(new RobotEvent(RobotEvent.EventType.GroupMemberJoin, pack6.qq, pack6.id, pack6.fid, pack6.name, null, 0, robot));
-                break;
             case 21:
                 var pack4 = data as FriendMessagePostSendEventPack;
                 DllManager.DllRun.RobotGo(new RobotAfter(RobotAfter.MessageType.friend, pack4.qq, 0, pack4.id, pack4.res, pack4.error, pack4.message, robot));
@@ -68,10 +60,10 @@ public class RobotUtils
     {
         RobotConfig config = new()
         {
-            IP = ServerMain.Config.Robot.IP,
-            Port = ServerMain.Config.Robot.Port,
+            IP = ServerMain.Config.Robot.Socket.IP,
+            Port = ServerMain.Config.Robot.Socket.Port,
             Name = "ColoryrServer",
-            Pack = new() { 21, 28, 35, 36, 47, 49, 50, 51, 116, 123 },
+            Pack = new() { 21, 28, 47, 49, 50, 51, 116, 123 },
             RunQQ = 0,
             Time = 10000,
             Check = true,
@@ -79,6 +71,13 @@ public class RobotUtils
             LogAction = Log,
             StateAction = State
         };
+
+        foreach (var item in ServerMain.Config.Robot.Packs)
+        {
+            byte temp = (byte)item;
+            if (!config.Pack.Contains(temp))
+                config.Pack.Add(temp);
+        }
 
         robot.Set(config);
         robot.Start();

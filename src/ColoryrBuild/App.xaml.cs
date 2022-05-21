@@ -28,7 +28,6 @@ public partial class App : Application
     public static bool IsLogin { get; private set; }
     public static ConfigObj Config { get; private set; }
     public static MainWindow MainWindow_;
-    public static ContrastWindow ContrastWindow_;
     public static LogWindow LogWindow_;
     public static Login LoginWindow_;
 
@@ -90,26 +89,10 @@ public partial class App : Application
     }
 
     public static DiffPaneModel StartContrast(CSFileCode obj, string old)
-    {
-        if (ContrastWindow_ == null)
-        {
-            ContrastWindow_ = new();
-            ContrastWindow_.Show();
-        }
-
-        return ContrastWindow_.Start(obj, old);
-    }
+        => MainWindow_.Start(obj, old);
 
     public static DiffPaneModel StartContrast(CodeType type, string uuid, string new_, string old)
-    {
-        if (ContrastWindow_ == null)
-        {
-            ContrastWindow_ = new();
-            ContrastWindow_.Show();
-        }
-
-        return ContrastWindow_.Start(type, uuid, new_, old);
-    }
+        => MainWindow_.Start(type, uuid, new_, old);
 
     public static void LogShow(string v1, string v2)
     {
@@ -212,8 +195,6 @@ public partial class App : Application
         e.SetObserved();
     }
 
-    public static void ClearContrast()
-    {
-        ContrastWindow_?.Clear();
-    }
+    internal static void ClearContrast()
+        => MainWindow_.Clear();
 }

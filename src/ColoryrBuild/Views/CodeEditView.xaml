@@ -9,16 +9,24 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <GroupBox Margin="10,32,165,10" Header="代码编辑">
-            <avalonEdit:TextEditor
-                xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-                Name="textEditor"
-                Background="#55DADADA"
-                FontFamily="Consolas"
-                FontSize="14px"
-                ShowLineNumbers="True"
-                SyntaxHighlighting="C#" />
-        </GroupBox>
+        <avalonEdit:TextEditor
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            Name="textEditor"
+            Margin="10,32,165,104"
+            Background="#55DADADA"
+            BorderBrush="#FF5ABED6"
+            BorderThickness="1"
+            FontFamily="Consolas"
+            FontSize="14px"
+            ShowLineNumbers="True"
+            SyntaxHighlighting="C#" />
+        <TextBox
+            Name="Logs"
+            Height="89"
+            Margin="10,0,165,10"
+            VerticalAlignment="Bottom"
+            IsReadOnly="True"
+            VerticalScrollBarVisibility="Visible" />
         <Label
             Margin="2,2,0,0"
             HorizontalAlignment="Left"

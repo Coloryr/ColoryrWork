@@ -1,0 +1,17 @@
+using ColoryrServer.SDK;
+
+public class {name}
+{
+    public void OnMessage(WebSocketMessage head)
+    {
+             
+    }
+    public void OnOpen(WebSocketOpen head)
+    {
+             
+    }
+    public void OnClose(WebSocketClose head)
+    {
+            
+    }
+}

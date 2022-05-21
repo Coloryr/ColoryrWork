@@ -3,6 +3,7 @@ using ColoryrBuild.Views;
 using ColoryrBuild.Views.CodeList;
 using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
+using DiffPlex.DiffBuilder.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -127,6 +128,34 @@ namespace ColoryrBuild
             Views.Remove(view);
             view.Close();
             GC.Collect();
+        }
+
+        public DiffPaneModel Start(CSFileCode obj, string oldText)
+        {
+            Title = $"代码对比{obj.Type}[{obj.UUID}]";
+            DiffView.OldText = oldText;
+            DiffView.NewText = obj.Code;
+            DiffView.Refresh();
+            Tabs.SelectedIndex = 2;
+            return DiffView.GetInlineDiffModel();
+        }
+
+        public DiffPaneModel Start(CodeType type, string uuid, string new_, string oldText)
+        {
+            Title = $"代码对比{type}[{uuid}]";
+            DiffView.OldText = oldText;
+            DiffView.NewText = new_;
+            DiffView.Refresh();
+            Tabs.SelectedIndex = 2;
+            return DiffView.GetInlineDiffModel();
+        }
+
+        public void Clear()
+        {
+            Title = "代码对比";
+            DiffView.OldText = " ";
+            DiffView.NewText = " ";
+            DiffView.Refresh();
         }
     }
 }

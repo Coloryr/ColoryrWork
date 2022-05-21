@@ -1,20 +1,22 @@
-﻿using System;
+﻿using ColoryrServer.DllManager;
+using ColoryrServer.SDK;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.IoTSocket;
 
 internal class SocketServer
 {
     private static TcpListener TcpServer;
-    private static System.Net.Sockets.Socket UdpServer;
-    private static readonly Dictionary<int, System.Net.Sockets.Socket> TcpClients = new();
+    private static Socket UdpServer;
+    private static readonly Dictionary<int, Socket> TcpClients = new();
     private static readonly Dictionary<int, EndPoint> UdpClients = new();
     private static readonly ReaderWriterLockSlim Lock1 = new();
     private static readonly ReaderWriterLockSlim Lock2 = new();
-    private static bool IsPipe;
 
     private static Thread thread1;
     private static Thread thread2;
@@ -30,7 +32,7 @@ internal class SocketServer
             TcpServer = new TcpListener(ip, ServerMain.Config.Socket.Port);
             TcpServer.Start();
             ServerMain.LogOut($"Socket服务器监听{ServerMain.Config.Socket.IP}:{ServerMain.Config.Socket.Port}");
-            UdpServer = new System.Net.Sockets.Socket(SocketType.Dgram, ProtocolType.Udp);
+            UdpServer = new Socket(SocketType.Dgram, ProtocolType.Udp);
             UdpServer.Bind(new IPEndPoint(ip, ServerMain.Config.Socket.Port));
 
             RunFlag = true;
@@ -63,7 +65,10 @@ internal class SocketServer
                         if (point is IPEndPoint temp)
                         {
                             UdpClients.Add(temp.Port, temp);
-                            SocketPackDo.ReadUdpPack(temp.Port, buffer);
+                            Task.Run(() =>
+                            {
+                                DllRun.SocketGo(new UdpSocketRequest(temp.Port, buffer));
+                            });
                         }
                     }
                     catch (Exception e)
@@ -107,7 +112,7 @@ internal class SocketServer
         try
         {
             byte[] Data;
-            var Client = (System.Net.Sockets.Socket)temp;
+            var Client = (Socket)temp;
             int Port = 0;
             if (Client == null || !Client.Connected)
             {
@@ -116,14 +121,6 @@ internal class SocketServer
                 Port = ip.Port;
                 Remove(Port);
                 return;
-            }
-            while (Client.Available == 0)
-            {
-                var pack = new byte[Client.Available];
-                if (SocketPackDo.CheckPack(pack))
-                {
-                    return;
-                }
             }
             Add(Port, Client);
             while (true)
@@ -138,7 +135,10 @@ internal class SocketServer
                 {
                     Data = new byte[Client.Available];
                     Client.Receive(Data);
-                    SocketPackDo.ReadTcpPack(Port, Data);
+                    Task.Run(() =>
+                    {
+                        DllRun.SocketGo(new TcpSocketRequest(Port, Data));
+                    });
                 }
                 Thread.Sleep(100);
             }
@@ -149,55 +149,7 @@ internal class SocketServer
         }
     }
 
-    public static void PipeOnConnectRequest(object temp)
-    {
-        try
-        {
-            IsPipe = true;
-            byte[] Data;
-            var Client = (System.Net.Sockets.Socket)temp;
-            int Port = 0;
-            if (Client == null || !Client.Connected)
-            {
-                Client.Dispose();
-                var ip = (IPEndPoint)Client.RemoteEndPoint;
-                Port = ip.Port;
-                Remove(Port);
-                return;
-            }
-            while (Client.Available == 0)
-            {
-                var pack = new byte[Client.Available];
-                if (SocketPackDo.CheckPack(pack))
-                {
-                    return;
-                }
-            }
-            Add(Port, Client);
-            while (true)
-            {
-                if (!RunFlag || Client == null || Client.Available == -1)
-                {
-                    Client.Dispose();
-                    Remove(Port);
-                    return;
-                }
-                else if (Client.Available != 0)
-                {
-                    Data = new byte[Client.Available];
-                    Client.Receive(Data);
-                    SocketPackDo.ReadTcpPack(Port, Data);
-                }
-                Thread.Sleep(100);
-            }
-        }
-        catch (Exception e)
-        {
-            ServerMain.LogError(e);
-        }
-    }
-
-    private static void Add(int Port, System.Net.Sockets.Socket Client)
+    private static void Add(int Port, Socket Client)
     {
         if (Client.ProtocolType == ProtocolType.Tcp)
         {
@@ -211,7 +163,7 @@ internal class SocketServer
                         TcpClients[Port].Dispose();
                         TcpClients.Remove(Port);
                     }
-                    ServerMain.LogOut("Socket|Tcp:" + Port + " is connected");
+                    ServerMain.LogOut("Socket|Tcp:" + Port + " 已连接");
                 }
                 TcpClients.Add(Port, Client);
             }
@@ -232,7 +184,7 @@ internal class SocketServer
                         TcpClients[Port].Dispose();
                         TcpClients.Remove(Port);
                     }
-                    ServerMain.LogOut("Socket|Udp:" + Port + " is connected");
+                    ServerMain.LogOut("Socket|Udp:" + Port + " 已连接");
                 }
                 TcpClients.Add(Port, Client);
             }
@@ -250,7 +202,7 @@ internal class SocketServer
             if (port != 0)
             {
                 TcpClients.Remove(port);
-                ServerMain.LogOut("Socket|Tcp:" + port + " is disconnect");
+                ServerMain.LogOut("Socket|Tcp:" + port + " 已断开");
             }
         }
         finally
@@ -259,7 +211,7 @@ internal class SocketServer
         }
     }
 
-    public static void TcpSendData(int port, byte[] data, int Server)
+    public static void TcpSendData(int port, byte[] data)
     {
         if (TcpClients.TryGetValue(port, out var socket))
         {
@@ -274,7 +226,7 @@ internal class SocketServer
             }
         }
     }
-    public static void UdpSendData(int port, byte[] data, int Server)
+    public static void UdpSendData(int port, byte[] data)
     {
         if (UdpClients.TryGetValue(port, out var socket))
         {
@@ -284,15 +236,11 @@ internal class SocketServer
 
     public static List<int> GetTcpList()
     {
-        if (IsPipe)
-            return null;
         return new List<int>(TcpClients.Keys);
     }
 
     public static List<int> GetUdpList()
     {
-        if (IsPipe)
-            return null;
         return new List<int>(UdpClients.Keys);
     }
 }

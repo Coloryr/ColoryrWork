@@ -19,7 +19,7 @@ public abstract record MainConfig
     /// <summary>
     /// Reboot配置
     /// </summary>
-    public SocketConfig Robot { get; set; }
+    public RebotConfigObj Robot { get; set; }
     /// <summary>
     /// Mysql配置
     /// </summary>
@@ -69,6 +69,19 @@ public abstract record MainConfig
     /// </summary>
     public AESConfig AES { get; set; }
 }
+
+public record RebotConfigObj
+{ 
+    /// <summary>
+    /// 连接端口
+    /// </summary>
+    public SocketConfig Socket { get; set; }
+    /// <summary>
+    /// 订阅的包
+    /// </summary>
+    public List<int> Packs { get; set; } 
+}
+
 public record AESConfig
 {
     public string Key { get; set; }

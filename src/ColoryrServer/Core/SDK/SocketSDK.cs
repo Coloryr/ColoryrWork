@@ -6,7 +6,6 @@ namespace ColoryrServer.SDK;
 
 public class TcpSocketRequest
 {
-    private int Server { get; init; }
     public int Port { get; init; }
     public byte[] Data { get; init; }
     /// <summary>
@@ -14,30 +13,30 @@ public class TcpSocketRequest
     /// </summary>
     /// <param name="Port">Socket端口</param>
     /// <param name="Data">Socket发送的数据</param>
-    public TcpSocketRequest(int Port, byte[] Data, int Server)
+    public TcpSocketRequest(int Port, byte[] Data)
     {
         this.Port = Port;
         this.Data = Data;
-        this.Server = Server;
     }
     /// <summary>
     /// 向Socket设备发送字符串
     /// </summary>
-    /// <param name="Name">设备名</param>
     /// <param name="Data">字符串</param>
+    public void Send(string Data)
+        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
     public void Send(int Port, string Data)
-        => SocketPackDo.SendTcpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
+        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
-    /// <param name="Name">设备名</param>
     /// <param name="Data">数据</param>
+    public void Send(byte[] Data)
+        => SocketServer.TcpSendData(Port, Data);
     public void Send(int Port, byte[] Data)
-       => SocketPackDo.SendTcpPack(Port, Data, Server);
+       => SocketServer.TcpSendData(Port, Data);
 }
 public class UdpSocketRequest
 {
-    private int Server { get; init; }
     public int Port { get; init; }
     public byte[] Data { get; init; }
     /// <summary>
@@ -45,26 +44,27 @@ public class UdpSocketRequest
     /// </summary>
     /// <param name="Port">Socket端口</param>
     /// <param name="Data">Socket发送的数据</param>
-    public UdpSocketRequest(int Port, byte[] Data, int Server)
+    public UdpSocketRequest(int Port, byte[] Data)
     {
         this.Port = Port;
         this.Data = Data;
-        this.Server = Server;
     }
     /// <summary>
     /// 向Socket设备发送字符串
     /// </summary>
-    /// <param name="Name">设备名</param>
     /// <param name="Data">字符串</param>
+    public void Send(string Data)
+        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(Data));
     public void Send(int Port, string Data)
-        => SocketPackDo.SendUdpPack(Port, Encoding.UTF8.GetBytes(Data), Server);
+        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
-    /// <param name="Name">设备名</param>
     /// <param name="Data">数据</param>
+    public void Send(byte[] Data)
+       => SocketServer.UdpSendData(Port, Data);
     public void Send(int Port, byte[] Data)
-       => SocketPackDo.SendUdpPack(Port, Data, Server);
+       => SocketServer.UdpSendData(Port, Data);
 }
 
 public class TcpSocket

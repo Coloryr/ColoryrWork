@@ -8,7 +8,8 @@
         RemoveDll, RemoveClass, RemoveSocket, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveTask, RemoveWeb,
         UpdataDll, UpdataClass, UpdataSocket, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask, UpdataWeb,
         WebRemoveFile, WebAddFile, WebAddCode,
-        Check, Login, GetApi
+        Check, Login, GetApi,
+        SetRobot, GetConfig
     }
     public class BuildOBJ
     {

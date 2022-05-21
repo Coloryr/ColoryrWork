@@ -1,0 +1,17 @@
+using ColoryrServer.SDK;
+
+public class {name}
+{
+    public void OnMessage(RobotRequest head)
+    {
+             
+    }
+    public void OnMessagSend(RobotAfter head)
+    {
+             
+    }
+    public void OnRobotEvent(RobotEvent head)
+    {
+            
+    }
+}

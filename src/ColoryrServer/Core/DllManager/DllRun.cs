@@ -382,6 +382,33 @@ public class DllRun
             }
         }
     }
+    public static void MqttGo(MqttUnsubscription Head)
+    {
+        foreach (var Dll in DllStonge.GetMqtt())
+        {
+            try
+            {
+                if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTUnsubscription))
+                {
+                    MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTUnsubscription];
+                    var Tran = new object[1] { Head };
+                    var Assembly = Dll.DllType.Assembly.CreateInstance(Dll.DllType.FullName, true);
+                    var res = MI.Invoke(Assembly, Tran);
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    ServerMain.LogError(Dump.data);
+                }
+                else
+                    ServerMain.LogError(e);
+            }
+        }
+    }
     public static void MqttGo(MqttMessage Head)
     {
         foreach (var Dll in DllStonge.GetMqtt())

@@ -18,8 +18,8 @@ public class MqttConnectionValidator
     /// </summary>
     /// <param name="Topic">标题</param>
     /// <param name="data">数据</param>
-    public void Send(string Topic, string data)
-        => MQTTServer.Send(Topic, data);
+    public void Send(string Topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => MQTTServer.Send(Topic, data, level);
     /// <summary>
     /// 设置验证后的返回
     /// </summary>
@@ -42,8 +42,8 @@ public class MqttMessage
     /// </summary>
     /// <param name="Topic">标题</param>
     /// <param name="data">数据</param>
-    public void Send(string Topic, string data)
-        => MQTTServer.Send(Topic, data);
+    public void Send(string Topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => MQTTServer.Send(Topic, data, level);
     /// <summary>
     /// 设置是否允许
     /// </summary>
@@ -66,6 +66,24 @@ public class MqttSubscription
     /// </summary>
     /// <param name="Topic">标题</param>
     /// <param name="data">数据</param>
-    public void Send(string Topic, string data)
-        => MQTTServer.Send(Topic, data);
+    public void Send(string Topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => MQTTServer.Send(Topic, data, level);
+}
+
+public class MqttUnsubscription
+{
+    public MqttUnsubscriptionInterceptorContext Context { get; init; }
+    /// <summary>
+    /// MQTT服务器订阅
+    /// </summary>
+    /// <param name="Context">数据</param>
+    public MqttUnsubscription(MqttUnsubscriptionInterceptorContext Context)
+       => this.Context = Context;
+    /// <summary>
+    /// 发送消息
+    /// </summary>
+    /// <param name="Topic">标题</param>
+    /// <param name="data">数据</param>
+    public void Send(string Topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => MQTTServer.Send(Topic, data, level);
 }

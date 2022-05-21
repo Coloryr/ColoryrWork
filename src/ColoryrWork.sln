@@ -9,11 +9,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Server", "L
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Build", "Lib\Lib.Build\ColoryrWork.Lib.Build.shproj", "{42931492-DCC9-412A-B3FE-35733C8B6E8B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Socket", "Lib\Lib.IoT\ColoryrWork.Lib.Socket.shproj", "{DB16BD52-51EE-43C3-B9A0-E0BA0CC0C2A0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrTest", "ColoryrTest\ColoryrTest.csproj", "{27355409-7CF0-4042-8F84-1E026DD497F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrTest.Run", "ColoryrTest.Run\ColoryrTest.Run.csproj", "{9050391D-E477-4752-B7B4-5AD919694299}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,22 @@ Global
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|Any CPU.ActiveCfg = Release|x64
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.ActiveCfg = Release|x64
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|x64.Build.0 = Release|x64
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{27355409-7CF0-4042-8F84-1E026DD497F3}.Release|x64.Build.0 = Release|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Debug|x64.Build.0 = Debug|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Release|x64.ActiveCfg = Release|Any CPU
+		{9050391D-E477-4752-B7B4-5AD919694299}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,9 +73,7 @@ Global
 		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
 		Lib\Lib.Build\Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
 		Lib\Lib.Build\Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
-		Lib\Lib.IoT\Lib.IoT.projitems*{db16bd52-51ee-43c3-b9a0-e0ba0cc0c2a0}*SharedItemsImports = 13
 		Lib\Lib.Build\Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.IoT\Lib.IoT.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.Server\Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

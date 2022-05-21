@@ -1,0 +1,21 @@
+using ColoryrServer.SDK;
+
+public class {name}
+{
+    public bool OnMessage(MqttMessage head)
+    {
+        return true;
+    }
+    public bool OnValidator(MqttConnectionValidator head)
+    {
+        return true;
+    }
+    public bool OnSubscription(MqttSubscription head)
+    {
+        return true;
+    }
+    public bool OnUnsubscription(MqttUnsubscription head)
+    {
+        return true;
+    }
+}

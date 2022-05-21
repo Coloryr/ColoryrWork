@@ -74,9 +74,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Dll,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.DllDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{main}", CodeDemo.DllMain)
+                            Code = DemoResource.Dll
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageDll(File);
                         resObj = new ReMessage
@@ -103,8 +102,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Class,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.ClassDemoCS
-                            .Replace("{name}", json.UUID)
+                            Code = DemoResource.Class
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageClass(File);
                         resObj = new ReMessage
@@ -131,10 +130,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Socket,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.SocketDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{SocketTcp}", CodeDemo.SocketTcp)
-                            .Replace("{SocketUdp}", CodeDemo.SocketUdp)
+                            Code = DemoResource.Socket
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageSocket(File);
                         resObj = new ReMessage
@@ -161,11 +158,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.WebSocket,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.WebSocketDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{WebSocketMessage}", CodeDemo.WebSocketMessage)
-                            .Replace("{WebSocketOpen}", CodeDemo.WebSocketOpen)
-                            .Replace("{WebSocketClose}", CodeDemo.WebSocketClose)
+                            Code = DemoResource.WebSocket
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageWebSocket(File);
                         resObj = new ReMessage
@@ -192,11 +186,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Robot,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.RobotDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{RobotMessage}", CodeDemo.RobotMessage)
-                            .Replace("{RobotSend}", CodeDemo.RobotSend)
-                            .Replace("{RobotEvent}", CodeDemo.RobotEvent)
+                            Code = DemoResource.Robot
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageRobot(File);
                         resObj = new ReMessage
@@ -223,11 +214,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Mqtt,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.MqttDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{MQTTMessage}", CodeDemo.MQTTMessage)
-                            .Replace("{MQTTValidator}", CodeDemo.MQTTValidator)
-                            .Replace("{MQTTSubscription}", CodeDemo.MQTTSubscription)
+                            Code = DemoResource.Mqtt
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageMqtt(File);
                         resObj = new ReMessage
@@ -254,9 +242,8 @@ public class DllBuild
                             UUID = json.UUID,
                             Type = CodeType.Task,
                             CreateTime = time,
-                            Code = ColoryrServer_Resource.TaskDemoCS
-                            .Replace("{name}", json.UUID)
-                            .Replace("{TaskRun}", CodeDemo.TaskRun)
+                            Code = DemoResource.Task
+                            .Replace(CodeDemo.Name, json.UUID)
                         };
                         CSFile.StorageTask(File);
                         resObj = new ReMessage
@@ -287,10 +274,10 @@ public class DllBuild
                             {
                                 {
                                     "index.html",
-                                    ColoryrServer_Resource.HtmlDemoHtml
-                                    .Replace("{name}", json.UUID)
+                                    DemoResource.Html
+                                    .Replace(CodeDemo.Name, json.UUID)
                                 },
-                                { "js.js", ColoryrServer_Resource.IndexDemoJS }
+                                { "js.js", DemoResource.Js }
                             },
                             Files = new()
                         };
