@@ -1,5 +1,5 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,41 +9,38 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadTask
+internal class LoadWebSocket
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
         var AssemblySave = new DllBuildSave(uuid);
         AssemblySave.LoadFromStream(ms, pdb);
-        var list = AssemblySave.Assemblies.First().GetTypes()
-                       .Where(x => x.Name == uuid);
+        var list = AssemblySave.Assemblies.First()
+                       .GetTypes().Where(x => x.Name == uuid);
 
         if (!list.Any())
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Task[{uuid}]类名错误"
+                Res = $"WebSocket[{uuid}]类名错误"
             };
 
         AssemblySave.DllType = list.First();
 
         foreach (var item in AssemblySave.DllType.GetMethods())
         {
-            if (item.Name is CodeDemo.TaskRun && item.IsPublic)
-            {
+            if (item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
                 AssemblySave.MethodInfos.Add(item.Name, item);
-                break;
-            }
         }
 
-        if (!AssemblySave.MethodInfos.ContainsKey(CodeDemo.TaskRun))
+        if (AssemblySave.MethodInfos.Count == 0)
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Task[{uuid}]没有主方法"
+                Res = $"WebSocket[{uuid}]没有主方法"
             };
 
-        DllStonge.AddTask(uuid, AssemblySave);
+        DllStonge.AddWebSocket(uuid, AssemblySave);
 
         return null;
     }
@@ -65,7 +62,7 @@ internal class LoadTask
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.TaskLocal + name + ".dll");
+        FileInfo info = new(DllStonge.WebSocketLocal + name + ".dll");
         LoadFile(info);
     }
 }

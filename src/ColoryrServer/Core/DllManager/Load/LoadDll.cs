@@ -1,5 +1,5 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 using System;

@@ -1,5 +1,5 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadSocket
+internal class LoadMqtt
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
@@ -22,14 +22,14 @@ internal class LoadSocket
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Socket[{uuid}]类名错误"
+                Res = $"Mqtt[{uuid}]类名错误"
             };
 
         AssemblySave.DllType = list.First();
 
         foreach (var item in AssemblySave.DllType.GetMethods())
         {
-            if (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp && item.IsPublic)
+            if (item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription && item.IsPublic)
                 AssemblySave.MethodInfos.Add(item.Name, item);
         }
 
@@ -37,13 +37,14 @@ internal class LoadSocket
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Socket[{uuid}]没有方法"
+                Res = $"Mqtt[{uuid}]没有方法"
             };
 
-        DllStonge.AddSocket(uuid, AssemblySave);
+        DllStonge.AddMqtt(uuid, AssemblySave);
 
         return null;
     }
+
     public static void LoadFile(FileInfo FileItem)
     {
         using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
@@ -62,7 +63,7 @@ internal class LoadSocket
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.SocketLocal + name + ".dll");
+        FileInfo info = new(DllStonge.MqttLocal + name + ".dll");
         LoadFile(info);
     }
 }

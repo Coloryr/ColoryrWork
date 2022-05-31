@@ -1,5 +1,7 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
+using ColoryrServer.FileSystem;
+using ColoryrServer.SDK;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadRobot
+internal class LoadClass
 {
-    public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
+    public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null) 
     {
         var AssemblySave = new DllBuildSave(uuid);
         AssemblySave.LoadFromStream(ms, pdb);
@@ -22,25 +24,26 @@ internal class LoadRobot
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Robot[{uuid}]类名错误"
+                Res = $"Class[{uuid}]类名错误"
             };
 
         AssemblySave.DllType = list.First();
-
-        foreach (var item in AssemblySave.DllType.GetMethods())
+        var listM = AssemblySave.GetType().GetMethods();
+        List<NotesSDK> obj = new();
+        foreach (var item in listM)
         {
-            if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
-                AssemblySave.MethodInfos.Add(item.Name, item);
+            var listA = item.GetCustomAttributes(true);
+            foreach (var item1 in listA)
+            {
+                if (item1 is NotesSDK)
+                {
+                    obj.Add(item1 as NotesSDK);
+                }
+            }
         }
 
-        if (AssemblySave.MethodInfos.Count == 0)
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Robot[{uuid}]没有方法"
-            };
-
-        DllStonge.AddRobot(uuid, AssemblySave);
+        NoteFile.StorageClass(uuid, obj);
+        DllStonge.AddClass(uuid, AssemblySave);
 
         return null;
     }
@@ -63,7 +66,7 @@ internal class LoadRobot
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.RobotLocal + name + ".dll");
+        FileInfo info = new(DllStonge.ClassLocal + name + ".dll");
         LoadFile(info);
     }
 }

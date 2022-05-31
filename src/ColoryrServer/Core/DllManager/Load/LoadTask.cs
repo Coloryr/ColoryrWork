@@ -1,5 +1,5 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,42 +9,44 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadMqtt
+internal class LoadTask
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
         var AssemblySave = new DllBuildSave(uuid);
         AssemblySave.LoadFromStream(ms, pdb);
-        var list = AssemblySave.Assemblies.First()
-                       .GetTypes().Where(x => x.Name == uuid);
+        var list = AssemblySave.Assemblies.First().GetTypes()
+                       .Where(x => x.Name == uuid);
 
         if (!list.Any())
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Mqtt[{uuid}]类名错误"
+                Res = $"Task[{uuid}]类名错误"
             };
 
         AssemblySave.DllType = list.First();
 
         foreach (var item in AssemblySave.DllType.GetMethods())
         {
-            if (item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription && item.IsPublic)
+            if (item.Name is CodeDemo.TaskRun && item.IsPublic)
+            {
                 AssemblySave.MethodInfos.Add(item.Name, item);
+                break;
+            }
         }
 
-        if (AssemblySave.MethodInfos.Count == 0)
+        if (!AssemblySave.MethodInfos.ContainsKey(CodeDemo.TaskRun))
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Mqtt[{uuid}]没有方法"
+                Res = $"Task[{uuid}]没有主方法"
             };
 
-        DllStonge.AddMqtt(uuid, AssemblySave);
+        DllStonge.AddTask(uuid, AssemblySave);
 
         return null;
     }
-
     public static void LoadFile(FileInfo FileItem)
     {
         using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
@@ -63,7 +65,7 @@ internal class LoadMqtt
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.MqttLocal + name + ".dll");
+        FileInfo info = new(DllStonge.TaskLocal + name + ".dll");
         LoadFile(info);
     }
 }

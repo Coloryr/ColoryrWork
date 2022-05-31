@@ -1,5 +1,5 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.DllManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadWebSocket
+internal class LoadSocket
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
@@ -22,14 +22,14 @@ internal class LoadWebSocket
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"WebSocket[{uuid}]类名错误"
+                Res = $"Socket[{uuid}]类名错误"
             };
 
         AssemblySave.DllType = list.First();
 
         foreach (var item in AssemblySave.DllType.GetMethods())
         {
-            if (item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
+            if (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp && item.IsPublic)
                 AssemblySave.MethodInfos.Add(item.Name, item);
         }
 
@@ -37,10 +37,10 @@ internal class LoadWebSocket
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"WebSocket[{uuid}]没有主方法"
+                Res = $"Socket[{uuid}]没有方法"
             };
 
-        DllStonge.AddWebSocket(uuid, AssemblySave);
+        DllStonge.AddSocket(uuid, AssemblySave);
 
         return null;
     }
@@ -62,7 +62,7 @@ internal class LoadWebSocket
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.WebSocketLocal + name + ".dll");
+        FileInfo info = new(DllStonge.SocketLocal + name + ".dll");
         LoadFile(info);
     }
 }
