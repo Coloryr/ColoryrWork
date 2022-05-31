@@ -1,4 +1,7 @@
-﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.DllManager.StartGen.GenType;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrWork.Lib.Server;
 using System;
@@ -6,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 
 namespace ColoryrServer.DllManager;
@@ -40,24 +44,33 @@ public class DllStonge
         }
     }
 
+    public static DllBuildSave FindClass(AssemblyName name) 
+    {
+        if (ClassList.TryGetValue(name.Name, out var item))
+        {
+            return item;
+        }
+        return null;
+    }
+
     public static void AddDll(string uuid, DllBuildSave save)
     {
-        if (DllList.TryRemove(uuid, out var v))
+        if (DllList.TryRemove(uuid, out var item))
         {
-            v.Assembly.Unload();
-            v.DllType = null;
-            v.MethodInfos.Clear();
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
 
         DllList.TryAdd(uuid, save);
     }
     public static void RemoveDll(string uuid)
     {
-        if (DllList.TryRemove(uuid, out var v))
+        if (DllList.TryRemove(uuid, out var item))
         {
-            v.Assembly.Unload();
-            v.DllType = null;
-            v.MethodInfos.Clear();
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(DllLocal + uuid);
     }
@@ -73,26 +86,25 @@ public class DllStonge
 
     public static void AddClass(string uuid, DllBuildSave save)
     {
-        if (ClassList.ContainsKey(uuid))
+        if (ClassList.TryRemove(uuid, out var item))
         {
-            ClassList[uuid].Assembly.Unload();
-            ClassList[uuid].DllType = null;
-            ClassList[uuid].MethodInfos.Clear();
-            ClassList[uuid] = save;
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         else
         {
             ClassList.TryAdd(uuid, save);
         }
+        DllUseSave.Update(save);
     }
     public static void RemoveClass(string uuid)
     {
-        if (ClassList.ContainsKey(uuid))
+        if (ClassList.TryRemove(uuid, out var item))
         {
-            ClassList[uuid].Assembly.Unload();
-            ClassList[uuid].DllType = null;
-            ClassList[uuid].MethodInfos.Clear();
-            ClassList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(ClassLocal + uuid);
     }
@@ -110,7 +122,7 @@ public class DllStonge
     {
         if (SocketList.ContainsKey(uuid))
         {
-            SocketList[uuid].Assembly.Unload();
+            SocketList[uuid].Unload();
             SocketList[uuid].DllType = null;
             SocketList[uuid].MethodInfos.Clear();
             SocketList[uuid] = save;
@@ -122,12 +134,11 @@ public class DllStonge
     }
     public static void RemoveSocket(string uuid)
     {
-        if (SocketList.ContainsKey(uuid))
+        if (SocketList.TryRemove(uuid, out var item))
         {
-            SocketList[uuid].Assembly.Unload();
-            SocketList[uuid].DllType = null;
-            SocketList[uuid].MethodInfos.Clear();
-            SocketList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(SocketLocal + uuid);
     }
@@ -136,7 +147,7 @@ public class DllStonge
     {
         if (WebSocketList.ContainsKey(uuid))
         {
-            WebSocketList[uuid].Assembly.Unload();
+            WebSocketList[uuid].Unload();
             WebSocketList[uuid].DllType = null;
             WebSocketList[uuid].MethodInfos.Clear();
             WebSocketList[uuid] = save;
@@ -148,12 +159,11 @@ public class DllStonge
     }
     public static void RemoveWebSocket(string uuid)
     {
-        if (WebSocketList.ContainsKey(uuid))
+        if (WebSocketList.TryRemove(uuid, out var item))
         {
-            WebSocketList[uuid].Assembly.Unload();
-            WebSocketList[uuid].DllType = null;
-            WebSocketList[uuid].MethodInfos.Clear();
-            WebSocketList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(WebSocketLocal + uuid);
     }
@@ -166,7 +176,7 @@ public class DllStonge
     {
         if (RobotList.ContainsKey(uuid))
         {
-            RobotList[uuid].Assembly.Unload();
+            RobotList[uuid].Unload();
             RobotList[uuid].DllType = null;
             RobotList[uuid].MethodInfos.Clear();
             RobotList[uuid] = save;
@@ -178,12 +188,11 @@ public class DllStonge
     }
     public static void RemoveRobot(string uuid)
     {
-        if (RobotList.ContainsKey(uuid))
+        if (RobotList.TryRemove(uuid, out var item))
         {
-            RobotList[uuid].Assembly.Unload();
-            RobotList[uuid].DllType = null;
-            RobotList[uuid].MethodInfos.Clear();
-            RobotList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(RobotLocal + uuid);
     }
@@ -196,7 +205,7 @@ public class DllStonge
     {
         if (MqttList.ContainsKey(uuid))
         {
-            MqttList[uuid].Assembly.Unload();
+            MqttList[uuid].Unload();
             MqttList[uuid].DllType = null;
             MqttList[uuid].MethodInfos.Clear();
             MqttList[uuid] = save;
@@ -208,12 +217,11 @@ public class DllStonge
     }
     public static void RemoveMqtt(string uuid)
     {
-        if (MqttList.ContainsKey(uuid))
+        if (MqttList.TryRemove(uuid, out var item))
         {
-            MqttList[uuid].Assembly.Unload();
-            MqttList[uuid].DllType = null;
-            MqttList[uuid].MethodInfos.Clear();
-            MqttList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(MqttLocal + uuid);
     }
@@ -226,7 +234,7 @@ public class DllStonge
     {
         if (TaskList.ContainsKey(uuid))
         {
-            TaskList[uuid].Assembly.Unload();
+            TaskList[uuid].Unload();
             TaskList[uuid].DllType = null;
             TaskList[uuid].MethodInfos.Clear();
             TaskList[uuid] = save;
@@ -238,12 +246,11 @@ public class DllStonge
     }
     public static void RemoveTask(string uuid)
     {
-        if (TaskList.ContainsKey(uuid))
+        if (TaskList.TryRemove(uuid, out var item))
         {
-            TaskList[uuid].Assembly.Unload();
-            TaskList[uuid].DllType = null;
-            TaskList[uuid].MethodInfos.Clear();
-            TaskList.TryRemove(uuid, out var item);
+            item.Unload();
+            item.DllType = null;
+            item.MethodInfos.Clear();
         }
         RemoveAll(RobotLocal + uuid);
     }
@@ -285,264 +292,99 @@ public class DllStonge
         {
             Directory.CreateDirectory(MqttLocal);
         }
-        var DllName = Function.GetPathFileName(DllLocal);
-        foreach (var FileItem in DllName)
+
+        var dirs = Function.GetPathFileName(ClassLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string uuid = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载DLL：" + uuid);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(uuid, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                    .Where(x => x.Name == "app_" + uuid).First();
-                var Temp = AssemblySave.DllType.GetMethods();
-                foreach (var Item in Temp)
-                {
-                    if (Item.Name is "Main" or "GetType" or "ToString"
-                        or "Equals" or "GetHashCode")
-                        continue;
-                    AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddDll(uuid, AssemblySave);
+                LoadClass.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(ClassLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(DllLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载Class：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                AddClass(Name, AssemblySave);
+                LoadDll.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(SocketLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(SocketLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载Socket：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                foreach (var Item in AssemblySave.DllType.GetMethods())
-                {
-                    if (Item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp)
-                        AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddSocket(Name, AssemblySave);
+                LoadSocket.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(WebSocketLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(WebSocketLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载WebSocket：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                foreach (var Item in AssemblySave.DllType.GetMethods())
-                {
-                    if (Item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
-                        AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddWebSocket(Name, AssemblySave);
+                LoadWebSocket.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(RobotLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(RobotLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载Robot：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                foreach (var Item in AssemblySave.DllType.GetMethods())
-                {
-                    if (Item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend)
-                        AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddRobot(Name, AssemblySave);
+                LoadRobot.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(MqttLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(MqttLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载MQTT：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                foreach (var Item in AssemblySave.DllType.GetMethods())
-                {
-                    if (Item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription)
-                        AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddMqtt(Name, AssemblySave);
+                LoadMqtt.LoadFile(item);
             }
             catch (Exception e)
             {
                 ServerMain.LogError(e);
             }
         }
-        DllName = Function.GetPathFileName(TaskLocal);
-        foreach (var FileItem in DllName)
+        dirs = Function.GetPathFileName(TaskLocal);
+        foreach (var item in dirs)
         {
             try
             {
-                if (FileItem.FullName.Contains(".pdb"))
+                if (item.FullName.Contains(".pdb"))
                     continue;
-                using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
-                string Name = FileItem.Name.Replace(".dll", "");
-                ServerMain.LogOut("加载Task：" + Name);
-                var AssemblySave = new DllBuildSave
-                {
-                    Assembly = new AssemblyLoadContext(Name, true)
-                };
-
-                var pdb = FileItem.FullName.Replace(".dll", ".pdb");
-                if (File.Exists(pdb))
-                {
-                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-                    AssemblySave.Assembly.LoadFromStream(FileStream, FileStream1);
-                }
-                else
-                    AssemblySave.Assembly.LoadFromStream(FileStream);
-
-                AssemblySave.DllType = AssemblySave.Assembly.Assemblies.First()
-                    .GetTypes().Where(x => x.Name == Name).First();
-                foreach (var Item in AssemblySave.DllType.GetMethods())
-                {
-                    if (Item.Name is CodeDemo.TaskRun)
-                        AssemblySave.MethodInfos.Add(Item.Name, Item);
-                }
-                AddTask(Name, AssemblySave);
+                LoadTask.LoadFile(item);
             }
             catch (Exception e)
             {

@@ -1,5 +1,3 @@
-using ColoryrServer.Core.Netty;
-
 namespace ColoryrTest
 {
     public class Tests
@@ -12,7 +10,6 @@ namespace ColoryrTest
         [Test]
         public void Test1()
         {
-            NettyWebSocket.Start().Wait();
             Assert.Pass();
         }
     }

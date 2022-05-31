@@ -1,4 +1,6 @@
-﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.DllManager;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -10,7 +12,7 @@ using System.Linq;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager.StartGen.GenType;
+namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenTask
 {
@@ -19,7 +21,7 @@ internal class GenTask
         var Res = GenCode.StartGen(File.UUID, new List<SyntaxTree>
         {
             CSharpSyntaxTree.ParseText(File.Code)
-        }, GenLib.Dll);
+        });
         Task.Run(() => CSFile.StorageTask(File));
         if (!Res.Isok)
         {
@@ -30,40 +32,9 @@ internal class GenTask
         Res.MS.Seek(0, SeekOrigin.Begin);
         Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var AssemblySave = new DllBuildSave
-        {
-            Assembly = new AssemblyLoadContext(File.UUID, true)
-        };
-        AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
-        var list = AssemblySave.Assembly.Assemblies.First().GetTypes()
-                       .Where(x => x.Name == File.UUID);
-
-        if (!list.Any())
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Task[{File.UUID}]类名错误"
-            };
-
-        AssemblySave.DllType = list.First();
-
-        foreach (var item in AssemblySave.DllType.GetMethods())
-        {
-            if (item.Name is CodeDemo.TaskRun && item.IsPublic)
-            {
-                AssemblySave.MethodInfos.Add(item.Name, item);
-                break;
-            }
-        }
-
-        if (!AssemblySave.MethodInfos.ContainsKey(CodeDemo.TaskRun))
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Task[{File.UUID}]没有主方法"
-            };
-
-        DllStonge.AddTask(File.UUID, AssemblySave);
+        var res = LoadTask.Load(File.UUID, Res.MS, Res.MSPdb);
+        if (res != null)
+            return res;
 
         Task.Run(() =>
         {

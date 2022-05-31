@@ -4,10 +4,11 @@ using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace ColoryrServer.DllManager;
-
 public class DllRun
 {
     private readonly static Dictionary<string, object> ErrorObj = new(){ {"res", 0 }, {"text", "服务器内部错误"}  };
@@ -35,11 +36,17 @@ public class DllRun
                 };
             }
 
-            isDebug = dll.MethodInfos.ContainsKey("debug");
+            List<AssemblyLoadContext> list = new();
+            foreach (var item in AssemblyLoadContext.All)
+            {
+                list.Add(item);
+            }
 
+            isDebug = dll.MethodInfos.ContainsKey("debug");
             MethodInfo mi = dll.MethodInfos[function];
-            dynamic dllres = mi.Invoke(Activator.CreateInstance(dll.DllType),
-                new object[1] { arg });
+
+            var obj1 = Activator.CreateInstance(dll.DllType);
+            dynamic dllres = mi.Invoke(obj1, new object[1] { arg });
             if (dllres is Dictionary<string, object>)
             {
                 return new HttpReturn

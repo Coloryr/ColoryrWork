@@ -1,4 +1,6 @@
-﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.DllManager;
+using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -11,7 +13,7 @@ using System.Linq;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager.StartGen.GenType;
+namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenClass
 {
@@ -20,7 +22,7 @@ internal class GenClass
         var Res = GenCode.StartGen(File.UUID, new()
         {
             CSharpSyntaxTree.ParseText(File.Code)
-        }, GenLib.Dll);
+        });
         Task.Run(() => CSFile.StorageClass(File));
         if (!Res.Isok)
         {
@@ -31,38 +33,9 @@ internal class GenClass
         Res.MS.Seek(0, SeekOrigin.Begin);
         Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var AssemblySave = new DllBuildSave
-        {
-            Assembly = new AssemblyLoadContext(File.UUID, true)
-        };
-        AssemblySave.Assembly.LoadFromStream(Res.MS, Res.MSPdb);
-        var list = AssemblySave.Assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.Name == File.UUID);
-
-        if (!list.Any())
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Class[{File.UUID}]类名错误"
-            };
-
-        AssemblySave.DllType = list.First();
-        var listM = AssemblySave.Assembly.GetType().GetMethods();
-        List<NotesSDK> obj = new();
-        foreach (var item in listM)
-        {
-            var listA = item.GetCustomAttributes(true);
-            foreach (var item1 in listA)
-            {
-                if (item1 is NotesSDK)
-                {
-                    obj.Add(item1 as NotesSDK);
-                }
-            }
-        }
-
-        NoteFile.StorageClass(File.UUID, obj);
-        DllStonge.AddClass(File.UUID, AssemblySave);
+        var res = LoadClass.Load(File.UUID, Res.MS, Res.MSPdb);
+        if (res != null)
+            return res;
 
         Task.Run(() =>
         {
@@ -88,6 +61,9 @@ internal class GenClass
 
             Res.MS.Close();
             Res.MS.Dispose();
+
+            GenCode.LoadClass(DllStonge.ClassLocal + File.UUID + ".dll");
+
             GC.Collect();
         });
 

@@ -1,36 +1,25 @@
-using ColoryrWork.Lib.Server;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Loader;
 
-namespace ColoryrServer.DllManager.StartGen.GenUtils;
+namespace ColoryrServer.Core.DllManager.Gen;
 
-internal enum GenLib
-{
-    Dll, App
-}
 internal class GenCode
 {
-    public static readonly List<MetadataReference> References = new();
-    public static readonly List<MetadataReference> AppReferences = new();
+    public static readonly List<PortableExecutableReference> References = new();
 
-    private static readonly string AppLibLocal = ServerMain.RunLocal + "Libs/App/";
-    private static readonly string DllLibLocal = ServerMain.RunLocal + "Libs/Dll/";
+    private static readonly string DllLibLocal = ServerMain.RunLocal + "Libs/";
 
-    public static GenReOBJ StartGen(string Name, List<SyntaxTree> Code, GenLib lib)
+    public static GenReOBJ StartGen(string Name, List<SyntaxTree> Code)
     {
-        List<MetadataReference> refs = lib switch
-        {
-            GenLib.App => AppReferences,
-            _ => References,
-        };
         CSharpCompilation compilation = CSharpCompilation.Create(
             Name,
             syntaxTrees: Code,
-            references: refs,
+            references: References,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         var MS = new MemoryStream();
         var MSPdb = new MemoryStream();
@@ -101,6 +90,47 @@ internal class GenCode
                 }
             }
         }
+        foreach (var item in Directory.GetFiles(DllLibLocal))
+        {
+            add = true;
+            if (item.EndsWith(".dll"))
+            {
+                foreach (var item2 in ServerMain.Config.NotInclude)
+                {
+                    if (item.Contains(item2))
+                    {
+                        add = false;
+                        break;
+                    }
+                }
+                if (!add)
+                    continue;
+                foreach (var item1 in list)
+                {
+                    if (item1.IsDynamic)
+                        continue;
+                    if (item1.Location == item)
+                    {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add)
+                {
+                    References.Add(MetadataReference.CreateFromFile(item));
+                }
+
+                using var FileStream = new FileStream(item, FileMode.Open, FileAccess.Read);
+                var pdb = item.Replace(".dll", ".pdb");
+                if (File.Exists(pdb))
+                {
+                    using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
+                    AssemblyLoadContext.Default.LoadFromStream(FileStream, FileStream1);
+                }
+                else
+                    AssemblyLoadContext.Default.LoadFromStream(FileStream);
+            }
+        }
 
         //导入DLL
         foreach (var Item in list)
@@ -111,16 +141,21 @@ internal class GenCode
                 continue;
             References.Add(MetadataReference.CreateFromFile(Item.Location));
         }
+    }
 
-        if (!Directory.Exists(AppLibLocal))
+    public static void LoadClass(string local)
+    {
+        local = local.Replace("\\", "/");
+        var item = References.Find(a =>
         {
-            Directory.CreateDirectory(AppLibLocal);
+            string temp = a.FilePath.Replace("\\", "/");
+            return a.FilePath == local;
+        });
+        if (item != null)
+        {
+            References.Remove(item);
         }
-        var Dlls = Function.GetPathFileName(AppLibLocal);
 
-        foreach (var Item in Dlls)
-        {
-            AppReferences.Add(MetadataReference.CreateFromFile(Item.FullName));
-        }
+        References.Add(MetadataReference.CreateFromFile(local));
     }
 }

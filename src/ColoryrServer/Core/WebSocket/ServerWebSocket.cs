@@ -10,21 +10,24 @@ namespace ColoryrServer.WebSocket;
 
 internal class ServerWebSocket
 {
+    private record SocketObj
+    {
+        public int Port { get; set; }
+        public Guid UUID { get; set; }
+    }
+
     private static WebSocketServer Server;
-    private static Thread PingThread;
-    private static bool IsRun;
-    private static readonly Dictionary<int, IWebSocketConnection> Clients = new();
-    private static readonly Dictionary<Guid, IWebSocketConnection> ClientsID = new();
+    private static readonly Dictionary<SocketObj, IWebSocketConnection> Clients = new();
     internal static IWebSocketConnection Get(int port)
     {
-        var data = Clients.Where(a => a.Key == port);
+        var data = Clients.Where(a => a.Key.Port == port);
         if (data.Any())
             return data.First().Value;
         return null;
     }
     internal static IWebSocketConnection Get(Guid id)
     {
-        var data = ClientsID.Where(a => a.Key == id);
+        var data = Clients.Where(a => a.Key.UUID == id);
         if (data.Any())
             return data.First().Value;
         return null;
@@ -36,23 +39,26 @@ internal class ServerWebSocket
     }
     internal static void Send(int port, string data)
     {
-        if (Clients.ContainsKey(port))
+        var item = Clients.Where(a => a.Key.Port == port);
+        if (item.Any())
         {
-            Clients[port].Send(data);
+            item.First().Value.Send(data);
         }
     }
     internal static void Send(int port, byte[] data)
     {
-        if (Clients.ContainsKey(port))
+        var item = Clients.Where(a => a.Key.Port == port);
+        if (item.Any())
         {
-            Clients[port].Send(data);
+            item.First().Value.Send(data);
         }
     }
     internal static void Close(int port)
     {
-        if (Clients.ContainsKey(port))
+        var item = Clients.Where(a => a.Key.Port == port);
+        if (item.Any())
         {
-            Clients[port].Close();
+            item.First().Value.Close();
         }
     }
 
@@ -66,44 +72,32 @@ internal class ServerWebSocket
         {
             Socket.OnOpen = () =>
             {
-                Clients.Add(Socket.ConnectionInfo.ClientPort, Socket);
-                ClientsID.Add(Socket.ConnectionInfo.Id, Socket);
+                Clients.Add(new SocketObj 
+                {
+                    Port = Socket.ConnectionInfo.ClientPort,
+                    UUID = Socket.ConnectionInfo.Id
+                }, Socket);
                 DllRun.WebSocketGo(new WebSocketOpen(Socket));
             };
             Socket.OnClose = () =>
             {
-                Clients.Remove(Socket.ConnectionInfo.ClientPort);
-                ClientsID.Remove(Socket.ConnectionInfo.Id);
-                DllRun.WebSocketGo(new WebSocketClose(Socket));
+                var item = Clients.Where(a => a.Key.Port == Socket.ConnectionInfo.ClientPort);
+                if (item.Any())
+                {
+                    var item1 = item.First();
+                    Clients.Remove(item1.Key);
+                    DllRun.WebSocketGo(new WebSocketClose(Socket));
+                }
             };
             Socket.OnMessage = message =>
             {
                 DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
             };
         });
-        PingThread = new(() =>
-        {
-            int i = 0;
-            while (IsRun)
-            {
-                if (i == 30)
-                {
-                    foreach (var item in Clients)
-                    {
-                        item.Value.Send("{\"type\":\"ping\"}");
-                    }
-                }
-                Thread.Sleep(1000);
-                i++;
-            }
-        });
-        IsRun = true;
-        PingThread.Start();
         ServerMain.LogOut("WebScoket服务器已启动");
     }
     public static void Stop()
     {
-        IsRun = false;
         foreach (var item in Clients)
         {
             try

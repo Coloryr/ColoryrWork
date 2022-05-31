@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ColoryrServer.DllManager.StartGen.GenUtils;
+namespace ColoryrServer.Core.DllManager.Gen;
 
 internal record GenReOBJ
 {
