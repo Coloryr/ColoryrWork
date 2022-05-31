@@ -54,14 +54,22 @@ public static class DllStonge
 
     public static void AddDll(string uuid, DllBuildSave save)
     {
-        if (DllList.TryRemove(uuid, out var item))
+        if (DllList.ContainsKey(uuid))
         {
-            item.Unload();
-            item.DllType = null;
-            item.MethodInfos.Clear();
+            var old = DllList[uuid];
+            DllList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
-
-        DllList.TryAdd(uuid, save);
+        else
+        {
+            DllList.TryAdd(uuid, save);
+        }
     }
     public static void RemoveDll(string uuid)
     {
@@ -94,14 +102,13 @@ public static class DllStonge
                 old.Unload();
                 old.DllType = null;
                 old.MethodInfos.Clear();
+                DllUseSave.Update(save);
             });
         }
         else
         {
             ClassList.TryAdd(uuid, save);
         }
-
-        DllUseSave.Update(save);
     }
     public static void RemoveClass(string uuid)
     {
@@ -127,10 +134,15 @@ public static class DllStonge
     {
         if (SocketList.ContainsKey(uuid))
         {
-            SocketList[uuid].Unload();
-            SocketList[uuid].DllType = null;
-            SocketList[uuid].MethodInfos.Clear();
+            var old = DllList[uuid];
             SocketList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
         else
         {
@@ -152,10 +164,15 @@ public static class DllStonge
     {
         if (WebSocketList.ContainsKey(uuid))
         {
-            WebSocketList[uuid].Unload();
-            WebSocketList[uuid].DllType = null;
-            WebSocketList[uuid].MethodInfos.Clear();
+            var old = DllList[uuid];
             WebSocketList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
         else
         {
@@ -181,10 +198,15 @@ public static class DllStonge
     {
         if (RobotList.ContainsKey(uuid))
         {
-            RobotList[uuid].Unload();
-            RobotList[uuid].DllType = null;
-            RobotList[uuid].MethodInfos.Clear();
+            var old = DllList[uuid];
             RobotList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
         else
         {
@@ -210,10 +232,15 @@ public static class DllStonge
     {
         if (MqttList.ContainsKey(uuid))
         {
-            MqttList[uuid].Unload();
-            MqttList[uuid].DllType = null;
-            MqttList[uuid].MethodInfos.Clear();
+            var old = DllList[uuid];
             MqttList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
         else
         {
@@ -239,10 +266,15 @@ public static class DllStonge
     {
         if (TaskList.ContainsKey(uuid))
         {
-            TaskList[uuid].Unload();
-            TaskList[uuid].DllType = null;
-            TaskList[uuid].MethodInfos.Clear();
+            var old = DllList[uuid];
             TaskList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+                DllUseSave.Update(save);
+            });
         }
         else
         {
