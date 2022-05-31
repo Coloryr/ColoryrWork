@@ -1,7 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager.StartGen.GenType;
-using ColoryrServer.DllManager.StartGen.GenUtils;
 using ColoryrServer.FileSystem;
 using ColoryrWork.Lib.Server;
 using System;
@@ -11,10 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.DllManager;
 
-public class DllStonge
+public static class DllStonge
 {
     private static readonly ConcurrentDictionary<string, DllBuildSave> DllList = new();
     private static readonly ConcurrentDictionary<string, DllBuildSave> ClassList = new();
@@ -86,16 +85,22 @@ public class DllStonge
 
     public static void AddClass(string uuid, DllBuildSave save)
     {
-        if (ClassList.TryRemove(uuid, out var item))
+        if (ClassList.ContainsKey(uuid))
         {
-            item.Unload();
-            item.DllType = null;
-            item.MethodInfos.Clear();
+            var old = ClassList[uuid];
+            ClassList[uuid] = save;
+            Task.Run(() =>
+            {
+                old.Unload();
+                old.DllType = null;
+                old.MethodInfos.Clear();
+            });
         }
         else
         {
             ClassList.TryAdd(uuid, save);
         }
+
         DllUseSave.Update(save);
     }
     public static void RemoveClass(string uuid)

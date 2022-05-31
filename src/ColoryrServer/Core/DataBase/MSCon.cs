@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Text;
 using Dapper;
 
-namespace ColoryrServer.DataBase;
+namespace ColoryrServer.Core.DataBase;
 
 public class MSCon
 {

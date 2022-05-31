@@ -15,7 +15,7 @@ internal class LoadClass
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null) 
     {
-        var AssemblySave = new DllBuildSave(uuid);
+        var AssemblySave = new DllBuildSave(DllType.Class, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First()
                        .GetTypes().Where(x => x.Name == uuid);
@@ -28,7 +28,7 @@ internal class LoadClass
             };
 
         AssemblySave.DllType = list.First();
-        var listM = AssemblySave.GetType().GetMethods();
+        var listM = AssemblySave.DllType.GetMethods();
         List<NotesSDK> obj = new();
         foreach (var item in listM)
         {

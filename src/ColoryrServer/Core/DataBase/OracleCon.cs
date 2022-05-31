@@ -7,7 +7,7 @@ using System.Data.Common;
 using System.Text;
 using Dapper;
 
-namespace ColoryrServer.DataBase;
+namespace ColoryrServer.Core.DataBase;
 
 public class OracleCon
 {

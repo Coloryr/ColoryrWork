@@ -15,7 +15,7 @@ internal class LoadDll
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(uuid);
+        var AssemblySave = new DllBuildSave(DllType.Dll, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First().GetTypes()
                        .Where(x => x.Name == "app_" + uuid);

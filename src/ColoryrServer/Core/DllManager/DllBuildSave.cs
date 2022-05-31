@@ -10,16 +10,17 @@ using System.Threading.Tasks;
 namespace ColoryrServer.Core.DllManager;
 public enum DllType
 {
-    Dll, Class, Mqtt, Robot, Task, WebSocket
+    Dll, Class, Mqtt, Robot, Task, WebSocket, Socket
 }
 /// <summary>
 /// 编译后存储
 /// </summary>
 public class DllBuildSave : AssemblyLoadContext
 {
-    public DllBuildSave(string name)
+    public DllBuildSave(DllType type, string name)
            : base(name, true)
     {
+        SelfType = type;
     }
     public Type DllType { get; set; }
     public DllType SelfType { get; set; }

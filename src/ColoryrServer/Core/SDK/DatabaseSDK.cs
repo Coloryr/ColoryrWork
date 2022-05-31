@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DataBase;
+﻿using ColoryrServer.Core.DataBase;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;

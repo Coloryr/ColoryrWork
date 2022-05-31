@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace ColoryrServer.DataBase;
+namespace ColoryrServer.Core.DataBase;
 
 public class RamDataBase
 {

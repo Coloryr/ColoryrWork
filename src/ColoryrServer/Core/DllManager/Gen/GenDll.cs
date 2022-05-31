@@ -1,4 +1,5 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.DllManager;
 using ColoryrServer.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -30,7 +31,7 @@ internal class GenDll
         Res.MS.Seek(0, SeekOrigin.Begin);
         Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = Load(File.UUID, Res.MS, Res.MSPdb);
+        var res = LoadDll.Load(File.UUID, Res.MS, Res.MSPdb);
         if (res != null)
             return res;
 

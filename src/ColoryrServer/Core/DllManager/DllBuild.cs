@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace ColoryrServer.DllManager;
 
-public class DllBuild
+public static class DllBuild
 {
     private static readonly Dictionary<string, string> Token = new();
     public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)

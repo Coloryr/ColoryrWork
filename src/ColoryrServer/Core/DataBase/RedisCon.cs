@@ -4,7 +4,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 
-namespace ColoryrServer.DataBase;
+namespace ColoryrServer.Core.DataBase;
 
 public class RedisCon
 {

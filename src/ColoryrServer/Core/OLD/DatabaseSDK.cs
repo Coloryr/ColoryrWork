@@ -1,4 +1,4 @@
-using ColoryrServer.DataBase;
+using ColoryrServer.Core.DataBase;
 
 namespace ColoryrServer.SDK;
 

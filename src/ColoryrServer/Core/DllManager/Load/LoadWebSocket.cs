@@ -13,7 +13,7 @@ internal class LoadWebSocket
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(uuid);
+        var AssemblySave = new DllBuildSave(DllType.WebSocket, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First()
                        .GetTypes().Where(x => x.Name == uuid);

@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager.StartGen.GenUtils;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 
 namespace ColoryrServer.DllManager;
-public class DllRun
+public static class DllRun
 {
     private readonly static Dictionary<string, object> ErrorObj = new(){ {"res", 0 }, {"text", "服务器内部错误"}  };
     public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)

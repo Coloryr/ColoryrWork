@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace ColoryrServer.DataBase;
+namespace ColoryrServer.Core.DataBase;
 
 public static class ExtensionMethods
 {
@@ -13,7 +13,7 @@ public static class ExtensionMethods
 public class RamDataObj
 {
     public bool IsSave { get; set; }
-    public ConcurrentDictionary<string, dynamic> list {get;init;}
+    public ConcurrentDictionary<string, dynamic> list { get; init; }
 
     public RamDataObj()
     {
