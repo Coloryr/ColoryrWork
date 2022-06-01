@@ -140,7 +140,9 @@ namespace ColoryrBuild
                     CodeType.WebSocket => ReType.GetWebSocket,
                     CodeType.Mqtt => ReType.GetMqtt,
                     CodeType.Task => ReType.GetTask,
-                    _ => ReType.GetDll,
+                    CodeType.Web => ReType.GetWeb,
+                    CodeType.Dll => ReType.GetDll,
+                    _ => throw new NotImplementedException()
                 };
                 var pack = new BuildOBJ
                 {
@@ -155,32 +157,6 @@ namespace ColoryrBuild
                 if (!CheckLogin(data))
                 {
                     return await GetList(type);
-                }
-                return JsonConvert.DeserializeObject<CSFileList>(data);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public async Task<CSFileList> GetWebList()
-        {
-            try
-            {
-                var pack = new BuildOBJ
-                {
-                    User = App.Config.Name,
-                    Token = App.Config.Token,
-                    Mode = ReType.GetWeb
-                };
-                HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-                Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var temp = await httpClient.PostAsync(App.Config.Http, Content);
-                var data = await temp.Content.ReadAsStringAsync();
-                if (!CheckLogin(data))
-                {
-                    return await GetWebList();
                 }
                 return JsonConvert.DeserializeObject<CSFileList>(data);
             }

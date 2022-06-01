@@ -36,14 +36,21 @@ public static class DllBuild
     {
         public string User { get; set; }
         public string UUID { get; set; }
+        public DateTime Time { get; set; }
     }
     private static bool Check(string User, string UUID) 
     {
         using var DBSQL = new SqliteConnection(connStr);
-        var list = DBSQL.Query<LoginObj>("SELECT User,UUID FROM login WHERE User=@User", new { User });
+        var list = DBSQL.Query<LoginObj>("SELECT User,UUID,Time FROM login WHERE User=@User", new { User });
         if (!list.Any())
             return false;
-        return list.First().UUID == UUID;
+        LoginObj item = list.First();
+        if (item.UUID != UUID)
+            return false;
+        if (DateTime.Now - item.Time > TimeSpan.FromDays(7))
+            return false;
+
+        return true;
     }
     public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)
     {

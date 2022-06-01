@@ -7,7 +7,7 @@
     <BaseOutputPath>..\..\build_out\ASP</BaseOutputPath>
     <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
     <DebugType>embedded</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
