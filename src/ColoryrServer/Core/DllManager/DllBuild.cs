@@ -1,5 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
@@ -105,7 +107,7 @@ public static class DllBuild
             switch (json.Mode)
             {
                 case ReType.AddDll:
-                    if (CodeFile.GetDll(json.UUID) == null)
+                    if (CodeFileManager.GetDll(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -116,7 +118,7 @@ public static class DllBuild
                             Code = DemoResource.Dll
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageDll(File);
+                        CodeFileManager.StorageDll(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -133,7 +135,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddClass:
-                    if (CodeFile.GetClass(json.UUID) == null)
+                    if (CodeFileManager.GetClass(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -144,7 +146,7 @@ public static class DllBuild
                             Code = DemoResource.Class
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageClass(File);
+                        CodeFileManager.StorageClass(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -161,7 +163,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddSocket:
-                    if (CodeFile.GetSocket(json.UUID) == null)
+                    if (CodeFileManager.GetSocket(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -172,7 +174,7 @@ public static class DllBuild
                             Code = DemoResource.Socket
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageSocket(File);
+                        CodeFileManager.StorageSocket(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -189,7 +191,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddWebSocket:
-                    if (CodeFile.GetWebSocket(json.UUID) == null)
+                    if (CodeFileManager.GetWebSocket(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -200,7 +202,7 @@ public static class DllBuild
                             Code = DemoResource.WebSocket
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageWebSocket(File);
+                        CodeFileManager.StorageWebSocket(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -217,7 +219,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddRobot:
-                    if (CodeFile.GetRobot(json.UUID) == null)
+                    if (CodeFileManager.GetRobot(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -228,7 +230,7 @@ public static class DllBuild
                             Code = DemoResource.Robot
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageRobot(File);
+                        CodeFileManager.StorageRobot(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -245,7 +247,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddMqtt:
-                    if (CodeFile.GetMqtt(json.UUID) == null)
+                    if (CodeFileManager.GetMqtt(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -256,7 +258,7 @@ public static class DllBuild
                             Code = DemoResource.Mqtt
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageMqtt(File);
+                        CodeFileManager.StorageMqtt(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -273,7 +275,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddTask:
-                    if (CodeFile.GetTask(json.UUID) == null)
+                    if (CodeFileManager.GetTask(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File = new()
@@ -284,7 +286,7 @@ public static class DllBuild
                             Code = DemoResource.Task
                             .Replace(CodeDemo.Name, json.UUID)
                         };
-                        CodeFile.StorageTask(File);
+                        CodeFileManager.StorageTask(File);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -301,7 +303,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddWeb:
-                    if (HtmlUtils.GetHtml(json.UUID) == null)
+                    if (WebFileManager.GetHtml(json.UUID) == null)
                     {
                         var time = string.Format("{0:s}", DateTime.Now);
                         File2 = new()
@@ -320,7 +322,7 @@ public static class DllBuild
                             },
                             Files = new()
                         };
-                        HtmlUtils.New(File2);
+                        WebFileManager.New(File2);
                         resObj = new ReMessage
                         {
                             Build = true,
@@ -337,7 +339,7 @@ public static class DllBuild
                     break;
                 case ReType.GetDll:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.DllFileList)
+                    foreach (var item in CodeFileManager.DllFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -345,7 +347,7 @@ public static class DllBuild
                     break;
                 case ReType.GetClass:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.ClassFileList)
+                    foreach (var item in CodeFileManager.ClassFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -353,7 +355,7 @@ public static class DllBuild
                     break;
                 case ReType.GetSocket:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.SocketFileList)
+                    foreach (var item in CodeFileManager.SocketFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -361,7 +363,7 @@ public static class DllBuild
                     break;
                 case ReType.GetWebSocket:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.WebSocketFileList)
+                    foreach (var item in CodeFileManager.WebSocketFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -369,7 +371,7 @@ public static class DllBuild
                     break;
                 case ReType.GetRobot:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.RobotFileList)
+                    foreach (var item in CodeFileManager.RobotFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -377,7 +379,7 @@ public static class DllBuild
                     break;
                 case ReType.GetMqtt:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.MqttFileList)
+                    foreach (var item in CodeFileManager.MqttFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -385,7 +387,7 @@ public static class DllBuild
                     break;
                 case ReType.GetTask:
                     List = new CSFileList();
-                    foreach (var item in CodeFile.TaskFileList)
+                    foreach (var item in CodeFileManager.TaskFileList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
@@ -393,41 +395,41 @@ public static class DllBuild
                     break;
                 case ReType.GetWeb:
                     List = new CSFileList();
-                    foreach (var item in HtmlUtils.HtmlCodeList)
+                    foreach (var item in WebFileManager.HtmlCodeList)
                     {
                         List.List.Add(item.Key, item.Value);
                     }
                     resObj = List;
                     break;
                 case ReType.CodeDll:
-                    resObj = CodeFile.GetDll(json.UUID);
+                    resObj = CodeFileManager.GetDll(json.UUID);
                     break;
                 case ReType.CodeClass:
-                    resObj = CodeFile.GetClass(json.UUID);
+                    resObj = CodeFileManager.GetClass(json.UUID);
                     break;
                 case ReType.CodeSocket:
-                    resObj = CodeFile.GetSocket(json.UUID);
+                    resObj = CodeFileManager.GetSocket(json.UUID);
                     break;
                 case ReType.CodeWebSocket:
-                    resObj = CodeFile.GetWebSocket(json.UUID);
+                    resObj = CodeFileManager.GetWebSocket(json.UUID);
                     break;
                 case ReType.CodeRobot:
-                    resObj = CodeFile.GetRobot(json.UUID);
+                    resObj = CodeFileManager.GetRobot(json.UUID);
                     break;
                 case ReType.CodeMqtt:
-                    resObj = CodeFile.GetMqtt(json.UUID);
+                    resObj = CodeFileManager.GetMqtt(json.UUID);
                     break;
                 case ReType.CodeTask:
-                    resObj = CodeFile.GetTask(json.UUID);
+                    resObj = CodeFileManager.GetTask(json.UUID);
                     break;
                 case ReType.CodeWeb:
-                    resObj = HtmlUtils.GetHtml(json.UUID);
+                    resObj = WebFileManager.GetHtml(json.UUID);
                     break;
                 case ReType.GetApi:
                     resObj = APIFile.list;
                     break;
                 case ReType.RemoveDll:
-                    CodeFile.RemoveFile(CodeType.Dll, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Dll, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -435,7 +437,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveClass:
-                    CodeFile.RemoveFile(CodeType.Class, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Class, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -443,7 +445,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveSocket:
-                    CodeFile.RemoveFile(CodeType.Socket, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Socket, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -451,7 +453,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveWebSocket:
-                    CodeFile.RemoveFile(CodeType.WebSocket, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.WebSocket, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -459,7 +461,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveRobot:
-                    CodeFile.RemoveFile(CodeType.Robot, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Robot, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -467,7 +469,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveMqtt:
-                    CodeFile.RemoveFile(CodeType.Mqtt, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Mqtt, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -475,7 +477,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveTask:
-                    CodeFile.RemoveFile(CodeType.Task, json.UUID);
+                    CodeFileManager.RemoveFile(CodeType.Task, json.UUID);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -483,7 +485,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataDll:
-                    File = CodeFile.GetDll(json.UUID);
+                    File = CodeFileManager.GetDll(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -521,7 +523,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataClass:
-                    File = CodeFile.GetClass(json.UUID);
+                    File = CodeFileManager.GetClass(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -559,7 +561,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataSocket:
-                    File = CodeFile.GetSocket(json.UUID);
+                    File = CodeFileManager.GetSocket(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -597,7 +599,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataRobot:
-                    File = CodeFile.GetRobot(json.UUID);
+                    File = CodeFileManager.GetRobot(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -635,7 +637,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataWebSocket:
-                    File = CodeFile.GetWebSocket(json.UUID);
+                    File = CodeFileManager.GetWebSocket(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -673,7 +675,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataMqtt:
-                    File = CodeFile.GetMqtt(json.UUID);
+                    File = CodeFileManager.GetMqtt(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -711,7 +713,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataTask:
-                    File = CodeFile.GetTask(json.UUID);
+                    File = CodeFileManager.GetTask(json.UUID);
                     if (File == null)
                     {
                         resObj = new ReMessage
@@ -749,7 +751,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataWeb:
-                    File2 = HtmlUtils.GetHtml(json.UUID);
+                    File2 = WebFileManager.GetHtml(json.UUID);
                     if (File2 == null)
                     {
                         resObj = new ReMessage
@@ -782,7 +784,15 @@ public static class DllBuild
                     code = FileEdit.StartEdit(code, list);
                     File2.Text = json.Text;
 
-                    HtmlUtils.Save(File2, json.Temp, code);
+                    if (File2.IsVue)
+                    {
+
+                    }
+                    else
+                    {
+                        WebFileManager.Save(File2, json.Temp, code);
+                    }
+
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -792,7 +802,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.WebAddCode:
-                    File2 = HtmlUtils.GetHtml(json.UUID);
+                    File2 = WebFileManager.GetHtml(json.UUID);
                     if (File2 == null)
                     {
                         resObj = new ReMessage
@@ -812,7 +822,7 @@ public static class DllBuild
                         break;
                     }
 
-                    HtmlUtils.AddCode(File2, json.Code, "");
+                    WebFileManager.AddCode(File2, json.Code, "");
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -820,7 +830,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.WebRemoveFile:
-                    File2 = HtmlUtils.GetHtml(json.UUID);
+                    File2 = WebFileManager.GetHtml(json.UUID);
                     if (File2 == null)
                     {
                         resObj = new ReMessage
@@ -849,7 +859,7 @@ public static class DllBuild
                         break;
                     }
 
-                    HtmlUtils.Remove(File2, json.Code);
+                    WebFileManager.Remove(File2, json.Code);
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -857,7 +867,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.WebAddFile:
-                    File2 = HtmlUtils.GetHtml(json.UUID);
+                    File2 = WebFileManager.GetHtml(json.UUID);
                     if (File2 == null)
                     {
                         resObj = new ReMessage
@@ -877,7 +887,7 @@ public static class DllBuild
                         break;
                     }
 
-                    HtmlUtils.AddFile(File2, json.Code, BuildUtils.HexStringToByte(json.Temp));
+                    WebFileManager.AddFile(File2, json.Code, BuildUtils.HexStringToByte(json.Temp));
                     resObj = new ReMessage
                     {
                         Build = true,
@@ -885,7 +895,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.RemoveWeb:
-                    File2 = HtmlUtils.GetHtml(json.UUID);
+                    File2 = WebFileManager.GetHtml(json.UUID);
                     if (File2 == null)
                     {
                         resObj = new ReMessage
@@ -896,7 +906,7 @@ public static class DllBuild
                         break;
                     }
 
-                    HtmlUtils.DeleteAll(File2);
+                    WebFileManager.DeleteAll(File2);
                     resObj = new ReMessage
                     {
                         Build = true,

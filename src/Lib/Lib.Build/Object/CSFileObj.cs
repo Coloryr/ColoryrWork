@@ -56,6 +56,7 @@ namespace ColoryrWork.Lib.Build.Object
     }
     public class WebObj : CSFileObj
     {
+        public bool IsVue { get; set; }
         public Dictionary<string, string> Codes { get; set; }
         public Dictionary<string, string> Files { get; set; }
     }

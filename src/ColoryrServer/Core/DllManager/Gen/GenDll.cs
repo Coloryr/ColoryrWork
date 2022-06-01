@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -20,7 +20,7 @@ internal class GenDll
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        CodeFile.StorageDll(File);
+        CodeFileManager.StorageDll(File);
         if (!Res.Isok)
         {
             Res.Res = $"Dll[{File.UUID}]" + Res.Res;

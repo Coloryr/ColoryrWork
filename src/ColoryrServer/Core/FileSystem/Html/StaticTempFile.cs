@@ -1,6 +1,6 @@
-﻿namespace ColoryrServer.Core.FileSystem;
+﻿namespace ColoryrServer.Core.FileSystem.Html;
 
-internal class HtmlFileObj
+internal class StaticTempFile
 {
     public byte[] Data { get; set; }
     public int Time { get; private set; }

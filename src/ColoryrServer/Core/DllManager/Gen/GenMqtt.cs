@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
@@ -18,7 +18,7 @@ internal class GenMqtt
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CodeFile.StorageRobot(File));
+        Task.Run(() => CodeFileManager.StorageRobot(File));
         if (!Res.Isok)
         {
             Res.Res = $"Mqtt[{File.UUID}]" + Res.Res;

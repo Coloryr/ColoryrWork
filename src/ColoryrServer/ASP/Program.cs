@@ -13,9 +13,9 @@ using Newtonsoft.Json;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem.Html;
 
 namespace ColoryrServer.ASP
 {
@@ -180,7 +180,7 @@ namespace ColoryrServer.ASP
             else
             {
                 Response.ContentType = ServerContentType.HTML;
-                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
+                await Response.BodyWriter.WriteAsync(WebFileManager.BaseDir.HtmlIndex);
             }
         }
 
@@ -197,7 +197,7 @@ namespace ColoryrServer.ASP
             else
             {
                 Response.ContentType = ServerContentType.HTML;
-                await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
+                await Response.BodyWriter.WriteAsync(WebFileManager.BaseDir.HtmlIndex);
             }
         }
 
@@ -205,7 +205,7 @@ namespace ColoryrServer.ASP
         {
             HttpResponse Response = context.Response;
             Response.ContentType = ServerContentType.HTML;
-            await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.HtmlIndex);
+            await Response.BodyWriter.WriteAsync(WebFileManager.BaseDir.HtmlIndex);
         }
 
         private static async Task GetWeb(HttpContext context)
@@ -271,7 +271,7 @@ namespace ColoryrServer.ASP
             {
                 httpReturn = new()
                 {
-                    Data = HtmlUtils.BaseDir.Html404,
+                    Data = WebFileManager.BaseDir.Html404,
                     ContentType = ServerContentType.HTML,
                     ReCode = 200
                 };
@@ -468,7 +468,7 @@ namespace ColoryrServer.ASP
                         {
                             Response.ContentType = ServerContentType.HTML;
                             Response.StatusCode = 200;
-                            await Response.BodyWriter.WriteAsync(HtmlUtils.BaseDir.Html404);
+                            await Response.BodyWriter.WriteAsync(WebFileManager.BaseDir.Html404);
                             return;
                         }
 
@@ -601,7 +601,7 @@ namespace ColoryrServer.ASP
             {
                 httpReturn = new HttpReturn
                 {
-                    Data = HtmlUtils.BaseDir.Html404,
+                    Data = WebFileManager.BaseDir.Html404,
                     ContentType = ServerContentType.HTML
                 };
             }

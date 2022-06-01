@@ -3,12 +3,12 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.FileSystem.Html;
 
 public class StaticDir
 {
     private ConcurrentDictionary<string, StaticDir> NextDir = new();
-    private ConcurrentDictionary<string, HtmlFileObj> FileTempMap = new();
+    private ConcurrentDictionary<string, StaticTempFile> FileTempMap = new();
     private FileSystemWatcher watch;
     private string dir;
     private bool IsRun = false;
@@ -201,7 +201,7 @@ public class StaticDir
             }
             else if (File.Exists(dir + name))
             {
-                var file = new HtmlFileObj()
+                var file = new StaticTempFile()
                 {
                     Data = FileTemp.LoadBytes(dir + name, false)
                 };

@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem.Html;
 using System;
 
 namespace ColoryrServer.SDK;
@@ -13,7 +13,7 @@ public class WebHtml
     /// <param name="code">内容</param>
     public static void AddHtml(string uuid, string name, string code)
     {
-        var web = HtmlUtils.GetHtml(uuid);
+        var web = WebFileManager.GetHtml(uuid);
         if (web == null)
         {
             var time = string.Format("{0:s}", DateTime.Now);
@@ -28,15 +28,15 @@ public class WebHtml
                 },
                 Files = new()
             };
-            HtmlUtils.New(web);
+            WebFileManager.New(web);
         }
         else
         {
             if (!web.Codes.ContainsKey(name))
-                HtmlUtils.AddCode(web, name, code);
+                WebFileManager.AddCode(web, name, code);
             else
             {
-                HtmlUtils.Save(web, name, code);
+                WebFileManager.Save(web, name, code);
             }
         }
     }
@@ -48,7 +48,7 @@ public class WebHtml
     /// <param name="code">内容</param>
     public static void AddFile(string uuid, string name, byte[] code)
     {
-        var web = HtmlUtils.GetHtml(uuid);
+        var web = WebFileManager.GetHtml(uuid);
         if (web == null)
         {
             var time = string.Format("{0:s}", DateTime.Now);
@@ -60,15 +60,15 @@ public class WebHtml
                 Codes = new(),
                 Files = new()
             };
-            HtmlUtils.New(web);
+            WebFileManager.New(web);
         }
         else
         {
             if (!web.Codes.ContainsKey(name))
-                HtmlUtils.AddFile(web, name, code);
+                WebFileManager.AddFile(web, name, code);
             else
             {
-                HtmlUtils.SaveFile(web, name, code);
+                WebFileManager.SaveFile(web, name, code);
             }
         }
     }
@@ -80,6 +80,6 @@ public class WebHtml
     /// <returns></returns>
     public static byte[] GetWeb(string uuid, string name)
     {
-        return HtmlUtils.GetFile(uuid, name);
+        return WebFileManager.GetFile(uuid, name);
     }
 }

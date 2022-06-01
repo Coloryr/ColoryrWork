@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.SDK;
 
 namespace ColoryrServer.Core.Http;
@@ -7,17 +7,17 @@ public class HttpStatic
 {
     public static HttpReturn Get(string uuid)
     {
-        byte[] temp = HtmlUtils.GetByUUID(uuid);
+        byte[] temp = WebFileManager.GetByUUID(uuid);
         return new()
         {
-            Data = temp ?? HtmlUtils.BaseDir.Html404,
+            Data = temp ?? WebFileManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpReturn Get(string uuid, string name)
     {
-        var temp = HtmlUtils.GetFile(uuid, name);
+        var temp = WebFileManager.GetFile(uuid, name);
         if (temp != null)
         {
             int a = name.LastIndexOf(".");
@@ -42,14 +42,14 @@ public class HttpStatic
         }
         return new()
         {
-            Data = HtmlUtils.BaseDir.Html404,
+            Data = WebFileManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpReturn GetStatic(string[] arg)
     {
-        var temp = HtmlUtils.BaseDir.GetFile(arg, 0);
+        var temp = WebFileManager.BaseDir.GetFile(arg, 0);
         if (temp != null)
         {
             var a = arg[^1].LastIndexOf(".");
@@ -83,13 +83,13 @@ public class HttpStatic
         }
         return new()
         {
-            Data = HtmlUtils.BaseDir.Html404,
+            Data = WebFileManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpResponseStream GetStream(HttpRequest request, string arg)
     {
-        return HtmlUtils.GetStream(request, arg);
+        return WebFileManager.GetStream(request, arg);
     }
 }

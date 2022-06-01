@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,7 +20,7 @@ internal class GenTask
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CodeFile.StorageTask(File));
+        Task.Run(() => CodeFileManager.StorageTask(File));
         if (!Res.Isok)
         {
             Res.Res = $"Task[{File.UUID}]" + Res.Res;

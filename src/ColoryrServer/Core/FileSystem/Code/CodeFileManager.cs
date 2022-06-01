@@ -13,19 +13,9 @@ using System.Linq;
 using ColoryrServer.SDK;
 using Microsoft.Data.Sqlite;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.FileSystem.Code;
 
-internal record MAP
-{
-    public List<CSFileObj> DllList { get; set; }
-    public List<CSFileObj> ClassList { get; set; }
-    public List<CSFileObj> SocketList { get; set; }
-    public List<CSFileObj> WebSocketList { get; set; }
-    public List<CSFileObj> RobotList { get; set; }
-    public List<CSFileObj> MqttList { get; set; }
-    public List<CSFileObj> TaskList { get; set; }
-}
-internal class CodeFile
+internal class CodeFileManager
 {
     private static readonly string DBLocal = ServerMain.RunLocal + @"Codes";
     private static readonly string CodeDB = ServerMain.RunLocal + @"Codes/Code.db";
@@ -170,7 +160,7 @@ internal class CodeFile
         });
     }
 
-    private static void SaveCode(CSFileCode obj) 
+    private static void SaveCode(CSFileCode obj)
     {
         string type = obj.Type switch
         {
@@ -201,7 +191,7 @@ internal class CodeFile
         }
     }
 
-    private static void RemoveCode(CodeType type, string UUID) 
+    private static void RemoveCode(CodeType type, string UUID)
     {
         string type1 = type switch
         {
@@ -363,7 +353,7 @@ internal class CodeFile
                 CodeType.Task => GetMqtt(uuid),
                 _ => null
             };
-            
+
             if (obj == null)
             {
                 ServerMain.LogOut("无法删除:" + uuid);
@@ -489,7 +479,7 @@ Type:{obj.Type}
         {
             try
             {
-                var MAP = new MAP
+                var MAP = new CodeFileMAP
                 {
                     ClassList = new(ClassFileList.Values),
                     DllList = new(DllFileList.Values),

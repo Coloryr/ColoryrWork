@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,7 +19,7 @@ internal class GenWebSocket
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CodeFile.StorageWebSocket(File));
+        Task.Run(() => CodeFileManager.StorageWebSocket(File));
         if (!Res.Isok)
         {
             Res.Res = $"WebSocket[{File.UUID}]" + Res.Res;

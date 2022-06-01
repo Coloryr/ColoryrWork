@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,7 +19,7 @@ internal class GenSocket
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CodeFile.StorageSocket(File));
+        Task.Run(() => CodeFileManager.StorageSocket(File));
         if (!Res.Isok)
         {
             Res.Res = $"Socket[{File.UUID}]" + Res.Res;
