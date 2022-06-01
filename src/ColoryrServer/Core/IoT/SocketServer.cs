@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.IoTSocket;
+namespace ColoryrServer.Core.IoT;
 
 internal class SocketServer
 {

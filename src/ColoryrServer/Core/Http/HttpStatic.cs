@@ -1,7 +1,7 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 
-namespace ColoryrServer.Http;
+namespace ColoryrServer.Core.Http;
 
 public class HttpStatic
 {

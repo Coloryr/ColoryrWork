@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -22,7 +21,7 @@ internal class GenClass
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CSFile.StorageClass(File));
+        Task.Run(() => CodeFile.StorageClass(File));
         if (!Res.Isok)
         {
             Res.Res = $"Class[{File.UUID}]" + Res.Res;
@@ -42,14 +41,14 @@ internal class GenClass
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.ClassLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalClass + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.ClassLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalClass + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -61,7 +60,7 @@ internal class GenClass
             Res.MS.Close();
             Res.MS.Dispose();
 
-            GenCode.LoadClass(DllStonge.ClassLocal + File.UUID + ".dll");
+            GenCode.LoadClass(DllStonge.LocalClass + File.UUID + ".dll");
 
             GC.Collect();
         });
@@ -70,7 +69,7 @@ internal class GenClass
         {
             Isok = true,
             Res = $"Class[{File.UUID}]编译完成",
-            Time = File.UpdataTime
+            Time = File.UpdateTime
         };
     }
 }

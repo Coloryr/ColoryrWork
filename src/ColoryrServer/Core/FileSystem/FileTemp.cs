@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 internal class FileTemp
 {

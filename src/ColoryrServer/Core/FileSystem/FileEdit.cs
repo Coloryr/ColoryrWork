@@ -1,7 +1,7 @@
 ﻿using ColoryrWork.Lib.Build;
 using System.Collections.Generic;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 internal class FileEdit
 {

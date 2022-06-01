@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
@@ -19,7 +18,7 @@ internal class GenMqtt
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CSFile.StorageRobot(File));
+        Task.Run(() => CodeFile.StorageRobot(File));
         if (!Res.Isok)
         {
             Res.Res = $"Mqtt[{File.UUID}]" + Res.Res;
@@ -39,14 +38,14 @@ internal class GenMqtt
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.MqttLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalMqtt + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.MqttLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalMqtt + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -64,7 +63,7 @@ internal class GenMqtt
         {
             Isok = true,
             Res = $"Mqtt[{File.UUID}]编译完成",
-            Time = File.UpdataTime
+            Time = File.UpdateTime
         };
     }
 }

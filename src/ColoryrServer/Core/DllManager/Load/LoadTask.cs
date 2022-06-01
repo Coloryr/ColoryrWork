@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.DllManager;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ internal class LoadTask
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(DllType.Task, uuid);
+        var AssemblySave = new DllBuildSave(CodeType.Task, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First().GetTypes()
                        .Where(x => x.Name == uuid);
@@ -25,9 +25,9 @@ internal class LoadTask
                 Res = $"Task[{uuid}]类名错误"
             };
 
-        AssemblySave.DllType = list.First();
+        AssemblySave.SelfType = list.First();
 
-        foreach (var item in AssemblySave.DllType.GetMethods())
+        foreach (var item in AssemblySave.SelfType.GetMethods())
         {
             if (item.Name is CodeDemo.TaskRun && item.IsPublic)
             {
@@ -65,7 +65,7 @@ internal class LoadTask
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.TaskLocal + name + ".dll");
+        FileInfo info = new(DllStonge.LocalTask + name + ".dll");
         LoadFile(info);
     }
 }

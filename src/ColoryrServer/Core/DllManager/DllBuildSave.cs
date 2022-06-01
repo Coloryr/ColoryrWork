@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,23 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager;
-public enum DllType
-{
-    Dll, Class, Mqtt, Robot, Task, WebSocket, Socket
-}
+
 /// <summary>
 /// 编译后存储
 /// </summary>
 public class DllBuildSave : AssemblyLoadContext
 {
-    public DllBuildSave(DllType type, string name)
+    public DllBuildSave(CodeType type, string name)
            : base(name, true)
     {
-        SelfType = type;
+        DllType = type;
     }
-    public Type DllType { get; set; }
-    public DllType SelfType { get; set; }
-    public Dictionary<string, MethodInfo> MethodInfos { get; set; } = new();
+    public Type SelfType { get; set; }
+    public CodeType DllType { get; init; }
+    public Dictionary<string, MethodInfo> MethodInfos { get; } = new();
     protected override Assembly Load(AssemblyName name)
     {
         var item = DllStonge.FindClass(name);

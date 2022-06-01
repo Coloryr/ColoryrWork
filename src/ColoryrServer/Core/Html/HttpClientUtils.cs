@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 
-namespace ColoryrServer.Html;
+namespace ColoryrServer.Core.Html;
 
 internal class HttpClientUtils
 {

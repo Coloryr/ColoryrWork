@@ -1,14 +1,14 @@
-﻿using System;
+﻿using ColoryrServer.Core.FileSystem;
+using Dapper;
+using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Text;
-using Dapper;
-using ColoryrServer.Core.FileSystem;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class MSCon
+internal class SqliteCon
 {
     /// <summary>
     /// 连接状态
@@ -17,9 +17,9 @@ public class MSCon
     /// <summary>
     /// 连接池
     /// </summary>
+    private static List<SQLConfig> Config;
     private static Dictionary<int, string> ConnectStr = new();
     private static ConcurrentDictionary<int, bool> Connecting = new();
-    private static List<SQLConfig> Config;
 
     /// <summary>
     /// 连接测试
@@ -30,20 +30,13 @@ public class MSCon
     {
         try
         {
-            new SqlConnection(conn).Execute("select TOP 1 id from test");
+            new SqliteConnection(conn).Execute("ANALYZE;");
             return true;
         }
-        catch (SqlException ex)
+        catch (SqliteException ex)
         {
-            switch (ex.Number)
-            {
-                case 1146:
-                case 208:
-                    return true;
-                default:
-                    ServerMain.LogError(ex);
-                    return false;
-            }
+            ServerMain.LogError(ex);
+            return false;
         }
     }
 
@@ -66,17 +59,17 @@ public class MSCon
             if (!config.Enable)
                 return false;
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
-            string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
+            string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
             State.Add(id, false);
             if (Test(ConnectString))
             {
                 ConnectStr.Add(id, ConnectString);
                 State[id] = true;
-                ServerMain.LogOut($"Ms数据库{id}已连接");
+                ServerMain.LogOut($"SQLite数据库{id}已连接");
             }
             else
             {
-                ServerMain.LogError($"Ms数据库{id}连接失败");
+                ServerMain.LogError($"SQLite数据库{id}连接失败");
             }
             Connecting.TryRemove(id, out var v);
             return State[id];
@@ -85,36 +78,36 @@ public class MSCon
     }
 
     /// <summary>
-    /// MSCon初始化
+    /// Mysql初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
     public static void Start()
     {
-        ServerMain.LogOut($"正在连接Ms数据库");
-        Config = ServerMain.Config.MSsql;
+        ServerMain.LogOut($"正在连接SQLite数据库");
+        Config = ServerMain.Config.SQLite;
         for (int a = 0; a < Config.Count; a++)
         {
             var config = Config[a];
             if (!config.Enable)
                 continue;
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
-            string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
+            string ConnectString = string.Format(config.Conn, config.IP, config.Port, config.User, pass);
             State.Add(a, false);
             if (Test(ConnectString))
             {
                 ConnectStr.Add(a, ConnectString);
                 State[a] = true;
-                ServerMain.LogOut($"Ms数据库{a}已连接");
+                ServerMain.LogOut($"SQLite数据库{a}已连接");
             }
             else
             {
-                ServerMain.LogError($"Ms数据库{a}连接失败");
+                ServerMain.LogError($"SQLite数据库{a}连接失败");
             }
         }
     }
 
     /// <summary>
-    /// 关闭Ms数据库连接
+    /// 关闭Mysql数据库连接
     /// </summary>
     public static void Stop()
     {
@@ -122,8 +115,8 @@ public class MSCon
         {
             State[item.Key] = false;
         }
-        SqlConnection.ClearAllPools();
-        ServerMain.LogOut("Ms数据库已断开");
+        SqliteConnection.ClearAllPools();
+        ServerMain.LogOut("SQLite数据库已断开");
     }
 
     /// <summary>
@@ -131,9 +124,8 @@ public class MSCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    public static SqlConnection GetConnection(int id)
+    public static SqliteConnection GetConnection(int id)
     {
-        return new SqlConnection(ConnectStr[id]);
+        return new SqliteConnection(ConnectStr[id]);
     }
 }
-

@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,27 +48,27 @@ public static class DllUseSave
 
     public static void Reload(DllBuildSave name)
     {
-        switch (name.SelfType)
+        switch (name.DllType)
         {
-            case DllType.Dll:
+            case CodeType.Dll:
                 LoadDll.Reload(name.Name);
                 break;
-            case DllType.Class:
+            case CodeType.Class:
                 LoadClass.Reload(name.Name);
                 break;
-            case DllType.Task:
+            case CodeType.Task:
                 LoadTask.Reload(name.Name);
                 break;
-            case DllType.Robot:
+            case CodeType.Robot:
                 LoadRobot.Reload(name.Name);
                 break;
-            case DllType.WebSocket:
+            case CodeType.WebSocket:
                 LoadWebSocket.Reload(name.Name);
                 break;
-            case DllType.Socket:
+            case CodeType.Socket:
                 LoadSocket.Reload(name.Name);
                 break;
-            case DllType.Mqtt:
+            case CodeType.Mqtt:
                 LoadMqtt.Reload(name.Name);
                 break;
         }

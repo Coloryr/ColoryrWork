@@ -1,4 +1,4 @@
-﻿using ColoryrServer.MQTT;
+﻿using ColoryrServer.Core.MQTT;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 

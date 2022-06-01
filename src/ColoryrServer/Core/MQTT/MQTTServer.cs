@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using MQTTnet;
 using MQTTnet.Client;
@@ -7,7 +7,7 @@ using MQTTnet.Server;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.MQTT;
+namespace ColoryrServer.Core.MQTT;
 
 internal static class MQTTServer
 {

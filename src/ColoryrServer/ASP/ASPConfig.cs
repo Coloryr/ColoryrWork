@@ -1,4 +1,5 @@
-﻿using ColoryrServer.FileSystem;
+﻿using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build;
 
 namespace ColoryrServer.ASP
@@ -133,6 +134,18 @@ namespace ColoryrServer.ASP
                     }
                 },
                 Oracle = new()
+                {
+                    new()
+                    {
+                        Enable = false,
+                        IP = "",
+                        User = "",
+                        Password = "",
+                        TimeOut = 1000,
+                        Conn = "Data Source=MyDatabase.db;Mode=ReadWriteCreate"
+                    }
+                },
+                SQLite = new()
                 {
                     new()
                     {

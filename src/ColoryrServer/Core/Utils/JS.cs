@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace ColoryrServer.Utils;
+namespace ColoryrServer.Core.Utils;
 
 public sealed class JavaScriptMinifier
 {
@@ -64,7 +64,7 @@ public sealed class JavaScriptMinifier
 
         while (_TheA != EOF)
         {
-            switch ((Char)_TheA)
+            switch ((char)_TheA)
             {
                 case ' ':
                     if (_IsAlphanum(_TheB))
@@ -74,7 +74,7 @@ public sealed class JavaScriptMinifier
 
                     break;
                 case '\n':
-                    switch ((Char)_TheB)
+                    switch ((char)_TheB)
                     {
                         case '{':
                         case '[':
@@ -99,7 +99,7 @@ public sealed class JavaScriptMinifier
 
                     break;
                 default:
-                    switch ((Char)_TheB)
+                    switch ((char)_TheB)
                     {
                         case ' ':
                             if (_IsAlphanum(_TheA))
@@ -113,7 +113,7 @@ public sealed class JavaScriptMinifier
 
                             break;
                         case '\n':
-                            switch ((Char)_TheA)
+                            switch ((char)_TheA)
                             {
                                 case '}':
                                 case ']':
@@ -180,7 +180,7 @@ public sealed class JavaScriptMinifier
         _TheB = _Next();
 
         if (_TheB != '/' ||
-            (_TheA != '('
+            _TheA != '('
             && _TheA != ','
             && _TheA != '='
             && _TheA != '['
@@ -192,7 +192,7 @@ public sealed class JavaScriptMinifier
             && _TheA != '{'
             && _TheA != '}'
             && _TheA != ';'
-            && _TheA != '\n'))
+            && _TheA != '\n')
             return;
 
         _Put(_TheA);
@@ -279,10 +279,10 @@ public sealed class JavaScriptMinifier
         if (c == EOF)
             c = _JsReader.Read();
 
-        return c >= ' ' || c == '\n' || c == EOF ? c : (c == '\r' ? '\n' : ' ');
+        return c >= ' ' || c == '\n' || c == EOF ? c : c == '\r' ? '\n' : ' ';
     }
 
     private void _Put(int c) { _JsBuilder.Append((char)c); }
 
-    private static bool _IsAlphanum(int c) { return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || c == '_' || c == '$' || c == '\\' || c > 126; }
+    private static bool _IsAlphanum(int c) { return c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c == '_' || c == '$' || c == '\\' || c > 126; }
 }

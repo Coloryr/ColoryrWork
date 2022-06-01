@@ -1,6 +1,4 @@
-﻿using ColoryrServer.Core;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
@@ -11,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 public class HtmlUtils
 {

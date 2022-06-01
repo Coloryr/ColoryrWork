@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using Fleck;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace ColoryrServer.WebSocket;
+namespace ColoryrServer.Core.WebSocket;
 
 internal class ServerWebSocket
 {
@@ -72,7 +72,7 @@ internal class ServerWebSocket
         {
             Socket.OnOpen = () =>
             {
-                Clients.Add(new SocketObj 
+                Clients.Add(new SocketObj
                 {
                     Port = Socket.ConnectionInfo.ClientPort,
                     UUID = Socket.ConnectionInfo.Id

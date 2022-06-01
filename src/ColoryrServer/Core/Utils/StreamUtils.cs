@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.SDK;
 using System.Text;
 
-namespace ColoryrServer.Utils;
+namespace ColoryrServer.Core.Utils;
 
 public class StreamUtils
 {

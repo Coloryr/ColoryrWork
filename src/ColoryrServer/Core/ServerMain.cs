@@ -1,12 +1,4 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
-using ColoryrServer.Html;
-using ColoryrServer.MQTT;
-using ColoryrServer.Robot;
-using ColoryrServer.IoTSocket;
-using ColoryrServer.TaskUtils;
-using ColoryrServer.WebSocket;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
 using ColoryrWork.Lib.Build;
 using SixLabors.Fonts;
@@ -26,8 +18,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Html;
+using ColoryrServer.Core.IoT;
+using ColoryrServer.Core.MQTT;
+using ColoryrServer.Core.Robot;
+using ColoryrServer.Core.TaskUtils;
+using ColoryrServer.Core.WebSocket;
 
-namespace ColoryrServer
+namespace ColoryrServer.Core
 {
     public class ServerMain
     {
@@ -106,7 +106,7 @@ namespace ColoryrServer
                 Logs = new Logs(RunLocal);
                 //配置文件
                 ConfigUtil.Start();
-                CSFile.Start();
+                CodeFile.Start();
                 NoteFile.Start();
                 APIFile.Start();
                 FileTemp.Start();
@@ -124,8 +124,8 @@ namespace ColoryrServer
                 SystemFonts.Families.GetEnumerator();
                 bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
                 bitmap.Dispose();
-                Stream zip = ZipOutputStream.Null;
-                Stream zip1 = ZipInputStream.Null;
+                Stream zip = Stream.Null;
+                Stream zip1 = Stream.Null;
                 ZipEntry entry = new("1");
                 NameValueCollection nameValue = new();
                 Regex re = new("");
@@ -136,10 +136,12 @@ namespace ColoryrServer
 
                 MQTTServer.Start();
                 RobotUtils.Start();
+                DllBuild.Start();
                 new Thread(MSCon.Start).Start();
                 new Thread(RedisCon.Start).Start();
                 new Thread(OracleCon.Start).Start();
                 new Thread(MysqlCon.Start).Start();
+                new Thread(SqliteCon.Start).Start();
                 RamDataBase.Start();
                 GenCode.Start();
                 DllStonge.Start();
@@ -162,6 +164,7 @@ namespace ColoryrServer
         {
             LogOut("正在关闭");
             MysqlCon.Stop();
+            SqliteCon.Stop();
             MSCon.Stop();
             SocketServer.Stop();
             ServerWebSocket.Stop();

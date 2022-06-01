@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,7 +19,7 @@ internal class GenSocket
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CSFile.StorageSocket(File));
+        Task.Run(() => CodeFile.StorageSocket(File));
         if (!Res.Isok)
         {
             Res.Res = $"Socket[{File.UUID}]" + Res.Res;
@@ -40,14 +39,14 @@ internal class GenSocket
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.SocketLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalSocket + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.SocketLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalSocket + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -65,7 +64,7 @@ internal class GenSocket
         {
             Isok = true,
             Res = $"Socket[{File.UUID}]编译完成",
-            Time = File.UpdataTime
+            Time = File.UpdateTime
         };
     }
 }

@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.DllManager;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ internal class LoadRobot
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(DllType.Robot, uuid);
+        var AssemblySave = new DllBuildSave(CodeType.Robot, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First()
                        .GetTypes().Where(x => x.Name == uuid);
@@ -25,9 +25,9 @@ internal class LoadRobot
                 Res = $"Robot[{uuid}]类名错误"
             };
 
-        AssemblySave.DllType = list.First();
+        AssemblySave.SelfType = list.First();
 
-        foreach (var item in AssemblySave.DllType.GetMethods())
+        foreach (var item in AssemblySave.SelfType.GetMethods())
         {
             if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
                 AssemblySave.MethodInfos.Add(item.Name, item);
@@ -63,7 +63,7 @@ internal class LoadRobot
 
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.RobotLocal + name + ".dll");
+        FileInfo info = new(DllStonge.LocalRobot + name + ".dll");
         LoadFile(info);
     }
 }

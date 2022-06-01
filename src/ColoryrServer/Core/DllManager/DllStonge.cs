@@ -1,6 +1,4 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.FileSystem;
+﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrWork.Lib.Server;
 using System;
 using System.Collections.Concurrent;
@@ -11,25 +9,25 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.DllManager;
+namespace ColoryrServer.Core.DllManager;
 
 public static class DllStonge
 {
-    private static readonly ConcurrentDictionary<string, DllBuildSave> DllList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> ClassList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> SocketList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> WebSocketList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> RobotList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MqttList = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> TaskList = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapDll = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapClass = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapSocket = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapWebSocket = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapRobot = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapMqtt = new();
+    private static readonly ConcurrentDictionary<string, DllBuildSave> MapTask = new();
 
-    public static readonly string DllLocal = ServerMain.RunLocal + @"Dll/Dll/";
-    public static readonly string ClassLocal = ServerMain.RunLocal + @"Dll/Class/";
-    public static readonly string SocketLocal = ServerMain.RunLocal + @"Dll/Socket/";
-    public static readonly string WebSocketLocal = ServerMain.RunLocal + @"Dll/WebSocket/";
-    public static readonly string RobotLocal = ServerMain.RunLocal + @"Dll/Robot/";
-    public static readonly string MqttLocal = ServerMain.RunLocal + @"Dll/Mqtt/";
-    public static readonly string TaskLocal = ServerMain.RunLocal + @"Dll/Task/";
+    public static readonly string LocalDll = ServerMain.RunLocal + @"Dll/Dll/";
+    public static readonly string LocalClass = ServerMain.RunLocal + @"Dll/Class/";
+    public static readonly string LocalSocket = ServerMain.RunLocal + @"Dll/Socket/";
+    public static readonly string LocalWebSocket = ServerMain.RunLocal + @"Dll/WebSocket/";
+    public static readonly string LocalRobot = ServerMain.RunLocal + @"Dll/Robot/";
+    public static readonly string LocalMqtt = ServerMain.RunLocal + @"Dll/Mqtt/";
+    public static readonly string LocalTask = ServerMain.RunLocal + @"Dll/Task/";
 
     private static void RemoveAll(string dir)
     {
@@ -43,9 +41,9 @@ public static class DllStonge
         }
     }
 
-    public static DllBuildSave FindClass(AssemblyName name) 
+    public static DllBuildSave FindClass(AssemblyName name)
     {
-        if (ClassList.TryGetValue(name.Name, out var item))
+        if (MapClass.TryGetValue(name.Name, out var item))
         {
             return item;
         }
@@ -54,36 +52,36 @@ public static class DllStonge
 
     public static void AddDll(string uuid, DllBuildSave save)
     {
-        if (DllList.ContainsKey(uuid))
+        if (MapDll.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            DllList[uuid] = save;
+            var old = MapDll[uuid];
+            MapDll[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            DllList.TryAdd(uuid, save);
+            MapDll.TryAdd(uuid, save);
         }
     }
     public static void RemoveDll(string uuid)
     {
-        if (DllList.TryRemove(uuid, out var item))
+        if (MapDll.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(DllLocal + uuid);
+        RemoveAll(LocalDll + uuid);
     }
     public static DllBuildSave GetDll(string uuid)
     {
-        if (DllList.TryGetValue(uuid, out var save))
+        if (MapDll.TryGetValue(uuid, out var save))
         {
             return save;
         }
@@ -93,36 +91,36 @@ public static class DllStonge
 
     public static void AddClass(string uuid, DllBuildSave save)
     {
-        if (ClassList.ContainsKey(uuid))
+        if (MapClass.ContainsKey(uuid))
         {
-            var old = ClassList[uuid];
-            ClassList[uuid] = save;
+            var old = MapClass[uuid];
+            MapClass[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            ClassList.TryAdd(uuid, save);
+            MapClass.TryAdd(uuid, save);
         }
     }
     public static void RemoveClass(string uuid)
     {
-        if (ClassList.TryRemove(uuid, out var item))
+        if (MapClass.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(ClassLocal + uuid);
+        RemoveAll(LocalClass + uuid);
     }
     public static DllBuildSave GetClass(string uuid)
     {
-        if (ClassList.TryGetValue(uuid, out var save))
+        if (MapClass.TryGetValue(uuid, out var save))
         {
             return save;
         }
@@ -132,205 +130,205 @@ public static class DllStonge
 
     public static void AddSocket(string uuid, DllBuildSave save)
     {
-        if (SocketList.ContainsKey(uuid))
+        if (MapSocket.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            SocketList[uuid] = save;
+            var old = MapDll[uuid];
+            MapSocket[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            SocketList.TryAdd(uuid, save);
+            MapSocket.TryAdd(uuid, save);
         }
     }
     public static void RemoveSocket(string uuid)
     {
-        if (SocketList.TryRemove(uuid, out var item))
+        if (MapSocket.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(SocketLocal + uuid);
+        RemoveAll(LocalSocket + uuid);
     }
 
     public static void AddWebSocket(string uuid, DllBuildSave save)
     {
-        if (WebSocketList.ContainsKey(uuid))
+        if (MapWebSocket.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            WebSocketList[uuid] = save;
+            var old = MapDll[uuid];
+            MapWebSocket[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            WebSocketList.TryAdd(uuid, save);
+            MapWebSocket.TryAdd(uuid, save);
         }
     }
     public static void RemoveWebSocket(string uuid)
     {
-        if (WebSocketList.TryRemove(uuid, out var item))
+        if (MapWebSocket.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(WebSocketLocal + uuid);
+        RemoveAll(LocalWebSocket + uuid);
     }
     public static List<DllBuildSave> GetWebSocket()
     {
-        return new List<DllBuildSave>(WebSocketList.Values);
+        return new List<DllBuildSave>(MapWebSocket.Values);
     }
 
     public static void AddRobot(string uuid, DllBuildSave save)
     {
-        if (RobotList.ContainsKey(uuid))
+        if (MapRobot.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            RobotList[uuid] = save;
+            var old = MapDll[uuid];
+            MapRobot[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            RobotList.TryAdd(uuid, save);
+            MapRobot.TryAdd(uuid, save);
         }
     }
     public static void RemoveRobot(string uuid)
     {
-        if (RobotList.TryRemove(uuid, out var item))
+        if (MapRobot.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(RobotLocal + uuid);
+        RemoveAll(LocalRobot + uuid);
     }
     public static List<DllBuildSave> GetRobot()
     {
-        return new List<DllBuildSave>(RobotList.Values);
+        return new List<DllBuildSave>(MapRobot.Values);
     }
 
     public static void AddMqtt(string uuid, DllBuildSave save)
     {
-        if (MqttList.ContainsKey(uuid))
+        if (MapMqtt.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            MqttList[uuid] = save;
+            var old = MapDll[uuid];
+            MapMqtt[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            MqttList.TryAdd(uuid, save);
+            MapMqtt.TryAdd(uuid, save);
         }
     }
     public static void RemoveMqtt(string uuid)
     {
-        if (MqttList.TryRemove(uuid, out var item))
+        if (MapMqtt.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(MqttLocal + uuid);
+        RemoveAll(LocalMqtt + uuid);
     }
     public static List<DllBuildSave> GetMqtt()
     {
-        return new List<DllBuildSave>(MqttList.Values);
+        return new List<DllBuildSave>(MapMqtt.Values);
     }
 
     public static void AddTask(string uuid, DllBuildSave save)
     {
-        if (TaskList.ContainsKey(uuid))
+        if (MapTask.ContainsKey(uuid))
         {
-            var old = DllList[uuid];
-            TaskList[uuid] = save;
+            var old = MapDll[uuid];
+            MapTask[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
-                old.DllType = null;
+                old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
             });
         }
         else
         {
-            TaskList.TryAdd(uuid, save);
+            MapTask.TryAdd(uuid, save);
         }
     }
     public static void RemoveTask(string uuid)
     {
-        if (TaskList.TryRemove(uuid, out var item))
+        if (MapTask.TryRemove(uuid, out var item))
         {
             item.Unload();
-            item.DllType = null;
+            item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(RobotLocal + uuid);
+        RemoveAll(LocalRobot + uuid);
     }
     public static DllBuildSave GetTask(string uuid)
     {
-        return TaskList.TryGetValue(uuid, out var dll) ? dll : null;
+        return MapTask.TryGetValue(uuid, out var dll) ? dll : null;
     }
     public static void Start()
     {
-        if (!Directory.Exists(DllLocal))
+        if (!Directory.Exists(LocalDll))
         {
-            Directory.CreateDirectory(DllLocal);
+            Directory.CreateDirectory(LocalDll);
         }
-        if (!Directory.Exists(ClassLocal))
+        if (!Directory.Exists(LocalClass))
         {
-            Directory.CreateDirectory(ClassLocal);
+            Directory.CreateDirectory(LocalClass);
         }
-        if (!Directory.Exists(SocketLocal))
+        if (!Directory.Exists(LocalSocket))
         {
-            Directory.CreateDirectory(SocketLocal);
+            Directory.CreateDirectory(LocalSocket);
         }
-        if (!Directory.Exists(WebSocketLocal))
+        if (!Directory.Exists(LocalWebSocket))
         {
-            Directory.CreateDirectory(WebSocketLocal);
+            Directory.CreateDirectory(LocalWebSocket);
         }
-        if (!Directory.Exists(RobotLocal))
+        if (!Directory.Exists(LocalRobot))
         {
-            Directory.CreateDirectory(RobotLocal);
+            Directory.CreateDirectory(LocalRobot);
         }
-        if (!Directory.Exists(MqttLocal))
+        if (!Directory.Exists(LocalMqtt))
         {
-            Directory.CreateDirectory(MqttLocal);
+            Directory.CreateDirectory(LocalMqtt);
         }
-        if (!Directory.Exists(TaskLocal))
+        if (!Directory.Exists(LocalTask))
         {
-            Directory.CreateDirectory(TaskLocal);
+            Directory.CreateDirectory(LocalTask);
         }
-        if (!Directory.Exists(MqttLocal))
+        if (!Directory.Exists(LocalMqtt))
         {
-            Directory.CreateDirectory(MqttLocal);
+            Directory.CreateDirectory(LocalMqtt);
         }
 
-        var dirs = Function.GetPathFileName(ClassLocal);
+        var dirs = Function.GetPathFileName(LocalClass);
         foreach (var item in dirs)
         {
             try
@@ -344,7 +342,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(DllLocal);
+        dirs = Function.GetPathFileName(LocalDll);
         foreach (var item in dirs)
         {
             try
@@ -358,7 +356,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(SocketLocal);
+        dirs = Function.GetPathFileName(LocalSocket);
         foreach (var item in dirs)
         {
             try
@@ -372,7 +370,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(WebSocketLocal);
+        dirs = Function.GetPathFileName(LocalWebSocket);
         foreach (var item in dirs)
         {
             try
@@ -386,7 +384,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(RobotLocal);
+        dirs = Function.GetPathFileName(LocalRobot);
         foreach (var item in dirs)
         {
             try
@@ -400,7 +398,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(MqttLocal);
+        dirs = Function.GetPathFileName(LocalMqtt);
         foreach (var item in dirs)
         {
             try
@@ -414,7 +412,7 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(TaskLocal);
+        dirs = Function.GetPathFileName(LocalTask);
         foreach (var item in dirs)
         {
             try

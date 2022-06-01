@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +20,7 @@ internal class GenTask
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CSFile.StorageTask(File));
+        Task.Run(() => CodeFile.StorageTask(File));
         if (!Res.Isok)
         {
             Res.Res = $"Task[{File.UUID}]" + Res.Res;
@@ -41,14 +40,14 @@ internal class GenTask
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.TaskLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalTask + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.TaskLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalTask + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -66,7 +65,7 @@ internal class GenTask
         {
             Isok = true,
             Res = $"Task[{File.UUID}]编译完成",
-            Time = File.UpdataTime
+            Time = File.UpdateTime
         };
     }
 }

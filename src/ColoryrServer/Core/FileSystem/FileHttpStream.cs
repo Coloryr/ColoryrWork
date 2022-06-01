@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 internal class StreamTemp
 {

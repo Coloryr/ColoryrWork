@@ -1,4 +1,5 @@
-﻿using HtmlCompression.Core;
+﻿using ColoryrServer.Core.Utils;
+using HtmlCompression.Core;
 using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Utils;

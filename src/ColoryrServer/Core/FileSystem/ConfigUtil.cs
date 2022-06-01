@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 public abstract record MainConfig
 {
@@ -32,6 +32,10 @@ public abstract record MainConfig
     /// Oracle配置
     /// </summary>
     public List<SQLConfig> Oracle { get; set; }
+    /// <summary>
+    /// SQLite配置
+    /// </summary>
+    public List<SQLConfig> SQLite { get; set; }
     /// <summary>
     /// Redis设置
     /// </summary>
@@ -71,7 +75,7 @@ public abstract record MainConfig
 }
 
 public record RebotConfigObj
-{ 
+{
     /// <summary>
     /// 连接端口
     /// </summary>
@@ -79,7 +83,7 @@ public record RebotConfigObj
     /// <summary>
     /// 订阅的包
     /// </summary>
-    public List<int> Packs { get; set; } 
+    public List<int> Packs { get; set; }
 }
 
 public record AESConfig

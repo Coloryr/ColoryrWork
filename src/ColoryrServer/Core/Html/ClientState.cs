@@ -1,4 +1,4 @@
-﻿namespace ColoryrServer.Html;
+﻿namespace ColoryrServer.Core.Html;
 
 internal enum ClientState
 {

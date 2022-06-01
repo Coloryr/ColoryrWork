@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ColoryrServer.Http;
+namespace ColoryrServer.Core.Http;
 
 public enum ResType
 {

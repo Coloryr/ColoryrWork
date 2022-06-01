@@ -1,4 +1,4 @@
-﻿using ColoryrServer.WebSocket;
+﻿using ColoryrServer.Core.WebSocket;
 using Fleck;
 
 namespace ColoryrServer.SDK;

@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -21,7 +20,7 @@ internal class GenDll
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
-        Task.Run(() => CSFile.StorageDll(File));
+        CodeFile.StorageDll(File);
         if (!Res.Isok)
         {
             Res.Res = $"Dll[{File.UUID}]" + Res.Res;
@@ -41,14 +40,14 @@ internal class GenDll
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.DllLocal + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalDll + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.DllLocal + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalDll + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -66,7 +65,7 @@ internal class GenDll
         {
             Isok = true,
             Res = $"Dll[{File.UUID}]编译完成",
-            Time = File.UpdataTime
+            Time = File.UpdateTime
         };
     }
 }

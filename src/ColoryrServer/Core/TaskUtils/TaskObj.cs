@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.TaskUtils;
+namespace ColoryrServer.Core.TaskUtils;
 
 internal class TaskObj : TaskUserArg
 {

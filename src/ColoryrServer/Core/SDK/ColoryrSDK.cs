@@ -1,8 +1,10 @@
-﻿using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
-using ColoryrServer.Robot;
+﻿using ColoryrServer.Core;
+using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Robot;
+using ColoryrServer.Core.Utils;
+using ColoryrServer.Core.WebSocket;
 using ColoryrServer.Utils;
-using ColoryrServer.WebSocket;
 using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -512,7 +514,7 @@ public partial class Tools
             throw new ErrorDump("没有这个类:" + classname);
         try
         {
-            return Activator.CreateInstance(data.DllType, obj);
+            return Activator.CreateInstance(data.SelfType, obj);
         }
         catch (Exception e)
         {
@@ -527,24 +529,6 @@ public partial class Tools
     {
         TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
         return Convert.ToInt64(ts.TotalSeconds);
-    }
-    /// <summary>
-    /// 转码
-    /// </summary>
-    /// <param name="InputType">输入格式</param>
-    /// <param name="OutputType">输出格式</param>
-    /// <param name="InputData">输入数据</param>
-    /// <returns>转码后的数据</returns>
-    public static byte[] Transcoding(TranscodeType InputType, TranscodeType OutputType, byte[] InputData)
-    {
-        try
-        {
-            return Transcode.Start(InputType, OutputType, InputData);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("转码失败", e);
-        }
     }
     /// <summary>
     /// 判断WebSocket客户端是否在线

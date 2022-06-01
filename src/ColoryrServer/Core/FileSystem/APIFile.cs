@@ -1,7 +1,6 @@
-﻿using ColoryrServer.Core;
-using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrWork.Lib.Build.Object;
 
-namespace ColoryrServer.FileSystem;
+namespace ColoryrServer.Core.FileSystem;
 
 internal class APIFile
 {

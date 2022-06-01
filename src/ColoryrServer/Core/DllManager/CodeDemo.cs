@@ -1,4 +1,4 @@
-﻿namespace ColoryrServer.DllManager;
+﻿namespace ColoryrServer.Core.DllManager;
 
 internal static class CodeDemo
 {

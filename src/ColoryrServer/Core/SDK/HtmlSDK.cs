@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Html;
+﻿using ColoryrServer.Core.Html;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;

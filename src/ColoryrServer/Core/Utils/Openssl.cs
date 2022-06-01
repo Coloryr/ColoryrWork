@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace ColoryrServer.Utils;
+namespace ColoryrServer.Core.Utils;
 
 internal class Openssl
 {
@@ -161,7 +161,7 @@ internal class Openssl
 
                 if (binr.ReadByte() != 0x02)            //expect an Integer for the exponent data
                     return null;
-                int expbytes = (int)binr.ReadByte();        // should only need one byte for actual exponent data (for all useful values)
+                int expbytes = binr.ReadByte();        // should only need one byte for actual exponent data (for all useful values)
                 byte[] exponent = binr.ReadBytes(expbytes);
 
                 // ------- create RSACryptoServiceProvider instance and initialize with public key -----

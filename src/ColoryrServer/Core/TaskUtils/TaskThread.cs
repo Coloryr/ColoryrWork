@@ -1,4 +1,4 @@
-﻿using ColoryrServer.DllManager;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.TaskUtils;
+namespace ColoryrServer.Core.TaskUtils;
 
 internal class TaskThread
 {

@@ -28,11 +28,11 @@ namespace ColoryrWork.Lib.Build.Object
         /// <summary>
         /// 修改时间
         /// </summary>
-        public string UpdataTime { get; set; }
+        public string UpdateTime { get; set; }
         public void Up()
         {
             var time = string.Format("{0:s}", DateTime.Now);
-            UpdataTime = time;
+            UpdateTime = time;
             Version++;
         }
         public void Next()
