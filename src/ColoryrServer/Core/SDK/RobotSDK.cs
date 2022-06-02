@@ -153,7 +153,7 @@ public class RobotRequest
         }
     }
 }
-public class RobotEvent 
+public class RobotEvent
 {
     public int Type { get; init; }
     public PackBase Pack { get; init; }
@@ -164,7 +164,7 @@ public class RobotEvent
     /// <param name="type">QQ机器人账户</param>
     /// <param name="pack">群号</param>
     /// <param name="robot">机器人</param>
-    public RobotEvent(int type, PackBase pack, RobotSDK robot) 
+    public RobotEvent(int type, PackBase pack, RobotSDK robot)
     {
         Type = type;
         Pack = pack;

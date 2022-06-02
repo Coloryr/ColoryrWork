@@ -4,17 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager;
 
 /// <summary>
 /// 编译后存储
 /// </summary>
-public class DllBuildSave : AssemblyLoadContext
+public class DllAssembly : AssemblyLoadContext
 {
-    public DllBuildSave(CodeType type, string name)
+    public DllAssembly(CodeType type, string name)
            : base(name, true)
     {
         DllType = type;

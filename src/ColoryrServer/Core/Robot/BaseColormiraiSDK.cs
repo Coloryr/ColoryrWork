@@ -2833,7 +2833,7 @@ public partial class RobotSDK
         Pipe.StartRead();
     }
 
-    private void Read() 
+    private void Read()
     {
         while (IsRun)
         {

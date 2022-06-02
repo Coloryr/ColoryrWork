@@ -1,27 +1,27 @@
 ﻿using ColoryrServer.Core.DllManager;
-using ColoryrWork.Lib.Build;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using ColoryrWork.Lib.Server;
+using Dapper;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using Dapper;
-using System.Threading.Tasks;
 using System.Linq;
-using ColoryrServer.SDK;
-using Microsoft.Data.Sqlite;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem.Code;
 
-internal class CodeFileManager
+internal static class CodeFileManager
 {
     private static readonly string DBLocal = ServerMain.RunLocal + @"Codes";
     private static readonly string CodeDB = ServerMain.RunLocal + @"Codes/Code.db";
     private static readonly string CodeLogDB = ServerMain.RunLocal + @"Codes/CodeLog.db";
+    private static readonly string CodeClassDB = ServerMain.RunLocal + @"Codes/CodeClass.db";
 
     private static string CodeConnStr;
+    private static string CodeClassConnStr;
     private static string CodeLogConnStr;
 
     private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
@@ -58,6 +58,13 @@ internal class CodeFileManager
         }.ToString();
         using var CodeLogSQL = new SqliteConnection(CodeLogConnStr);
 
+        CodeClassConnStr = new SqliteConnectionStringBuilder("Data Source=" + CodeClassDB)
+        {
+            Mode = SqliteOpenMode.ReadWriteCreate
+        }.ToString();
+        using var CodeClassSQL = new SqliteConnection(CodeClassConnStr);
+
+        //dll
         string sql = @"create table if not exists dll (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -70,18 +77,33 @@ internal class CodeFileManager
         CodeSQL.Execute(sql);
         CodeLogSQL.Execute(sql);
 
-        sql = @"create table if not exists class (
+        //class
+        CodeSQL.Execute(@"create table if not exists class (
+  `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `UUID` text,
+  `Text` text,
+  `Version` integer,
+  `CreateTime` text,
+  `UpdateTime` text
+);");
+        CodeLogSQL.Execute(@"create table if not exists class (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
   `Text` text,
   `Code` text,
+  `File` text,
   `Version` integer,
   `CreateTime` text,
   `UpdateTime` text
-);";
-        CodeSQL.Execute(sql);
-        CodeLogSQL.Execute(sql);
+);");
+        CodeClassSQL.Execute(@"create table if not exists class (
+  `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `UUID` text,
+  `File` text,
+  `Code` text
+);");
 
+        //robot
         sql = @"create table if not exists robot (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -94,6 +116,7 @@ internal class CodeFileManager
         CodeSQL.Execute(sql);
         CodeLogSQL.Execute(sql);
 
+        //socket
         sql = @"create table if not exists socket (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -106,6 +129,7 @@ internal class CodeFileManager
         CodeSQL.Execute(sql);
         CodeLogSQL.Execute(sql);
 
+        //task
         sql = @"create table if not exists task (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -118,6 +142,7 @@ internal class CodeFileManager
         CodeSQL.Execute(sql);
         CodeLogSQL.Execute(sql);
 
+        //websocket
         sql = @"create table if not exists websocket (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -130,6 +155,7 @@ internal class CodeFileManager
         CodeSQL.Execute(sql);
         CodeLogSQL.Execute(sql);
 
+        //mqtt
         sql = @"create table if not exists mqtt (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
@@ -145,49 +171,92 @@ internal class CodeFileManager
         LoadAll();
     }
 
-    private static void Storage(string Local, object obj)
+    private static void SaveCode(CSFileCode obj, string file = null, string code = null)
     {
-        Task.Run(() =>
-        {
-            try
-            {
-                File.WriteAllText(Local, JsonConvert.SerializeObject(obj, Formatting.Indented));
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        });
-    }
-
-    private static void SaveCode(CSFileCode obj)
-    {
-        string type = obj.Type switch
-        {
-            CodeType.Dll => "dll",
-            CodeType.Class => "class",
-            CodeType.Socket => "socket",
-            CodeType.WebSocket => "websocket",
-            CodeType.Robot => "robot",
-            CodeType.Mqtt => "mqtt",
-            CodeType.Task => "task",
-            _ => throw new ErrorDump("code type error")
-        };
-
         using var CodeSQL = new SqliteConnection(CodeConnStr);
         using var CodeLogSQL = new SqliteConnection(CodeLogConnStr);
-        var list = CodeSQL.Query<CSFileCode>($"SELECT UUID,Text,Version,CreateTime,UpdateTime,Code FROM {type} WHERE UUID=@UUID",
-            new { obj.UUID });
-        if (list.Any())
-        {
-            CSFileCode obj1 = list.First();
-            CodeLogSQL.Execute($"INSERT INTO {type} (UUID,Text,Code,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Code,@Version,@CreateTime,@UpdateTime)", obj1);
 
-            CodeSQL.Execute($"UPDATE {type} SET Text=@Text,Code=@Code,Version=@Version,CreateTime=@CreateTime,UpdateTime=@UpdateTime WHERE UUID=@UUID", obj);
+        if (obj.Type == CodeType.Class)
+        {
+            using var CodeClassSQL = new SqliteConnection(CodeClassConnStr);
+            CSFileCode old = null;
+            var list = CodeSQL.Query<CSFileCode>($"SELECT UUID,Text,Version,CreateTime,UpdateTime FROM class WHERE UUID=@UUID",
+            new { obj.UUID });
+            if (list.Any())
+            {
+                old = list.First();
+                CodeSQL.Execute($"UPDATE class SET Text=@Text,Version=@Version,CreateTime=@CreateTime,UpdateTime=@UpdateTime WHERE UUID=@UUID", obj);
+            }
+            else
+            {
+                CodeSQL.Execute($"INSERT INTO class (UUID,Text,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime)", obj);
+            }
+
+            var list1 = CodeClassSQL.Query<ClassReadObj>("SELECT Code FROM class WHERE UUID=@UUID AND File=@File", new { obj.UUID, File = file });
+            if (list1.Any())
+            {
+                if (old == null)
+                    old = obj;
+                var obj2 = list1.First();
+                CodeLogSQL.Execute($"INSERT INTO class (UUID,Text,Version,CreateTime,UpdateTime,File,Code) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime,@File,@Code)", new
+                {
+                    old.UUID,
+                    old.Text,
+                    old.Version,
+                    old.CreateTime,
+                    old.UpdateTime,
+                    File = file,
+                    obj2.Code
+                });
+
+                CodeClassSQL.Execute($"UPDATE class SET Code=@Code WHERE UUID=@UUID AND File=@File", new { obj.UUID, Code = code, File = file });
+            }
+            else
+            {
+                CodeClassSQL.Execute($"INSERT INTO class (UUID,Code,File) VALUES(@UUID,@Code,@File)", new { obj.UUID, Code = code, File = file });
+            }
         }
         else
         {
-            CodeSQL.Execute($"INSERT INTO {type} (UUID,Text,Code,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Code,@Version,@CreateTime,@UpdateTime)", obj);
+            string type = obj.Type switch
+            {
+                CodeType.Dll => "dll",
+                CodeType.Socket => "socket",
+                CodeType.WebSocket => "websocket",
+                CodeType.Robot => "robot",
+                CodeType.Mqtt => "mqtt",
+                CodeType.Task => "task",
+                _ => throw new ErrorDump("code type error")
+            };
+
+            var list = CodeSQL.Query<CSFileCode>($"SELECT UUID,Text,Version,CreateTime,UpdateTime,Code FROM {type} WHERE UUID=@UUID",
+                new { obj.UUID });
+            if (list.Any())
+            {
+                CSFileCode obj1 = list.First();
+                CodeLogSQL.Execute($"INSERT INTO {type} (UUID,Text,Code,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Code,@Version,@CreateTime,@UpdateTime)", obj1);
+
+                CodeSQL.Execute($"UPDATE {type} SET Text=@Text,Code=@Code,Version=@Version,CreateTime=@CreateTime,UpdateTime=@UpdateTime WHERE UUID=@UUID", obj);
+            }
+            else
+            {
+                CodeSQL.Execute($"INSERT INTO {type} (UUID,Text,Code,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Code,@Version,@CreateTime,@UpdateTime)", obj);
+            }
+        }
+    }
+
+    public static void RemoveClassCode(string uuid, string file)
+    {
+        using var CodeLogSQL = new SqliteConnection(CodeLogConnStr);
+        using var CodeClassSQL = new SqliteConnection(CodeClassConnStr);
+        var list = CodeClassSQL.Query<ClassReadObj>($"SELECT Code FROM class WHERE UUID=@UUID AND File=@File",
+            new { UUID = uuid, File = file });
+        if (list.Any())
+        {
+            ClassReadObj obj1 = list.First();
+            CodeLogSQL.Execute($"INSERT INTO class (UUID,File,Code) VALUES(@UUID,@File,@Code)", new { UUID = uuid, File = file, obj1.Code });
+
+            CodeClassSQL.Execute("DELETE FROM class WHERE UUID=@UUID AND File=@File", new { UUID = uuid, File = file });
         }
     }
 
@@ -218,6 +287,24 @@ internal class CodeFileManager
         }
     }
 
+    public static List<ClassReadObj> GetClassCode(string uuid)
+    {
+        using var CodeClassSQL = new SqliteConnection(CodeClassConnStr);
+        var list = CodeClassSQL.Query<ClassReadObj>("SELECT File,Code FROM class WHERE UUID=@UUID", new { UUID = uuid });
+
+        if (!list.Any())
+            return null;
+
+        return list.ToList();
+    }
+    public static ClassReadObj CheckClassCode(CSFileCode obj, string file)
+    {
+        using var CodeClassSQL = new SqliteConnection(CodeClassConnStr);
+        var list = CodeClassSQL.Query<ClassReadObj>("SELECT File,Code FROM class WHERE UUID=@UUID AND File=@File", new { obj.UUID, File = file });
+
+        return list.FirstOrDefault();
+    }
+
     public static void StorageDll(CSFileCode obj)
     {
         Task.Run(() => SaveCode(obj));
@@ -227,9 +314,9 @@ internal class CodeFileManager
             DllFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageClass(CSFileCode obj)
+    public static void StorageClass(CSFileCode obj, string file, string code)
     {
-        Task.Run(() => SaveCode(obj));
+        SaveCode(obj, file, code);
         if (ClassFileList.ContainsKey(obj.UUID))
             ClassFileList[obj.UUID] = obj;
         else
@@ -424,7 +511,7 @@ Type:{obj.Type}
                 DllFileList.TryAdd(item.UUID, item);
             }
 
-            list = CodeSQL.Query<CSFileCode>("SELECT UUID,Text,Version,CreateTime,UpdateTime,Code FROM class");
+            list = CodeSQL.Query<CSFileCode>("SELECT UUID,Text,Version,CreateTime,UpdateTime FROM class");
             foreach (var item in list)
             {
                 item.Type = CodeType.Class;

@@ -1,6 +1,19 @@
-﻿using HtmlAgilityPack;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.Build;
+using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.Html;
+using ColoryrServer.Core.IoT;
+using ColoryrServer.Core.MQTT;
+using ColoryrServer.Core.Robot;
+using ColoryrServer.Core.TaskUtils;
+using ColoryrServer.Core.WebSocket;
 using ColoryrWork.Lib.Build;
+using HtmlAgilityPack;
+using ICSharpCode.SharpZipLib.Zip;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -16,18 +29,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.Html;
-using ColoryrServer.Core.IoT;
-using ColoryrServer.Core.MQTT;
-using ColoryrServer.Core.Robot;
-using ColoryrServer.Core.TaskUtils;
-using ColoryrServer.Core.WebSocket;
-using ColoryrServer.Core.FileSystem.Code;
-using ColoryrServer.Core.FileSystem.Html;
 
 namespace ColoryrServer.Core
 {
@@ -138,7 +139,7 @@ namespace ColoryrServer.Core
 
                 MQTTServer.Start();
                 RobotUtils.Start();
-                DllBuild.Start();
+                PostBuild.Start();
                 new Thread(MSCon.Start).Start();
                 new Thread(RedisCon.Start).Start();
                 new Thread(OracleCon.Start).Start();

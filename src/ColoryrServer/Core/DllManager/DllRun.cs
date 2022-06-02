@@ -3,7 +3,6 @@ using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -11,7 +10,7 @@ namespace ColoryrServer.Core.DllManager;
 public static class DllRun
 {
     private readonly static Dictionary<string, object> ErrorObj = new() { { "res", 0 }, { "text", "服务器内部错误" } };
-    public static HttpReturn DllGo(DllBuildSave dll, HttpRequest arg, string function)
+    public static HttpReturn DllGo(DllAssembly dll, HttpRequest arg, string function)
     {
         bool isDebug = false;
         try

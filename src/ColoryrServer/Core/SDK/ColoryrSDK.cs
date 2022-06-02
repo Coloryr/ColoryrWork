@@ -628,7 +628,7 @@ public partial class ErrorDump : Exception
         string a = "";
         Exception b = ex;
         while (b != null)
-        { 
+        {
             a += b?.Message + "\n" + b?.StackTrace + "\n";
             b = ex.InnerException;
         }

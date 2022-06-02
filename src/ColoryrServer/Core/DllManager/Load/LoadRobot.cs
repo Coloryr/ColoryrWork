@@ -1,11 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrWork.Lib.Build.Object;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
@@ -13,7 +9,7 @@ internal class LoadRobot
 {
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(CodeType.Robot, uuid);
+        var AssemblySave = new DllAssembly(CodeType.Robot, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First()
                        .GetTypes().Where(x => x.Name == uuid);
@@ -49,7 +45,7 @@ internal class LoadRobot
     {
         using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
         string uuid = FileItem.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载DLL：" + uuid);
+        ServerMain.LogOut("加载Robot：" + uuid);
 
         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

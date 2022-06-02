@@ -2,36 +2,35 @@
 using System.IO;
 using System.Text;
 
-namespace ColoryrWork.Lib.Build
+namespace ColoryrWork.Lib.Build;
+
+public class Logs
 {
-    public class Logs
+    public string log = "logs.log";
+    public string RunLocal;
+    private readonly object lockobject = new();
+
+    public Logs(string RunLocal)
     {
-        public string log = "logs.log";
-        public string RunLocal;
-        private readonly object lockobject = new();
+        this.RunLocal = RunLocal;
+        if (!File.Exists(RunLocal + log))
+            File.Create(RunLocal + log).Close();
+    }
 
-        public Logs(string RunLocal)
+    public void LogWrite(string a)
+    {
+        lock (lockobject)
         {
-            this.RunLocal = RunLocal;
-            if (!File.Exists(RunLocal + log))
-                File.Create(RunLocal + log).Close();
-        }
-
-        public void LogWrite(string a)
-        {
-            lock (lockobject)
+            try
             {
-                try
-                {
-                    var date = DateTime.Now;
-                    string year = date.ToShortDateString().ToString();
-                    string time = date.ToLongTimeString().ToString();
-                    string write = "[" + year + "]" + "[" + time + "]" + a;
-                    File.AppendAllText(RunLocal + log, write + Environment.NewLine, Encoding.UTF8);
-                }
-                catch
-                { }
+                var date = DateTime.Now;
+                string year = date.ToShortDateString().ToString();
+                string time = date.ToLongTimeString().ToString();
+                string write = "[" + year + "]" + "[" + time + "]" + a;
+                File.AppendAllText(RunLocal + log, write + Environment.NewLine, Encoding.UTF8);
             }
+            catch
+            { }
         }
     }
 }

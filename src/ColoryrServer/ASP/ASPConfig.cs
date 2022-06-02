@@ -91,7 +91,7 @@ namespace ColoryrServer.ASP
                 },
                 Robot = new()
                 {
-                    Socket = new() 
+                    Socket = new()
                     {
                         IP = "127.0.0.1",
                         Port = 23333

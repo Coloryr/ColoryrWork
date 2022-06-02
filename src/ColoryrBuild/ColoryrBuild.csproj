@@ -29,6 +29,12 @@
     <Resource Include="ColoryrWork.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Views\CodeWebEditView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
   <Import Project="..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
 
 </Project>

@@ -2,20 +2,17 @@
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
 internal class LoadClass
 {
-    public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null) 
+    public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var AssemblySave = new DllBuildSave(CodeType.Class, uuid);
+        var AssemblySave = new DllAssembly(CodeType.Class, uuid);
         AssemblySave.LoadFromStream(ms, pdb);
         var list = AssemblySave.Assemblies.First()
                        .GetTypes().Where(x => x.Name == uuid);
@@ -52,7 +49,7 @@ internal class LoadClass
     {
         using var FileStream = new FileStream(FileItem.FullName, FileMode.Open, FileAccess.Read);
         string uuid = FileItem.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载DLL：" + uuid);
+        ServerMain.LogOut("加载Class：" + uuid);
 
         var pdb = FileItem.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

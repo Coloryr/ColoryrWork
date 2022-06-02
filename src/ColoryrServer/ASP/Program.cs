@@ -1,21 +1,21 @@
+using ColoryrServer.Core;
+using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
-using HttpMultipartParser;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using ColoryrWork.Lib.Server;
+using HttpMultipartParser;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Newtonsoft.Json;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
-using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.Http;
-using ColoryrServer.Core;
-using ColoryrServer.Core.FileSystem.Html;
 
 namespace ColoryrServer.ASP
 {
@@ -164,7 +164,7 @@ namespace ColoryrServer.ASP
                 var List = ServerMain.Config.User.Where(a => a.Username == Json?.User);
                 if (List.Any())
                 {
-                    var obj1 = DllBuild.StartBuild(Json, List.First()).Data;
+                    var obj1 = Core.DllManager.Build.PostBuild.StartBuild(Json, List.First<Core.FileSystem.UserConfig>()).Data;
                     await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                 }
                 else

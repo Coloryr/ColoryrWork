@@ -1,37 +1,32 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.FileSystem.Code;
-using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenClass
 {
-    public static GenReOBJ StartGen(CSFileCode File)
+    public static GenReOBJ StartGen(CSFileCode obj)
     {
-        var Res = GenCode.StartGen(File.UUID, new()
-        {
-            CSharpSyntaxTree.ParseText(File.Code)
-        });
-        Task.Run(() => CodeFileManager.StorageClass(File));
+        var Res = GenCode.StartGen(obj.UUID,
+            CodeFileManager.GetClassCode(obj.UUID).Select(a =>
+            CSharpSyntaxTree.ParseText(a.Code)).ToList());
         if (!Res.Isok)
         {
-            Res.Res = $"Class[{File.UUID}]" + Res.Res;
+            Res.Res = $"Class[{obj.UUID}]" + Res.Res;
             return Res;
         }
 
         Res.MS.Seek(0, SeekOrigin.Begin);
         Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = LoadClass.Load(File.UUID, Res.MS, Res.MSPdb);
+        var res = LoadClass.Load(obj.UUID, Res.MS, Res.MSPdb);
         if (res != null)
             return res;
 
@@ -41,14 +36,14 @@ internal class GenClass
             Res.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalClass + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalClass + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalClass + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalClass + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(Res.MSPdb.ToArray());
                 FileStream.Flush();
@@ -60,7 +55,7 @@ internal class GenClass
             Res.MS.Close();
             Res.MS.Dispose();
 
-            GenCode.LoadClass(DllStonge.LocalClass + File.UUID + ".dll");
+            GenCode.LoadClass(DllStonge.LocalClass + obj.UUID + ".dll");
 
             GC.Collect();
         });
@@ -68,8 +63,8 @@ internal class GenClass
         return new GenReOBJ
         {
             Isok = true,
-            Res = $"Class[{File.UUID}]编译完成",
-            Time = File.UpdateTime
+            Res = $"Class[{obj.UUID}]编译完成",
+            Time = string.Format("{0:s}", DateTime.Now)
         };
     }
 }

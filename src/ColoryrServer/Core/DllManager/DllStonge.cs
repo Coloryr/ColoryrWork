@@ -4,22 +4,20 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager;
 
 public static class DllStonge
 {
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapDll = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapClass = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapSocket = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapWebSocket = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapRobot = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapMqtt = new();
-    private static readonly ConcurrentDictionary<string, DllBuildSave> MapTask = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapDll = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapClass = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapSocket = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapWebSocket = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapRobot = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapMqtt = new();
+    private static readonly ConcurrentDictionary<string, DllAssembly> MapTask = new();
 
     public static readonly string LocalDll = ServerMain.RunLocal + @"Dll/Dll/";
     public static readonly string LocalClass = ServerMain.RunLocal + @"Dll/Class/";
@@ -41,7 +39,7 @@ public static class DllStonge
         }
     }
 
-    public static DllBuildSave FindClass(AssemblyName name)
+    public static DllAssembly FindClass(AssemblyName name)
     {
         if (MapClass.TryGetValue(name.Name, out var item))
         {
@@ -50,7 +48,7 @@ public static class DllStonge
         return null;
     }
 
-    public static void AddDll(string uuid, DllBuildSave save)
+    public static void AddDll(string uuid, DllAssembly save)
     {
         if (MapDll.ContainsKey(uuid))
         {
@@ -79,7 +77,7 @@ public static class DllStonge
         }
         RemoveAll(LocalDll + uuid);
     }
-    public static DllBuildSave GetDll(string uuid)
+    public static DllAssembly GetDll(string uuid)
     {
         if (MapDll.TryGetValue(uuid, out var save))
         {
@@ -89,7 +87,7 @@ public static class DllStonge
             return null;
     }
 
-    public static void AddClass(string uuid, DllBuildSave save)
+    public static void AddClass(string uuid, DllAssembly save)
     {
         if (MapClass.ContainsKey(uuid))
         {
@@ -118,7 +116,7 @@ public static class DllStonge
         }
         RemoveAll(LocalClass + uuid);
     }
-    public static DllBuildSave GetClass(string uuid)
+    public static DllAssembly GetClass(string uuid)
     {
         if (MapClass.TryGetValue(uuid, out var save))
         {
@@ -128,7 +126,7 @@ public static class DllStonge
             return null;
     }
 
-    public static void AddSocket(string uuid, DllBuildSave save)
+    public static void AddSocket(string uuid, DllAssembly save)
     {
         if (MapSocket.ContainsKey(uuid))
         {
@@ -158,7 +156,7 @@ public static class DllStonge
         RemoveAll(LocalSocket + uuid);
     }
 
-    public static void AddWebSocket(string uuid, DllBuildSave save)
+    public static void AddWebSocket(string uuid, DllAssembly save)
     {
         if (MapWebSocket.ContainsKey(uuid))
         {
@@ -187,12 +185,12 @@ public static class DllStonge
         }
         RemoveAll(LocalWebSocket + uuid);
     }
-    public static List<DllBuildSave> GetWebSocket()
+    public static List<DllAssembly> GetWebSocket()
     {
-        return new List<DllBuildSave>(MapWebSocket.Values);
+        return new List<DllAssembly>(MapWebSocket.Values);
     }
 
-    public static void AddRobot(string uuid, DllBuildSave save)
+    public static void AddRobot(string uuid, DllAssembly save)
     {
         if (MapRobot.ContainsKey(uuid))
         {
@@ -221,12 +219,12 @@ public static class DllStonge
         }
         RemoveAll(LocalRobot + uuid);
     }
-    public static List<DllBuildSave> GetRobot()
+    public static List<DllAssembly> GetRobot()
     {
-        return new List<DllBuildSave>(MapRobot.Values);
+        return new List<DllAssembly>(MapRobot.Values);
     }
 
-    public static void AddMqtt(string uuid, DllBuildSave save)
+    public static void AddMqtt(string uuid, DllAssembly save)
     {
         if (MapMqtt.ContainsKey(uuid))
         {
@@ -255,12 +253,12 @@ public static class DllStonge
         }
         RemoveAll(LocalMqtt + uuid);
     }
-    public static List<DllBuildSave> GetMqtt()
+    public static List<DllAssembly> GetMqtt()
     {
-        return new List<DllBuildSave>(MapMqtt.Values);
+        return new List<DllAssembly>(MapMqtt.Values);
     }
 
-    public static void AddTask(string uuid, DllBuildSave save)
+    public static void AddTask(string uuid, DllAssembly save)
     {
         if (MapTask.ContainsKey(uuid))
         {
@@ -289,7 +287,7 @@ public static class DllStonge
         }
         RemoveAll(LocalRobot + uuid);
     }
-    public static DllBuildSave GetTask(string uuid)
+    public static DllAssembly GetTask(string uuid)
     {
         return MapTask.TryGetValue(uuid, out var dll) ? dll : null;
     }

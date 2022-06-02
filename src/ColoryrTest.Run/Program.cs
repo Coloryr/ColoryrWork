@@ -12,11 +12,11 @@ internal class Program
         {
             Socket.OnOpen = () =>
             {
-                
+
             };
             Socket.OnClose = () =>
             {
-                
+
             };
             Socket.OnMessage = message =>
             {

@@ -1,5 +1,4 @@
-﻿using ColoryrBuild.Windows;
-using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -14,7 +13,7 @@ public abstract partial class CodeListView : UserControl
 {
     public Dictionary<string, CSFileObj> CodeList;
     public Action RefreshAction;
-    
+
     public CodeListView()
     {
         InitializeComponent();

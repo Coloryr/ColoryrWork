@@ -1,15 +1,16 @@
-﻿using ColoryrBuild.Windows;
-using DiffPlex.DiffBuilder.Model;
+﻿using ColoryrBuild.Views;
+using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
+using DiffPlex.DiffBuilder.Model;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using ColoryrBuild.View;
 
 namespace ColoryrBuild;
 
@@ -18,7 +19,7 @@ namespace ColoryrBuild;
 /// </summary>
 public partial class App : Application
 {
-    public const string Version = "1.2.0";
+    public const string Version = "2.0.0";
     /// <summary>
     /// 运行路径
     /// </summary>
@@ -31,13 +32,13 @@ public partial class App : Application
     public static LogWindow LogWindow_;
     public static Login LoginWindow_;
 
-    private record CodeInfo 
+    private record CodeInfo
     {
         public string UUID { get; set; }
         public CodeType Type { get; set; }
     }
 
-    private static Dictionary<CodeInfo, CodeEditView> CodeEdits = new();
+    private static Dictionary<CodeInfo, UserControl> CodeEdits = new();
     private static Logs Logs;
 
     private void Application_Startup(object sender, StartupEventArgs e)
@@ -130,24 +131,33 @@ public partial class App : Application
         string name = type.ToString() + code.UUID;
         if (CodeEdits.ContainsKey(info))
         {
-            var temp = CodeEdits[info];
-            ColoryrBuild.MainWindow.SwitchTo(temp);
+            var temp = CodeEdits[info] as IEditView;
+            ColoryrBuild.MainWindow.SwitchTo(CodeEdits[info]);
             temp.GetCode();
         }
         else
         {
-            var view = new CodeEditView(code, type);
+            UserControl view;
+            if (type == CodeType.Web)
+            {
+                view = new CodeWebEditView(code, type);
+            }
+            else
+            {
+                view = new CodeCSEditView(code, type);
+            }
             CodeEdits.Add(info, view);
             ColoryrBuild.MainWindow.AddCodeEdit(view);
         }
     }
 
-    public static void CloseEdit(CodeEditView view)
+    public static void CloseEdit(UserControl view)
     {
+        var view1 = view as IEditView;
         var info = new CodeInfo
         {
-            UUID = view.obj.UUID,
-            Type = view.type
+            UUID = view1.obj.UUID,
+            Type = view1.type
         };
         if (CodeEdits.ContainsKey(info))
         {

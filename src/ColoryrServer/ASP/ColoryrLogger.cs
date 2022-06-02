@@ -12,7 +12,7 @@ namespace ColoryrServer.ASP
 
         public void Dispose()
         {
-            
+
         }
 
         public bool IsEnabled(LogLevel logLevel)

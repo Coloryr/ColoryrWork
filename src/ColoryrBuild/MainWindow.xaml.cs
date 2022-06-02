@@ -1,5 +1,4 @@
-﻿using ColoryrBuild.View;
-using ColoryrBuild.Views;
+﻿using ColoryrBuild.Views;
 using ColoryrBuild.Views.CodeList;
 using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
@@ -20,11 +19,11 @@ namespace ColoryrBuild
     {
         public delegate void Refresh();
         public static event Refresh CallRefresh;
-        public static Action<CodeEditView> SwitchTo;
-        public static Action<CodeEditView> AddCodeEdit;
-        public static Action<CodeEditView> CloseCodeEdit;
+        public static Action<UserControl> SwitchTo;
+        public static Action<UserControl> AddCodeEdit;
+        public static Action<UserControl> CloseCodeEdit;
 
-        private Dictionary<CodeEditView, TabItem> Views = new();
+        private Dictionary<UserControl, TabItem> Views = new();
 
         public MainWindow()
         {
@@ -49,10 +48,21 @@ namespace ColoryrBuild
                 File.Delete(item);
             }
             var list = await App.HttpUtils.GetApi();
-            foreach (var item in list.List)
+            if (list.List != null)
+                foreach (var item in list.List)
+                {
+                    File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                }
+            dir = App.RunLocal + "CodeTEMP/Common/";
+            if (!Directory.Exists(dir))
             {
-                File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                Directory.CreateDirectory(dir);
             }
+            if (list.Other != null)
+                foreach (var item in list.Other)
+                {
+                    File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                }
         }
 
         public void RefreshCode(CodeType type)
@@ -85,7 +95,7 @@ namespace ColoryrBuild
                     break;
             }
         }
-        
+
         private void Window_Closed(object sender, CancelEventArgs e)
         {
             if (new ChoseWindow("关闭", "你确定要关闭编辑器吗").Set())
@@ -98,7 +108,7 @@ namespace ColoryrBuild
             }
         }
 
-        private void FSwitchTo(CodeEditView view)
+        private void FSwitchTo(UserControl view)
         {
             if (Views.TryGetValue(view, out var temp))
             {
@@ -106,12 +116,13 @@ namespace ColoryrBuild
             }
         }
 
-        private void FAddCodeEdit(CodeEditView view)
+        private void FAddCodeEdit(UserControl view)
         {
+            var view1 = view as IEditView;
             TabItem item = new()
             {
                 Content = view,
-                Header = $"代码编辑{view.type}[{view.obj.UUID}]"
+                Header = $"代码编辑{view1.type}[{view1.obj.UUID}]"
             };
             item.SetValue(StyleProperty, Application.Current.Resources["TabItem"]);
             Tabs.Items.Add(item);
@@ -119,14 +130,15 @@ namespace ColoryrBuild
             Tabs.SelectedItem = item;
         }
 
-        private void FCloseCodeEdit(CodeEditView view) 
+        private void FCloseCodeEdit(UserControl view)
         {
             if (Views.TryGetValue(view, out var temp))
             {
                 Tabs.Items.Remove(temp);
             }
             Views.Remove(view);
-            view.Close();
+            var view1 = view as IEditView;
+            view1.Close();
             GC.Collect();
         }
 
@@ -152,10 +164,15 @@ namespace ColoryrBuild
 
         public void Clear()
         {
-            Title = "代码对比";
+            Title = (Tabs.SelectedItem as TabItem).Header as string;
             DiffView.OldText = " ";
             DiffView.NewText = " ";
             DiffView.Refresh();
+        }
+
+        private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Title = (Tabs.SelectedItem as TabItem).Header as string;
         }
     }
 }

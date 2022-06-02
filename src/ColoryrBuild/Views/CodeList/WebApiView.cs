@@ -1,10 +1,6 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ColoryrBuild.Views.CodeList;

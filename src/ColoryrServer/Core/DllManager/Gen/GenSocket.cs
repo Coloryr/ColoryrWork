@@ -1,12 +1,9 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;

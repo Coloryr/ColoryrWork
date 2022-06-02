@@ -1,20 +1,17 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrWork.Lib.Build.Object;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager;
 
 public static class DllUseSave
 {
-    public static Dictionary<DllBuildSave, List<DllBuildSave>> UseLoad = new();
+    public static Dictionary<DllAssembly, List<DllAssembly>> UseLoad = new();
 
-    public static void AddSave(DllBuildSave key, DllBuildSave item)
+    public static void AddSave(DllAssembly key, DllAssembly item)
     {
-        List<DllBuildSave> list;
+        List<DllAssembly> list;
         if (UseLoad.ContainsKey(key))
         {
             list = UseLoad[key];
@@ -32,7 +29,7 @@ public static class DllUseSave
         list.Add(item);
     }
 
-    public static void Update(DllBuildSave name)
+    public static void Update(DllAssembly name)
     {
         var list = UseLoad.Keys.Where(a => a.Name == name.Name);
         if (list.Any())
@@ -46,7 +43,7 @@ public static class DllUseSave
         }
     }
 
-    public static void Reload(DllBuildSave name)
+    public static void Reload(DllAssembly name)
     {
         switch (name.DllType)
         {

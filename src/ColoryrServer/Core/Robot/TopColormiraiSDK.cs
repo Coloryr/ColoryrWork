@@ -25,7 +25,7 @@ public partial class RobotSDK
         public string UUID { get; set; }
     }
     private record QQCall
-    { 
+    {
         public long QQ { get; set; }
         public string UUID { get; set; }
     }
@@ -144,12 +144,12 @@ public partial class RobotSDK
                 return false;
         }
     }
-    private string GenUUID 
-    { 
+    private string GenUUID
+    {
         get
         {
             return Guid.NewGuid().ToString().Replace("-", "").ToLower();
-        } 
+        }
     }
     /// <summary>
     /// 55 [插件]获取群列表

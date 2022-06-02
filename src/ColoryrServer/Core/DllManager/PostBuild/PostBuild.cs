@@ -13,13 +13,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace ColoryrServer.Core.DllManager;
+namespace ColoryrServer.Core.DllManager.Build;
 
-public static class DllBuild
+public static class PostBuild
 {
     private static readonly string DB = ServerMain.RunLocal + @"Login.db";
     private static string connStr;
-    public static void Start() 
+    public static void Start()
     {
         connStr = new SqliteConnectionStringBuilder("Data Source=" + DB)
         {
@@ -40,7 +40,7 @@ public static class DllBuild
         public string UUID { get; set; }
         public DateTime Time { get; set; }
     }
-    private static bool Check(string User, string UUID) 
+    private static bool Check(string User, string UUID)
     {
         using var DBSQL = new SqliteConnection(connStr);
         var list = DBSQL.Query<LoginObj>("SELECT User,UUID,Time FROM login WHERE User=@User", new { User });
@@ -135,32 +135,7 @@ public static class DllBuild
                         };
                     break;
                 case ReType.AddClass:
-                    if (CodeFileManager.GetClass(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Class,
-                            CreateTime = time,
-                            Code = DemoResource.Class
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageClass(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Class[{json.UUID}]已创建"
-                        };
-                        GenClass.StartGen(File);
-                        ServerMain.LogOut($"Class[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Class[{json.UUID}]已存在"
-                        };
+                    resObj = PostBuildClass.Add(json);
                     break;
                 case ReType.AddSocket:
                     if (CodeFileManager.GetSocket(json.UUID) == null)
@@ -346,12 +321,7 @@ public static class DllBuild
                     resObj = List;
                     break;
                 case ReType.GetClass:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.ClassFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
+                    resObj = PostBuildClass.GetList();
                     break;
                 case ReType.GetSocket:
                     List = new CSFileList();
@@ -405,7 +375,7 @@ public static class DllBuild
                     resObj = CodeFileManager.GetDll(json.UUID);
                     break;
                 case ReType.CodeClass:
-                    resObj = CodeFileManager.GetClass(json.UUID);
+                    resObj = PostBuildClass.GetCode(json);
                     break;
                 case ReType.CodeSocket:
                     resObj = CodeFileManager.GetSocket(json.UUID);
@@ -523,42 +493,7 @@ public static class DllBuild
                     };
                     break;
                 case ReType.UpdataClass:
-                    File = CodeFileManager.GetClass(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Class[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Class[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenClass.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
+                    PostBuildClass.Updata(json);
                     break;
                 case ReType.UpdataSocket:
                     File = CodeFileManager.GetSocket(json.UUID);
@@ -912,6 +847,34 @@ public static class DllBuild
                         Build = true,
                         Message = $"Web[{json.UUID}]已删除"
                     };
+                    break;
+                case ReType.SetIsVue:
+                    File2 = WebFileManager.GetHtml(json.UUID);
+                    if (File2 == null)
+                    {
+                        resObj = new ReMessage
+                        {
+                            Build = false,
+                            Message = $"Web[{json.UUID}]没有找到"
+                        };
+                        break;
+                    }
+
+                    WebFileManager.SetIsVue(File2, json.Code.ToLower() is "true");
+                    resObj = new ReMessage
+                    {
+                        Build = true,
+                        Message = $"Web[{json.UUID}]已设置Vue模式"
+                    };
+                    break;
+                case ReType.AddClassFile:
+                    resObj = PostBuildClass.AddFile(json);
+                    break;
+                case ReType.RemoveClassFile:
+                    resObj = PostBuildClass.RemoveFile(json);
+                    break;
+                case ReType.BuildClass:
+                    resObj = PostBuildClass.Build(json);
                     break;
             }
         }
