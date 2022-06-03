@@ -29,7 +29,6 @@ public partial class App : Application
     public static bool IsLogin { get; private set; }
     public static ConfigObj Config { get; private set; }
     public static MainWindow MainWindow_;
-    public static LogWindow LogWindow_;
     public static Login LoginWindow_;
 
     private record CodeInfo
@@ -61,12 +60,6 @@ public partial class App : Application
         DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-        LogShow("启动", "初始化");
-
-        if (LoginWindow_ == null)
-            LoginWindow_ = new Login();
-
-        LoginWindow_.ShowDialog();
     }
 
     public static void Close()
@@ -99,14 +92,9 @@ public partial class App : Application
     {
         string data = v1 + "|" + v2;
         Logs.LogWrite(data);
-        if (LogWindow_ == null)
-        {
-            LogWindow_ = new();
-            LogWindow_.Show();
-        }
         var date = DateTime.Now;
         string time = date.ToLongTimeString().ToString();
-        LogWindow_.Log($"[{time}]{data}");
+        LogView.AddLog?.Invoke($"[{time}]{data}");
     }
 
     private void NotifyIcon_Click(object sender, EventArgs e)
@@ -156,8 +144,8 @@ public partial class App : Application
         var view1 = view as IEditView;
         var info = new CodeInfo
         {
-            UUID = view1.obj.UUID,
-            Type = view1.type
+            UUID = view1.Obj.UUID,
+            Type = view1.Type
         };
         if (CodeEdits.ContainsKey(info))
         {

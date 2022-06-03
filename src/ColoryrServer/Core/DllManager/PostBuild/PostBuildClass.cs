@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ColoryrServer.Core.DllManager.Build;
+namespace ColoryrServer.Core.DllManager.PostBuild;
 
 internal static class PostBuildClass
 {

@@ -87,7 +87,7 @@ public class HttpUtils
             var item2 = obj["Message"].ToString();
             if (item1 == "False" && item2 == "233")
             {
-                App.LogShow("登录", "登录失效");
+                MessageBox.Show( "登录失效");
                 App.Login();
                 return false;
             }
@@ -136,7 +136,7 @@ public class HttpUtils
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.SetIsVue,
+                Mode = ReType.WebSetIsVue,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -166,7 +166,7 @@ public class HttpUtils
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.SetIsVue,
+                Mode = ReType.WebSetIsVue,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -356,7 +356,7 @@ public class HttpUtils
             }
             else
             {
-                App.LogShow("登录", res.Message);
+                MessageBox.Show("登录", res.Message);
             }
             return false;
         }

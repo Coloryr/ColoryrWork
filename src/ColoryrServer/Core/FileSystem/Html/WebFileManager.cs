@@ -151,8 +151,9 @@ public class WebFileManager
         }.ToString();
 
         using var CodeSQL = new SqliteConnection(CodeWebConnStr);
-        using var CodeLogSQL = new SqliteConnection(CodeWebConnStr);
-        string sql = @"create table if not exists web (
+        using var CodeLogSQL = new SqliteConnection(CodeWebLogConnStr);
+
+        CodeSQL.Execute(@"create table if not exists web (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
   `Text` text,
@@ -160,10 +161,8 @@ public class WebFileManager
   `IsVue` integer,
   `CreateTime` text,
   `UpdateTime` text
-);";
-        CodeSQL.Execute(sql);
-
-        sql = @"create table if not exists web (
+);");
+        CodeLogSQL.Execute(@"create table if not exists web (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `UUID` text,
   `Text` text,
@@ -172,8 +171,7 @@ public class WebFileManager
   `Version` integer,
   `CreateTime` text,
   `UpdateTime` text
-);";
-        CodeLogSQL.Execute(sql);
+);");
 
         if (!File.Exists(HtmlStatic + "index.html"))
         {
@@ -230,9 +228,9 @@ public class WebFileManager
                 {
                     foreach (var item1 in info.GetFiles())
                     {
-                        if (item1.Extension is "json" or "html" or "js")
+                        if (item1.Extension is ".json" or ".html" or ".js")
                         {
-                            item.Codes.Add(item1.Name + "." + item1.Extension, File.ReadAllText(item1.FullName));
+                            item.Codes.Add(item1.Name, File.ReadAllText(item1.FullName));
                         }
                     }
 
@@ -246,7 +244,7 @@ public class WebFileManager
                     var info1 = new DirectoryInfo(dir1);
                     foreach (var item1 in info1.GetFiles())
                     {
-                        if (item1.Extension is not "json" or "html" or "js")
+                        if (item1.Extension is not (".json" or ".html" or ".js"))
                         {
                             item.Files.Add(item1.Name, null);
                         }
@@ -317,17 +315,24 @@ Version:{obj.Version}
     public static void SaveVue(WebObj obj, string name, string code, bool isCode = true, byte[] file = null)
     {
         if (isCode)
+        {
+            string old = obj.Codes[name];
             obj.Codes[name] = code;
+            StorageCode(obj, name, old, code, true, null);
+        }
         else
+        {
             obj.Files[name] = file;
-        Save(obj.UUID, name, code, true, isCode);
+            StorageCode(obj, name, null, code, false, file);
+        }
+ 
         obj.Up();
         Storage(obj);
     }
-    public static void Save(WebObj obj, string name, string code)
+    public static void Save(WebObj obj, string name, string code, string old)
     {
         obj.Codes[name] = code;
-        Save(obj.UUID, name, code, false, false);
+        StorageCode(obj, name, old, code, true,  null);
         HtmlList[obj.UUID][name] = File.ReadAllBytes(WebLocal + obj.UUID + "/" + name);
         obj.Up();
         Storage(obj);
@@ -338,30 +343,19 @@ Version:{obj.Version}
         if (File.Exists(temp + name))
             File.Delete(temp + name);
         HtmlList[obj.UUID].Remove(name);
-        File.WriteAllBytes(temp + name, data);
+        StorageWeb(obj, name, null, false, data);
         HtmlList[obj.UUID].Add(name, data);
         obj.Up();
         Storage(obj);
     }
-    private static void Save(string uuid, string name, string code, bool isVue, bool isCode = true, byte[] file = null)
+    private static void StorageWeb(WebObj obj, string name, string code, bool isCode = true, byte[] file = null)
     {
-        if (isVue)
-        {
-            if (isCode)
-            {
-                File.WriteAllText(WebCodeLocal + uuid + "/" + name, code);
-            }
-            else
-            {
-                File.WriteAllBytes(WebCodeLocal + uuid + "/" + name, file);
-            }
-        }
-        else
-        {
-            string temp = WebLocal + uuid + "/";
-            if (!Directory.Exists(temp))
-                Directory.CreateDirectory(temp);
+        string temp = WebLocal + obj.UUID + "/";
+        if (!Directory.Exists(temp))
+            Directory.CreateDirectory(temp);
 
+        if (isCode)
+        {
             var temp1 = name.Split('.');
             if (temp1.Length == 1)
             {
@@ -390,6 +384,10 @@ Version:{obj.Version}
                 }
             }
         }
+        else
+        {
+            File.WriteAllBytes(temp + name, file);
+        }
     }
 
     public static void AddFile(WebObj obj, string Name, byte[] data)
@@ -408,26 +406,29 @@ Version:{obj.Version}
         Storage(obj);
     }
 
-    private static void StorageFile(WebObj obj, string name, string old, string code, bool isVue = false, bool isCode = false, byte[] file = null)
+    private static void StorageCode(WebObj obj, string name, string old, string code, bool isCode, byte[] file = null)
     {
         try
         {
-            using var CodeLogSQL = new SqliteConnection(CodeWebLogConnStr);
-            CodeLogSQL.Execute($"INSERT INTO web (UUID,Text,Code,Version,CreateTime,UpdateTime,File,Code) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime,@File,@Code)", new
+            if (old != null)
             {
-                obj.UUID,
-                obj.Text,
-                obj.Version,
-                obj.CreateTime,
-                obj.UpdateTime,
-                File = name,
-                Code = old
-            });
+                using var CodeLogSQL = new SqliteConnection(CodeWebLogConnStr);
+                CodeLogSQL.Execute($"INSERT INTO web (UUID,Text,Version,CreateTime,UpdateTime,File,Code) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime,@File,@Code)", new
+                {
+                    obj.UUID,
+                    obj.Text,
+                    obj.Version,
+                    obj.CreateTime,
+                    obj.UpdateTime,
+                    File = name,
+                    Code = old
+                });
+            }
 
             if (code == null)
                 return;
 
-            if (isVue && isCode)
+            if (isCode)
             {
                 obj.Codes[name] = code;
                 File.WriteAllText(WebCodeLocal + obj.UUID + "/" + name, code);
@@ -435,6 +436,10 @@ Version:{obj.Version}
             else
             {
                 File.WriteAllBytes(WebCodeLocal + obj.UUID + "/" + name, file);
+            }
+            if (!obj.IsVue)
+            {
+                StorageWeb(obj, name, code, isCode, file);
             }
         }
         catch (Exception e)
@@ -474,8 +479,8 @@ Version:{obj.Version}
         if (!Directory.Exists(temp))
             Directory.CreateDirectory(temp);
         HtmlCodeList.TryAdd(obj.UUID, obj);
-        StorageFile(obj, "index.html", "", obj.Codes["index.html"]);
-        StorageFile(obj, "js.js", "", obj.Codes["js.js"]);
+        StorageCode(obj, "index.html", "", obj.Codes["index.html"], true);
+        StorageCode(obj, "js.js", "", obj.Codes["js.js"], true);
         obj.Up();
         Storage(obj);
         Dictionary<string, byte[]> list2 = new();
@@ -489,7 +494,7 @@ Version:{obj.Version}
     public static void AddCode(WebObj obj, string name, string code)
     {
         obj.Codes.Add(name, code);
-        Save(obj, name, code);
+        Save(obj, name, code, null);
     }
 
     public static void Remove(WebObj obj, string name)

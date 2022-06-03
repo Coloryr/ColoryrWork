@@ -4,8 +4,8 @@ namespace ColoryrBuild.Views;
 
 internal interface IEditView
 {
-    public CSFileObj obj { get; }
-    public CodeType type { get; }
+    public CSFileObj Obj { get; }
+    public CodeType Type { get; }
     public void Close();
     public void GetCode();
 }

@@ -22,6 +22,7 @@ namespace ColoryrBuild
         public static Action<UserControl> SwitchTo;
         public static Action<UserControl> AddCodeEdit;
         public static Action<UserControl> CloseCodeEdit;
+        public static Action LoginDone;
 
         private Dictionary<UserControl, TabItem> Views = new();
 
@@ -32,8 +33,7 @@ namespace ColoryrBuild
             SwitchTo = FSwitchTo;
             AddCodeEdit = FAddCodeEdit;
             CloseCodeEdit = FCloseCodeEdit;
-            GetApi();
-            CallRefresh.Invoke();
+            LoginDone = FLoginDone;
         }
 
         private async void GetApi()
@@ -70,30 +70,36 @@ namespace ColoryrBuild
             switch (type)
             {
                 case CodeType.Dll:
-                    WebApiView.Action();
+                    WebApiView.Refresh();
                     break;
                 case CodeType.Class:
-                    ClassView.Action();
+                    ClassView.Refresh();
                     break;
                 case CodeType.Socket:
-                    SocketView.Action();
+                    SocketView.Refresh();
                     break;
                 case CodeType.Robot:
-                    RobotView.Action();
+                    RobotView.Refresh();
                     break;
                 case CodeType.WebSocket:
-                    WebSocketView.Action();
+                    WebSocketView.Refresh();
                     break;
                 case CodeType.Mqtt:
-                    MqttView.Action();
+                    MqttView.Refresh();
                     break;
                 case CodeType.Task:
-                    TaskView.Action();
+                    TaskView.Refresh();
                     break;
                 case CodeType.Web:
-                    WebView.Action();
+                    WebView.Refresh();
                     break;
             }
+        }
+
+        public void FLoginDone() 
+        {
+            GetApi();
+            CallRefresh.Invoke();
         }
 
         private void Window_Closed(object sender, CancelEventArgs e)
@@ -122,7 +128,7 @@ namespace ColoryrBuild
             TabItem item = new()
             {
                 Content = view,
-                Header = $"代码编辑{view1.type}[{view1.obj.UUID}]"
+                Header = $"代码编辑{view1.Type}[{view1.Obj.UUID}]"
             };
             item.SetValue(StyleProperty, Application.Current.Resources["TabItem"]);
             Tabs.Items.Add(item);
@@ -148,7 +154,7 @@ namespace ColoryrBuild
             DiffView.OldText = oldText;
             DiffView.NewText = obj.Code;
             DiffView.Refresh();
-            Tabs.SelectedIndex = 2;
+            Tabs.SelectedIndex = 3;
             return DiffView.GetInlineDiffModel();
         }
 
@@ -158,7 +164,7 @@ namespace ColoryrBuild
             DiffView.OldText = oldText;
             DiffView.NewText = new_;
             DiffView.Refresh();
-            Tabs.SelectedIndex = 2;
+            Tabs.SelectedIndex = 3;
             return DiffView.GetInlineDiffModel();
         }
 
@@ -173,6 +179,12 @@ namespace ColoryrBuild
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Title = (Tabs.SelectedItem as TabItem).Header as string;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            App.LogShow("启动", "初始化");
+            App.Login();
         }
     }
 }

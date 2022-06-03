@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.Core.DllManager.Gen;
 using ColoryrWork.Lib.Server;
 using System;
 using System.Collections.Concurrent;
@@ -334,6 +335,7 @@ public static class DllStonge
                 if (item.FullName.Contains(".pdb"))
                     continue;
                 LoadClass.LoadFile(item);
+                GenCode.LoadClass(item.FullName);
             }
             catch (Exception e)
             {

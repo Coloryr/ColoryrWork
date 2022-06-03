@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
@@ -16,7 +17,7 @@ internal class GenClass
     {
         var Res = GenCode.StartGen(obj.UUID,
             CodeFileManager.GetClassCode(obj.UUID).Select(a =>
-            CSharpSyntaxTree.ParseText(a.Code)).ToList());
+            CSharpSyntaxTree.ParseText(a.Code, path: a.File, encoding: Encoding.UTF8)).ToList());
         if (!Res.Isok)
         {
             Res.Res = $"Class[{obj.UUID}]" + Res.Res;

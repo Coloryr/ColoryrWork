@@ -62,6 +62,7 @@ namespace ColoryrBuild.Windows
         private void Window_Closed(object sender, System.EventArgs e)
         {
             App.LoginWindow_ = null;
+            MainWindow.LoginDone();
         }
     }
 }

@@ -8,14 +8,14 @@ namespace ColoryrBuild.Views.CodeList;
 public class MqttView : CodeListView
 {
     private const CodeType Type = CodeType.Mqtt;
-    public static Action Action;
+    public static Action Refresh;
     public MqttView()
     {
-        MainWindow.CallRefresh += Refresh;
-        RefreshAction = Action = Refresh;
+        MainWindow.CallRefresh += FRefresh;
+        RefreshAction = Refresh = FRefresh;
     }
 
-    private async void Refresh()
+    private async void FRefresh()
     {
         var list = await App.HttpUtils.GetList(Type);
         if (list == null)
@@ -46,7 +46,7 @@ public class MqttView : CodeListView
         App.LogShow("创建", list.Message);
         if (list.Build)
         {
-            Refresh();
+            FRefresh();
         }
     }
 

@@ -164,7 +164,7 @@ namespace ColoryrServer.ASP
                 var List = ServerMain.Config.User.Where(a => a.Username == Json?.User);
                 if (List.Any())
                 {
-                    var obj1 = Core.DllManager.Build.PostBuild.StartBuild(Json, List.First<Core.FileSystem.UserConfig>()).Data;
+                    var obj1 = Core.DllManager.PostBuild.PostBuild.StartBuild(Json, List.First<Core.FileSystem.UserConfig>()).Data;
                     await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
                 }
                 else

@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.Core.DataBase;
 using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.Build;
 using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.FileSystem.Html;

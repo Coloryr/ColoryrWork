@@ -19,6 +19,7 @@
             BorderThickness="1"
             FontFamily="Consolas"
             FontSize="14px"
+            KeyDown="textEditor_KeyDown"
             ShowLineNumbers="True"
             SyntaxHighlighting="C#" />
         <TextBox

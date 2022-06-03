@@ -14,6 +14,7 @@
     MinHeight="474"
     Closing="Window_Closed"
     Icon="/ColoryrWork.png"
+    Loaded="Window_Loaded"
     mc:Ignorable="d">
     <Grid>
         <Rectangle
@@ -26,6 +27,9 @@
             SelectionChanged="Tabs_SelectionChanged">
             <TabItem Header="服务器设定" Style="{DynamicResource TabItem}">
                 <views:ServerConfigView />
+            </TabItem>
+            <TabItem Header="日志" Style="{DynamicResource TabItem}">
+                <views:LogView />
             </TabItem>
             <TabItem Header="代码选择" Style="{DynamicResource TabItem}">
                 <TabControl Margin="2">

@@ -1,0 +1,27 @@
+﻿<UserControl
+    x:Class="ColoryrBuild.Views.LogView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ColoryrBuild.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid>
+        <TextBox
+            Name="Text"
+            Margin="3,3,3,3"
+            IsReadOnly="True"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Visible" />
+        <Button
+            Width="40"
+            Height="20"
+            Margin="0,10,30,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="Button_Click"
+            Content="清理" />
+    </Grid>
+</UserControl>

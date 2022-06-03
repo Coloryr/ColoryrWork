@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace ColoryrServer.Core.DllManager.Build;
+namespace ColoryrServer.Core.DllManager.PostBuild;
 
 public static class PostBuild
 {
@@ -278,39 +278,7 @@ public static class PostBuild
                         };
                     break;
                 case ReType.AddWeb:
-                    if (WebFileManager.GetHtml(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File2 = new()
-                        {
-                            UUID = json.UUID,
-                            CreateTime = time,
-                            Text = "",
-                            Codes = new()
-                            {
-                                {
-                                    "index.html",
-                                    DemoResource.Html
-                                    .Replace(CodeDemo.Name, json.UUID)
-                                },
-                                { "js.js", DemoResource.Js }
-                            },
-                            Files = new()
-                        };
-                        WebFileManager.New(File2);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Web[{json.UUID}]已创建"
-                        };
-                        ServerMain.LogOut($"Web[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]已存在"
-                        };
+                    resObj = PostBuildWeb.Add(json);
                     break;
                 case ReType.GetDll:
                     List = new CSFileList();
@@ -364,12 +332,7 @@ public static class PostBuild
                     resObj = List;
                     break;
                 case ReType.GetWeb:
-                    List = new CSFileList();
-                    foreach (var item in WebFileManager.HtmlCodeList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
+                    resObj = PostBuildWeb.GetList();
                     break;
                 case ReType.CodeDll:
                     resObj = CodeFileManager.GetDll(json.UUID);
@@ -393,7 +356,7 @@ public static class PostBuild
                     resObj = CodeFileManager.GetTask(json.UUID);
                     break;
                 case ReType.CodeWeb:
-                    resObj = WebFileManager.GetHtml(json.UUID);
+                    resObj = PostBuildWeb.GetCode(json);
                     break;
                 case ReType.GetApi:
                     resObj = APIFile.list;
@@ -686,186 +649,22 @@ public static class PostBuild
                     };
                     break;
                 case ReType.UpdataWeb:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Web[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File2.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    if (!File2.Codes.TryGetValue(json.Temp, out var code))
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]不存在文件[{json.Temp}]"
-                        };
-                        break;
-                    }
-                    code = FileEdit.StartEdit(code, list);
-                    File2.Text = json.Text;
-
-                    if (File2.IsVue)
-                    {
-
-                    }
-                    else
-                    {
-                        WebFileManager.Save(File2, json.Temp, code);
-                    }
-
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]文件[{json.Temp}]已修改",
-                        UseTime = "0",
-                        Time = File2.UpdateTime
-                    };
+                    resObj = PostBuildWeb.Update(json);
                     break;
                 case ReType.WebAddCode:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]没有找到"
-                        };
-                        break;
-                    }
-                    if (File2.Codes.ContainsKey(json.Code))
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]的源码文件[{json.Code}]已存在"
-                        };
-                        break;
-                    }
-
-                    WebFileManager.AddCode(File2, json.Code, "");
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]已添加源码文件[{json.Code}]"
-                    };
+                    resObj = PostBuildWeb.AddCode(json);
                     break;
                 case ReType.WebRemoveFile:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]没有找到"
-                        };
-                        break;
-                    }
-                    if (json.Code == "index.html")
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]的主文件不允许删除"
-                        };
-                        break;
-                    }
-                    if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.ContainsKey(json.Code))
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]的文件[{json.Code}]不存在"
-                        };
-                        break;
-                    }
-
-                    WebFileManager.Remove(File2, json.Code);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]已删除文件[{json.Code}]"
-                    };
+                    resObj = PostBuildWeb.RemoveFile(json);
                     break;
                 case ReType.WebAddFile:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]没有找到"
-                        };
-                        break;
-                    }
-                    if (File2.Files.ContainsKey(json.Code))
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]的文件[{json.Code}]已存在"
-                        };
-                        break;
-                    }
-
-                    WebFileManager.AddFile(File2, json.Code, BuildUtils.HexStringToByte(json.Temp));
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]已添加文件[{json.Code}]"
-                    };
+                    resObj = PostBuildWeb.WebAddFile(json);
                     break;
                 case ReType.RemoveWeb:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]没有找到"
-                        };
-                        break;
-                    }
-
-                    WebFileManager.DeleteAll(File2);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]已删除"
-                    };
+                    resObj = PostBuildWeb.Remove(json);
                     break;
-                case ReType.SetIsVue:
-                    File2 = WebFileManager.GetHtml(json.UUID);
-                    if (File2 == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Web[{json.UUID}]没有找到"
-                        };
-                        break;
-                    }
-
-                    WebFileManager.SetIsVue(File2, json.Code.ToLower() is "true");
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Web[{json.UUID}]已设置Vue模式"
-                    };
+                case ReType.WebSetIsVue:
+                    resObj = PostBuildWeb.SetIsVue(json);
                     break;
                 case ReType.AddClassFile:
                     resObj = PostBuildClass.AddFile(json);
