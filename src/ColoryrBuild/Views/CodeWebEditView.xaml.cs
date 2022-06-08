@@ -91,11 +91,11 @@ public partial class CodeWebEditView : UserControl, IEditView
         if (Write)
             return;
         Write = true;
-
+        Logs.Text = "";
         var data = await App.HttpUtils.GetWebCode(Obj.UUID);
         if (data == null)
         {
-            App.LogShow("获取代码", $"代码Web[{Obj.UUID}]获取错误");
+            Logs.AppendText($"代码Web[{Obj.UUID}]获取错误");
             Write = false;
             return;
         }
@@ -140,13 +140,14 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
         FileName = Files.First();
         OldCode = textEditor.Text = WebObj.Codes[FileName];
-        App.LogShow("获取代码", $"代码Web[{Obj.UUID}]获取成功");
+        Logs.AppendText($"代码Web[{Obj.UUID}]获取成功");
         Write = false;
     }
 
     private async Task UpdateTask()
     {
         Updata_Button.IsEnabled = false;
+        Logs.Text = "";
         WebObj.Text = Text.Text;
         if (FileName.EndsWith(".html") || FileName.EndsWith(".css")
         || FileName.EndsWith(".js") || FileName.EndsWith(".json")
@@ -154,7 +155,51 @@ public partial class CodeWebEditView : UserControl, IEditView
         {
             WebObj.Codes[FileName] = textEditor.Text.Replace("\r", "");
             Model = App.StartContrast(Type, WebObj.UUID, WebObj.Codes[FileName], OldCode);
-
+            if (Model == null)
+            {
+                Logs.AppendText("代码对比错误");
+                return;
+            }
+            List<CodeEditObj> list = new();
+            for (int pos = 0; pos < Model.Lines.Count; pos++)
+            {
+                var item = Model.Lines[pos];
+                if (item.Type == ChangeType.Unchanged)
+                    continue;
+                EditFun type = EditFun.Edit;
+                switch (item.Type)
+                {
+                    case ChangeType.Deleted:
+                        type = EditFun.Remove;
+                        break;
+                    case ChangeType.Inserted:
+                        type = EditFun.Add;
+                        break;
+                    case ChangeType.Modified:
+                    case ChangeType.Imaginary:
+                        type = EditFun.Edit;
+                        break;
+                }
+                list.Add(new()
+                {
+                    Code = item.Text,
+                    Fun = type,
+                    Line = pos
+                });
+            }
+            var res = await App.HttpUtils.WebFileEdit(WebObj, FileName, list);
+            if (res == null)
+            {
+                Logs.AppendText("文件更新错误");
+            }
+            else
+            {
+                Logs.AppendText("文件更新完成");
+                App.MainWindow_.RefreshCode(Type);
+                WebObj.Up();
+            }
+            App.ClearContrast();
+            Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
         }
         else
         {
@@ -180,41 +225,8 @@ public partial class CodeWebEditView : UserControl, IEditView
     private async void BuildWeb()
     {
         string temp = FileName;
-        Updata_Click(null, null);
-        if (Model == null)
-        {
-            Logs.AppendText("代码对比错误");
-            return;
-        }
-        List<CodeEditObj> list = new();
-        for (int pos = 0; pos < Model.Lines.Count; pos++)
-        {
-            var item = Model.Lines[pos];
-            if (item.Type == ChangeType.Unchanged)
-                continue;
-            EditFun type = EditFun.Edit;
-            switch (item.Type)
-            {
-                case ChangeType.Deleted:
-                    type = EditFun.Remove;
-                    break;
-                case ChangeType.Inserted:
-                    type = EditFun.Add;
-                    break;
-                case ChangeType.Modified:
-                case ChangeType.Imaginary:
-                    type = EditFun.Edit;
-                    break;
-            }
-            list.Add(new()
-            {
-                Code = item.Text,
-                Fun = type,
-                Line = pos
-            });
-        }
         WebObj.Text = Text.Text;
-        var data = await App.HttpUtils.BuildWeb(WebObj, list, FileName);
+        var data = await App.HttpUtils.BuildWeb(WebObj, FileName);
         if (data == null)
         {
             App.LogShow("编译", "服务器返回错误");

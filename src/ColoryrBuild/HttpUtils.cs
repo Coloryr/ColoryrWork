@@ -188,6 +188,37 @@ public class HttpUtils
         }
     }
 
+    public async Task<ReMessage> WebFileEdit(WebObj obj, string file, List<CodeEditObj> list)
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = ReType.UpdataWeb,
+                UUID = obj.UUID,
+                Version = obj.Version,
+                Text = obj.Text,
+                Temp = file,
+                Code = JsonConvert.SerializeObject(list)
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await WebFileEdit(obj, file, list);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public async Task<CSFileList> GetList(CodeType type)
     {
         try
@@ -473,7 +504,7 @@ public class HttpUtils
         }
     }
 
-    public async Task<ReMessage> BuildWeb(CSFileObj obj, List<CodeEditObj> list, string Name)
+    public async Task<ReMessage> BuildWeb(CSFileObj obj, string Name)
     {
         try
         {
@@ -481,11 +512,10 @@ public class HttpUtils
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.UpdataWeb,
+                Mode = ReType.WebBuild,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
-                Code = JsonConvert.SerializeObject(list),
                 Temp = Name
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -494,7 +524,7 @@ public class HttpUtils
             var data = await temp.Content.ReadAsStringAsync();
             if (!CheckLogin(data))
             {
-                return await BuildWeb(obj, list, Name);
+                return await BuildWeb(obj, Name);
             }
             return JsonConvert.DeserializeObject<ReMessage>(data);
         }

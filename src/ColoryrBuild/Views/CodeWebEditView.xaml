@@ -35,12 +35,11 @@
             Content="说明" />
         <TextBox
             x:Name="Text"
-            Margin="46,6,478,0"
+            Margin="46,6,484,0"
             VerticalAlignment="Top"
             TextWrapping="Wrap" />
         <CheckBox
             Name="IsVue"
-            Width="42"
             Margin="0,8,430,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"

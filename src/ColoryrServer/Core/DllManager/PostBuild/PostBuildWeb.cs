@@ -97,14 +97,7 @@ internal static class PostBuildWeb
         code = FileEdit.StartEdit(code, list);
         File2.Text = json.Text;
 
-        if (File2.IsVue)
-        {
-
-        }
-        else
-        {
-            WebFileManager.Save(File2, json.Temp, code, old);
-        }
+        WebFileManager.Save(File2, json.Temp, code, old);
 
         return new ReMessage
         {
@@ -245,5 +238,28 @@ internal static class PostBuildWeb
             Build = true,
             Message = $"Web[{json.UUID}]已设置Vue模式"
         };
+    }
+
+    public static ReMessage Build(BuildOBJ json)
+    {
+        var File2 = WebFileManager.GetHtml(json.UUID);
+        if (File2 == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]没有找到"
+            };
+        }
+        if (!File2.IsVue)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]是非Vue项目，不可构建"
+            };
+        }
+
+        return null;
     }
 }

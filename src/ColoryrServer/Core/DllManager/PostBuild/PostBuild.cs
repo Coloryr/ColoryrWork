@@ -651,6 +651,9 @@ public static class PostBuild
                 case ReType.UpdataWeb:
                     resObj = PostBuildWeb.Update(json);
                     break;
+                case ReType.WebBuild:
+                    resObj = PostBuildWeb.Build(json);
+                    break;
                 case ReType.WebAddCode:
                     resObj = PostBuildWeb.AddCode(json);
                     break;
