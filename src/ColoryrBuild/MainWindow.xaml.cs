@@ -96,7 +96,7 @@ namespace ColoryrBuild
             }
         }
 
-        public void FLoginDone() 
+        public void FLoginDone()
         {
             GetApi();
             CallRefresh.Invoke();

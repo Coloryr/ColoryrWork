@@ -54,7 +54,7 @@ internal static class PostBuildClass
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json) 
+    public static ReMessage Remove(BuildOBJ json)
     {
         CodeFileManager.RemoveFile(CodeType.Class, json.UUID);
         return new ReMessage

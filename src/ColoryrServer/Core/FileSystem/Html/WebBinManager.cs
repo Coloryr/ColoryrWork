@@ -4,10 +4,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem.Html;
 
@@ -85,7 +83,7 @@ public static class WebBinManager
         //HtmlBinList.TryAdd(item.UUID, list2);
     }
 
-    public static void Start() 
+    public static void Start()
     {
         if (!Directory.Exists(WebBinLocal))
             Directory.CreateDirectory(WebBinLocal);
@@ -174,7 +172,7 @@ public static class WebBinManager
         return null;
     }
 
-    public static void DeleteAll(WebObj obj, string dir) 
+    public static void DeleteAll(WebObj obj, string dir)
     {
         string temp = WebBinLocal + obj.UUID + "/";
         foreach (var item in Directory.GetFiles(temp))
@@ -191,12 +189,12 @@ public static class WebBinManager
         HtmlBinList.TryRemove(obj.UUID, out var temp2);
     }
 
-    public static void Save(WebObj obj, string name) 
+    public static void Save(WebObj obj, string name)
     {
         HtmlBinList[obj.UUID][name] = File.ReadAllBytes(WebBinLocal + obj.UUID + "/" + name);
     }
 
-    public static void SaveFile(WebObj obj, string name, byte[] data) 
+    public static void SaveFile(WebObj obj, string name, byte[] data)
     {
         string temp = WebBinLocal + obj.UUID + "/";
         if (File.Exists(temp + name))

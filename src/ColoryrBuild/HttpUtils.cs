@@ -87,7 +87,7 @@ public class HttpUtils
             var item2 = obj["Message"].ToString();
             if (item1 == "False" && item2 == "233")
             {
-                MessageBox.Show( "登录失效");
+                MessageBox.Show("登录失效");
                 App.Login();
                 return false;
             }

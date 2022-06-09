@@ -1,5 +1,4 @@
 ﻿using ColoryrBuild.Windows;
-using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
@@ -7,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Linq;
 
 namespace ColoryrBuild.Views;
 
@@ -329,7 +328,7 @@ public partial class CodeWebEditView : UserControl, IEditView
 
         FileName = data;
     }
-    private async void Download_Click(object sender, RoutedEventArgs e) 
+    private async void Download_Click(object sender, RoutedEventArgs e)
     {
         if (FileList.SelectedItem == null)
             return;

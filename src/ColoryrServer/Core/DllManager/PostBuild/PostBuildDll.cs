@@ -6,15 +6,12 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.PostBuild;
 
 internal static class PostBuildDll
 {
-    public static ReMessage Add(BuildOBJ json) 
+    public static ReMessage Add(BuildOBJ json)
     {
         ReMessage res;
         if (CodeFileManager.GetDll(json.UUID) == null)
@@ -58,7 +55,7 @@ internal static class PostBuildDll
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json) 
+    public static ReMessage Remove(BuildOBJ json)
     {
         CodeFileManager.RemoveFile(CodeType.Dll, json.UUID);
         return new ReMessage
@@ -68,7 +65,7 @@ internal static class PostBuildDll
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json) 
+    public static ReMessage Updata(BuildOBJ json)
     {
         var obj = CodeFileManager.GetDll(json.UUID);
         if (obj == null)

@@ -29,7 +29,7 @@ public class WebFileManager
         public string Codes { get; set; }
         public string Files { get; set; }
 
-        public WebObj ToWeb() 
+        public WebObj ToWeb()
         {
             return new()
             {
@@ -202,14 +202,14 @@ Version:{obj.Version}
         {
             StorageCode(obj, name, null, code, false, file);
         }
- 
+
         obj.Up();
         Storage(obj);
     }
     public static void Save(WebObj obj, string name, string code, string old)
     {
         obj.Codes[name] = code;
-        StorageCode(obj, name, old, code, true,  null);
+        StorageCode(obj, name, old, code, true, null);
         obj.Up();
         Storage(obj);
         WebBinManager.Save(obj, name);
@@ -220,7 +220,7 @@ Version:{obj.Version}
         obj.Up();
         Storage(obj);
     }
-    
+
 
     public static void AddFile(WebObj obj, string Name, byte[] data)
     {

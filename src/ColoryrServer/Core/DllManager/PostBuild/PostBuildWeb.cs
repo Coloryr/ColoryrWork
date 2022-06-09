@@ -4,9 +4,6 @@ using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.PostBuild;
 
@@ -48,7 +45,7 @@ internal static class PostBuildWeb
         return res;
     }
 
-    public static CSFileList GetList() 
+    public static CSFileList GetList()
     {
         var list = new CSFileList();
         foreach (var item in WebFileManager.HtmlCodeList)
@@ -108,7 +105,7 @@ internal static class PostBuildWeb
         };
     }
 
-    public static ReMessage AddCode(BuildOBJ json) 
+    public static ReMessage AddCode(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -136,7 +133,7 @@ internal static class PostBuildWeb
         };
     }
 
-    public static ReMessage RemoveFile(BuildOBJ json) 
+    public static ReMessage RemoveFile(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -172,7 +169,7 @@ internal static class PostBuildWeb
         };
     }
 
-    public static ReMessage WebAddFile(BuildOBJ json) 
+    public static ReMessage WebAddFile(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -200,7 +197,7 @@ internal static class PostBuildWeb
         };
     }
 
-    public static ReMessage Remove(BuildOBJ json) 
+    public static ReMessage Remove(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -220,7 +217,7 @@ internal static class PostBuildWeb
         };
     }
 
-    public static ReMessage SetIsVue(BuildOBJ json) 
+    public static ReMessage SetIsVue(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -289,7 +286,7 @@ internal static class PostBuildWeb
         if (!File2.IsVue)
         {
             item = WebFileManager.ReadFile(json.UUID, json.Code);
-            
+
         }
         else
         {
