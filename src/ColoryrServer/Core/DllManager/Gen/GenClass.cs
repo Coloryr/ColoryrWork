@@ -13,48 +13,54 @@ namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenClass
 {
+    /// <summary>
+    /// 编译Class
+    /// </summary>
+    /// <param name="obj">构建信息</param>
+    /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj)
     {
-        var Res = GenCode.StartGen(obj.UUID,
+        var build = GenCode.StartGen(obj.UUID,
             CodeFileManager.GetClassCode(obj.UUID).Select(a =>
             CSharpSyntaxTree.ParseText(a.Code, path: a.File, encoding: Encoding.UTF8)).ToList());
-        if (!Res.Isok)
+        if (!build.Isok)
         {
-            Res.Res = $"Class[{obj.UUID}]" + Res.Res;
-            return Res;
+            build.Res = $"Class[{obj.UUID}]" + build.Res;
+            return build;
         }
 
-        Res.MS.Seek(0, SeekOrigin.Begin);
-        Res.MSPdb.Seek(0, SeekOrigin.Begin);
+        build.MS.Seek(0, SeekOrigin.Begin);
+        build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = LoadClass.Load(obj.UUID, Res.MS, Res.MSPdb);
+        var res = LoadClass.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
 
+        //保存文件
         Task.Run(() =>
         {
-            Res.MS.Seek(0, SeekOrigin.Begin);
-            Res.MSPdb.Seek(0, SeekOrigin.Begin);
+            build.MS.Seek(0, SeekOrigin.Begin);
+            build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
                 DllStonge.LocalClass + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MS.ToArray());
+                FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
                 DllStonge.LocalClass + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MSPdb.ToArray());
+                FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();
             }
 
-            Res.MSPdb.Close();
-            Res.MSPdb.Dispose();
+            build.MSPdb.Close();
+            build.MSPdb.Dispose();
 
-            Res.MS.Close();
-            Res.MS.Dispose();
+            build.MS.Close();
+            build.MS.Dispose();
 
             GenCode.LoadClass(DllStonge.LocalClass + obj.UUID + ".dll");
 
@@ -64,7 +70,7 @@ internal class GenClass
         return new GenReOBJ
         {
             Isok = true,
-            Res = $"Class[{obj.UUID}]编译完成",
+            Res = $"Class[{obj.UUID}]编译完成\n{build.Res}",
             Time = string.Format("{0:s}", DateTime.Now)
         };
     }

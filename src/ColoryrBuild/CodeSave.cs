@@ -55,6 +55,11 @@ namespace ColoryrBuild
                 {
                     File.Delete(name);
                 }
+                FileInfo info = new(name);
+                if (!Directory.Exists(info.DirectoryName))
+                {
+                    Directory.CreateDirectory(info.DirectoryName);
+                }
                 File.Create(name).Close();
                 using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 if (Stream != null && !string.IsNullOrWhiteSpace(data))

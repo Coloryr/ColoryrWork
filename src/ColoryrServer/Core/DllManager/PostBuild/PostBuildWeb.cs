@@ -64,7 +64,7 @@ internal static class PostBuildWeb
         return WebFileManager.GetHtml(json.UUID);
     }
 
-    public static ReMessage Update(BuildOBJ json)
+    public static ReMessage Updata(BuildOBJ json)
     {
         var File2 = WebFileManager.GetHtml(json.UUID);
         if (File2 == null)
@@ -155,7 +155,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]的主文件不允许删除"
             };
         }
-        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.ContainsKey(json.Code))
+        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.Contains(json.Code))
         {
             return new ReMessage
             {
@@ -183,7 +183,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]没有找到"
             };
         }
-        if (File2.Files.ContainsKey(json.Code))
+        if (File2.Files.Contains(json.Code))
         {
             return new ReMessage
             {
@@ -261,5 +261,54 @@ internal static class PostBuildWeb
         }
 
         return null;
+    }
+
+    public static ReMessage Download(BuildOBJ json)
+    {
+        var File2 = WebFileManager.GetHtml(json.UUID);
+        if (File2 == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]没有找到"
+            };
+        }
+
+        if (!File2.Files.Contains(json.Code))
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]不存在文件{json.Code}"
+            };
+        }
+
+        byte[] item;
+
+        if (!File2.IsVue)
+        {
+            item = WebFileManager.ReadFile(json.UUID, json.Code);
+            
+        }
+        else
+        {
+            item = WebFileManager.ReadFile(json.UUID, json.Code);
+        }
+
+        if (item == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]不存在文件{json.Code}"
+            };
+        }
+
+        return new ReMessage
+        {
+            Build = true,
+            Message = Convert.ToBase64String(item)
+        };
     }
 }

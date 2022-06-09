@@ -12,14 +12,14 @@
     <Grid>
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="textEditor"
+            Name="TextEditor"
             Margin="10,32,165,104"
             Background="#55DADADA"
             BorderBrush="#FF5ABED6"
             BorderThickness="1"
             FontFamily="Consolas"
             FontSize="14px"
-            KeyDown="textEditor_KeyDown"
+            KeyDown="TextEditor_KeyDown"
             ShowLineNumbers="True"
             SyntaxHighlighting="C#" />
         <TextBox

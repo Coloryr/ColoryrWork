@@ -12,57 +12,62 @@ namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenDll
 {
+    /// <summary>
+    /// 编译Dll
+    /// </summary>
+    /// <param name="obj">构建信息</param>
+    /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode File)
     {
-        var Res = GenCode.StartGen(File.UUID, new List<SyntaxTree>
+        var build = GenCode.StartGen(File.UUID, new List<SyntaxTree>
         {
             CSharpSyntaxTree.ParseText(File.Code)
         });
         CodeFileManager.StorageDll(File);
-        if (!Res.Isok)
+        if (!build.Isok)
         {
-            Res.Res = $"Dll[{File.UUID}]" + Res.Res;
-            return Res;
+            build.Res = $"Dll[{File.UUID}]" + build.Res;
+            return build;
         }
 
-        Res.MS.Seek(0, SeekOrigin.Begin);
-        Res.MSPdb.Seek(0, SeekOrigin.Begin);
+        build.MS.Seek(0, SeekOrigin.Begin);
+        build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = LoadDll.Load(File.UUID, Res.MS, Res.MSPdb);
+        var res = LoadDll.Load(File.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
 
         Task.Run(() =>
         {
-            Res.MS.Seek(0, SeekOrigin.Begin);
-            Res.MSPdb.Seek(0, SeekOrigin.Begin);
+            build.MS.Seek(0, SeekOrigin.Begin);
+            build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
                 DllStonge.LocalDll + File.UUID + ".dll", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MS.ToArray());
+                FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
                 DllStonge.LocalDll + File.UUID + ".pdb", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MSPdb.ToArray());
+                FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();
             }
 
-            Res.MSPdb.Close();
-            Res.MSPdb.Dispose();
+            build.MSPdb.Close();
+            build.MSPdb.Dispose();
 
-            Res.MS.Close();
-            Res.MS.Dispose();
+            build.MS.Close();
+            build.MS.Dispose();
             GC.Collect();
         });
 
         return new GenReOBJ
         {
             Isok = true,
-            Res = $"Dll[{File.UUID}]编译完成",
+            Res = $"Dll[{File.UUID}]编译完成\n{build.Res}",
             Time = File.UpdateTime
         };
     }

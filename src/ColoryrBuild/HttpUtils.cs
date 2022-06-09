@@ -326,6 +326,36 @@ public class HttpUtils
         }
     }
 
+    public async Task<ReMessage> WebDownloadFile(WebObj obj, string name)
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = ReType.WebDownloadFile,
+                UUID = obj.UUID,
+                Version = obj.Version,
+                Text = obj.Text,
+                Code = name
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await WebDownloadFile(obj, name);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public async Task<ReMessage> Remove(CodeType type, CSFileObj obj)
     {
         try
@@ -387,7 +417,7 @@ public class HttpUtils
             }
             else
             {
-                MessageBox.Show("登录", res.Message);
+                MessageBox.Show(res.Message);
             }
             return false;
         }

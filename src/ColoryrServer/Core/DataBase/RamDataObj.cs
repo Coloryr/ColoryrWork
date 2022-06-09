@@ -2,6 +2,9 @@ using System.Collections.Concurrent;
 
 namespace ColoryrServer.Core.DataBase;
 
+/// <summary>
+/// 快速方法
+/// </summary>
 public static class ExtensionMethods
 {
     public static void AddOrUpdate<K, V>(this ConcurrentDictionary<K, V> dictionary, K key, V value)
@@ -10,23 +13,33 @@ public static class ExtensionMethods
     }
 }
 
+/// <summary>
+/// 内存数据库内容缓存
+/// </summary>
 public class RamDataObj
 {
+    /// <summary>
+    /// 是否固化
+    /// </summary>
     public bool IsSave { get; set; }
-    public ConcurrentDictionary<string, dynamic> list { get; init; }
+    /// <summary>
+    /// 数据
+    /// </summary>
+    public ConcurrentDictionary<string, dynamic> Data { get; init; }
 
-    public RamDataObj()
+    public RamDataObj(ConcurrentDictionary<string, dynamic> data = null)
     {
-        list = new();
+        if (data == null)
+            Data = new();
+        else
+            Data = data;
     }
 
-    public RamDataObj(ConcurrentDictionary<string, dynamic> lists)
-    {
-        list = lists;
-    }
-
+    /// <summary>
+    /// 删除缓存
+    /// </summary>
     public void Delete()
     {
-        list.Clear();
+        Data.Clear();
     }
 }

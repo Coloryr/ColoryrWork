@@ -7,17 +7,17 @@ public class HttpStatic
 {
     public static HttpReturn Get(string uuid)
     {
-        byte[] temp = WebFileManager.GetByUUID(uuid);
+        byte[] temp = WebBinManager.GetByUUID(uuid);
         return new()
         {
-            Data = temp ?? WebFileManager.BaseDir.Html404,
+            Data = temp ?? WebBinManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpReturn Get(string uuid, string name)
     {
-        var temp = WebFileManager.GetFile(uuid, name);
+        var temp = WebBinManager.GetFile(uuid, name);
         if (temp != null)
         {
             int a = name.LastIndexOf(".");
@@ -42,14 +42,14 @@ public class HttpStatic
         }
         return new()
         {
-            Data = WebFileManager.BaseDir.Html404,
+            Data = WebBinManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpReturn GetStatic(string[] arg)
     {
-        var temp = WebFileManager.BaseDir.GetFile(arg, 0);
+        var temp = WebBinManager.BaseDir.GetFile(arg, 0);
         if (temp != null)
         {
             var a = arg[^1].LastIndexOf(".");
@@ -83,13 +83,13 @@ public class HttpStatic
         }
         return new()
         {
-            Data = WebFileManager.BaseDir.Html404,
+            Data = WebBinManager.BaseDir.Html404,
             ContentType = ServerContentType.HTML
         };
     }
 
     public static HttpResponseStream GetStream(HttpRequest request, string arg)
     {
-        return WebFileManager.GetStream(request, arg);
+        return WebBinManager.GetStream(request, arg);
     }
 }

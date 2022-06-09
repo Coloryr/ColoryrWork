@@ -80,6 +80,6 @@ public class WebHtml
     /// <returns></returns>
     public static byte[] GetWeb(string uuid, string name)
     {
-        return WebFileManager.GetFile(uuid, name);
+        return WebBinManager.GetFile(uuid, name);
     }
 }

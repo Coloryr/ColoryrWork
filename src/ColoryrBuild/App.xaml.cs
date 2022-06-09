@@ -128,7 +128,7 @@ public partial class App : Application
             UserControl view;
             if (type == CodeType.Web)
             {
-                view = new CodeWebEditView(code, type);
+                view = new CodeWebEditView(code);
             }
             else
             {

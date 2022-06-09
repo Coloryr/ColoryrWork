@@ -12,58 +12,63 @@ namespace ColoryrServer.Core.DllManager.Gen;
 
 internal class GenTask
 {
-    public static GenReOBJ StartGen(CSFileCode File)
+    /// <summary>
+    /// 编译Task
+    /// </summary>
+    /// <param name="obj">构建信息</param>
+    /// <returns>编译结果</returns>
+    public static GenReOBJ StartGen(CSFileCode obj)
     {
-        var Res = GenCode.StartGen(File.UUID, new List<SyntaxTree>
+        var build = GenCode.StartGen(obj.UUID, new List<SyntaxTree>
         {
-            CSharpSyntaxTree.ParseText(File.Code)
+            CSharpSyntaxTree.ParseText(obj.Code)
         });
-        Task.Run(() => CodeFileManager.StorageTask(File));
-        if (!Res.Isok)
+        Task.Run(() => CodeFileManager.StorageTask(obj));
+        if (!build.Isok)
         {
-            Res.Res = $"Task[{File.UUID}]" + Res.Res;
-            return Res;
+            build.Res = $"Task[{obj.UUID}]" + build.Res;
+            return build;
         }
 
-        Res.MS.Seek(0, SeekOrigin.Begin);
-        Res.MSPdb.Seek(0, SeekOrigin.Begin);
+        build.MS.Seek(0, SeekOrigin.Begin);
+        build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = LoadTask.Load(File.UUID, Res.MS, Res.MSPdb);
+        var res = LoadTask.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
 
         Task.Run(() =>
         {
-            Res.MS.Seek(0, SeekOrigin.Begin);
-            Res.MSPdb.Seek(0, SeekOrigin.Begin);
+            build.MS.Seek(0, SeekOrigin.Begin);
+            build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalTask + File.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStonge.LocalTask + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MS.ToArray());
+                FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalTask + File.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStonge.LocalTask + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
-                FileStream.Write(Res.MSPdb.ToArray());
+                FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();
             }
 
-            Res.MSPdb.Close();
-            Res.MSPdb.Dispose();
+            build.MSPdb.Close();
+            build.MSPdb.Dispose();
 
-            Res.MS.Close();
-            Res.MS.Dispose();
+            build.MS.Close();
+            build.MS.Dispose();
             GC.Collect();
         });
 
         return new GenReOBJ
         {
             Isok = true,
-            Res = $"Task[{File.UUID}]编译完成",
-            Time = File.UpdateTime
+            Res = $"Task[{obj.UUID}]编译完成\n{build.Res}",
+            Time = obj.UpdateTime
         };
     }
 }

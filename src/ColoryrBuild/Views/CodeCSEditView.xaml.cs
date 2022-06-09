@@ -26,24 +26,26 @@ public partial class CodeCSEditView : UserControl, IEditView
     private string FileName;
     private CSFileCode CsObj;
     private DiffPaneModel Model;
-    private Dictionary<string, string> FileMap = new();
-    private ObservableCollection<string> Files = new();
+    private readonly Dictionary<string, string> FileMap = new();
+    private readonly ObservableCollection<string> Files = new();
     private readonly FileSystemWatcher FileSystemWatcher;
     private readonly string Local;
-    private bool Write;
+    private bool IsWrite;
+    private bool IsUpdate;
+    private bool IsBuild;
 
     public CodeCSEditView(CSFileObj obj, CodeType type)
     {
-        this.Obj = obj;
-        this.Type = type;
+        Obj = obj;
+        Type = type;
 
         InitializeComponent();
 
-        var foldingManager = FoldingManager.Install(textEditor.TextArea);
+        var foldingManager = FoldingManager.Install(TextEditor.TextArea);
         var foldingStrategy = new XmlFoldingStrategy();
-        foldingStrategy.UpdateFoldings(foldingManager, textEditor.Document);
-        textEditor.Options.ShowSpaces = true;
-        textEditor.Options.ShowTabs = true;
+        foldingStrategy.UpdateFoldings(foldingManager, TextEditor.Document);
+        TextEditor.Options.ShowSpaces = true;
+        TextEditor.Options.ShowTabs = true;
 
         if (type is not CodeType.Class)
             CodeA.IsEnabled = false;
@@ -73,28 +75,11 @@ public partial class CodeCSEditView : UserControl, IEditView
         FileSystemWatcher.Dispose();
     }
 
-    private async void OnChanged(object source, FileSystemEventArgs e)
-    {
-        if (Write)
-            return;
-        Write = true;
-        if (e.Name == "main.cs")
-        {
-            CsObj.Code = CodeSave.Load(Local + "main.cs").Replace("\r", "");
-            await Dispatcher.InvokeAsync(() =>
-            {
-                Model = App.StartContrast(CsObj, OldCode);
-                textEditor.Text = CsObj.Code;
-            });
-        }
-        Write = false;
-    }
-
     public async void GetCode()
     {
-        if (Write)
+        if (IsWrite)
             return;
-        Write = true;
+        IsWrite = true;
         Logs.Text = "";
         string time = string.Format("{0:s}", DateTime.Now).Replace(":", "_");
         if (Type == CodeType.Class)
@@ -102,8 +87,8 @@ public partial class CodeCSEditView : UserControl, IEditView
             var res = await App.HttpUtils.GetClassCode(Obj);
             if (res == null)
             {
-                Logs.AppendText("获取代码错误");
-                Write = false;
+                AddLog("获取代码错误");
+                IsWrite = false;
                 return;
             }
             CsObj = res.Obj;
@@ -135,22 +120,23 @@ public partial class CodeCSEditView : UserControl, IEditView
             {
                 ZIPUtils.Pack1(Local, newLocal, $"backup_{time}");
             }
-            catch
+            catch (Exception e)
             {
-                MessageBox.Show("备份失败");
+                MessageBox.Show(e.ToString(), "备份失败");
             }
             Directory.Delete(newLocal, true);
 
             FileName = Files.First();
-            OldCode = textEditor.Text = FileMap[FileName];
+            OldCode = TextEditor.Text = FileMap[FileName];
+            FileList.SelectedItem = FileName;
         }
         else
         {
             var data = await App.HttpUtils.GetCode(Type, Obj.UUID);
             if (data == null)
             {
-                Logs.AppendText("获取代码错误");
-                Write = false;
+                AddLog("获取代码错误");
+                IsWrite = false;
                 return;
             }
             else
@@ -158,7 +144,7 @@ public partial class CodeCSEditView : UserControl, IEditView
 
             CsObj.Code = CsObj.Code;
 
-            textEditor.Text = CsObj.Code;
+            TextEditor.Text = CsObj.Code;
             OldCode = CsObj.Code;
             Text.Text = CsObj.Text;
             if (File.Exists(Local + "main.cs"))
@@ -174,11 +160,53 @@ public partial class CodeCSEditView : UserControl, IEditView
             }
             CodeSave.Save(Local + "main.cs", CsObj.Code);
         }
-        Logs.AppendText("获取代码成功");
-        Write = false;
+        AddLog("获取代码成功");
+        IsWrite = false;
     }
 
-    private bool IsUpdate;
+    private void AddLog(string data)
+    {
+        Logs.AppendText($"[{DateTime.Now}]{data}");
+    }
+
+    private async void OnChanged(object source, FileSystemEventArgs e)
+    {
+        if (IsWrite)
+            return;
+        IsWrite = true;
+        if (Type == CodeType.Class)
+        {
+            string name = e.Name.Replace(".cs", "");
+            if (name.Contains('.'))
+            {
+                IsWrite = false;
+                return;
+            }
+            if (!FileMap.ContainsKey(name))
+            {
+                IsWrite = false;
+                return;
+            }
+            CsObj.Code = CodeSave.Load(Local + e.Name).Replace("\r", "");
+            await Dispatcher.Invoke(async () =>
+            {
+                FileList.SelectedItem = name;
+                Model = App.StartContrast(CsObj, OldCode);
+                TextEditor.Text = CsObj.Code;
+                await UpdateTask();
+            });
+        }
+        else if (e.Name == "main.cs")
+        {
+            CsObj.Code = CodeSave.Load(Local + "main.cs").Replace("\r", "");
+            await Dispatcher.InvokeAsync(() =>
+            {
+                Model = App.StartContrast(CsObj, OldCode);
+                TextEditor.Text = CsObj.Code;
+            });
+        }
+        IsWrite = false;
+    }
 
     private async Task UpdateTask()
     {
@@ -188,7 +216,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         Logs.Text = "";
         Updata_Button.IsEnabled = false;
         CsObj.Text = Text.Text;
-        CsObj.Code = textEditor.Text.Replace("\r", "");
+        CsObj.Code = TextEditor.Text.Replace("\r", "");
         await Dispatcher.InvokeAsync(() =>
         {
             Model = App.StartContrast(CsObj, OldCode);
@@ -225,7 +253,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             var res = App.HttpUtils.ClassFileEdit(CsObj, FileName, list);
             if (res == null)
             {
-                Logs.AppendText("代码上传错误");
+                AddLog("代码上传错误");
                 Updata_Button.IsEnabled = true;
                 IsUpdate = false;
                 return;
@@ -233,10 +261,16 @@ public partial class CodeCSEditView : UserControl, IEditView
 
             CsObj.Next();
             App.MainWindow_.RefreshCode(Type);
-            CodeSave.Save(Local + FileName + ".cs", CsObj.Code);
+            if (!IsWrite)
+            {
+                IsWrite = true;
+                CodeSave.Save(Local + FileName + ".cs", CsObj.Code);
+                IsWrite = false;
+            }
+            FileMap[FileName] = CsObj.Code;
             CsObj.Code = null;
             App.ClearContrast();
-            Logs.AppendText("代码上传成功");
+            AddLog("代码上传成功");
             Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
         }
         Updata_Button.IsEnabled = true;
@@ -255,9 +289,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         ReCode_Button.IsEnabled = true;
     }
 
-    private bool IsBuild = false;
-
-    private async void BuildOther()
+    private async void Build()
     {
         if (IsBuild)
             return;
@@ -305,10 +337,10 @@ public partial class CodeCSEditView : UserControl, IEditView
 
         if (data == null)
         {
-            Logs.AppendText("服务器返回错误");
+            AddLog("服务器返回错误");
             return;
         }
-        Logs.AppendText($"结果:{data.Message}\n" +
+        AddLog($"结果:{data.Message}\n" +
             $"用时:{data.UseTime}\n" +
             $"编译时间:{data.Time}");
         CsObj.Next();
@@ -321,13 +353,13 @@ public partial class CodeCSEditView : UserControl, IEditView
 
     private void Build_Click(object sender, RoutedEventArgs e)
     {
-        if (Write)
+        if (IsWrite)
             return;
         Build_Button.IsEnabled = false;
-        Write = true;
-        BuildOther();
+        IsWrite = true;
+        Build();
         Build_Button.IsEnabled = true;
-        Write = false;
+        IsWrite = false;
     }
 
     private async void Add_Click(object sender, RoutedEventArgs e)
@@ -335,19 +367,19 @@ public partial class CodeCSEditView : UserControl, IEditView
         var data = new InputWindow("文件名").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-        if (data.Contains("\\") || data.Contains("/"))
+        if (data.Contains('\\') || data.Contains('/'))
         {
-            MessageBox.Show("名字非法", "不支持子路径");
+            MessageBox.Show("不支持子路径", "名字非法");
             return;
         }
         Logs.Text = "";
         var res = await App.HttpUtils.AddClassFile(CsObj, data);
         if (res == null)
         {
-            Logs.AppendText("服务器返回错误");
+            AddLog("服务器返回错误");
             return;
         }
-        Logs.AppendText(res.Message);
+        AddLog(res.Message);
         if (res.Build)
         {
             GetCode();
@@ -363,7 +395,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         if (Type == CodeType.Class)
         {
             OldCode = FileMap[data];
-            textEditor.Text = OldCode;
+            TextEditor.Text = OldCode;
         }
         FileName = data;
     }
@@ -376,10 +408,10 @@ public partial class CodeCSEditView : UserControl, IEditView
         var res = await App.HttpUtils.RemoveClassFile(CsObj, data);
         if (res == null)
         {
-            Logs.AppendText("服务器返回错误");
+            AddLog("服务器返回错误");
             return;
         }
-        Logs.AppendText(res.Message);
+        AddLog(res.Message);
         if (res.Build)
         {
             GetCode();
@@ -396,7 +428,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         App.CloseEdit(this);
     }
 
-    private async void textEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    private async void TextEditor_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.S)
         {

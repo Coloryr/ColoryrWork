@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class MysqlCon
+internal static class MysqlCon
 {
     /// <summary>
     /// 连接状态
@@ -85,10 +85,23 @@ public class MysqlCon
     }
 
     /// <summary>
+    /// 关闭Mysql数据库连接
+    /// </summary>
+    private static void Stop()
+    {
+        foreach (var item in State)
+        {
+            State[item.Key] = false;
+        }
+        MySqlConnection.ClearAllPools();
+        ServerMain.LogOut("Mysql数据库已断开");
+    }
+
+    /// <summary>
     /// Mysql初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
-    public static void Start()
+    internal static void Start()
     {
         ServerMain.LogOut($"正在连接Mysql数据库");
         Config = ServerMain.Config.Mysql;
@@ -111,19 +124,7 @@ public class MysqlCon
                 ServerMain.LogError($"Mysql数据库{a}连接失败");
             }
         }
-    }
-
-    /// <summary>
-    /// 关闭Mysql数据库连接
-    /// </summary>
-    public static void Stop()
-    {
-        foreach (var item in State)
-        {
-            State[item.Key] = false;
-        }
-        MySqlConnection.ClearAllPools();
-        ServerMain.LogOut("Mysql数据库已断开");
+        ServerMain.OnStop += Stop;
     }
 
     /// <summary>
@@ -131,7 +132,7 @@ public class MysqlCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    public static MySqlConnection GetConnection(int id)
+    internal static MySqlConnection GetConnection(int id)
     {
         return new MySqlConnection(ConnectStr[id]);
     }

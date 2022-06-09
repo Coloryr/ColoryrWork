@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class RedisCon
+internal static class RedisCon
 {
     /// <summary>
     /// 连接状态
     /// </summary>
-    public static Dictionary<int, bool> State = new();
+    internal static Dictionary<int, bool> State = new();
 
     /// <summary>
     /// 连接池
@@ -43,10 +43,110 @@ public class RedisCon
     }
 
     /// <summary>
+    /// 关闭Redis数据库连接
+    /// </summary>
+    private static void Stop()
+    {
+        foreach (var item in State)
+        {
+            State[item.Key] = false;
+        }
+        ServerMain.LogOut("Redis数据库已断开");
+    }
+
+    /// <summary>
+    /// 根据key获取缓存对象
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>值</returns>
+    internal static RedisValue Get(string key, int id)
+    {
+        try
+        {
+            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
+            return conn.GetDatabase().StringGet(key);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("Redis错误", e);
+        }
+    }
+
+    /// <summary>
+    /// 设置缓存
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <param name="value">值</param>
+    /// <param name="expireMinutes">存在秒</param>
+    internal static bool Set(string key, string value, int expireMinutes, int id)
+    {
+        try
+        {
+            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
+            return conn.GetDatabase().StringSet(key, value);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("Redis错误", e);
+        }
+    }
+    /// <summary>
+    /// 判断在缓存中是否存在该key的缓存数据
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>是否存在</returns>
+    internal static bool Exists(string key, int id)
+    {
+        try
+        {
+            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
+            return conn.GetDatabase().KeyExists(key);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("Redis错误", e);
+        }
+    }
+    /// <summary>
+    /// 移除指定key的缓存
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>是否移除</returns>
+    internal static bool Remove(string key, int id)
+    {
+        try
+        {
+            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
+            return conn.GetDatabase().KeyDelete(key);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("Redis错误", e);
+        }
+    }
+    /// <summary>
+    /// 数据累加
+    /// </summary>
+    /// <param name="key">键</param>
+    /// <returns>累加后的值</returns>
+    internal static long Increment(string key, int id, long val = 1)
+    {
+        try
+        {
+            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
+            return conn.GetDatabase().StringIncrement(key, val);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("Redis错误", e);
+        }
+    }
+
+    /// <summary>
     /// Redis初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
-    public static void Start()
+    internal static void Start()
     {
         ServerMain.LogOut($"正在连接Redis数据库");
         Config = ServerMain.Config.Redis;
@@ -69,105 +169,6 @@ public class RedisCon
                 ServerMain.LogError($"Redis数据库{a}连接失败");
             }
         }
-    }
-
-    /// <summary>
-    /// 关闭Redis数据库连接
-    /// </summary>
-    public static void Stop()
-    {
-        foreach (var item in State)
-        {
-            State[item.Key] = false;
-        }
-        ServerMain.LogOut("Redis数据库已断开");
-    }
-
-    /// <summary>
-    /// 根据key获取缓存对象
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns>值</returns>
-    public static RedisValue Get(string key, int id)
-    {
-        try
-        {
-            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().StringGet(key);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("Redis错误", e);
-        }
-    }
-
-    /// <summary>
-    /// 设置缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
-    /// <param name="expireMinutes">存在秒</param>
-    public static bool Set(string key, string value, int expireMinutes, int id)
-    {
-        try
-        {
-            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().StringSet(key, value);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("Redis错误", e);
-        }
-    }
-    /// <summary>
-    /// 判断在缓存中是否存在该key的缓存数据
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns>是否存在</returns>
-    public static bool Exists(string key, int id)
-    {
-        try
-        {
-            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().KeyExists(key);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("Redis错误", e);
-        }
-    }
-    /// <summary>
-    /// 移除指定key的缓存
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns>是否移除</returns>
-    public static bool Remove(string key, int id)
-    {
-        try
-        {
-            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().KeyDelete(key);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("Redis错误", e);
-        }
-    }
-    /// <summary>
-    /// 数据累加
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns>累加后的值</returns>
-    public static long Increment(string key, int id, long val = 1)
-    {
-        try
-        {
-            var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().StringIncrement(key, val);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("Redis错误", e);
-        }
+        ServerMain.OnStop += Stop;
     }
 }

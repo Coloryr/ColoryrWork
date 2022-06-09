@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class RamDataBase
+internal static class RamDataBase
 {
     internal static bool State;
     /// <summary>
@@ -17,41 +17,9 @@ public class RamDataBase
     private static Thread SaveThread;
 
     /// <summary>
-    /// 初始化缓存
+    /// 停止内存数据库
     /// </summary>
-    public static void Start()
-    {
-        RamCache = new();
-        QueueSave = new();
-        QueueRemove = new();
-        State = true;
-        var list = FileRam.GetAll();
-        foreach (var item in list)
-        {
-            var data = FileRam.Load(item);
-            if (data == null)
-                continue;
-            RamCache.TryAdd(item, new RamDataObj(data));
-        }
-        SaveThread = new Thread(() =>
-        {
-            while (State)
-            {
-                Thread.Sleep(100);
-                if (QueueSave.TryTake(out var temp))
-                {
-                    FileRam.Save(temp, RamCache[temp].list);
-                }
-                if (QueueRemove.TryTake(out var temp1))
-                {
-                    FileRam.Remove(temp1);
-                }
-            }
-        });
-        SaveThread.Start();
-    }
-
-    public static void Stop()
+    private static void Stop()
     {
         State = false;
         if (RamCache != null)
@@ -59,7 +27,7 @@ public class RamDataBase
             foreach (var item in RamCache)
             {
                 if (item.Value.IsSave)
-                    FileRam.Save(item.Key, item.Value.list);
+                    FileRam.Save(item.Key, item.Value.Data);
             }
         }
     }
@@ -75,7 +43,7 @@ public class RamDataBase
         RamCache.TryGetValue(name, out var temp);
         if (temp == null)
             return null;
-        temp.list.TryGetValue(key, out var temp1);
+        temp.Data.TryGetValue(key, out var temp1);
         return temp1;
     }
     /// <summary>
@@ -97,7 +65,7 @@ public class RamDataBase
     {
         if (!HaveCache(name))
             return false;
-        return RamCache[name].list.ContainsKey(Key);
+        return RamCache[name].Data.ContainsKey(Key);
     }
     /// <summary>
     /// 设置缓存，若缓存名不存在新建一个
@@ -110,12 +78,12 @@ public class RamDataBase
         if (!RamCache.ContainsKey(name))
         {
             var item = new RamDataObj();
-            item.list.TryAdd(key, value);
+            item.Data.TryAdd(key, value);
             RamCache.TryAdd(name, item);
         }
-        if (!RamCache[name].list.ContainsKey(key))
-            RamCache[name].list.TryAdd(key, value);
-        RamCache[name].list[key] = value;
+        if (!RamCache[name].Data.ContainsKey(key))
+            RamCache[name].Data.TryAdd(key, value);
+        RamCache[name].Data[key] = value;
         QueueSave.Add(name);
     }
     /// <summary>
@@ -149,7 +117,43 @@ public class RamDataBase
         if (!RamCache.ContainsKey(name))
             return;
         RamCache.TryRemove(name, out var temp);
-        temp.list.Clear();
+        temp.Data.Clear();
         QueueRemove.Add(name);
+    }
+
+    /// <summary>
+    /// 初始化缓存
+    /// </summary>
+    internal static void Start()
+    {
+        RamCache = new();
+        QueueSave = new();
+        QueueRemove = new();
+        State = true;
+        var list = FileRam.GetAll();
+        foreach (var item in list)
+        {
+            var data = FileRam.Load(item);
+            if (data == null)
+                continue;
+            RamCache.TryAdd(item, new RamDataObj(data));
+        }
+        SaveThread = new Thread(() =>
+        {
+            while (State)
+            {
+                Thread.Sleep(100);
+                if (QueueSave.TryTake(out var temp))
+                {
+                    FileRam.Save(temp, RamCache[temp].Data);
+                }
+                if (QueueRemove.TryTake(out var temp1))
+                {
+                    FileRam.Remove(temp1);
+                }
+            }
+        });
+        SaveThread.Start();
+        ServerMain.OnStop += Stop;
     }
 }

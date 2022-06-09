@@ -178,6 +178,8 @@ namespace ColoryrBuild
 
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (Tabs.SelectedItem == null)
+                return;
             Title = (Tabs.SelectedItem as TabItem).Header as string;
         }
 

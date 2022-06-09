@@ -12,7 +12,7 @@
     <Grid>
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="textEditor"
+            Name="TextEditor"
             Margin="10,32,165,104"
             Background="#55DADADA"
             BorderBrush="#FF5ABED6"
@@ -87,6 +87,7 @@
                         <MenuItem Click="Add_Click" Header="添加" />
                         <MenuItem Click="Change_Click" Header="修改" />
                         <MenuItem Click="Delete_Click" Header="删除" />
+                        <MenuItem Click="Download_Click" Header="下载" />
                         <MenuItem Click="ZIP_Click" Header="上传代码压缩包" />
                     </ContextMenu>
                 </ListView.ContextMenu>

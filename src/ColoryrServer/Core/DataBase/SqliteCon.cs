@@ -41,6 +41,19 @@ internal class SqliteCon
     }
 
     /// <summary>
+    /// 关闭Mysql数据库连接
+    /// </summary>
+    private static void Stop()
+    {
+        foreach (var item in State)
+        {
+            State[item.Key] = false;
+        }
+        SqliteConnection.ClearAllPools();
+        ServerMain.LogOut("SQLite数据库已断开");
+    }
+
+    /// <summary>
     /// 尝试重连数据库
     /// </summary>
     /// <param name="id">数据库ID</param>
@@ -81,7 +94,7 @@ internal class SqliteCon
     /// Mysql初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
-    public static void Start()
+    internal static void Start()
     {
         ServerMain.LogOut($"正在连接SQLite数据库");
         Config = ServerMain.Config.SQLite;
@@ -104,19 +117,7 @@ internal class SqliteCon
                 ServerMain.LogError($"SQLite数据库{a}连接失败");
             }
         }
-    }
-
-    /// <summary>
-    /// 关闭Mysql数据库连接
-    /// </summary>
-    public static void Stop()
-    {
-        foreach (var item in State)
-        {
-            State[item.Key] = false;
-        }
-        SqliteConnection.ClearAllPools();
-        ServerMain.LogOut("SQLite数据库已断开");
+        ServerMain.OnStop += Stop;
     }
 
     /// <summary>
@@ -124,7 +125,7 @@ internal class SqliteCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    public static SqliteConnection GetConnection(int id)
+    internal static SqliteConnection GetConnection(int id)
     {
         return new SqliteConnection(ConnectStr[id]);
     }

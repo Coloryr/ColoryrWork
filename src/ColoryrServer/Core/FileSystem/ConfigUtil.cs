@@ -45,7 +45,7 @@ public abstract record MainConfig
     /// </summary>
     public List<UserConfig> User { get; set; }
     /// <summary>
-    /// 不参与动态编译的dll
+    /// 不参与动态编译的.dll
     /// </summary>
     public List<string> NotInclude { get; set; }
     /// <summary>

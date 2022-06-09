@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class OracleCon
+internal static class OracleCon
 {
     /// <summary>
     /// 连接状态
@@ -84,6 +84,19 @@ public class OracleCon
     }
 
     /// <summary>
+    /// 关闭Oracle数据库连接
+    /// </summary>
+    private static void Stop()
+    {
+        foreach (var item in State)
+        {
+            State[item.Key] = false;
+        }
+        OracleConnection.ClearAllPools();
+        ServerMain.LogOut("Oracle数据库已断开");
+    }
+
+    /// <summary>
     /// Oracle初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
@@ -110,19 +123,7 @@ public class OracleCon
                 ServerMain.LogError($"Oracle数据库{a}连接失败");
             }
         }
-    }
-
-    /// <summary>
-    /// 关闭Oracle数据库连接
-    /// </summary>
-    public static void Stop()
-    {
-        foreach (var item in State)
-        {
-            State[item.Key] = false;
-        }
-        OracleConnection.ClearAllPools();
-        ServerMain.LogOut("Oracle数据库已断开");
+        ServerMain.OnStop += Stop;
     }
 
     /// <summary>

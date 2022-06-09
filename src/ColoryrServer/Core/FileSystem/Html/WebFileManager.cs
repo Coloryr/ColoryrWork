@@ -1,6 +1,4 @@
-﻿using ColoryrServer.Core.Utils;
-using ColoryrServer.SDK;
-using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrWork.Lib.Build.Object;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
@@ -9,8 +7,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem.Html;
@@ -19,48 +15,36 @@ public class WebFileManager
 {
     private static readonly string CodeWebDB = ServerMain.RunLocal + "Codes/CodeWeb.db";
     private static readonly string CodeWebLogDB = ServerMain.RunLocal + "Codes/CodeWebLog.db";
-    private static readonly string HtmlStatic = ServerMain.RunLocal + "Static/";
-    private static readonly string WebLocal = ServerMain.RunLocal + "Web/";
     private static readonly string WebCodeLocal = ServerMain.RunLocal + "Codes/Static/";
     private static readonly string WebRemoveLocal = ServerMain.RunLocal + "Removes/Static/";
-    private static readonly string WebNodeJS = WebLocal + "node_modules/";
+    private static readonly string WebNodeJS = WebCodeLocal + "node_modules/";
 
     private static string CodeWebConnStr;
     private static string CodeWebLogConnStr;
-
-    private static readonly ConcurrentDictionary<string, Dictionary<string, byte[]>> HtmlList = new();
-    private static readonly ConcurrentDictionary<string, Dictionary<string, StaticTempFile>> HtmlFileList = new();
-
-    public static StaticDir BaseDir { get; private set; }
     public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
 
-    private static bool IsRun;
-    private static readonly Thread Thread = new(TickTask);
-    private static void TickTask()
+    private class QWebObj : CSFileObj
     {
-        while (IsRun)
+        public bool IsVue { get; set; }
+        public string Codes { get; set; }
+        public string Files { get; set; }
+
+        public WebObj ToWeb() 
         {
-            try
+            return new()
             {
-                foreach (var item in HtmlFileList)
-                {
-                    foreach (var item1 in item.Value)
-                    {
-                        item1.Value.Tick();
-                        if (item1.Value.Time <= 0)
-                        {
-                            item.Value.Remove(item1.Key);
-                        }
-                    }
-                }
-                Thread.Sleep(1000);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
+                UUID = UUID,
+                Text = Text,
+                Version = Version,
+                CreateTime = CreateTime,
+                UpdateTime = UpdateTime,
+                IsVue = IsVue,
+                Codes = new(),
+                Files = new()
+            };
         }
     }
+
     public static WebObj GetHtml(string uuid)
     {
         if (!HtmlCodeList.TryGetValue(uuid, out var item))
@@ -70,69 +54,16 @@ public class WebFileManager
         return item;
     }
 
-    public static byte[] GetByUUID(string uuid)
+    public static byte[] ReadFile(string uuid, string name)
     {
-        if (HtmlList.ContainsKey(uuid))
-        {
-            if (HtmlList[uuid].TryGetValue("index.html", out var temp1))
-                return temp1;
-        }
+        string local = WebCodeLocal + uuid + "/" + name;
+        if (File.Exists(local))
+            return File.ReadAllBytes(local);
         return null;
-    }
-
-    public static byte[] GetFile(string uuid, string name)
-    {
-        if (HtmlList.ContainsKey(uuid))
-        {
-            int index = name.LastIndexOf(".");
-            string type = name[index..];
-            if (ServerMain.Config.Requset.Temp.Contains(type))
-            {
-                if (!HtmlFileList.ContainsKey(uuid))
-                {
-                    HtmlFileList.TryAdd(uuid, new());
-                }
-                if (HtmlFileList[uuid].ContainsKey(name))
-                {
-                    return HtmlFileList[uuid][name].Data;
-                }
-                else
-                {
-                    string local = WebLocal + uuid + "/" + name;
-                    if (File.Exists(local))
-                    {
-                        var data = File.ReadAllBytes(local);
-                        var obj = new StaticTempFile()
-                        {
-                            Data = data
-                        };
-                        obj.Reset();
-                        HtmlFileList[uuid].TryAdd(name, obj);
-                        return data;
-                    }
-                    return null;
-                }
-            }
-            else
-            {
-                if (HtmlList[uuid].TryGetValue(name, out var temp1))
-                    return temp1;
-            }
-        }
-        return null;
-    }
-
-    public static HttpResponseStream GetStream(HttpRequest request, string arg)
-    {
-        return FileHttpStream.StartStream(request, $"{HtmlStatic}/{arg}");
     }
 
     public static void Start()
     {
-        if (!Directory.Exists(HtmlStatic))
-            Directory.CreateDirectory(HtmlStatic);
-        if (!Directory.Exists(WebLocal))
-            Directory.CreateDirectory(WebLocal);
         if (!Directory.Exists(WebCodeLocal))
             Directory.CreateDirectory(WebCodeLocal);
         if (!Directory.Exists(WebRemoveLocal))
@@ -159,6 +90,8 @@ public class WebFileManager
   `Text` text,
   `Version` integer,
   `IsVue` integer,
+  `Codes` text,
+  `Files` text,
   `CreateTime` text,
   `UpdateTime` text
 );");
@@ -173,33 +106,16 @@ public class WebFileManager
   `UpdateTime` text
 );");
 
-        if (!File.Exists(HtmlStatic + "index.html"))
-        {
-            File.WriteAllText(HtmlStatic + "index.html", WebResource.IndexHtml, Encoding.UTF8);
-        }
-
-        if (!File.Exists(HtmlStatic + "404.html"))
-        {
-            File.WriteAllText(HtmlStatic + "404.html", WebResource._404Html, Encoding.UTF8);
-        }
-
-        if (!File.Exists(HtmlStatic + "favicon.ico"))
-        {
-            File.WriteAllBytes(HtmlStatic + "favicon.ico", WebResource.Icon);
-        }
-
-        BaseDir = new StaticDir(HtmlStatic);
-
-        var list = CodeSQL.Query<WebObj>("SELECT UUID,Text,Version,CreateTime,UpdateTime,IsVue FROM web");
+        var list = CodeSQL.Query<QWebObj>("SELECT UUID,Text,Version,CreateTime,UpdateTime,IsVue,Codes,Files FROM web");
 
         foreach (var item in list)
         {
             try
             {
-                item.Codes = new();
-                item.Files = new();
+                var obj = item.ToWeb();
 
                 string dir = WebCodeLocal + item.UUID + "/";
+
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
@@ -207,59 +123,39 @@ public class WebFileManager
 
                 var info = new DirectoryInfo(dir);
 
-                if (item.IsVue)
+                if (item.Codes == null)
+                    item.Codes = "[]";
+                var list1 = JsonConvert.DeserializeObject<List<string>>(item.Codes);
+                foreach (var item1 in list1)
                 {
-                    List<FileInfo> list1 = new();
-                    list1.AddRange(info.GetFiles());
-                    foreach (var item1 in info.GetDirectories())
+                    string local = dir + item1;
+                    if (File.Exists(local))
                     {
-                        if (item1.Name is not "node_modules" or "runtime")
+                        obj.Codes.Add(item1, File.ReadAllText(local));
+                    }
+                }
+
+                if (item.Files == null)
+                    item.Files = "[]";
+                list1 = JsonConvert.DeserializeObject<List<string>>(item.Files);
+                if (obj.IsVue)
+                {
+                    foreach (var item1 in list1)
+                    {
+                        string local = dir + item1;
+                        if (File.Exists(local))
                         {
-                            var files1 = FileUtils.GetDirectoryFile(item1);
-                            foreach (var item2 in files1)
-                            {
-                                string name = item2.FullName.Replace(info.FullName, "");
-                                item.Codes.Add(name, File.ReadAllText(item1.FullName));
-                            }
+                            obj.Files.Add(item1);
                         }
                     }
                 }
                 else
                 {
-                    foreach (var item1 in info.GetFiles())
-                    {
-                        if (item1.Extension is ".json" or ".html" or ".js")
-                        {
-                            item.Codes.Add(item1.Name, File.ReadAllText(item1.FullName));
-                        }
-                    }
-
-                    string dir1 = WebLocal + item.UUID + "/";
-                    if (!Directory.Exists(dir1))
-                    {
-                        Directory.CreateDirectory(dir1);
-                    }
-
-                    var list1 = new List<string>();
-                    var info1 = new DirectoryInfo(dir1);
-                    foreach (var item1 in info1.GetFiles())
-                    {
-                        if (item1.Extension is not (".json" or ".html" or ".js"))
-                        {
-                            item.Files.Add(item1.Name, null);
-                        }
-                    }
-
-                    Dictionary<string, byte[]> list2 = new();
-                    foreach (var item1 in new DirectoryInfo(dir1).GetFiles())
-                    {
-                        if (ServerMain.Config.Requset.Temp.Contains(item1.Extension))
-                            continue;
-                        list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
-                    }
-                    HtmlCodeList.TryAdd(item.UUID, item);
-                    HtmlList.TryAdd(item.UUID, list2);
+                    WebBinManager.LoadWeb(obj, list1);
                 }
+
+                HtmlCodeList.TryAdd(item.UUID, obj);
+                Storage(obj);
 
                 ServerMain.LogOut($"加载Web：{item.UUID}");
             }
@@ -269,13 +165,6 @@ public class WebFileManager
                 ServerMain.LogError(e);
             }
         }
-        IsRun = true;
-        Thread.Start();
-    }
-    public static void Stop()
-    {
-        IsRun = false;
-        BaseDir.Stop();
     }
     public static void SetIsVue(WebObj obj, bool IsVue)
     {
@@ -294,22 +183,11 @@ Version:{obj.Version}
 ";
         File.WriteAllText(dir + "info.txt", info);
         File.WriteAllText(dir + obj.UUID + ".json", JsonConvert.SerializeObject(obj));
-        string temp = WebLocal + obj.UUID + "/";
-        foreach (var item in Directory.GetFiles(temp))
-        {
-            File.Delete(item);
-        }
-        Directory.Delete(temp);
 
-        temp = WebCodeLocal + obj.UUID + ".json";
-        File.Delete(temp);
-
-        foreach (var item in HtmlList[obj.UUID])
-        {
-            File.WriteAllBytes(dir + item.Key, item.Value);
-        }
         HtmlCodeList.TryRemove(obj.UUID, out var temp1);
-        HtmlList.TryRemove(obj.UUID, out var temp2);
+
+        WebBinManager.DeleteAll(obj, dir);
+
         ServerMain.LogOut($"Web[{obj.UUID}]删除");
     }
     public static void SaveVue(WebObj obj, string name, string code, bool isCode = true, byte[] file = null)
@@ -322,7 +200,6 @@ Version:{obj.Version}
         }
         else
         {
-            obj.Files[name] = file;
             StorageCode(obj, name, null, code, false, file);
         }
  
@@ -333,74 +210,21 @@ Version:{obj.Version}
     {
         obj.Codes[name] = code;
         StorageCode(obj, name, old, code, true,  null);
-        HtmlList[obj.UUID][name] = File.ReadAllBytes(WebLocal + obj.UUID + "/" + name);
         obj.Up();
         Storage(obj);
+        WebBinManager.Save(obj, name);
     }
     public static void SaveFile(WebObj obj, string name, byte[] data)
     {
-        string temp = WebLocal + obj.UUID + "/";
-        if (File.Exists(temp + name))
-            File.Delete(temp + name);
-        HtmlList[obj.UUID].Remove(name);
-        StorageWeb(obj, name, null, false, data);
-        HtmlList[obj.UUID].Add(name, data);
+        WebBinManager.StorageWeb(obj, name, null, false, data);
         obj.Up();
         Storage(obj);
     }
-    private static void StorageWeb(WebObj obj, string name, string code, bool isCode = true, byte[] file = null)
-    {
-        string temp = WebLocal + obj.UUID + "/";
-        if (!Directory.Exists(temp))
-            Directory.CreateDirectory(temp);
-
-        if (isCode)
-        {
-            var temp1 = name.Split('.');
-            if (temp1.Length == 1)
-            {
-                File.WriteAllText(temp + name, code, Encoding.UTF8);
-            }
-            else
-            {
-                if (temp1[1] is "html")
-                {
-                    code = Tools.CompressHTML(code);
-                    File.WriteAllText(temp + name, code, Encoding.UTF8);
-                }
-                else if (temp1[1] is "css")
-                {
-                    code = Tools.CompressCSS(code);
-                    File.WriteAllText(temp + name, code, Encoding.UTF8);
-                }
-                else if (temp1[1] is "js")
-                {
-                    code = Tools.CompressJS(code);
-                    File.WriteAllText(temp + name, code, Encoding.UTF8);
-                }
-                else
-                {
-                    File.WriteAllText(temp + name, code, Encoding.UTF8);
-                }
-            }
-        }
-        else
-        {
-            File.WriteAllBytes(temp + name, file);
-        }
-    }
+    
 
     public static void AddFile(WebObj obj, string Name, byte[] data)
     {
-        string temp = WebLocal + obj.UUID + "/";
-        if (!Directory.Exists(temp))
-            Directory.CreateDirectory(temp);
-
-        File.WriteAllBytes(temp + Name, data);
-
-        if (!obj.IsVue)
-            HtmlList[obj.UUID].Add(Name, data);
-        HtmlCodeList[obj.UUID].Files.Add(Name, data);
+        HtmlCodeList[obj.UUID].Files.Add(Name);
 
         obj.Up();
         Storage(obj);
@@ -410,6 +234,12 @@ Version:{obj.Version}
     {
         try
         {
+            string local = WebCodeLocal + obj.UUID + "/" + name;
+            FileInfo info = new(local);
+            if (!Directory.Exists(info.DirectoryName))
+            {
+                Directory.CreateDirectory(info.DirectoryName);
+            }
             if (old != null)
             {
                 using var CodeLogSQL = new SqliteConnection(CodeWebLogConnStr);
@@ -425,21 +255,14 @@ Version:{obj.Version}
                 });
             }
 
-            if (code == null)
-                return;
-
             if (isCode)
             {
                 obj.Codes[name] = code;
-                File.WriteAllText(WebCodeLocal + obj.UUID + "/" + name, code);
+                File.WriteAllText(local, code);
             }
             else
             {
-                File.WriteAllBytes(WebCodeLocal + obj.UUID + "/" + name, file);
-            }
-            if (!obj.IsVue)
-            {
-                StorageWeb(obj, name, code, isCode, file);
+                File.WriteAllBytes(local, file);
             }
         }
         catch (Exception e)
@@ -455,15 +278,28 @@ Version:{obj.Version}
             try
             {
                 using var CodeSQL = new SqliteConnection(CodeWebConnStr);
-                var list = CodeSQL.Query<CSFileObj>($"SELECT UUID,Text,Version,CreateTime,UpdateTime FROM web WHERE UUID=@UUID",
+                var list = CodeSQL.Query<QWebObj>($"SELECT UUID,Text,Version,CreateTime,UpdateTime,Files,Codes,IsVue FROM web WHERE UUID=@UUID",
                     new { obj.UUID });
+
+                var obj1 = new
+                {
+                    obj.UUID,
+                    obj.Text,
+                    obj.Version,
+                    obj.CreateTime,
+                    obj.UpdateTime,
+                    obj.IsVue,
+                    Codes = JsonConvert.SerializeObject(obj.Codes.Keys),
+                    Files = JsonConvert.SerializeObject(obj.Files)
+                };
+
                 if (list.Any())
                 {
-                    CodeSQL.Execute($"UPDATE web SET Text=@Text,Version=@Version,CreateTime=@CreateTime,UpdateTime=@UpdateTime WHERE UUID=@UUID", obj);
+                    CodeSQL.Execute($"UPDATE web SET Text=@Text,Version=@Version,CreateTime=@CreateTime,UpdateTime=@UpdateTime,Files=@Files,Codes=@Codes,IsVue=@IsVue WHERE UUID=@UUID", obj1);
                 }
                 else
                 {
-                    CodeSQL.Execute($"INSERT INTO web (UUID,Text,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime)", obj);
+                    CodeSQL.Execute($"INSERT INTO web (UUID,Text,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime)", obj1);
                 }
             }
             catch (Exception e)
@@ -475,20 +311,11 @@ Version:{obj.Version}
 
     public static void New(WebObj obj)
     {
-        string temp = WebLocal + obj.UUID + "/";
-        if (!Directory.Exists(temp))
-            Directory.CreateDirectory(temp);
         HtmlCodeList.TryAdd(obj.UUID, obj);
         StorageCode(obj, "index.html", "", obj.Codes["index.html"], true);
         StorageCode(obj, "js.js", "", obj.Codes["js.js"], true);
         obj.Up();
         Storage(obj);
-        Dictionary<string, byte[]> list2 = new();
-        foreach (var item1 in new DirectoryInfo(WebLocal + obj.UUID).GetFiles())
-        {
-            list2.Add(item1.Name, File.ReadAllBytes(item1.FullName));
-        }
-        HtmlList.TryAdd(obj.UUID, list2);
     }
 
     public static void AddCode(WebObj obj, string name, string code)
@@ -499,10 +326,6 @@ Version:{obj.Version}
 
     public static void Remove(WebObj obj, string name)
     {
-        string temp = WebLocal + obj.UUID + "/";
-        if (!Directory.Exists(temp))
-            Directory.CreateDirectory(temp);
-
         var temp1 = name.Split('.');
         if (temp1.Length != 1)
         {
@@ -513,10 +336,6 @@ Version:{obj.Version}
             else
                 HtmlCodeList[obj.UUID].Files.Remove(name);
         }
-        if (File.Exists(temp + name))
-            File.Delete(temp + name);
-        HtmlList[obj.UUID].Remove(name);
-
         obj.Up();
         Storage(obj);
     }

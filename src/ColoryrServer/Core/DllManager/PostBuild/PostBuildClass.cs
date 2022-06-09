@@ -54,6 +54,16 @@ internal static class PostBuildClass
         return list;
     }
 
+    public static ReMessage Remove(BuildOBJ json) 
+    {
+        CodeFileManager.RemoveFile(CodeType.Class, json.UUID);
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Class[{json.UUID}]已删除"
+        };
+    }
+
     public static ClassCodeGetObj GetCode(BuildOBJ json)
     {
         var list = CodeFileManager.GetClassCode(json.UUID);
@@ -95,6 +105,7 @@ internal static class PostBuildClass
         code.Code = FileEdit.StartEdit(code.Code, list);
         obj.Text = json.Text;
 
+        obj.Next();
         CodeFileManager.StorageClass(obj, json.Temp, code.Code);
 
         return new ReMessage

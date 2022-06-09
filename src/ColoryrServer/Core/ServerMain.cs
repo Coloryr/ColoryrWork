@@ -30,169 +30,165 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core
+namespace ColoryrServer.Core;
+
+public class ServerMain
 {
-    public class ServerMain
+    public const string Version = "2.0.0";
+    /// <summary>
+    /// 配置文件
+    /// </summary>
+    public static MainConfig Config { get; set; }
+    /// <summary>
+    /// 运行路径
+    /// </summary>
+    public static string RunLocal { get; private set; }
+    /// <summary>
+    /// 配置文件操作
+    /// </summary>
+    public static ConfigUtil ConfigUtil { get; set; }
+
+    /// <summary>
+    /// 服务器停止时的回调
+    /// </summary>
+    public delegate void StopCall();
+    /// <summary>
+    /// 服务器停止时触发的事件
+    /// </summary>
+    public static event StopCall OnStop;
+
+    /// <summary>
+    /// 日志输出
+    /// </summary>
+    private static Logs Logs;
+    /// <summary>
+    /// 写错误到日志中
+    /// </summary>
+    /// <param name="e">Exception</param>
+    public static void LogError(Exception e)
     {
-        public const string Version = "2.0.0";
-        /// <summary>
-        /// 配置文件
-        /// </summary>
-        public static MainConfig Config { get; set; }
-        /// <summary>
-        /// 运行路径
-        /// </summary>
-        public static string RunLocal { get; private set; }
-        /// <summary>
-        /// 配置文件操作
-        /// </summary>
-        public static ConfigUtil ConfigUtil { get; set; }
-
-        /// <summary>
-        /// 日志输出
-        /// </summary>
-        private static Logs Logs;
-        /// <summary>
-        /// 写错误到日志中
-        /// </summary>
-        /// <param name="e">Exception</param>
-        public static void LogError(Exception e)
+        string a = "[错误]" + e.ToString();
+        Task.Run(() =>
         {
-            string a = "[错误]" + e.ToString();
-            Task.Run(() =>
-            {
-                Logs.LogWrite(a);
-                Console.WriteLine(a);
-            });
-        }
-        /// <summary>
-        /// 写错误到日志中
-        /// </summary>
-        /// <param name="a">信息</param>
-        public static void LogError(string a)
+            Logs.LogWrite(a);
+            Console.WriteLine(a);
+        });
+    }
+    /// <summary>
+    /// 写错误到日志中
+    /// </summary>
+    /// <param name="a">信息</param>
+    public static void LogError(string a)
+    {
+        a = "[错误]" + a;
+        Task.Run(() =>
         {
-            a = "[错误]" + a;
-            Task.Run(() =>
-            {
-                Logs.LogWrite(a);
-                Console.WriteLine(a);
-            });
-        }
-        /// <summary>
-        /// 写信息到日志中
-        /// </summary>
-        /// <param name="a">信息</param>
-        public static void LogOut(string a)
+            Logs.LogWrite(a);
+            Console.WriteLine(a);
+        });
+    }
+    /// <summary>
+    /// 写信息到日志中
+    /// </summary>
+    /// <param name="a">信息</param>
+    public static void LogOut(string a)
+    {
+        a = "[信息]" + a;
+        Task.Run(() =>
         {
-            a = "[信息]" + a;
-            Task.Run(() =>
-            {
-                Logs.LogWrite(a);
-                Console.WriteLine(a);
-            });
-        }
+            Logs.LogWrite(a);
+            Console.WriteLine(a);
+        });
+    }
 
-        public static void Start()
+    public static void Start()
+    {
+        try
         {
-            try
+            Console.WriteLine($"ColoryrServer版本:{Version}");
+            //初始化运行路径
+            RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
+            if (!Directory.Exists(RunLocal))
             {
-                Console.WriteLine($"ColoryrServer版本:{Version}");
-                //初始化运行路径
-                RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
-                if (!Directory.Exists(RunLocal))
-                {
-                    Directory.CreateDirectory(RunLocal);
-                }
-                //设置编码
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                //创建日志文件
-                Logs = new Logs(RunLocal);
-                //配置文件
-                ConfigUtil.Start();
-                CodeFileManager.Start();
-                NoteFile.Start();
-                APIFile.Start();
-                FileTemp.Start();
-                FileRam.Start();
-                TaskThread.Start();
-                HttpClientUtils.Start();
-
-                //给编译用的，防DLL找不到
-                var test2 = new HtmlDocument();
-                dynamic test = new HttpResponseMessage();
-                var test1 = test.IsSuccessStatusCode;
-                test.Dispose();
-                Parallel.ForEach(new List<string>(), (i, b) => { });
-                Image<Rgba32> bitmap = new(1, 1);
-                SystemFonts.Families.GetEnumerator();
-                bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
-                bitmap.Dispose();
-                Stream zip = Stream.Null;
-                Stream zip1 = Stream.Null;
-                ZipEntry entry = new("1");
-                NameValueCollection nameValue = new();
-                Regex re = new("");
-                Aes aes = Aes.Create();
-                aes.Dispose();
-
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-                MQTTServer.Start();
-                RobotUtils.Start();
-                PostBuild.Start();
-                new Thread(MSCon.Start).Start();
-                new Thread(RedisCon.Start).Start();
-                new Thread(OracleCon.Start).Start();
-                new Thread(MysqlCon.Start).Start();
-                new Thread(SqliteCon.Start).Start();
-                RamDataBase.Start();
-                GenCode.Start();
-                DllStonge.Start();
-                WebFileManager.Start();
-                FileHttpStream.Start();
-                SocketServer.Start();
-                ServerWebSocket.Start();
-
-                //等待初始化完成
-                Thread.Sleep(2000);
+                Directory.CreateDirectory(RunLocal);
             }
-            catch (Exception e)
-            {
-                LogError(e);
-                Console.Read();
-            }
+            //设置编码
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //创建日志文件
+            Logs = new Logs(RunLocal);
+            //配置文件
+            ConfigUtil.Start();
+            CodeFileManager.Start();
+            NoteFile.Start();
+            APIFile.Start();
+            FileTemp.Start();
+            FileRam.Start();
+            TaskThread.Start();
+            HttpClientUtils.Start();
+
+            //给编译用的，防DLL找不到
+            var test2 = new HtmlDocument();
+            dynamic test = new HttpResponseMessage();
+            var test1 = test.IsSuccessStatusCode;
+            test.Dispose();
+            Parallel.ForEach(new List<string>(), (i, b) => { });
+            Image<Rgba32> bitmap = new(1, 1);
+            SystemFonts.Families.GetEnumerator();
+            bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
+            bitmap.Dispose();
+            Stream zip = Stream.Null;
+            Stream zip1 = Stream.Null;
+            ZipEntry entry = new("1");
+            NameValueCollection nameValue = new();
+            Regex re = new("");
+            Aes aes = Aes.Create();
+            aes.Dispose();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            MQTTServer.Start();
+            RobotUtils.Start();
+            PostBuild.Start();
+            new Thread(MSCon.Start).Start();
+            new Thread(RedisCon.Start).Start();
+            new Thread(OracleCon.Start).Start();
+            new Thread(MysqlCon.Start).Start();
+            new Thread(SqliteCon.Start).Start();
+            RamDataBase.Start();
+            GenCode.Start();
+            DllStonge.Start();
+            WebFileManager.Start();
+            FileHttpStream.Start();
+            SocketServer.Start();
+            ServerWebSocket.Start();
+
+            //等待初始化完成
+            Thread.Sleep(2000);
         }
-
-        public static void Stop()
+        catch (Exception e)
         {
-            LogOut("正在关闭");
-            MysqlCon.Stop();
-            SqliteCon.Stop();
-            MSCon.Stop();
-            SocketServer.Stop();
-            ServerWebSocket.Stop();
-            RobotUtils.Stop();
-            RedisCon.Stop();
-            OracleCon.Stop();
-            RamDataBase.Stop();
-            MQTTServer.Stop();
-            TaskThread.Stop();
-            HttpClientUtils.Stop();
-            WebFileManager.Stop();
-            LogOut("已关闭");
+            LogError(e);
+            Console.Read();
         }
+    }
 
-        public static void Command(string command)
+    public static void Stop()
+    {
+        LogOut("正在关闭");
+        OnStop.Invoke();
+        LogOut("已关闭");
+    }
+
+    public static void Command(string command)
+    {
+        if (command == null)
+            return;
+        var arg = command.Split(' ');
+        switch (arg[0])
         {
-            if (command == null)
-                return;
-            var arg = command.Split(' ');
-            switch (arg[0])
-            {
-                case "html":
-                    break;
+            case "html":
+                break;
 
-            }
         }
     }
 }

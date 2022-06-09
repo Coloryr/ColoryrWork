@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ColoryrServer.Core.DataBase;
 
-public class MSCon
+internal static class MSCon
 {
     /// <summary>
     /// 连接状态
@@ -85,10 +85,23 @@ public class MSCon
     }
 
     /// <summary>
+    /// 关闭Ms数据库连接
+    /// </summary>
+    private static void Stop()
+    {
+        foreach (var item in State)
+        {
+            State[item.Key] = false;
+        }
+        SqlConnection.ClearAllPools();
+        ServerMain.LogOut("Ms数据库已断开");
+    }
+
+    /// <summary>
     /// MSCon初始化
     /// </summary>
     /// <returns>是否连接成功</returns>
-    public static void Start()
+    internal static void Start()
     {
         ServerMain.LogOut($"正在连接Ms数据库");
         Config = ServerMain.Config.MSsql;
@@ -111,19 +124,7 @@ public class MSCon
                 ServerMain.LogError($"Ms数据库{a}连接失败");
             }
         }
-    }
-
-    /// <summary>
-    /// 关闭Ms数据库连接
-    /// </summary>
-    public static void Stop()
-    {
-        foreach (var item in State)
-        {
-            State[item.Key] = false;
-        }
-        SqlConnection.ClearAllPools();
-        ServerMain.LogOut("Ms数据库已断开");
+        ServerMain.OnStop += Stop;
     }
 
     /// <summary>
@@ -131,7 +132,7 @@ public class MSCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    public static SqlConnection GetConnection(int id)
+    internal static SqlConnection GetConnection(int id)
     {
         return new SqlConnection(ConnectStr[id]);
     }

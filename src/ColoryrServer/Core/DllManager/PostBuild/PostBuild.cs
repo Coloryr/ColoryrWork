@@ -99,586 +99,64 @@ public static class PostBuild
         }
         else if (Check(json.User, json.Token))
         {
-            GenReOBJ BuildBack;
-            Stopwatch SW;
-            CSFileCode File;
-            WebObj File2;
-            CSFileList List;
-            switch (json.Mode)
+            resObj = json.Mode switch
             {
-                case ReType.AddDll:
-                    if (CodeFileManager.GetDll(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Dll,
-                            CreateTime = time,
-                            Code = DemoResource.Dll
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageDll(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Dll[{json.UUID}]已创建"
-                        };
-                        GenDll.StartGen(File);
-                        ServerMain.LogOut($"Dll[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Dll[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddClass:
-                    resObj = PostBuildClass.Add(json);
-                    break;
-                case ReType.AddSocket:
-                    if (CodeFileManager.GetSocket(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Socket,
-                            CreateTime = time,
-                            Code = DemoResource.Socket
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageSocket(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Socket[{json.UUID}]已创建"
-                        };
-                        GenSocket.StartGen(File);
-                        ServerMain.LogOut($"Socket[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Socket[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddWebSocket:
-                    if (CodeFileManager.GetWebSocket(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.WebSocket,
-                            CreateTime = time,
-                            Code = DemoResource.WebSocket
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageWebSocket(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"WebSocket[{json.UUID}]已创建"
-                        };
-                        GenWebSocket.StartGen(File);
-                        ServerMain.LogOut($"WebSocket[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"WebSocket[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddRobot:
-                    if (CodeFileManager.GetRobot(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Robot,
-                            CreateTime = time,
-                            Code = DemoResource.Robot
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageRobot(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Robot[{json.UUID}]已创建"
-                        };
-                        GenRobot.StartGen(File);
-                        ServerMain.LogOut($"Robot[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Robot[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddMqtt:
-                    if (CodeFileManager.GetMqtt(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Mqtt,
-                            CreateTime = time,
-                            Code = DemoResource.Mqtt
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageMqtt(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Mqtt[{json.UUID}]已创建"
-                        };
-                        GenMqtt.StartGen(File);
-                        ServerMain.LogOut($"Mqtt[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Mqtt[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddTask:
-                    if (CodeFileManager.GetTask(json.UUID) == null)
-                    {
-                        var time = string.Format("{0:s}", DateTime.Now);
-                        File = new()
-                        {
-                            UUID = json.UUID,
-                            Type = CodeType.Task,
-                            CreateTime = time,
-                            Code = DemoResource.Task
-                            .Replace(CodeDemo.Name, json.UUID)
-                        };
-                        CodeFileManager.StorageTask(File);
-                        resObj = new ReMessage
-                        {
-                            Build = true,
-                            Message = $"Task[{json.UUID}]已创建"
-                        };
-                        GenTask.StartGen(File);
-                        ServerMain.LogOut($"Task[{json.UUID}]创建");
-                    }
-                    else
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Task[{json.UUID}]已存在"
-                        };
-                    break;
-                case ReType.AddWeb:
-                    resObj = PostBuildWeb.Add(json);
-                    break;
-                case ReType.GetDll:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.DllFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetClass:
-                    resObj = PostBuildClass.GetList();
-                    break;
-                case ReType.GetSocket:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.SocketFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetWebSocket:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.WebSocketFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetRobot:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.RobotFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetMqtt:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.MqttFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetTask:
-                    List = new CSFileList();
-                    foreach (var item in CodeFileManager.TaskFileList)
-                    {
-                        List.List.Add(item.Key, item.Value);
-                    }
-                    resObj = List;
-                    break;
-                case ReType.GetWeb:
-                    resObj = PostBuildWeb.GetList();
-                    break;
-                case ReType.CodeDll:
-                    resObj = CodeFileManager.GetDll(json.UUID);
-                    break;
-                case ReType.CodeClass:
-                    resObj = PostBuildClass.GetCode(json);
-                    break;
-                case ReType.CodeSocket:
-                    resObj = CodeFileManager.GetSocket(json.UUID);
-                    break;
-                case ReType.CodeWebSocket:
-                    resObj = CodeFileManager.GetWebSocket(json.UUID);
-                    break;
-                case ReType.CodeRobot:
-                    resObj = CodeFileManager.GetRobot(json.UUID);
-                    break;
-                case ReType.CodeMqtt:
-                    resObj = CodeFileManager.GetMqtt(json.UUID);
-                    break;
-                case ReType.CodeTask:
-                    resObj = CodeFileManager.GetTask(json.UUID);
-                    break;
-                case ReType.CodeWeb:
-                    resObj = PostBuildWeb.GetCode(json);
-                    break;
-                case ReType.GetApi:
-                    resObj = APIFile.list;
-                    break;
-                case ReType.RemoveDll:
-                    CodeFileManager.RemoveFile(CodeType.Dll, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Dll[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveClass:
-                    CodeFileManager.RemoveFile(CodeType.Class, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Class[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveSocket:
-                    CodeFileManager.RemoveFile(CodeType.Socket, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Socket[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveWebSocket:
-                    CodeFileManager.RemoveFile(CodeType.WebSocket, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"WebSocket[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveRobot:
-                    CodeFileManager.RemoveFile(CodeType.Robot, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Robot[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveMqtt:
-                    CodeFileManager.RemoveFile(CodeType.Mqtt, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Mqtt[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.RemoveTask:
-                    CodeFileManager.RemoveFile(CodeType.Task, json.UUID);
-                    resObj = new ReMessage
-                    {
-                        Build = true,
-                        Message = $"Task[{json.UUID}]已删除"
-                    };
-                    break;
-                case ReType.UpdataDll:
-                    File = CodeFileManager.GetDll(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Dll[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Dll[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenDll.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataClass:
-                    PostBuildClass.Updata(json);
-                    break;
-                case ReType.UpdataSocket:
-                    File = CodeFileManager.GetSocket(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Socket[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Socket[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenSocket.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataRobot:
-                    File = CodeFileManager.GetRobot(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Robot[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Robot[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenRobot.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataWebSocket:
-                    File = CodeFileManager.GetWebSocket(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个WebSocket[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"WebSocket[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenWebSocket.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataMqtt:
-                    File = CodeFileManager.GetMqtt(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Mqtt[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Mqtt[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenMqtt.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataTask:
-                    File = CodeFileManager.GetTask(json.UUID);
-                    if (File == null)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"没有这个Task[{json.UUID}]"
-                        };
-                        break;
-                    }
-                    if (File.Version != json.Version)
-                    {
-                        resObj = new ReMessage
-                        {
-                            Build = false,
-                            Message = $"Task[{json.UUID}]版本号错误"
-                        };
-                        break;
-                    }
-
-                    list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-                    File.Code = FileEdit.StartEdit(File.Code, list);
-                    File.Text = json.Text;
-
-                    SW = new Stopwatch();
-                    SW.Start();
-                    BuildBack = GenTask.StartGen(File);
-                    SW.Stop();
-                    File.Up();
-                    resObj = new ReMessage
-                    {
-                        Build = BuildBack.Isok,
-                        Message = BuildBack.Res,
-                        UseTime = SW.ElapsedMilliseconds.ToString(),
-                        Time = BuildBack.Time
-                    };
-                    break;
-                case ReType.UpdataWeb:
-                    resObj = PostBuildWeb.Update(json);
-                    break;
-                case ReType.WebBuild:
-                    resObj = PostBuildWeb.Build(json);
-                    break;
-                case ReType.WebAddCode:
-                    resObj = PostBuildWeb.AddCode(json);
-                    break;
-                case ReType.WebRemoveFile:
-                    resObj = PostBuildWeb.RemoveFile(json);
-                    break;
-                case ReType.WebAddFile:
-                    resObj = PostBuildWeb.WebAddFile(json);
-                    break;
-                case ReType.RemoveWeb:
-                    resObj = PostBuildWeb.Remove(json);
-                    break;
-                case ReType.WebSetIsVue:
-                    resObj = PostBuildWeb.SetIsVue(json);
-                    break;
-                case ReType.AddClassFile:
-                    resObj = PostBuildClass.AddFile(json);
-                    break;
-                case ReType.RemoveClassFile:
-                    resObj = PostBuildClass.RemoveFile(json);
-                    break;
-                case ReType.BuildClass:
-                    resObj = PostBuildClass.Build(json);
-                    break;
-            }
+                ReType.AddDll => PostBuildDll.Add(json),
+                ReType.AddClass => PostBuildClass.Add(json),
+                ReType.AddSocket => PostBuildSocket.Add(json),
+                ReType.AddWebSocket => PostBuildWebSocket.Add(json),
+                ReType.AddRobot => PostBuildRobot.Add(json),
+                ReType.AddMqtt => PostBuildMqtt.Add(json),
+                ReType.AddTask => PostBuildTask.Add(json),
+                ReType.AddWeb => PostBuildWeb.Add(json),
+                ReType.GetDll => PostBuildDll.GetList(),
+                ReType.GetClass => PostBuildDll.GetList(),
+                ReType.GetSocket => PostBuildSocket.GetList(),
+                ReType.GetWebSocket => PostBuildWebSocket.GetList(),
+                ReType.GetRobot => PostBuildRobot.GetList(),
+                ReType.GetMqtt => PostBuildMqtt.GetList(),
+                ReType.GetTask => PostBuildTask.GetList(),
+                ReType.GetWeb => PostBuildWeb.GetList(),
+                ReType.CodeDll => CodeFileManager.GetDll(json.UUID),
+                ReType.CodeClass => PostBuildClass.GetCode(json),
+                ReType.CodeSocket => CodeFileManager.GetSocket(json.UUID),
+                ReType.CodeWebSocket => CodeFileManager.GetWebSocket(json.UUID),
+                ReType.CodeRobot => CodeFileManager.GetRobot(json.UUID),
+                ReType.CodeMqtt => CodeFileManager.GetMqtt(json.UUID),
+                ReType.CodeTask => CodeFileManager.GetTask(json.UUID),
+                ReType.CodeWeb => PostBuildWeb.GetCode(json),
+                ReType.GetApi => APIFile.list,
+                ReType.RemoveDll => PostBuildDll.Remove(json),
+                ReType.RemoveClass => PostBuildClass.Remove(json),
+                ReType.RemoveSocket => PostBuildSocket.Remove(json),
+                ReType.RemoveWebSocket => PostBuildWebSocket.Remove(json),
+                ReType.RemoveRobot => PostBuildRobot.Remove(json),
+                ReType.RemoveMqtt => PostBuildMqtt.Remove(json),
+                ReType.RemoveTask => PostBuildTask.Remove(json),
+                ReType.RemoveWeb => PostBuildWeb.Remove(json),
+                ReType.UpdataDll => PostBuildDll.Updata(json),
+                ReType.UpdataClass => PostBuildClass.Updata(json),
+                ReType.UpdataSocket => PostBuildSocket.Updata(json),
+                ReType.UpdataRobot => PostBuildRobot.Updata(json),
+                ReType.UpdataWebSocket => PostBuildWebSocket.Updata(json),
+                ReType.UpdataMqtt => PostBuildMqtt.Updata(json),
+                ReType.UpdataTask => PostBuildTask.Updata(json),
+                ReType.UpdataWeb => PostBuildWeb.Updata(json),
+                ReType.WebBuild => PostBuildWeb.Build(json),
+                ReType.WebAddCode => PostBuildWeb.AddCode(json),
+                ReType.WebRemoveFile => PostBuildWeb.RemoveFile(json),
+                ReType.WebAddFile => PostBuildWeb.WebAddFile(json),
+                ReType.WebSetIsVue => PostBuildWeb.SetIsVue(json),
+                ReType.AddClassFile => PostBuildClass.AddFile(json),
+                ReType.RemoveClassFile => PostBuildClass.RemoveFile(json),
+                ReType.BuildClass => PostBuildClass.Build(json),
+                ReType.WebDownloadFile => PostBuildWeb.Download(json),
+                _ => new ReMessage
+                {
+                    Build = false,
+                    Message = "null"
+                }
+            };
         }
         else
         {
