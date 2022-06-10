@@ -67,10 +67,6 @@ public enum MyContentType
 {
     Json, XFormData, MFormData, Other
 }
-public enum EncodeType
-{
-    UTF8, Default, ASCII
-}
 public partial class EnCode
 {
     /// <summary>

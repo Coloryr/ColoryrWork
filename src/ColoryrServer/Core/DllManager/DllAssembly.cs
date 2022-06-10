@@ -17,8 +17,17 @@ public class DllAssembly : AssemblyLoadContext
     {
         DllType = type;
     }
+    /// <summary>
+    /// 类
+    /// </summary>
     public Type SelfType { get; set; }
+    /// <summary>
+    /// DLL类型
+    /// </summary>
     public CodeType DllType { get; init; }
+    /// <summary>
+    /// 类方法
+    /// </summary>
     public Dictionary<string, MethodInfo> MethodInfos { get; } = new();
     protected override Assembly Load(AssemblyName name)
     {

@@ -2,8 +2,11 @@ using ColoryrServer.SDK;
 
 public class {name}
 {
-    public void Run(object[] args)
+    public TaskRes Run(object[] args)
     {
-             
+        return new() 
+        {
+            Res = true
+        };
     }
 }

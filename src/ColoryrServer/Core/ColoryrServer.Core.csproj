@@ -29,7 +29,7 @@
     <PackageReference Include="DotNetty.Transport" Version="0.7.2" />
     <PackageReference Include="DotNetty.Transport.Libuv" Version="0.7.2" />
     <PackageReference Include="Fleck" Version="1.2.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
     <PackageReference Include="HttpMultipartParser" Version="6.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0-1.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

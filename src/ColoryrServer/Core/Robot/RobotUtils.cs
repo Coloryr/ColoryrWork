@@ -12,37 +12,37 @@ public class RobotUtils
         {
             case 21:
                 var pack4 = data as FriendMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotAfter(RobotAfter.MessageType.friend, pack4.qq, 0, pack4.id, pack4.res, pack4.error, pack4.message, robot));
+                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.friend, pack4.qq, 0, pack4.id, pack4.res, pack4.error, pack4.message, robot));
                 break;
             case 28:
                 var pack5 = data as GroupMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotAfter(RobotAfter.MessageType.group, pack5.qq, pack5.id, 0, pack5.res, pack5.error, pack5.message, robot));
+                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.group, pack5.qq, pack5.id, 0, pack5.res, pack5.error, pack5.message, robot));
                 break;
             case 47:
                 var pack3 = data as TempMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotAfter(RobotAfter.MessageType.private_, pack3.qq, pack3.id, pack3.fid, pack3.res, pack3.error, pack3.message, robot));
+                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.private_, pack3.qq, pack3.id, pack3.fid, pack3.res, pack3.error, pack3.message, robot));
                 break;
             case 49:
                 var pack = data as GroupMessageEventPack;
-                DllRun.RobotGo(new RobotRequest(RobotRequest.MessageType.group, pack.qq, pack.id, pack.fid, pack.name, pack.message, robot));
+                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.group, pack.qq, pack.id, pack.fid, pack.name, pack.message, robot));
                 break;
             case 50:
                 var pack1 = data as TempMessageEventPack;
-                DllRun.RobotGo(new RobotRequest(RobotRequest.MessageType.private_, pack1.qq, pack1.id, pack1.fid, pack1.name, pack1.message, robot));
+                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.private_, pack1.qq, pack1.id, pack1.fid, pack1.name, pack1.message, robot));
                 break;
             case 51:
                 var pack2 = data as FriendMessageEventPack;
-                DllRun.RobotGo(new RobotRequest(RobotRequest.MessageType.friend, pack2.qq, 0, pack2.id, pack2.name, pack2.message, robot));
+                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.friend, pack2.qq, 0, pack2.id, pack2.name, pack2.message, robot));
                 break;
             case 60:
                 break;
             case 116:
                 var pack8 = data as StrangerMessageEventPack;
-                DllRun.RobotGo(new RobotRequest(RobotRequest.MessageType.stranger, pack8.qq, 0, pack8.id, pack8.name, pack8.message, robot));
+                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.stranger, pack8.qq, 0, pack8.id, pack8.name, pack8.message, robot));
                 break;
             case 123:
                 var pack9 = data as StrangerMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotAfter(RobotAfter.MessageType.stranger, pack9.qq, pack9.id, 0, pack9.res, pack9.error, pack9.message, robot));
+                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.stranger, pack9.qq, pack9.id, 0, pack9.res, pack9.error, pack9.message, robot));
                 break;
         }
     }

@@ -7,17 +7,36 @@ namespace ColoryrServer.SDK;
 
 public class HttpRequest
 {
+    /// <summary>
+    /// 请求参数
+    /// </summary>
     public Dictionary<string, dynamic> Parameter { get; init; }
-    public NameValueCollection RowRequest { get; init; }//原始请求的字符串
+    /// <summary>
+    /// 请求头
+    /// </summary>
+    public NameValueCollection RowRequest { get; init; }
+    /// <summary>
+    /// Cookie
+    /// </summary>
     public Dictionary<string, List<string>> Cookie { get; init; }
+    /// <summary>
+    /// 请求体类型
+    /// </summary>
     public MyContentType ContentType { get; init; }
+    /// <summary>
+    /// 请求体流
+    /// </summary>
     public Stream Stream { get; init; }
+    /// <summary>
+    /// 请求方法
+    /// </summary>
     public string Method { get; init; }
 
-    /// 获取参数
+    /// <summary>
+    /// 获取请求数据
     /// </summary>
     /// <param name="arg">参数名</param>
-    /// <returns>数据</returns>
+    /// <returns>返回</returns>
     public dynamic Get(string arg)
         => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
 }
@@ -30,19 +49,11 @@ public abstract class HttpResponse
     /// <summary>
     /// Cookie
     /// </summary>
-    public string Cookie { get; set; }
-    /// <summary>
-    /// 设置Cookie
-    /// </summary>
-    public bool SetCookie { get; set; }
+    public Dictionary<string, string> Cookie { get; set; }
     /// <summary>
     /// 返回头
     /// </summary>
     public Dictionary<string, string> Head { get; set; }
-    /// <summary>
-    /// 编码
-    /// </summary>
-    public EncodeType EncodeType { get; set; }
     /// <summary>
     /// 返回类型
     /// </summary>
@@ -52,8 +63,7 @@ public abstract class HttpResponse
         if (Head == null)
             Head = new();
         ReCode = 200;
-        SetCookie = false;
-        Cookie = "";
+        Cookie = new();
         ContentType = ServerContentType.JSON;
     }
     /// <summary>

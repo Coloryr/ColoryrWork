@@ -128,10 +128,6 @@ public record MQTTConfig
 public record TaskUtilConfig
 {
     /// <summary>
-    /// 线程数量
-    /// </summary>
-    public int ThreadNumber { get; set; }
-    /// <summary>
     /// 最大运行时间
     /// </summary>
     public int MaxTime { get; set; }

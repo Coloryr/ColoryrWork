@@ -11,7 +11,7 @@ public enum ResType
 public record HttpReturn
 {
     public Encoding Encoding = Encoding.UTF8;
-    public string Cookie;
+    public Dictionary<string, string> Cookie;
     public string ContentType = ServerContentType.JSON;
     public ResType Res;
     public object Data;

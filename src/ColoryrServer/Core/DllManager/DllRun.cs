@@ -1,15 +1,32 @@
-﻿using ColoryrServer.Core.Http;
+﻿using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
 
 namespace ColoryrServer.Core.DllManager;
+/// <summary>
+/// DLL反射
+/// </summary>
 public static class DllRun
 {
+    /// <summary>
+    /// 错误返回
+    /// </summary>
     private readonly static Dictionary<string, object> ErrorObj = new() { { "res", 0 }, { "text", "服务器内部错误" } };
+
+    private readonly static Dictionary<string, object> ErrorObj1 = new() { { "res", 0 }, { "text", "服务器运行发生了错误" } };
+
+    private readonly static Dictionary<string, object> ErrorObj2 = new() { { "res", 0 }, { "text", "服务器参数错误" } };
+    /// <summary>
+    /// 接口DLL反射
+    /// </summary>
+    /// <param name="dll">dll储存</param>
+    /// <param name="arg">参数</param>
+    /// <param name="function">方法名</param>
+    /// <returns></returns>
     public static HttpReturn DllGo(DllAssembly dll, HttpRequest arg, string function)
     {
         bool isDebug = false;
@@ -32,12 +49,6 @@ public static class DllRun
                     Res = ResType.Json,
                     ReCode = 404
                 };
-            }
-
-            List<AssemblyLoadContext> list = new();
-            foreach (var item in AssemblyLoadContext.All)
-            {
-                list.Add(item);
             }
 
             isDebug = dll.MethodInfos.ContainsKey("debug");
@@ -71,7 +82,7 @@ public static class DllRun
                     Head = dr.Head,
                     ContentType = dr.ContentType,
                     ReCode = dr.ReCode,
-                    Cookie = dr.SetCookie ? dr.Cookie : null
+                    Cookie = dr.Cookie
                 };
             }
             else if (dllres is HttpResponseDictionary)
@@ -84,7 +95,7 @@ public static class DllRun
                     Head = dr.Head,
                     ContentType = dr.ContentType,
                     ReCode = dr.ReCode,
-                    Cookie = dr.SetCookie ? dr.Cookie : null
+                    Cookie = dr.Cookie
                 };
             }
             else if (dllres is HttpResponseStream)
@@ -97,7 +108,7 @@ public static class DllRun
                     Head = dr.Head,
                     ContentType = dr.ContentType,
                     ReCode = dr.ReCode,
-                    Cookie = dr.SetCookie ? dr.Cookie : null,
+                    Cookie = dr.Cookie,
                     Pos = dr.Pos
                 };
             }
@@ -111,7 +122,7 @@ public static class DllRun
                     Head = dr.Head,
                     ContentType = dr.ContentType,
                     ReCode = dr.ReCode,
-                    Cookie = dr.SetCookie ? dr.Cookie : null
+                    Cookie = dr.Cookie
                 };
             }
             else
@@ -127,369 +138,523 @@ public static class DllRun
         {
             if (e.InnerException is VarDump dump)
             {
-                return new HttpReturn
-                {
-                    Data = dump.Get(),
-                    Res = ResType.String,
-                    ReCode = 200
-                };
-            }
-            else if (e.InnerException is ErrorDump dump1)
-            {
                 if (isDebug)
                     return new HttpReturn
                     {
-                        Data = dump1.data + "\n" + e.ToString(),
+                        Data = dump.Get(),
                         Res = ResType.String,
                         ReCode = 200
                     };
                 else
                     return new HttpReturn
                     {
-                        Data = ErrorObj,
+                        Data = ErrorObj2,
                         Res = ResType.Json,
-                        ReCode = 200
+                        ReCode = 500
                     };
             }
-            return new HttpReturn
+            else if (e.InnerException is ErrorDump dump1)
             {
-                Data = e.ToString(),
-                Res = ResType.String,
-                ReCode = 400
-            };
+                string error = dump1.data + "\n" + e.ToString();
+                DllRunError.PutError($"[Dll]{dll.Name}", error);
+                if (isDebug)
+                    return new HttpReturn
+                    {
+                        Data = error,
+                        Res = ResType.String,
+                        ReCode = 500
+                    };
+                else
+                    return new HttpReturn
+                    {
+                        Data = ErrorObj,
+                        Res = ResType.Json,
+                        ReCode = 500
+                    };
+            }
+            else
+            {
+                string error = e.ToString();
+                DllRunError.PutError($"[Dll]{dll.Name}", error);
+                if (isDebug)
+                    return new HttpReturn
+                    {
+                        Data = error,
+                        Res = ResType.String,
+                        ReCode = 500
+                    };
+                else
+                    return new HttpReturn
+                    {
+                        Data = ErrorObj1,
+                        Res = ResType.Json,
+                        ReCode = 500
+                    };
+            }
         }
     }
+    /// <summary>
+    /// TCP数据
+    /// </summary>
+    /// <param name="Head"></param>
     public static void SocketGo(TcpSocketRequest Head)
     {
-        foreach (var Dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStonge.GetWebSocket())
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos[CodeDemo.SocketTcp];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                var res = MI.Invoke(Assembly, Tran);
+                MethodInfo mi = dll.MethodInfos[CodeDemo.SocketTcp];
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                var res = mi.Invoke(obj1, new object[1] { Head });
                 if (res is true)
                     return;
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Socket]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// UDP数据
+    /// </summary>
+    /// <param name="Head"></param>
     public static void SocketGo(UdpSocketRequest Head)
     {
-        foreach (var Dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStonge.GetWebSocket())
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos[CodeDemo.SocketUdp];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                var res = MI.Invoke(Assembly, Tran);
+                MethodInfo mi = dll.MethodInfos[CodeDemo.SocketUdp];
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                var res = mi.Invoke(obj1, new object[1] { Head });
                 if (res is true)
                     return;
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Socket]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// WebSocket数据
+    /// </summary>
+    /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketMessage Head)
     {
-        foreach (var Dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStonge.GetWebSocket())
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketMessage];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                var res = MI.Invoke(Assembly, Tran);
+                MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketMessage];
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                var res = mi.Invoke(obj1, new object[1] { Head });
                 if (res is true)
                     return;
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// WebSocket链接
+    /// </summary>
+    /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketOpen Head)
     {
-        foreach (var Dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStonge.GetWebSocket())
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketOpen];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                var res = MI.Invoke(Assembly, Tran);
+                MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketOpen];
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                var res = mi.Invoke(obj1, new object[1] { Head });
                 if (res is true)
                     return;
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// WebSocket断开
+    /// </summary>
+    /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketClose Head)
     {
-        foreach (var Dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStonge.GetWebSocket())
         {
             try
             {
-                MethodInfo MI = Dll.MethodInfos[CodeDemo.WebSocketClose];
-                var Tran = new object[1] { Head };
-                var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                var res = MI.Invoke(Assembly, Tran);
+                MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketClose];
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                var res = mi.Invoke(obj1, new object[1] { Head });
                 if (res is true)
                     return;
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
-    public static void RobotGo(RobotRequest Head)
+    /// <summary>
+    /// 消息请求
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void RobotGo(RobotMessage Head)
     {
-        foreach (var Dll in DllStonge.GetRobot())
+        foreach (var dll in DllStonge.GetRobot())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey(CodeDemo.RobotMessage))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.RobotMessage))
                 {
-                    MethodInfo MI = Dll.MethodInfos[CodeDemo.RobotMessage];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.RobotMessage];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// 机器人事件
+    /// </summary>
+    /// <param name="Head"></param>
     public static void RobotGo(RobotEvent Head)
     {
-        foreach (var Dll in DllStonge.GetRobot())
+        foreach (var dll in DllStonge.GetRobot())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey("robot"))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.RobotEvent))
                 {
-                    MethodInfo MI = Dll.MethodInfos["robot"];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.RobotEvent];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
-    public static void RobotGo(RobotAfter Head)
+    /// <summary>
+    /// 机器人发送消息后
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void RobotGo(RobotSend Head)
     {
-        foreach (var Dll in DllStonge.GetRobot())
+        foreach (var dll in DllStonge.GetRobot())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey("after"))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.RobotSend))
                 {
-                    MethodInfo MI = Dll.MethodInfos["after"];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.RobotSend];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// Mqtt验证
+    /// </summary>
+    /// <param name="Head"></param>
     public static void MqttGo(MqttConnectionValidator Head)
     {
-        foreach (var Dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStonge.GetMqtt())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTValidator))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTValidator))
                 {
-                    MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTValidator];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTValidator];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// Mqtt取消订阅
+    /// </summary>
+    /// <param name="Head"></param>
     public static void MqttGo(MqttUnsubscription Head)
     {
-        foreach (var Dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStonge.GetMqtt())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTUnsubscription))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTUnsubscription))
                 {
-                    MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTUnsubscription];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTUnsubscription];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// Mqtt消息
+    /// </summary>
+    /// <param name="Head"></param>
     public static void MqttGo(MqttMessage Head)
     {
-        foreach (var Dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStonge.GetMqtt())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTMessage))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTMessage))
                 {
-                    MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTMessage];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTMessage];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
+    /// <summary>
+    /// Mqtt订阅
+    /// </summary>
+    /// <param name="Head"></param>
     public static void MqttGo(MqttSubscription Head)
     {
-        foreach (var Dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStonge.GetMqtt())
         {
             try
             {
-                if (Dll.MethodInfos.ContainsKey(CodeDemo.MQTTSubscription))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTSubscription))
                 {
-                    MethodInfo MI = Dll.MethodInfos[CodeDemo.MQTTSubscription];
-                    var Tran = new object[1] { Head };
-                    var Assembly = Dll.SelfType.Assembly.CreateInstance(Dll.SelfType.FullName, true);
-                    var res = MI.Invoke(Assembly, Tran);
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTSubscription];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
                     if (res is true)
                         return;
                 }
             }
             catch (Exception e)
             {
+                string error;
                 if (e.InnerException is ErrorDump Dump)
                 {
-                    ServerMain.LogError(Dump.data);
+                    error = Dump.data;
+                    ServerMain.LogError(error);
                 }
                 else
+                {
+                    error = e.ToString();
                     ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
-
-    public static bool TaskGo(TaskUserArg name)
+    /// <summary>
+    /// Task任务
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static TaskRes TaskGo(TaskUserArg name)
     {
+        var dll = DllStonge.GetTask(name.Dll);
+        if (dll == null)
+            return null;
         try
         {
-            var dll = DllStonge.GetTask(name.Dll);
-            if (dll == null)
-                return false;
-            MethodInfo MI = dll.MethodInfos[CodeDemo.TaskRun];
-            var Assembly = dll.SelfType.Assembly.CreateInstance(dll.SelfType.FullName, true);
-            MI.Invoke(Assembly, name.Arg);
-            return true;
+            MethodInfo mi = dll.MethodInfos[CodeDemo.TaskRun];
+            var obj1 = Activator.CreateInstance(dll.SelfType);
+            var res = mi.Invoke(obj1, name.Arg);
+            return res as TaskRes;
         }
         catch (Exception e)
         {
+            string error;
             if (e.InnerException is ErrorDump Dump)
             {
-                ServerMain.LogError(Dump.data);
+                error = Dump.data;
+                ServerMain.LogError(error);
             }
             else
+            {
+                error = e.ToString();
                 ServerMain.LogError(e);
+            }
+
+            DllRunError.PutError($"[Task]{dll.Name}", error);
         }
-        return false;
+        return null;
     }
 }

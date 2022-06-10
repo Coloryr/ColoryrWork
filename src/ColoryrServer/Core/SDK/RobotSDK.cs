@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.SDK;
 
-public class RobotAfter
+public class RobotSend
 {
     public enum MessageType
     {
@@ -28,7 +28,7 @@ public class RobotAfter
     /// <param name="res">是否发送成功</param>
     /// <param name="message">消息</param>
     /// <param name="robot">机器人</param>
-    public RobotAfter(MessageType type, long qq, long id, long fid, bool res, string error, List<string> message, RobotSDK robot)
+    public RobotSend(MessageType type, long qq, long id, long fid, bool res, string error, List<string> message, RobotSDK robot)
     {
         this.qq = qq;
         this.type = type;
@@ -46,7 +46,7 @@ public class RobotAfter
     public void ReCall()
         => RobotUtils.ReCall(messageId);
 }
-public class RobotRequest
+public class RobotMessage
 {
     public enum MessageType
     {
@@ -70,7 +70,7 @@ public class RobotRequest
     /// <param name="name">名字</param>
     /// <param name="message">消息</param>
     /// <param name="robot">机器人</param>
-    public RobotRequest(MessageType type, long qq, long id, long fid, string name, List<string> message, RobotSDK robot)
+    public RobotMessage(MessageType type, long qq, long id, long fid, string name, List<string> message, RobotSDK robot)
     {
         this.qq = qq;
         this.mtype = type;
