@@ -72,7 +72,7 @@ public static class WebBinManager
             string local = dir + item1;
             if (File.Exists(local))
             {
-                obj.Files.Add(item1);
+                obj.Files.Add(item1, null);
             }
         }
 

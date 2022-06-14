@@ -145,7 +145,7 @@ public class WebFileManager
                         string local = dir + item1;
                         if (File.Exists(local))
                         {
-                            obj.Files.Add(item1);
+                            obj.Files.Add(item1, null);
                         }
                     }
                 }
@@ -224,7 +224,7 @@ Version:{obj.Version}
 
     public static void AddFile(WebObj obj, string Name, byte[] data)
     {
-        HtmlCodeList[obj.UUID].Files.Add(Name);
+        HtmlCodeList[obj.UUID].Files.Add(Name, null);
 
         obj.Up();
         Storage(obj);
@@ -319,6 +319,7 @@ Version:{obj.Version}
     public static void New(WebObj obj)
     {
         HtmlCodeList.TryAdd(obj.UUID, obj);
+        foreach(var item in )
         StorageCode(obj, "index.html", "", obj.Codes["index.html"], true);
         StorageCode(obj, "js.js", "", obj.Codes["js.js"], true);
         obj.Up();

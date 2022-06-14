@@ -58,7 +58,7 @@ public class WebObj : CSFileObj
 {
     public bool IsVue { get; set; }
     public Dictionary<string, string> Codes { get; set; }
-    public List<string> Files { get; set; }
+    public Dictionary<string, byte[]> Files { get; set; }
 }
 public record CSFileList
 {

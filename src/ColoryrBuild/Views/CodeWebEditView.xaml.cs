@@ -144,7 +144,7 @@ public partial class CodeWebEditView : UserControl, IEditView
 
         foreach (var item in WebObj.Files)
         {
-            Files.Add(item);
+            Files.Add(item.Key);
         }
         FileList.SelectedItem = Files.First();
         AddLog($"代码Web[{Obj.UUID}]获取成功");

@@ -51,10 +51,13 @@ internal static class PostBuildWeb
                         { "src/App.vue", Encoding.UTF8.GetString(DemoVueResource.App) },
                         { "src/env.d.ts", Encoding.UTF8.GetString(DemoVueResource.env_d) },
                         { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
-                        { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) },
-                        { "src/logo.png", Convert.ToBase64String(DemoVueResource.logo) }
+                        { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) }
                     },
-                    Files = new()
+                    Files = new() 
+                    {
+                        { "src/logo.png", DemoVueResource.logo }
+                    },
+                    IsVue = true
                 };
             }
             
@@ -183,7 +186,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]的主文件不允许删除"
             };
         }
-        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.Contains(json.Code))
+        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -211,7 +214,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]没有找到"
             };
         }
-        if (File2.Files.Contains(json.Code))
+        if (File2.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -303,7 +306,7 @@ internal static class PostBuildWeb
             };
         }
 
-        if (!File2.Files.Contains(json.Code))
+        if (!File2.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
