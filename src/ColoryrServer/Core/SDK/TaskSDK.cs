@@ -13,10 +13,9 @@ public class TaskSDK
         => TaskManager.HaveTask(name);
     /// <summary>
     /// 添加一个任务
-    /// 如果存在则会覆盖
     /// </summary>
     /// <param name="arg">任务参数</param>
-    public static bool StartTask(TaskUserArg arg)
+    public static void StartTask(TaskUserArg arg)
         => TaskManager.StartTask(arg);
     /// <summary>
     /// 停止一个任务
@@ -53,7 +52,7 @@ public class TaskSDK
 }
 public enum TaskState
 {
-    Ready, Going, TimeOut, Done, Error, Cancel
+    Ready, Going, TimeOut, Done, Error, Cancel, Init, Pause, Stop
 }
 public class TaskUserArg
 {

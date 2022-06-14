@@ -102,60 +102,6 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 &lt;!DOCTYPE html&gt;
-        ///&lt;html&gt;
-        ///
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;测试&lt;/title&gt;
-        ///&lt;/head&gt;
-        ///&lt;script src=&quot;https://cdn.jsdelivr.net/npm/vue/dist/vue.js&quot;&gt;&lt;/script&gt;
-        ///&lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;
-        ///
-        ///&lt;body&gt;
-        ///    &lt;div id=&quot;app&quot;&gt;
-        ///        &lt;h1&gt;Bitcoin Price Index&lt;/h1&gt;
-        ///        &lt;section v-if=&quot;errored&quot;&gt;
-        ///            &lt;p&gt;We&apos;re sorry, we&apos;re not able to retrieve this information at the moment, please try back later&lt;/p&gt;
-        ///        &lt;/section&gt;
-        ///        &lt;section v-else&gt;
-        ///            &lt;div v [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string Html {
-            get {
-                return ResourceManager.GetString("Html", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 function start() {
-        ///    new Vue({
-        ///        el: &apos;#app&apos;,
-        ///        data() {
-        ///            return {
-        ///                info: null,
-        ///                loading: true,
-        ///                errored: false
-        ///            }
-        ///        },
-        ///        filters: {
-        ///            currencydecimal(value) {
-        ///                return value.toFixed(2)
-        ///            }
-        ///        },
-        ///        mounted() {
-        ///            axios
-        ///                .get(&apos;https://api.coindesk.com/v1/bpi/currentprice.json&apos;)
-        ///                .then(response =&gt; {
-        ///                   [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string Js {
-            get {
-                return ResourceManager.GetString("Js", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
         ///public class {name}
@@ -235,9 +181,12 @@ namespace ColoryrServer.Core {
         ///
         ///public class {name}
         ///{
-        ///    public void {TaskRun}(object[] args)
+        ///    public TaskRes Run(object[] args)
         ///    {
-        ///             
+        ///        return new() 
+        ///        {
+        ///            Res = true
+        ///        };
         ///    }
         ///} 的本地化字符串。
         /// </summary>

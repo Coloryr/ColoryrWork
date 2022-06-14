@@ -12,53 +12,49 @@ namespace ColoryrServer.Core.TaskUtils;
 internal static class TaskManager
 {
     private static readonly ConcurrentDictionary<string, TaskThread> Tasks = new();
-    private static Thread TickThread;
+
+    public static void Remove(string task) 
+    {
+        Tasks.TryRemove(task, out var _);
+    }
 
     private static void Stop() 
     {
-
+        foreach (var item in Tasks.Values)
+        {
+            item.Stop();
+        }
     }
 
     public static void Start() 
     {
-        
+        ServerMain.OnStop += Stop;
     }
 
     public static bool HaveTask(string name)
     {
         return Tasks.ContainsKey(name);
     }
-    public static bool StartTask(TaskUserArg arg)
+    public static void StartTask(TaskUserArg arg)
     {
         if (Tasks.ContainsKey(arg.Name))
         {
             var item = Tasks[arg.Name];
-            if (item.Name == arg.Name)
-            {
-                item.State = TaskState.Ready;
-                item.Dll = arg.Dll;
-                item.Times = arg.Times;
-                return true;
-            }
-            else
-            {
-                Tasks.TryRemove(arg.Name, out var temp);
-                temp.State = TaskState.Cancel;
-                temp.Cancel.Cancel(false);
-            }
+            item.SetArg(arg);
+            item.Run();
         }
-        TaskObj obj = new(arg)
+        else
         {
-            State = TaskState.Ready
-        };
-        Tasks.TryAdd(obj.Name, obj);
-        return true;
+            TaskThread obj = new(arg);
+            Tasks.TryAdd(arg.Name, obj);
+            obj.Run();
+        }
     }
     public static void StopTask(string name)
     {
         if (Tasks.ContainsKey(name))
         {
-            Tasks[name].Cancel?.Cancel();
+            Tasks[name].Stop();
         }
     }
     public static TaskState GetTaskState(string name)
@@ -75,23 +71,29 @@ internal static class TaskManager
         {
             return -1;
         }
-        return Tasks[name].Times;
+        return Tasks[name].Arg.Times;
     }
     public static void SetArg(string name, object[] arg)
     {
         if (Tasks.ContainsKey(name))
         {
-            Tasks[name].Arg = arg;
+            Tasks[name].Arg.Arg = arg;
         }
     }
 
     public static void Pause(string name) 
     {
-        
+        if (Tasks.ContainsKey(name))
+        {
+            Tasks[name].Pause();
+        }
     }
 
     public static void Cancel(string name) 
     {
-        
+        if (Tasks.ContainsKey(name))
+        {
+            Tasks[name].Cancel();
+        }
     }
 }

@@ -37,7 +37,10 @@ internal class WebView : CodeListView
         var data = new InputWindow("UUID设置").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-        var list = await App.HttpUtils.Add(Type, data);
+
+        var res =  MessageBox.Show("是否是Vue项目", "选择类型", MessageBoxButton.YesNo);
+
+        var list = await App.HttpUtils.AddWeb(data, res == MessageBoxResult.Yes);
         if (list == null)
         {
             App.LogShow("添加", "服务器返回错误");

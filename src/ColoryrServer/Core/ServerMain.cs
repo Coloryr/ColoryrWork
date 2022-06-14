@@ -123,7 +123,6 @@ public class ServerMain
             APIFile.Start();
             FileTemp.Start();
             FileRam.Start();
-            TaskThread.Start();
             HttpClientUtils.Start();
 
             //给编译用的，防DLL找不到
@@ -161,6 +160,7 @@ public class ServerMain
             FileHttpStream.Start();
             SocketServer.Start();
             ServerWebSocket.Start();
+            TaskManager.Start();
 
             //等待初始化完成
             Thread.Sleep(2000);

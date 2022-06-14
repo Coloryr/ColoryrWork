@@ -146,8 +146,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         {
             Files.Add(item);
         }
-        FileName = Files.First();
-        OldCode = TextEditor.Text = WebObj.Codes[FileName];
+        FileList.SelectedItem = Files.First();
         AddLog($"代码Web[{Obj.UUID}]获取成功");
         IsWrite = false;
     }

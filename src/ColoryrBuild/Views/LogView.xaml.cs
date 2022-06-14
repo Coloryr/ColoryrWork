@@ -24,7 +24,10 @@ namespace ColoryrBuild.Views
 
         public void FAddLog(string text)
         {
-            Text.AppendText(text + Environment.NewLine);
+            Dispatcher.Invoke(() =>
+            {
+                Text.AppendText(text + Environment.NewLine);
+            });
         }
     }
 }

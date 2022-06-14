@@ -257,7 +257,14 @@ Version:{obj.Version}
 
             if (isCode)
             {
-                obj.Codes[name] = code;
+                if (!obj.Codes.ContainsKey(name))
+                {
+                    obj.Codes.Add(name, code);
+                }
+                else
+                {
+                    obj.Codes[name] = code;
+                }
                 File.WriteAllText(local, code);
             }
             else
@@ -299,7 +306,7 @@ Version:{obj.Version}
                 }
                 else
                 {
-                    CodeSQL.Execute($"INSERT INTO web (UUID,Text,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime)", obj1);
+                    CodeSQL.Execute($"INSERT INTO web (UUID,Text,Version,CreateTime,UpdateTime,Files,Codes,IsVue) VALUES(@UUID,@Text,@Version,@CreateTime,@UpdateTime,@Files,@Codes,@IsVue)", obj1);
                 }
             }
             catch (Exception e)

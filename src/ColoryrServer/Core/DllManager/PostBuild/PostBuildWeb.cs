@@ -15,18 +15,39 @@ internal static class PostBuildWeb
         if (WebFileManager.GetHtml(json.UUID) == null)
         {
             var time = string.Format("{0:s}", DateTime.Now);
-            WebObj File2 = new()
+            var isVue = json.Code.ToLower() == "true";
+            WebObj File2;
+            if (isVue)
             {
-                UUID = json.UUID,
-                CreateTime = time,
-                Text = "",
-                Codes = new()
+                File2 = new()
                 {
-                    { "index.html", DemoResource.Html.Replace(CodeDemo.Name, json.UUID) },
-                    { "js.js", DemoResource.Js }
-                },
-                Files = new()
-            };
+                    UUID = json.UUID,
+                    CreateTime = time,
+                    Text = "",
+                    Codes = new()
+                    {
+                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
+                        { "js.js", DemoWebResource.IndexDemoJS }
+                    },
+                    Files = new()
+                };
+            }
+            else 
+            {
+                File2 = new()
+                {
+                    UUID = json.UUID,
+                    CreateTime = time,
+                    Text = "",
+                    Codes = new()
+                    {
+                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
+                        { "js.js", DemoWebResource.IndexDemoJS }
+                    },
+                    Files = new()
+                };
+            }
+            
             WebFileManager.New(File2);
             res = new ReMessage
             {

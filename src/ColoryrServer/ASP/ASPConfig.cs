@@ -171,8 +171,7 @@ namespace ColoryrServer.ASP
                 },
                 TaskConfig = new()
                 {
-                    MaxTime = 30,
-                    ThreadNumber = 50
+                    MaxTime = 30
                 },
                 Requset = new()
                 {

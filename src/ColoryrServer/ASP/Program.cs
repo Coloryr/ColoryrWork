@@ -284,7 +284,10 @@ namespace ColoryrServer.ASP
                     Response.Headers.Add(Item.Key, Item.Value);
                 }
             if (httpReturn.Cookie != null)
-                Response.Cookies.Append("cs", httpReturn.Cookie);
+                foreach (var item in httpReturn.Cookie)
+                {
+                    Response.Cookies.Append(item.Key, item.Value);
+                }
             switch (httpReturn.Res)
             {
                 case ResType.String:
@@ -613,7 +616,10 @@ namespace ColoryrServer.ASP
                     Response.Headers.Add(Item.Key, Item.Value);
                 }
             if (httpReturn.Cookie != null)
-                Response.Cookies.Append("cs", httpReturn.Cookie);
+                foreach (var item in httpReturn.Cookie)
+                {
+                    Response.Cookies.Append(item.Key, item.Value);
+                }
             switch (httpReturn.Res)
             {
                 case ResType.String:
