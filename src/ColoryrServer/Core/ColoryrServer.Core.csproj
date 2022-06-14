@@ -53,6 +53,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="DemoVueResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DemoVueResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="DemoWebResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DemoWebResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="SDKResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -71,6 +81,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="DemoVueResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DemoVueResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="DemoWebResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DemoWebResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="SDKResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SDKResource.Designer.cs</LastGenOutput>
@@ -88,6 +106,7 @@
   <ItemGroup>
     <Folder Include="Netty\" />
     <Folder Include="OLD\" />
+    <Folder Include="Resources\Demo\Vue\" />
     <Folder Include="Resources\OtherSDK\" />
   </ItemGroup>
 

@@ -3,6 +3,7 @@ using ColoryrServer.Core.FileSystem.Html;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace ColoryrServer.Core.DllManager.PostBuild;
@@ -41,8 +42,17 @@ internal static class PostBuildWeb
                     Text = "",
                     Codes = new()
                     {
-                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
-                        { "js.js", DemoWebResource.IndexDemoJS }
+                        { "index.html", Encoding.UTF8.GetString(DemoVueResource.index) },
+                        { "package.json", Encoding.UTF8.GetString(DemoVueResource.package) },
+                        { "package-lock.json", Encoding.UTF8.GetString(DemoVueResource.package_lock) },
+                        { "tsconfig.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig) },
+                        { "tsconfig.node.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig_node) },
+                        { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config) },
+                        { "src/App.vue", Encoding.UTF8.GetString(DemoVueResource.App) },
+                        { "src/env.d.ts", Encoding.UTF8.GetString(DemoVueResource.env_d) },
+                        { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
+                        { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) },
+                        { "src/logo.png", Convert.ToBase64String(DemoVueResource.logo) }
                     },
                     Files = new()
                 };
