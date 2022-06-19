@@ -16,6 +16,10 @@ namespace ColoryrServer.ASP
     }
     internal record ASPConfig : MainConfig
     {
+        /// <summary>
+        /// Http配置
+        /// </summary>
+        public List<SocketConfig> Http { get; set; }
         public Dictionary<string, Rote> Rotes { get; set; }
         public bool Ssl { get; set; }
         public Dictionary<string, Ssl> Ssls { get; set; }
@@ -66,10 +70,16 @@ namespace ColoryrServer.ASP
                     }
                 },
                 NoInput = false,
-
-                NotInclude = new()
+                CodeSetting = new()
                 {
-                    "sni.dll"
+                    NotInclude = new()
+                    {
+                        "sni.dll"
+                    },
+                    CodeLog = true,
+                    MinifyCSS = true,
+                    MinifyHtml = true,
+                    MinifyJS = true
                 },
                 Http = new()
                 {
@@ -175,8 +185,6 @@ namespace ColoryrServer.ASP
                 },
                 Requset = new()
                 {
-                    WebAPI = "/WebAPI",
-                    Web = "/Web",
                     Temp = new()
                     {
                         ".jpg",

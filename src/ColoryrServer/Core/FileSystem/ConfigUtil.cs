@@ -5,10 +5,6 @@ namespace ColoryrServer.Core.FileSystem;
 public abstract record MainConfig
 {
     /// <summary>
-    /// Http配置
-    /// </summary>
-    public List<HttpConfig> Http { get; set; }
-    /// <summary>
     /// Socket配置
     /// </summary>
     public SocketConfig Socket { get; set; }
@@ -45,10 +41,6 @@ public abstract record MainConfig
     /// </summary>
     public List<UserConfig> User { get; set; }
     /// <summary>
-    /// 不参与动态编译的.dll
-    /// </summary>
-    public List<string> NotInclude { get; set; }
-    /// <summary>
     /// MQTT配置
     /// </summary>
     public MQTTConfig MQTTConfig { get; set; }
@@ -72,6 +64,34 @@ public abstract record MainConfig
     /// 编辑器AES加密
     /// </summary>
     public AESConfig AES { get; set; }
+    /// <summary>
+    /// 代码设置选项
+    /// </summary>
+    public CodeConfigObj CodeSetting { get; set; }
+}
+
+public record CodeConfigObj
+{
+    /// <summary>
+    /// 不参与动态编译的.dll
+    /// </summary>
+    public List<string> NotInclude { get; set; }
+    /// <summary>
+    /// 代码增量储存
+    /// </summary>
+    public bool CodeLog { get; set; }
+    /// <summary>
+    /// Html代码压缩
+    /// </summary>
+    public bool MinifyHtml { get; set; }
+    /// <summary>
+    /// JS代码压缩
+    /// </summary>
+    public bool MinifyJS { get; set; }
+    /// <summary>
+    /// CSS代码压缩
+    /// </summary>
+    public bool MinifyCSS { get; set; }
 }
 
 public record RebotConfigObj
@@ -88,19 +108,17 @@ public record RebotConfigObj
 
 public record AESConfig
 {
+    /// <summary>
+    /// 加密KEY
+    /// </summary>
     public string Key { get; set; }
+    /// <summary>
+    /// 加密盐
+    /// </summary>
     public string IV { get; set; }
 }
 public record RequsetChoose
 {
-    /// <summary>
-    /// 前端
-    /// </summary>
-    public string Web { get; set; }
-    /// <summary>
-    /// 后端
-    /// </summary>
-    public string WebAPI { get; set; }
     /// <summary>
     /// 放进缓存的文件类型
     /// </summary>
@@ -153,9 +171,6 @@ public record SocketConfig
     /// 端口
     /// </summary>
     public int Port { get; set; }
-}
-public record HttpConfig : SocketConfig
-{
 }
 public record SQLConfig
 {

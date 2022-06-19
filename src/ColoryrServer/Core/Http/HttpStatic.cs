@@ -3,50 +3,8 @@ using ColoryrServer.SDK;
 
 namespace ColoryrServer.Core.Http;
 
-public class HttpStatic
+public static class HttpStatic
 {
-    public static HttpReturn Get(string uuid)
-    {
-        byte[] temp = WebBinManager.GetByUUID(uuid);
-        return new()
-        {
-            Data = temp ?? WebBinManager.BaseDir.Html404,
-            ContentType = ServerContentType.HTML
-        };
-    }
-
-    public static HttpReturn Get(string uuid, string name)
-    {
-        var temp = WebBinManager.GetFile(uuid, name);
-        if (temp != null)
-        {
-            int a = name.LastIndexOf(".");
-            name = name.ToLower()[a..];
-            return new()
-            {
-                Data = temp,
-                ContentType = name switch
-                {
-                    ".jpg" => ServerContentType.JPG,
-                    ".jpge" => ServerContentType.JPEG,
-                    ".png" => ServerContentType.PNG,
-                    ".json" => ServerContentType.JSON,
-                    ".xml" => ServerContentType.XML,
-                    ".mp3" => ServerContentType.MP3,
-                    ".mp4" => ServerContentType.MP4,
-                    ".gif" => ServerContentType.GIF,
-                    ".icon" => ServerContentType.ICO,
-                    _ => ServerContentType.HTML,
-                }
-            };
-        }
-        return new()
-        {
-            Data = WebBinManager.BaseDir.Html404,
-            ContentType = ServerContentType.HTML
-        };
-    }
-
     public static HttpReturn GetStatic(string[] arg)
     {
         var temp = WebBinManager.BaseDir.GetFile(arg, 0);
@@ -88,7 +46,7 @@ public class HttpStatic
         };
     }
 
-    public static HttpResponseStream GetStream(HttpRequest request, string arg)
+    public static HttpResponseStream GetStream(HttpDllRequest request, string arg)
     {
         return WebBinManager.GetStream(request, arg);
     }

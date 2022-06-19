@@ -1,4 +1,5 @@
-﻿using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrBuild.Windows;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.IO;
 using System.Text;
@@ -89,7 +90,7 @@ namespace ColoryrBuild
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                _ = new InfoWindow("加载代码错误", e.ToString());
             }
             finally
             {

@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.Http;
 using ColoryrWork.Lib.Server;
 using System;
 using System.Collections.Concurrent;
@@ -67,6 +68,8 @@ public static class DllStonge
         {
             MapDll.TryAdd(uuid, save);
         }
+
+        HttpInvokeRoute.AddDll(uuid, save);
     }
     public static void RemoveDll(string uuid)
     {

@@ -604,7 +604,7 @@ public partial class FileLoad
     /// <param name="local">文件夹</param>
     /// <param name="name">文件名</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
         => FileHttpStream.StartStream(http, local, name);
 }
 public partial class ErrorDump : Exception

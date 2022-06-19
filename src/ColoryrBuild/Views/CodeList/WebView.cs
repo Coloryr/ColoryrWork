@@ -34,13 +34,13 @@ internal class WebView : CodeListView
 
     public override async void AddClick(object sender, RoutedEventArgs e)
     {
-        var data = new InputWindow("UUID设置").Set();
+        var data = new InputWindow("UUID设置", "Web/").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
 
-        var res =  MessageBox.Show("是否是Vue项目", "选择类型", MessageBoxButton.YesNo);
+        var res = new ChoseWindow("选择类型", "是否是Vue项目").Set();
 
-        var list = await App.HttpUtils.AddWeb(data, res == MessageBoxResult.Yes);
+        var list = await App.HttpUtils.AddWeb(data, res);
         if (list == null)
         {
             App.LogShow("添加", "服务器返回错误");

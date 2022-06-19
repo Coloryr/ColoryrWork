@@ -66,7 +66,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.ToString());
+            _ = new InfoWindow("初始化错误", e.ToString());
         }
     }
 
@@ -122,7 +122,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString(), "备份失败");
+                _ = new InfoWindow("代码备份失败", e.ToString());
             }
             Directory.Delete(newLocal, true);
 
@@ -153,9 +153,9 @@ public partial class CodeCSEditView : UserControl, IEditView
                 {
                     ZIPUtils.Pack(Local, Local + "main.cs", time + ".cs");
                 }
-                catch
+                catch (Exception e)
                 {
-                    MessageBox.Show("备份失败");
+                    _ = new InfoWindow("备份失败", e.ToString());
                 }
             }
             CodeSave.Save(Local + "main.cs", CsObj.Code);
@@ -369,7 +369,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             return;
         if (data.Contains('\\') || data.Contains('/'))
         {
-            MessageBox.Show("不支持子路径", "名字非法");
+            _ = new InfoWindow("名字非法", "不支持子路径");
             return;
         }
         Logs.Text = "";

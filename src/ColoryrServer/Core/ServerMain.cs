@@ -148,11 +148,12 @@ public class ServerMain
             MQTTServer.Start();
             RobotUtils.Start();
             PostBuild.Start();
-            new Thread(MSCon.Start).Start();
-            new Thread(RedisCon.Start).Start();
-            new Thread(OracleCon.Start).Start();
-            new Thread(MysqlCon.Start).Start();
-            new Thread(SqliteCon.Start).Start();
+            WebBinManager.Start();
+            MSCon.Start();
+            RedisCon.Start();
+            OracleCon.Start();
+            MysqlCon.Start();
+            SqliteCon.Start();
             RamDataBase.Start();
             GenCode.Start();
             DllStonge.Start();

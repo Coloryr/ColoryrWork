@@ -1,0 +1,15 @@
+﻿<Window x:Class="ColoryrBuild.Windows.InfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ColoryrBuild.Windows"
+        mc:Ignorable="d"
+        Title="标题" Height="116" Width="194" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+        <TextBlock Text="信息" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,10,0"
+                   TextAlignment="Center" Name="Text"/>
+        <Button Content="确定" Margin="74,0,75,10" Click="Button_Click" IsDefault="True" Height="24" VerticalAlignment="Bottom"/>
+    </Grid>
+</Window>

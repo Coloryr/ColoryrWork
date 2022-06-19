@@ -88,7 +88,7 @@ internal class GenCode
             add = true;
             if (item.EndsWith(".dll"))
             {
-                foreach (var item2 in ServerMain.Config.NotInclude)
+                foreach (var item2 in ServerMain.Config.CodeSetting.NotInclude)
                 {
                     if (item.Contains(item2))
                     {
@@ -120,7 +120,7 @@ internal class GenCode
             add = true;
             if (item.EndsWith(".dll"))
             {
-                foreach (var item2 in ServerMain.Config.NotInclude)
+                foreach (var item2 in ServerMain.Config.CodeSetting.NotInclude)
                 {
                     if (item.Contains(item2))
                     {

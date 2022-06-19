@@ -34,7 +34,7 @@ public class WebApiView : CodeListView
 
     public override async void AddClick(object sender, RoutedEventArgs e)
     {
-        var data = new InputWindow("UUID设置").Set();
+        var data = new InputWindow("UUID设置", "WebApi/").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
         var list = await App.HttpUtils.Add(Type, data);

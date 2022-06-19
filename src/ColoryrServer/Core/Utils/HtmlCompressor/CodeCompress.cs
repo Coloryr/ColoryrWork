@@ -4,7 +4,7 @@ using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Utils;
 
-internal class CodeCompress
+internal static class CodeCompress
 {
     private static readonly HtmlCompressor html = new();
     private static readonly CssCompressor css = new();

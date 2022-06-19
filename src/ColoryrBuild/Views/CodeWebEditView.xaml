@@ -76,10 +76,10 @@
             Margin="0,6,10,10"
             HorizontalAlignment="Right"
             Header="代码选择">
-            <ListView x:Name="FileList" SelectionChanged="FileList_SelectionChanged">
+            <ListView x:Name="FileList" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionChanged="FileList_SelectionChanged">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="120" Header="名字" />
+                        <GridViewColumn Width="Auto" Header="名字" />
                     </GridView>
                 </ListView.View>
                 <ListView.ContextMenu>
@@ -88,6 +88,7 @@
                         <MenuItem Click="Change_Click" Header="修改" />
                         <MenuItem Click="Delete_Click" Header="删除" />
                         <MenuItem Click="Download_Click" Header="下载" />
+                        <MenuItem Click="Image_Click" Header="图片查看" />
                         <MenuItem Click="ZIP_Click" Header="上传代码压缩包" />
                     </ContextMenu>
                 </ListView.ContextMenu>

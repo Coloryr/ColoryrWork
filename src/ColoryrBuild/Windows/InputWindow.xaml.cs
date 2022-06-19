@@ -13,6 +13,7 @@ namespace ColoryrBuild.Windows
             InitializeComponent();
             Data = data;
             Title = title;
+            DataContext = this;
         }
 
         public string Set()
@@ -24,6 +25,12 @@ namespace ColoryrBuild.Windows
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Data = Text.Text;
+            Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Data = "";
             Close();
         }
     }

@@ -10,7 +10,7 @@ namespace ColoryrServer.Core.DllManager;
 /// <summary>
 /// DLL反射
 /// </summary>
-public static class DllRun
+internal static class DllRun
 {
     /// <summary>
     /// 错误返回
@@ -27,7 +27,7 @@ public static class DllRun
     /// <param name="arg">参数</param>
     /// <param name="function">方法名</param>
     /// <returns></returns>
-    public static HttpReturn DllGo(DllAssembly dll, HttpRequest arg, string function)
+    internal static HttpReturn DllGo(DllAssembly dll, HttpDllRequest arg, string function)
     {
         bool isDebug = false;
         try

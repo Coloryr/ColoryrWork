@@ -17,9 +17,14 @@ internal static class PostBuildDll
         if (CodeFileManager.GetDll(json.UUID) == null)
         {
             var time = string.Format("{0:s}", DateTime.Now);
+            string uuid = json.UUID.Replace('\\', '/');
+            if (!uuid.EndsWith('/'))
+            {
+                uuid += '/';
+            }
             CSFileCode obj = new()
             {
-                UUID = json.UUID,
+                UUID = uuid,
                 Type = CodeType.Dll,
                 CreateTime = time,
                 Code = DemoResource.Dll

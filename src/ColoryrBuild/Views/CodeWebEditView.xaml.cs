@@ -60,7 +60,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.ToString());
+            _ = new InfoWindow("初始化错误", e.ToString());
         }
     }
 
@@ -134,9 +134,9 @@ public partial class CodeWebEditView : UserControl, IEditView
         {
             ZIPUtils.Pack1(Local, newLocal, $"backup_{time}");
         }
-        catch
+        catch (Exception e)
         {
-            MessageBox.Show("备份失败");
+            _ = new InfoWindow("代码备份失败", e.ToString());
         }
         Directory.Delete(newLocal, true);
 
@@ -147,6 +147,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             Files.Add(item.Key);
         }
         FileList.SelectedItem = Files.First();
+        IsVue.IsChecked = WebObj.IsVue;
         AddLog($"代码Web[{Obj.UUID}]获取成功");
         IsWrite = false;
     }
@@ -218,6 +219,31 @@ public partial class CodeWebEditView : UserControl, IEditView
     private async void Updata_Click(object sender, RoutedEventArgs e)
     {
         await UpdateTask();
+    }
+
+    private async void Image_Click(object sender, RoutedEventArgs e) 
+    {
+        if (FileList.SelectedItem == null)
+            return;
+
+        Logs.Text = "";
+        string data = FileList.SelectedItem as string;
+        var data1 = await App.HttpUtils.WebDownloadFile(WebObj, data);
+        if (data1 == null)
+        {
+            AddLog("服务器返回错误");
+            return;
+        }
+
+        if (!data1.Build)
+        {
+            AddLog(data1.Message);
+            return;
+        }
+
+        byte[] temp = Convert.FromBase64String(data1.Message);
+
+        _ = new ImageWindow(temp);
     }
 
     private void ReCode_Click(object sender, RoutedEventArgs e)
@@ -325,6 +351,11 @@ public partial class CodeWebEditView : UserControl, IEditView
             TextEditor.IsReadOnly = true;
         }
 
+        if (data.EndsWith(".js"))
+        {
+
+        }
+
         FileName = data;
     }
     private async void Download_Click(object sender, RoutedEventArgs e)
@@ -359,7 +390,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             string path = openFileDialog.FileName;
             if (File.Exists(path))
             {
-                if (MessageBox.Show("文件存在，是否要覆盖源文件", "文件存在", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (!new ChoseWindow("文件存在", "文件存在，是否要覆盖源文件").Set())
                 {
                     return;
                 }
@@ -368,7 +399,6 @@ public partial class CodeWebEditView : UserControl, IEditView
             File.WriteAllBytes(path, temp);
             AddLog("已下载文件");
         }
-
     }
     private async void Delete_Click(object sender, RoutedEventArgs e)
     {

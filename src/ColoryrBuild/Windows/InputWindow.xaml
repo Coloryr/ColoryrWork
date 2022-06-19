@@ -8,10 +8,10 @@
         Title="InputWindow" Height="66" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <TextBox Name="Text" TextWrapping="NoWrap" Width="328" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"
+        <TextBox Name="Text" TextWrapping="NoWrap" Width="276" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"
                  Text="{Binding Data}"/>
-        <Button Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="336,5,0,0" 
-                Width="42" IsDefault="True" Click="Button_Click"/>
+        <Button Content="取消" VerticalAlignment="Top" Margin="0,5,10,0" IsDefault="True" Click="Button_Click_1" HorizontalAlignment="Right" Width="42"/>
+        <Button Content="确定" VerticalAlignment="Top" Margin="0,5,57,0" IsDefault="True" Click="Button_Click" HorizontalAlignment="Right" Width="42"/>
 
     </Grid>
 </Window>

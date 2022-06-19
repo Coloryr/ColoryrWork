@@ -71,14 +71,14 @@ public class WebHtml
     //        }
     //    }
     //}
-    /// <summary>
-    /// 获取前端资源
-    /// </summary>
-    /// <param name="uuid">资源UUID</param>
-    /// <param name="name">名字</param>
-    /// <returns></returns>
-    public static byte[] GetWeb(string uuid, string name)
-    {
-        return WebBinManager.GetFile(uuid, name);
-    }
+    ///// <summary>
+    ///// 获取前端资源
+    ///// </summary>
+    ///// <param name="uuid">资源UUID</param>
+    ///// <param name="name">名字</param>
+    ///// <returns></returns>
+    //public static byte[] GetWeb(string uuid, string name)
+    //{
+    //    return WebBinManager.GetFile(uuid, name);
+    //}
 }

@@ -1,4 +1,5 @@
-﻿using ColoryrWork.Lib.Build;
+﻿using ColoryrBuild.Windows;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -87,7 +88,7 @@ public class HttpUtils
             var item2 = obj["Message"].ToString();
             if (item1 == "False" && item2 == "233")
             {
-                MessageBox.Show("登录失效");
+                _ = new InfoWindow("自动登录", "自动登录失效");
                 App.Login();
                 return false;
             }
@@ -123,7 +124,7 @@ public class HttpUtils
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.ToString());
+            _ = new InfoWindow("自动登录错误", e.ToString());
             return false;
         }
     }
@@ -288,7 +289,7 @@ public class HttpUtils
         }
     }
 
-    public async Task<ReMessage> AddWeb(string name, bool IsVue) 
+    public async Task<ReMessage> AddWeb(string name, bool IsVue)
     {
         try
         {
@@ -445,7 +446,7 @@ public class HttpUtils
             }
             else
             {
-                MessageBox.Show(res.Message);
+                _ = new InfoWindow("登录错误", res.Message);
             }
             return false;
         }

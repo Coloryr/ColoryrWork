@@ -17,27 +17,17 @@ internal static class PostBuildWeb
         {
             var time = string.Format("{0:s}", DateTime.Now);
             var isVue = json.Code.ToLower() == "true";
+            string uuid = json.UUID.Replace('\\', '/');
+            if (!uuid.EndsWith('/'))
+            {
+                uuid += '/';
+            }
             WebObj File2;
             if (isVue)
             {
                 File2 = new()
                 {
-                    UUID = json.UUID,
-                    CreateTime = time,
-                    Text = "",
-                    Codes = new()
-                    {
-                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
-                        { "js.js", DemoWebResource.IndexDemoJS }
-                    },
-                    Files = new()
-                };
-            }
-            else 
-            {
-                File2 = new()
-                {
-                    UUID = json.UUID,
+                    UUID = uuid,
                     CreateTime = time,
                     Text = "",
                     Codes = new()
@@ -53,11 +43,26 @@ internal static class PostBuildWeb
                         { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
                         { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) }
                     },
-                    Files = new() 
+                    Files = new()
                     {
                         { "src/logo.png", DemoVueResource.logo }
                     },
                     IsVue = true
+                };
+            }
+            else 
+            {
+                File2 = new()
+                {
+                    UUID = uuid,
+                    CreateTime = time,
+                    Text = "",
+                    Codes = new()
+                    {
+                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
+                        { "js.js", DemoWebResource.IndexDemoJS }
+                    },
+                    Files = new()
                 };
             }
             
@@ -124,11 +129,10 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]不存在文件[{json.Temp}]"
             };
         }
-        string old = code;
         code = FileEdit.StartEdit(code, list);
         File2.Text = json.Text;
 
-        WebFileManager.Save(File2, json.Temp, code, old);
+        WebFileManager.StorageCode(File2, json.Temp, code);
 
         return new ReMessage
         {
@@ -159,7 +163,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.AddCode(File2, json.Code, "");
+        WebFileManager.AddItem(File2, json.Code, true, "");
         return new ReMessage
         {
             Build = true,
@@ -186,7 +190,12 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]的主文件不允许删除"
             };
         }
-        if (!File2.Codes.ContainsKey(json.Code) && !File2.Files.ContainsKey(json.Code))
+        bool isCode = false;
+        if (File2.Codes.ContainsKey(json.Code))
+        {
+            isCode = true;
+        }
+        else if (!File2.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -195,7 +204,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.Remove(File2, json.Code);
+        WebFileManager.RemoveItem(File2, json.Code, isCode);
         return new ReMessage
         {
             Build = true,
@@ -223,7 +232,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.AddFile(File2, json.Code, Convert.FromBase64String(json.Temp));
+        WebFileManager.AddItem(File2, json.Code, false, data: Convert.FromBase64String(json.Temp));
         return new ReMessage
         {
             Build = true,
@@ -315,31 +324,10 @@ internal static class PostBuildWeb
             };
         }
 
-        byte[] item;
-
-        if (!File2.IsVue)
-        {
-            item = WebFileManager.ReadFile(json.UUID, json.Code);
-
-        }
-        else
-        {
-            item = WebFileManager.ReadFile(json.UUID, json.Code);
-        }
-
-        if (item == null)
-        {
-            return new ReMessage
-            {
-                Build = false,
-                Message = $"Web[{json.UUID}]不存在文件{json.Code}"
-            };
-        }
-
         return new ReMessage
         {
             Build = true,
-            Message = Convert.ToBase64String(item)
+            Message = Convert.ToBase64String(File2.Files[json.Code])
         };
     }
 }

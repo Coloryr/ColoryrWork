@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ColoryrServer.SDK;
 
-public class HttpRequest
+public class HttpDllRequest
 {
     /// <summary>
     /// 请求参数

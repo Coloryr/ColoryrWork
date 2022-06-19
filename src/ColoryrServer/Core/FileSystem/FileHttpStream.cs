@@ -80,7 +80,7 @@ internal class FileHttpStream
         }
     }
 
-    public static HttpResponseStream StartStream(HttpRequest http, string file)
+    public static HttpResponseStream StartStream(HttpDllRequest http, string file)
     {
         try
         {
@@ -151,7 +151,7 @@ internal class FileHttpStream
         }
     }
 
-    public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
     {
         string file = Local + local + "/" + name;
         return StartStream(http, file);
