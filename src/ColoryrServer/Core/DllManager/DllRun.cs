@@ -32,7 +32,7 @@ internal static class DllRun
         bool isDebug = false;
         try
         {
-            if (function == null)
+            if (string.IsNullOrWhiteSpace(function))
             {
                 function = CodeDemo.DllMain;
             }

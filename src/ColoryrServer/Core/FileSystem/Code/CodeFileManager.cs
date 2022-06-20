@@ -330,7 +330,7 @@ internal static class CodeFileManager
         }
     }
 
-    private static void RemoveCode(CodeType type, string UUID)
+    private static void RemoveCode(CodeType type, string uuid)
     {
         string type1 = type switch
         {
@@ -344,16 +344,26 @@ internal static class CodeFileManager
             _ => throw new ErrorDump("code type error")
         };
 
-        using var CodeSQL = new SqliteConnection(CodeConnStr);
-        using var CodeLogSQL = new SqliteConnection(CodeLogConnStr);
-        var list = CodeSQL.Query<CSFileCode>($"SELECT UUID,Text,Version,CreateTime,UpdateTime,Code FROM {type1} WHERE UUID=@UUID",
-            new { UUID });
+        using var codeSQL = new SqliteConnection(CodeConnStr);
+        var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime,updatetime,code FROM {type1} WHERE uuid=@uuid",
+            new { uuid });
         if (list.Any())
         {
-            CSFileCode obj1 = list.First();
-            CodeLogSQL.Execute($"INSERT INTO {type1} (UUID,Text,Code,Version,CreateTime,UpdateTime) VALUES(@UUID,@Text,@Code,@Version,@CreateTime,@UpdateTime)", obj1);
+            if (ServerMain.Config.CodeSetting.CodeLog)
+            {
+                QCodeObj obj1 = list.First();
+                using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
+                codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,code) VALUES(@uuid,@text,@version,@time,@code)", new
+                { 
+                    obj1.uuid,
+                    obj1.text,
+                    obj1.code,
+                    obj1.version,
+                    time = DateTime.Now.ToString()
+                });
+            }
 
-            CodeSQL.Execute($"DELETE FROM {type1} WHERE UUID=@UUID", new { UUID });
+            codeSQL.Execute($"DELETE FROM {type1} WHERE uuid=@uuid", new { uuid });
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
@@ -15,33 +16,39 @@ internal static class PostBuildDll
     public static ReMessage Add(BuildOBJ json)
     {
         ReMessage res;
-        if (CodeFileManager.GetDll(json.UUID) == null)
+        string uuid = json.UUID.Replace('\\', '/');
+        if (uuid.EndsWith("/"))
         {
-            var time = string.Format("{0:s}", DateTime.Now);
-            string uuid = json.UUID.Replace('\\', '/');
-            CSFileCode obj = new()
-            {
-                UUID = uuid,
-                Type = CodeType.Dll,
-                CreateTime = time,
-                Code = DemoResource.Dll
-                .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
-            };
-            CodeFileManager.StorageDll(obj);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"Dll[{json.UUID}]已创建"
-            };
-            GenDll.StartGen(obj);
-            ServerMain.LogOut($"Dll[{json.UUID}]创建");
+            uuid = uuid[..^1];
         }
-        else
-            res = new ReMessage
+        if (CodeFileManager.GetDll(uuid) != null)
+        {
+            return new ReMessage
             {
                 Build = false,
-                Message = $"Dll[{json.UUID}]已存在"
+                Message = $"Dll[{uuid}]已存在"
             };
+        }
+
+        var time = string.Format("{0:s}", DateTime.Now);
+        
+        CSFileCode obj = new()
+        {
+            UUID = uuid,
+            Type = CodeType.Dll,
+            CreateTime = time,
+            Code = DemoResource.Dll
+            .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
+        };
+        CodeFileManager.StorageDll(obj);
+        res = new ReMessage
+        {
+            Build = true,
+            Message = $"Dll[{uuid}]已创建"
+        };
+        GenDll.StartGen(obj);
+        ServerMain.LogOut($"Dll[{uuid}]创建");
+
 
         return res;
     }

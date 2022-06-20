@@ -37,10 +37,20 @@ public class WebApiView : CodeListView
         var data = new InputWindow("UUID设置", "WebApi/").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
+        data = data.Replace('\\', '/');
+        if (data.EndsWith("/"))
+        {
+            data = data[..^1];
+        }
         var list = await App.HttpUtils.Add(Type, data);
         if (list == null)
         {
-            App.LogShow("添加", "服务器返回错误");
+            new InfoWindow("添加", "服务器返回错误");
+            return;
+        }
+        else if (!list.Build) 
+        {
+            new InfoWindow("创建失败", list.Message);
             return;
         }
         App.LogShow("创建", list.Message);

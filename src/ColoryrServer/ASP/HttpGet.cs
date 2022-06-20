@@ -71,19 +71,37 @@ internal static class HttpGet
         HttpReturn httpReturn;
         var name = context.GetRouteValue("name") as string;
         int last = name.LastIndexOf('/');
-        var uuid = name[..last];
-        var funtion = name[last..];
-        var Dll = HttpInvokeRoute.Get(uuid);
-        if (Dll != null)
+        string uuid, funtion;
+        if (last == -1)
         {
-            if (Dll.IsDll)
+            uuid = name;
+            funtion = null;
+        }
+        else
+        {
+            uuid = name[..last];
+            funtion = name[(last + 1)..];
+        }
+        
+        var route = HttpInvokeRoute.Get(uuid);
+        if (route == null)
+        {
+            route = HttpInvokeRoute.Get(uuid + "/" + funtion);
+            if (route != null)
+            {
+                funtion = "";
+            }
+        }
+        if (route != null)
+        {
+            if (route.IsDll)
             {
                 var arg = InitArg(Request);
-                httpReturn = Dll.Invoke(arg, funtion);
+                httpReturn = route.Invoke(arg, funtion);
             }
             else
             {
-                httpReturn = Dll.Invoke(null, funtion);
+                httpReturn = route.Invoke(null, funtion);
             }
             Response.ContentType = httpReturn.ContentType;
             Response.StatusCode = httpReturn.ReCode;

@@ -20,15 +20,20 @@ public abstract class RouteObj
 public class DllRoute : RouteObj
 {
     private DllAssembly dll;
-    public DllRoute(DllAssembly dll) 
+    public DllRoute(DllAssembly dll)
     {
         IsDll = true;
         this.dll = dll;
     }
 
-    public override HttpReturn Invoke(HttpDllRequest arg, string function) 
+    public override HttpReturn Invoke(HttpDllRequest arg, string function)
     {
         return DllRun.DllGo(dll, arg, function);
+    }
+
+    public void Update(DllAssembly dll)
+    {
+        this.dll = dll;
     }
 }
 
@@ -53,7 +58,14 @@ public static class HttpInvokeRoute
 
     public static void AddDll(string name, DllAssembly dll) 
     {
-        Routes.TryAdd(name, new DllRoute(dll));
+        if (Routes.ContainsKey(name))
+        {
+            (Routes[name] as DllRoute).Update(dll);
+        }
+        else
+        {
+            Routes.TryAdd(name, new DllRoute(dll));
+        }
     }
 
     public static void AddWeb(string uuid, WebObj obj)
