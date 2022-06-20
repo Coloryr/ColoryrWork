@@ -339,7 +339,7 @@ UpdateTime:{obj.UpdateTime}");
         }
     }
 
-    private static void StorageFile(WebObj obj, string name, byte[] data)
+    public static void StorageFile(WebObj obj, string name, byte[] data)
     {
         using var fileSQL = new SqliteConnection(WebFileConnStr);
         string time = DateTime.Now.ToString();
@@ -375,7 +375,7 @@ UpdateTime:{obj.UpdateTime}");
         }
     }
 
-    private static void Storage(WebObj obj)
+    public static void Storage(WebObj obj)
     {
         Task.Run(() =>
         {
@@ -463,10 +463,10 @@ UpdateTime:{obj.UpdateTime}");
         Storage(obj);
     }
 
-    private static void RemoveCode(WebObj obj, string file)
+    private static void RemoveCode(WebObj obj, string name)
     {
         using var codeSQL = new SqliteConnection(WebCodeConnStr);
-        var arg = new { obj.UUID, File = file };
+        var arg = new { uuid = obj.UUID, name };
         var list = codeSQL.Query<CWebObj>("SELECT code FROM web WHERE uuid=@uuid AND name=@name", arg);
         if (list.Any())
         {
@@ -480,7 +480,7 @@ UpdateTime:{obj.UpdateTime}");
                     CodeLogSQL.Execute($"INSERT INTO code (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new
                     {
                         uuid = obj.UUID,
-                        name = file,
+                        name,
                         code = old,
                         time = DateTime.Now.ToString()
                     });
@@ -489,10 +489,10 @@ UpdateTime:{obj.UpdateTime}");
         }
     }
 
-    private static void RemoveFile(WebObj obj, string file)
+    private static void RemoveFile(WebObj obj, string name)
     {
         using var fileSQL = new SqliteConnection(WebFileConnStr);
-        var arg = new { obj.UUID, File = file };
+        var arg = new { uuid = obj.UUID, name };
         var list = fileSQL.Query<FWebObj>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", arg);
         if (list.Any())
         {
@@ -506,7 +506,7 @@ UpdateTime:{obj.UpdateTime}");
                     CodeLogSQL.Execute($"INSERT INTO file (uuid,name,data,time) VALUES(@uuid,@name,@data,@time)", new
                     {
                         uuid = obj.UUID,
-                        name = file,
+                        name,
                         data = old,
                         time = DateTime.Now.ToString()
                     });

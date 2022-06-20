@@ -105,6 +105,7 @@ public partial class CodeWebEditView : UserControl, IEditView
                 Close_Button.IsEnabled = true;
                 IsVue.IsEnabled = true;
                 Text.IsEnabled = true;
+                TextEditor.IsEnabled = true;
             });
             IsBuild = false;
             Timer.Stop();
@@ -199,7 +200,8 @@ public partial class CodeWebEditView : UserControl, IEditView
         {
             Files.Add(item.Key);
         }
-        FileList.SelectedItem = Files.First();
+        if (Files.Any())
+            FileList.SelectedItem = Files.First();
         IsVue.IsChecked = WebObj.IsVue;
         AddLog($"代码Web[{Obj.UUID}]获取成功");
         IsWrite = false;
@@ -336,6 +338,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         Close_Button.IsEnabled = false;
         IsVue.IsEnabled = false;
         Text.IsEnabled = false;
+        TextEditor.IsEnabled = false;
         Timer.Start();
     }
 
@@ -494,7 +497,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         var openFileDialog1 = new System.Windows.Forms.OpenFileDialog
         {
             Title = "选择要上传的压缩包",
-            Filter = "压缩包|zip.*",
+            Filter = "压缩包|*.zip",
             RestoreDirectory = true
         };
         if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)

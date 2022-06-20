@@ -83,10 +83,13 @@ public static class ZipUtils
         ZipEntry theEntry;
         while ((theEntry = s.GetNextEntry()) != null)
         {
-            string fileName = System.IO.Path.GetFileName(theEntry.Name);
+            string fileName = Path.GetFileName(theEntry.Name);
             if (fileName != string.Empty)
             {
-                using FileStream streamWriter = File.Create(path + @"\" + theEntry.Name);
+                var info = new FileInfo(path + @"\" + theEntry.Name);
+                var dir = new DirectoryInfo(info.DirectoryName);
+                dir.Create();
+                using FileStream streamWriter = File.Create(info.FullName);
                 int size = 4096;
                 byte[] data = new byte[4096];
                 while (true)

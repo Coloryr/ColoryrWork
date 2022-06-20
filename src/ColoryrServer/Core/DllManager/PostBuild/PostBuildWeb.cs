@@ -427,19 +427,25 @@ internal static class PostBuildWeb
         var dir = new DirectoryInfo(local);
         foreach (var item in FileUtils.GetDirectoryFile(dir))
         {
-            string name = item.FullName.Replace(dir.FullName, "");
+            string name = item.FullName.Replace(dir.FullName, "")[1..];
             if (name.EndsWith(".html") || name.EndsWith(".css")
             || name.EndsWith(".js") || name.EndsWith(".json")
             || name.EndsWith(".txt") || name.EndsWith(".vue")
             || name.EndsWith(".ts"))
             {
-                obj.Codes.Add(name, File.ReadAllText(item.FullName));
+                string code = File.ReadAllText(item.FullName);
+                obj.Codes.Add(name, code);
+                WebFileManager.StorageCode(obj, name, code);
             }
             else
             {
-                obj.Files.Add(name, File.ReadAllBytes(item.FullName));
+                var data = File.ReadAllBytes(item.FullName);
+                obj.Files.Add(name, data);
+                WebFileManager.StorageFile(obj, name, data);
             }
         }
+        obj.Up();
+        WebFileManager.Storage(obj);
 
         return new ReMessage
         {
