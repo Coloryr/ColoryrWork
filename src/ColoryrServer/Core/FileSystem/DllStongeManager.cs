@@ -1,5 +1,7 @@
-﻿using ColoryrServer.Core.DllManager.DllLoad;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Server;
@@ -10,9 +12,9 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.DllManager;
+namespace ColoryrServer.Core.FileSystem;
 
-public static class DllStonge
+public static class DllStongeManager
 {
     private static readonly ConcurrentDictionary<string, DllAssembly> MapDll = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapClass = new();
@@ -331,6 +333,7 @@ public static class DllStonge
             Directory.CreateDirectory(LocalMqtt);
         }
 
+        //加载class
         var dirs = Function.GetPathFileName(LocalClass);
         foreach (var item in dirs)
         {
@@ -346,20 +349,23 @@ public static class DllStonge
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(LocalDll);
-        foreach (var item in dirs)
+        //加载dll
+        foreach (var item in CodeFileManager.DllFileList.Keys)
         {
-            try
+            string name = LocalDll + EnCode.SHA1(item) + ".dll";
+            if (File.Exists(name))
             {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadDll.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
+                try
+                {
+                    LoadDll.LoadFile(item, name);
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                }
             }
         }
+
         dirs = Function.GetPathFileName(LocalSocket);
         foreach (var item in dirs)
         {

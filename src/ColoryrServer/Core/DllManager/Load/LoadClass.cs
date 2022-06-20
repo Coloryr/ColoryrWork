@@ -47,7 +47,7 @@ internal class LoadClass
         }
 
         NoteFile.StorageClass(uuid, obj);
-        DllStonge.AddClass(uuid, assembly);
+        DllStongeManager.AddClass(uuid, assembly);
 
         return null;
     }
@@ -78,7 +78,7 @@ internal class LoadClass
     /// <param name="name">文件名字</param>
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.LocalClass + name + ".dll");
+        FileInfo info = new(DllStongeManager.LocalClass + name + ".dll");
         LoadFile(info);
     }
 }

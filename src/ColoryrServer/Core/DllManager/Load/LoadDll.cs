@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
@@ -88,7 +89,7 @@ internal class LoadDll
             };
         }
 
-        DllStonge.AddDll(uuid, assembly);
+        DllStongeManager.AddDll(uuid, assembly);
 
         return null;
     }
@@ -97,29 +98,27 @@ internal class LoadDll
     /// 从文件加载.dll
     /// </summary>
     /// <param name="info">文件信息</param>
-    public static void LoadFile(FileInfo info)
+    public static void LoadFile(string item, string local)
     {
-        using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
-        string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载DLL：" + uuid);
+        using var FileStream = new FileStream(local, FileMode.Open, FileAccess.Read);
+        ServerMain.LogOut("加载DLL：" + item);
 
-        var pdb = info.FullName.Replace(".dll", ".pdb");
+        var pdb = local.Replace(".dll", ".pdb");
         if (File.Exists(pdb))
         {
             using var FileStream1 = new FileStream(pdb, FileMode.Open, FileAccess.Read);
-            Load(uuid, FileStream, FileStream1);
+            Load(item, FileStream, FileStream1);
         }
         else
-            Load(uuid, FileStream);
+            Load(item, FileStream);
     }
 
     /// <summary>
     /// 重载.dll
     /// </summary>
     /// <param name="name">文件名字</param>
-    public static void Reload(string name)
+    public static void Reload(string item)
     {
-        FileInfo info = new(DllStonge.LocalDll + name + ".dll");
-        LoadFile(info);
+        LoadFile(item, DllStongeManager.LocalDll + EnCode.SHA1(item) + ".dll");
     }
 }

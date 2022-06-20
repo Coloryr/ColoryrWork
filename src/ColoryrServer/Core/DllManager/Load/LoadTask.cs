@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,7 @@ internal class LoadTask
                 Res = $"Task[{uuid}]没有主方法"
             };
 
-        DllStonge.AddTask(uuid, assembly);
+        DllStongeManager.AddTask(uuid, assembly);
 
         return null;
     }
@@ -77,7 +78,7 @@ internal class LoadTask
     /// <param name="name">文件名字</param>
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.LocalTask + name + ".dll");
+        FileInfo info = new(DllStongeManager.LocalTask + name + ".dll");
         LoadFile(info);
     }
 }

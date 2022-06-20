@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
@@ -505,7 +504,7 @@ public partial class Tools
     /// <returns>类</returns>
     public static dynamic GetClass(string classname, params object[] obj)
     {
-        var data = DllStonge.GetClass(classname);
+        var data = DllStongeManager.GetClass(classname);
         if (data == null)
             throw new ErrorDump("没有这个类:" + classname);
         try

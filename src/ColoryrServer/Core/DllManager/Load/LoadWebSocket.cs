@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,7 @@ internal class LoadWebSocket
                 Res = $"WebSocket[{uuid}]没有主方法"
             };
 
-        DllStonge.AddWebSocket(uuid, assembly);
+        DllStongeManager.AddWebSocket(uuid, assembly);
 
         return null;
     }
@@ -74,7 +75,7 @@ internal class LoadWebSocket
     /// <param name="name">文件名字</param>
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.LocalWebSocket + name + ".dll");
+        FileInfo info = new(DllStongeManager.LocalWebSocket + name + ".dll");
         LoadFile(info);
     }
 }

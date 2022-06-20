@@ -199,7 +199,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void SocketGo(TcpSocketRequest Head)
     {
-        foreach (var dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetWebSocket())
         {
             try
             {
@@ -233,7 +233,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void SocketGo(UdpSocketRequest Head)
     {
-        foreach (var dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetWebSocket())
         {
             try
             {
@@ -267,7 +267,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketMessage Head)
     {
-        foreach (var dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetWebSocket())
         {
             try
             {
@@ -301,7 +301,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketOpen Head)
     {
-        foreach (var dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetWebSocket())
         {
             try
             {
@@ -335,7 +335,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void WebSocketGo(WebSocketClose Head)
     {
-        foreach (var dll in DllStonge.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetWebSocket())
         {
             try
             {
@@ -369,7 +369,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void RobotGo(RobotMessage Head)
     {
-        foreach (var dll in DllStonge.GetRobot())
+        foreach (var dll in DllStongeManager.GetRobot())
         {
             try
             {
@@ -406,7 +406,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void RobotGo(RobotEvent Head)
     {
-        foreach (var dll in DllStonge.GetRobot())
+        foreach (var dll in DllStongeManager.GetRobot())
         {
             try
             {
@@ -443,7 +443,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void RobotGo(RobotSend Head)
     {
-        foreach (var dll in DllStonge.GetRobot())
+        foreach (var dll in DllStongeManager.GetRobot())
         {
             try
             {
@@ -480,7 +480,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void MqttGo(MqttConnectionValidator Head)
     {
-        foreach (var dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStongeManager.GetMqtt())
         {
             try
             {
@@ -517,7 +517,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void MqttGo(MqttUnsubscription Head)
     {
-        foreach (var dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStongeManager.GetMqtt())
         {
             try
             {
@@ -554,7 +554,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void MqttGo(MqttMessage Head)
     {
-        foreach (var dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStongeManager.GetMqtt())
         {
             try
             {
@@ -591,7 +591,7 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void MqttGo(MqttSubscription Head)
     {
-        foreach (var dll in DllStonge.GetMqtt())
+        foreach (var dll in DllStongeManager.GetMqtt())
         {
             try
             {
@@ -629,7 +629,7 @@ internal static class DllRun
     /// <returns></returns>
     public static TaskRes TaskGo(TaskUserArg name)
     {
-        var dll = DllStonge.GetTask(name.Dll);
+        var dll = DllStongeManager.GetTask(name.Dll);
         if (dll == null)
             return null;
         try

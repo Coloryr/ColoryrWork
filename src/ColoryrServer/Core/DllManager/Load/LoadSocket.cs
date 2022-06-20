@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,7 @@ internal class LoadSocket
                 Res = $"Socket[{uuid}]没有方法"
             };
 
-        DllStonge.AddSocket(uuid, assembly);
+        DllStongeManager.AddSocket(uuid, assembly);
 
         return null;
     }
@@ -74,7 +75,7 @@ internal class LoadSocket
     /// <param name="name">文件名字</param>
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.LocalSocket + name + ".dll");
+        FileInfo info = new(DllStongeManager.LocalSocket + name + ".dll");
         LoadFile(info);
     }
 }

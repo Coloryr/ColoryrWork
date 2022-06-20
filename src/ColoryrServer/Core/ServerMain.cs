@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem;
@@ -156,7 +155,7 @@ public class ServerMain
             SqliteCon.Start();
             RamDataBase.Start();
             GenCode.Start();
-            DllStonge.Start();
+            DllStongeManager.Start();
             WebFileManager.Start();
             FileHttpStream.Start();
             SocketServer.Start();

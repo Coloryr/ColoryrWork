@@ -24,7 +24,7 @@ internal class TaskThread
     public TaskThread(TaskUserArg arg) 
     {
         Arg = arg;
-        Assembly = DllStonge.GetTask(arg.Dll);
+        Assembly = DllStongeManager.GetTask(arg.Dll);
         if (Assembly == null)
         {
             State = TaskState.Error;
@@ -79,7 +79,7 @@ internal class TaskThread
                         Arg.Sleep = NewArg.Sleep;
                         Arg.Times = NewArg.Times;
                         Arg.Arg = NewArg.Arg;
-                        Assembly = DllStonge.GetTask(Arg.Dll);
+                        Assembly = DllStongeManager.GetTask(Arg.Dll);
                         if (Assembly == null)
                         {
                             State = TaskState.Error;

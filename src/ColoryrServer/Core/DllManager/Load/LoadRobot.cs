@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,7 @@ internal class LoadRobot
                 Res = $"Robot[{uuid}]没有方法"
             };
 
-        DllStonge.AddRobot(uuid, assembly);
+        DllStongeManager.AddRobot(uuid, assembly);
 
         return null;
     }
@@ -74,7 +75,7 @@ internal class LoadRobot
     /// <param name="name">文件名字</param>
     public static void Reload(string name)
     {
-        FileInfo info = new(DllStonge.LocalRobot + name + ".dll");
+        FileInfo info = new(DllStongeManager.LocalRobot + name + ".dll");
         LoadFile(info);
     }
 }

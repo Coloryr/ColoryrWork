@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -522,31 +521,31 @@ internal static class CodeFileManager
             {
                 case CodeType.Dll:
                     DllFileList.TryRemove(uuid, out var item);
-                    DllStonge.RemoveDll(uuid);
+                    DllStongeManager.RemoveDll(uuid);
                     break;
                 case CodeType.Class:
                     ClassFileList.TryRemove(uuid, out var item1);
-                    DllStonge.RemoveClass(uuid);
+                    DllStongeManager.RemoveClass(uuid);
                     break;
                 case CodeType.Socket:
                     SocketFileList.TryRemove(uuid, out var item2);
-                    DllStonge.RemoveSocket(uuid);
+                    DllStongeManager.RemoveSocket(uuid);
                     break;
                 case CodeType.WebSocket:
                     WebSocketFileList.TryRemove(uuid, out var item3);
-                    DllStonge.RemoveWebSocket(uuid);
+                    DllStongeManager.RemoveWebSocket(uuid);
                     break;
                 case CodeType.Robot:
                     RobotFileList.TryRemove(uuid, out var item4);
-                    DllStonge.RemoveRobot(uuid);
+                    DllStongeManager.RemoveRobot(uuid);
                     break;
                 case CodeType.Mqtt:
                     MqttFileList.TryRemove(uuid, out var item6);
-                    DllStonge.RemoveMqtt(uuid);
+                    DllStongeManager.RemoveMqtt(uuid);
                     break;
                 case CodeType.Task:
                     MqttFileList.TryRemove(uuid, out var item7);
-                    DllStonge.RemoveTask(uuid);
+                    DllStongeManager.RemoveTask(uuid);
                     break;
             }
 

@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis.CSharp;
@@ -41,14 +42,14 @@ internal class GenWebSocket
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalWebSocket + obj.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStongeManager.LocalWebSocket + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStonge.LocalWebSocket + obj.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStongeManager.LocalWebSocket + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();

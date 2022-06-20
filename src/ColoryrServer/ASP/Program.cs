@@ -1,5 +1,5 @@
 using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
@@ -251,7 +251,7 @@ internal static class ASPServer
             }
         }
 
-        var Dll = DllStonge.GetDll(uuid);
+        var Dll = DllStongeManager.GetDll(uuid);
         if (Dll != null)
         {
             NameValueCollection collection = new();
