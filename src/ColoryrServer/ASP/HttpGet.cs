@@ -70,28 +70,7 @@ internal static class HttpGet
         HttpResponse response = context.Response;
         HttpReturn httpReturn;
         var name = context.GetRouteValue("name") as string;
-        int last = name.LastIndexOf('/');
-        string uuid, funtion;
-        if (last == -1)
-        {
-            uuid = name;
-            funtion = null;
-        }
-        else
-        {
-            uuid = name[..last];
-            funtion = name[(last + 1)..];
-        }
-        
-        var route = HttpInvokeRoute.Get(uuid);
-        if (route == null)
-        {
-            route = HttpInvokeRoute.Get(uuid + "/" + funtion);
-            if (route != null)
-            {
-                funtion = "";
-            }
-        }
+        var route = HttpUtils.GetUUID(name, out string funtion);
         if (route != null)
         {
             if (route.IsDll)

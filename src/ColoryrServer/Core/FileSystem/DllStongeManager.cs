@@ -83,6 +83,7 @@ public static class DllStongeManager
             item.MethodInfos.Clear();
         }
         RemoveAll(LocalDll + EnCode.SHA1(uuid));
+        HttpInvokeRoute.Remove(uuid);
     }
     public static DllAssembly GetDll(string uuid)
     {

@@ -167,7 +167,7 @@ public class HttpUtils
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebSetIsVue,
+                Mode = ReType.WebCodeZIP,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -563,7 +563,7 @@ public class HttpUtils
         }
     }
 
-    public async Task<ReMessage> BuildWeb(CSFileObj obj, string Name)
+    public async Task<ReMessage> BuildWeb(CSFileObj obj)
     {
         try
         {
@@ -574,8 +574,7 @@ public class HttpUtils
                 Mode = ReType.WebBuild,
                 UUID = obj.UUID,
                 Version = obj.Version,
-                Text = obj.Text,
-                Temp = Name
+                Text = obj.Text
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -583,7 +582,36 @@ public class HttpUtils
             var data = await temp.Content.ReadAsStringAsync();
             if (!CheckLogin(data))
             {
-                return await BuildWeb(obj, Name);
+                return await BuildWeb(obj);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<ReMessage> BuildWebRes(CSFileObj obj)
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = ReType.WebBuildRes,
+                UUID = obj.UUID,
+                Version = obj.Version,
+                Text = obj.Text
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await BuildWebRes(obj);
             }
             return JsonConvert.DeserializeObject<ReMessage>(data);
         }

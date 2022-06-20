@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.Http;
-using ColoryrServer.Utils;
+using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -36,7 +36,7 @@ public class WebFileManager
     /// <summary>
     /// 代码存放
     /// </summary>
-    private static readonly string WebCodeLocal = ServerMain.RunLocal + "Codes/Static/";
+    public static readonly string WebCodeLocal = ServerMain.RunLocal + "Codes/Static/";
     /// <summary>
     /// Web项目删除
     /// </summary>
@@ -205,10 +205,8 @@ public class WebFileManager
                     obj.Files.Add(item1.name, item1.data);
                 }
 
-                HtmlCodeList.TryAdd(item.uuid, obj);
+                Add(obj);
                 Storage(obj);
-
-                HttpInvokeRoute.AddWeb(item.uuid, obj);
 
                 ServerMain.LogOut($"加载Web：{item.uuid}");
             }
@@ -226,6 +224,7 @@ public class WebFileManager
     }
     public static void DeleteAll(WebObj obj)
     {
+        HttpInvokeRoute.Remove(obj.UUID);
         string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
         string dir = WebRemoveLocal + $"{obj.UUID}-{time}" + "/";
         Directory.CreateDirectory(dir);
@@ -329,36 +328,10 @@ UpdateTime:{obj.UpdateTime}");
                 obj.Codes[name] = code;
             }
             //更新bin
-            Task.Run(() =>
+            if (obj.IsVue)
             {
-                if (obj.IsVue)
-                {
-                    File.WriteAllText(local, code);
-                }
-                else
-                {
-                    if (name.ToLower().EndsWith(".css") &&
-                        ServerMain.Config.CodeSetting.MinifyCSS)
-                    {
-                        code = CodeCompress.CSS(code);
-                        File.WriteAllText(local, code);
-                    }
-
-                    if (name.ToLower().EndsWith(".js") &&
-                        ServerMain.Config.CodeSetting.MinifyJS)
-                    {
-                        code = CodeCompress.JS(code);
-                        File.WriteAllText(local, code);
-                    }
-
-                    if (name.ToLower().EndsWith(".html") &&
-                        ServerMain.Config.CodeSetting.MinifyHtml)
-                    {
-                        code = CodeCompress.JS(code);
-                        File.WriteAllText(local, code);
-                    }
-                }
-            });
+                File.WriteAllText(local, code);
+            }
         }
         catch (Exception e)
         {
@@ -393,6 +366,12 @@ UpdateTime:{obj.UpdateTime}");
         {
             fileSQL.Execute("INSERT INTO web (uuid,name,data,time) VALUES(@uuid,@name,@data,@time)",
                 new { uuid = obj.UUID, name, data, time });
+        }
+
+        if (obj.IsVue)
+        {
+            string local = WebCodeLocal + obj.UUID + "/" + name;
+            File.WriteAllBytes(local, data);
         }
     }
 
@@ -447,9 +426,15 @@ UpdateTime:{obj.UpdateTime}");
         });
     }
 
-    public static void New(WebObj obj)
+    public static void Add(WebObj obj) 
     {
         HtmlCodeList.TryAdd(obj.UUID, obj);
+        HttpInvokeRoute.AddWeb(obj.UUID, obj);
+    }
+
+    public static void New(WebObj obj)
+    {
+        Add(obj);
         foreach (var item in obj.Codes)
         {
             StorageCode(obj, item.Key, item.Value);

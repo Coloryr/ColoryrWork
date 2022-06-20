@@ -5,11 +5,16 @@ using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace ColoryrBuild.Views;
 
@@ -30,6 +35,7 @@ public partial class CodeWebEditView : UserControl, IEditView
     private readonly string Local;
     private bool IsWrite;
     private bool IsBuild = false;
+    private Timer Timer;
 
     public CodeWebEditView(CSFileObj obj)
     {
@@ -49,12 +55,20 @@ public partial class CodeWebEditView : UserControl, IEditView
             Directory.CreateDirectory(Local);
         }
         GetCode();
+        Timer = new();
+        Timer.BeginInit();
+        Timer.Elapsed += GetBuildRes;
+        Timer.AutoReset = true;
+        Timer.Interval = 5000;
+        Timer.EndInit();
+
         FileList.ItemsSource = Files;
         FileSystemWatcher = new FileSystemWatcher();
         try
         {
             FileSystemWatcher.Path = Local;
-            FileSystemWatcher.Changed += new FileSystemEventHandler(OnChanged);
+            FileSystemWatcher.IncludeSubdirectories = true;
+            FileSystemWatcher.Changed += OnChanged;
             FileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
             FileSystemWatcher.EnableRaisingEvents = true;
         }
@@ -64,33 +78,72 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
     }
 
+    private void GetBuildRes(object? sender, ElapsedEventArgs e)
+    {
+        var res = App.HttpUtils.BuildWebRes(WebObj).Result;
+        if (res == null)
+        {
+            Dispatcher.Invoke(() => { AddLog("获取编译结果失败"); });
+            return;
+        }
+        else if (!res.Build)
+        {
+            Dispatcher.Invoke(() => { AddLog(res.Message); });
+            return;
+        }
+        else
+        {
+            Dispatcher.Invoke(() =>
+            {
+                AddLog(res.Message);
+                AddLog(res.Time);
+
+                Update_Button.IsEnabled = true;
+                Build_Button.IsEnabled = true;
+                ReCode_Button.IsEnabled = true;
+                FileList.IsEnabled = true;
+                Close_Button.IsEnabled = true;
+                IsVue.IsEnabled = true;
+                Text.IsEnabled = true;
+            });
+            IsBuild = false;
+            Timer.Stop();
+        }
+    }
+
     public void Close()
     {
         FileSystemWatcher.Dispose();
+        Timer.Dispose();
     }
 
     private async void OnChanged(object source, FileSystemEventArgs e)
     {
-        if (IsWrite)
+        if (IsWrite || IsBuild)
             return;
         IsWrite = true;
-        WebObj.Codes[e.Name] = CodeSave.Load(Local + e.Name).Replace("\r", "");
-        await Dispatcher.InvokeAsync(() =>
+        string name = e.FullPath.Replace(Local, "").Replace('\\', '/');
+        FileName = name;
+        OldCode = WebObj.Codes[name];
+        WebObj.Codes[name] = CodeSave.Load(e.FullPath).Replace("\r", "");
+        await Dispatcher.InvokeAsync(async () =>
         {
-            Model = App.StartContrast(Type, WebObj.UUID, WebObj.Codes[e.Name], OldCode);
-            TextEditor.Text = WebObj.Codes[e.Name];
+            FileList.SelectedItem = null;
+            TextEditor.Text = WebObj.Codes[name];
+            await UpdateTask();
         });
+        
         IsWrite = false;
     }
 
     private void AddLog(string data)
     {
-        Logs.AppendText($"[{DateTime.Now}]{data}");
+        Logs.AppendText($"[{DateTime.Now}]{data}" + Environment.NewLine);
     }
 
     public async void GetCode()
     {
-        if (IsWrite)
+        if (IsWrite || IsBuild)
             return;
         IsWrite = true;
         Logs.Text = "";
@@ -154,12 +207,13 @@ public partial class CodeWebEditView : UserControl, IEditView
 
     private async Task UpdateTask()
     {
-        Updata_Button.IsEnabled = false;
+        Update_Button.IsEnabled = false;
         Logs.Text = "";
         WebObj.Text = Text.Text;
         if (FileName.EndsWith(".html") || FileName.EndsWith(".css")
         || FileName.EndsWith(".js") || FileName.EndsWith(".json")
-        || FileName.EndsWith(".txt"))
+        || FileName.EndsWith(".txt") || FileName.EndsWith(".ts") 
+        || FileName.EndsWith(".vue"))
         {
             WebObj.Codes[FileName] = TextEditor.Text.Replace("\r", "");
             Model = App.StartContrast(Type, WebObj.UUID, WebObj.Codes[FileName], OldCode);
@@ -213,7 +267,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         {
             AddLog("不支持修改该文件");
         }
-        Updata_Button.IsEnabled = true;
+        Update_Button.IsEnabled = true;
     }
 
     private async void Updata_Click(object sender, RoutedEventArgs e)
@@ -223,7 +277,7 @@ public partial class CodeWebEditView : UserControl, IEditView
 
     private async void Image_Click(object sender, RoutedEventArgs e) 
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem == null || IsBuild)
             return;
 
         Logs.Text = "";
@@ -255,27 +309,39 @@ public partial class CodeWebEditView : UserControl, IEditView
 
     private async void BuildWeb()
     {
+        if (IsBuild)
+            return;
         Logs.Text = "";
-        string temp = FileName;
-        WebObj.Text = Text.Text;
-        var data = await App.HttpUtils.BuildWeb(WebObj, FileName);
+        var data = await App.HttpUtils.BuildWeb(WebObj);
         if (data == null)
         {
-            AddLog("服务器返回错误");
+            new InfoWindow("Vue编译", "服务器返回错误");
             return;
         }
-        AddLog(data.Message);
-        WebObj.Next();
-        OldCode = TextEditor.Text;
-        App.MainWindow_.RefreshCode(Type);
-        CodeSave.Save(Local + $"{FileName}", WebObj.Codes[temp]);
-        App.ClearContrast();
-        await Dispatcher.BeginInvoke(() => MainWindow.SwitchTo(this));
+        if (!data.Build)
+        {
+            new InfoWindow("Vue编译", data.Message);
+            return;
+        }
+        else
+        {
+            AddLog(data.Message);
+        }
+
+        IsBuild = true;
+        Update_Button.IsEnabled = false;
+        Build_Button.IsEnabled = false;
+        ReCode_Button.IsEnabled = false;
+        FileList.IsEnabled = false;
+        Close_Button.IsEnabled = false;
+        IsVue.IsEnabled = false;
+        Text.IsEnabled = false;
+        Timer.Start();
     }
 
     private void Build_Click(object sender, RoutedEventArgs e)
     {
-        if (IsWrite)
+        if (IsWrite || IsBuild)
             return;
         Build_Button.IsEnabled = false;
         IsWrite = true;
@@ -286,6 +352,9 @@ public partial class CodeWebEditView : UserControl, IEditView
 
     private async void Add_Click(object sender, RoutedEventArgs e)
     {
+        if (IsBuild)
+            return;
+
         var data = new InputWindow("文件名").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
@@ -333,7 +402,7 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private void Change_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem == null || IsBuild)
             return;
         string data = FileList.SelectedItem as string;
         if (FileName == data)
@@ -350,7 +419,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             TextEditor.Text = "无法编辑文件";
             TextEditor.IsReadOnly = true;
         }
-
+        //TODO 编辑器高亮
         if (data.EndsWith(".js"))
         {
 
@@ -360,7 +429,7 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private async void Download_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem == null || IsBuild)
             return;
 
         Logs.Text = "";
@@ -402,7 +471,7 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private async void Delete_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem == null || IsBuild)
             return;
 
         Logs.Text = "";
@@ -420,7 +489,8 @@ public partial class CodeWebEditView : UserControl, IEditView
     private async void ZIP_Click(object sender, RoutedEventArgs e)
     {
         Logs.Text = "";
-        var select = new ChoseWindow("上传压缩包", "上传代码压缩包会覆盖之前所有的文件，你确定要继续吗");
+        if (!new ChoseWindow("上传压缩包", "上传代码压缩包会覆盖之前所有的文件，你确定要继续吗").Set())
+            return;
         var openFileDialog1 = new System.Windows.Forms.OpenFileDialog
         {
             Title = "选择要上传的压缩包",
@@ -439,6 +509,10 @@ public partial class CodeWebEditView : UserControl, IEditView
             else if (!res.Build)
             {
                 AddLog($"Web[{WebObj.UUID}]代码压缩包上传失败：{res.Message}");
+            }
+            else
+            {
+                GetCode();
             }
         }
     }

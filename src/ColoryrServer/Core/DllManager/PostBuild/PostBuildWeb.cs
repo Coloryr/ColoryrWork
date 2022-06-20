@@ -3,9 +3,12 @@ using ColoryrServer.Core.FileSystem.Html;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.FileSystem.Vue;
+using ColoryrServer.Core.Utils;
 
 namespace ColoryrServer.Core.DllManager.PostBuild;
 
@@ -31,10 +34,10 @@ internal static class PostBuildWeb
                     Message = $"Web[{uuid}]路由冲突"
                 };
             }
-            WebObj File2;
+            WebObj obj;
             if (isVue)
             {
-                File2 = new()
+                obj = new()
                 {
                     UUID = uuid,
                     CreateTime = time,
@@ -46,7 +49,7 @@ internal static class PostBuildWeb
                         { "package-lock.json", Encoding.UTF8.GetString(DemoVueResource.package_lock) },
                         { "tsconfig.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig) },
                         { "tsconfig.node.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig_node) },
-                        { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config) },
+                        { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config).Replace("{dir}", $"/{uuid}/") },
                         { "src/App.vue", Encoding.UTF8.GetString(DemoVueResource.App) },
                         { "src/env.d.ts", Encoding.UTF8.GetString(DemoVueResource.env_d) },
                         { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
@@ -59,9 +62,9 @@ internal static class PostBuildWeb
                     IsVue = true
                 };
             }
-            else 
+            else
             {
-                File2 = new()
+                obj = new()
                 {
                     UUID = uuid,
                     CreateTime = time,
@@ -74,8 +77,8 @@ internal static class PostBuildWeb
                     Files = new()
                 };
             }
-            
-            WebFileManager.New(File2);
+
+            WebFileManager.New(obj);
             res = new ReMessage
             {
                 Build = true,
@@ -111,8 +114,8 @@ internal static class PostBuildWeb
 
     public static ReMessage Updata(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -120,7 +123,7 @@ internal static class PostBuildWeb
                 Message = $"没有这个Web[{json.UUID}]"
             };
         }
-        if (File2.Version != json.Version)
+        if (obj.Version != json.Version)
         {
             return new ReMessage
             {
@@ -130,7 +133,7 @@ internal static class PostBuildWeb
         }
 
         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-        if (!File2.Codes.TryGetValue(json.Temp, out var code))
+        if (!obj.Codes.TryGetValue(json.Temp, out var code))
         {
             return new ReMessage
             {
@@ -139,23 +142,23 @@ internal static class PostBuildWeb
             };
         }
         code = FileEdit.StartEdit(code, list);
-        File2.Text = json.Text;
+        obj.Text = json.Text;
 
-        WebFileManager.StorageCode(File2, json.Temp, code);
+        WebFileManager.StorageCode(obj, json.Temp, code);
 
         return new ReMessage
         {
             Build = true,
             Message = $"Web[{json.UUID}]文件[{json.Temp}]已修改",
             UseTime = "0",
-            Time = File2.UpdateTime
+            Time = obj.UpdateTime
         };
     }
 
     public static ReMessage AddCode(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -163,7 +166,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]没有找到"
             };
         }
-        if (File2.Codes.ContainsKey(json.Code))
+        if (obj.Codes.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -172,7 +175,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.AddItem(File2, json.Code, true, "");
+        WebFileManager.AddItem(obj, json.Code, true, "");
         return new ReMessage
         {
             Build = true,
@@ -182,8 +185,8 @@ internal static class PostBuildWeb
 
     public static ReMessage RemoveFile(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -200,11 +203,11 @@ internal static class PostBuildWeb
             };
         }
         bool isCode = false;
-        if (File2.Codes.ContainsKey(json.Code))
+        if (obj.Codes.ContainsKey(json.Code))
         {
             isCode = true;
         }
-        else if (!File2.Files.ContainsKey(json.Code))
+        else if (!obj.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -213,7 +216,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.RemoveItem(File2, json.Code, isCode);
+        WebFileManager.RemoveItem(obj, json.Code, isCode);
         return new ReMessage
         {
             Build = true,
@@ -223,8 +226,8 @@ internal static class PostBuildWeb
 
     public static ReMessage WebAddFile(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -232,7 +235,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]没有找到"
             };
         }
-        if (File2.Files.ContainsKey(json.Code))
+        if (obj.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -241,7 +244,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.AddItem(File2, json.Code, false, data: Convert.FromBase64String(json.Temp));
+        WebFileManager.AddItem(obj, json.Code, false, data: Convert.FromBase64String(json.Temp));
         return new ReMessage
         {
             Build = true,
@@ -251,8 +254,8 @@ internal static class PostBuildWeb
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -261,7 +264,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.DeleteAll(File2);
+        WebFileManager.DeleteAll(obj);
         return new ReMessage
         {
             Build = true,
@@ -271,8 +274,8 @@ internal static class PostBuildWeb
 
     public static ReMessage SetIsVue(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -281,7 +284,7 @@ internal static class PostBuildWeb
             };
         }
 
-        WebFileManager.SetIsVue(File2, json.Code.ToLower() is "true");
+        WebFileManager.SetIsVue(obj, json.Code.ToLower() is "true");
         return new ReMessage
         {
             Build = true,
@@ -291,8 +294,8 @@ internal static class PostBuildWeb
 
     public static ReMessage Build(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -300,7 +303,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]没有找到"
             };
         }
-        if (!File2.IsVue)
+        if (!obj.IsVue)
         {
             return new ReMessage
             {
@@ -309,13 +312,28 @@ internal static class PostBuildWeb
             };
         }
 
-        return null;
+        if (VueBuildManager.IsBuildNow(obj.UUID))
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]项目正在构建"
+            };
+        }
+
+        VueBuildManager.StartBuild(obj);
+
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Web[{json.UUID}]运行构建操作"
+        };
     }
 
     public static ReMessage Download(BuildOBJ json)
     {
-        var File2 = WebFileManager.GetHtml(json.UUID);
-        if (File2 == null)
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
         {
             return new ReMessage
             {
@@ -324,7 +342,7 @@ internal static class PostBuildWeb
             };
         }
 
-        if (!File2.Files.ContainsKey(json.Code))
+        if (!obj.Files.ContainsKey(json.Code))
         {
             return new ReMessage
             {
@@ -336,7 +354,97 @@ internal static class PostBuildWeb
         return new ReMessage
         {
             Build = true,
-            Message = Convert.ToBase64String(File2.Files[json.Code])
+            Message = Convert.ToBase64String(obj.Files[json.Code])
+        };
+    }
+
+    public static ReMessage BuildRes(BuildOBJ json)
+    {
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]没有找到"
+            };
+        }
+        if (!obj.IsVue)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]是非Vue项目，没有构建信息"
+            };
+        }
+
+        if (!VueBuildManager.IsBuildDone(obj.UUID))
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]项目正在构建"
+            };
+        }
+
+        string res = VueBuildManager.GetBuildRes(obj.UUID);
+
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Web[{json.UUID}]项目构建结果",
+            Time = res
+        };
+    }
+
+    public static ReMessage ZIP(BuildOBJ json)
+    {
+        var obj = WebFileManager.GetHtml(json.UUID);
+        if (obj == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]没有找到"
+            };
+        }
+
+        var temp = Convert.FromBase64String(json.Code);
+        string local = WebFileManager.WebCodeLocal + json.UUID;
+        Directory.Delete(local, true);
+        Directory.CreateDirectory(local);
+        foreach (var item in obj.Codes)
+        {
+            WebFileManager.RemoveItem(obj, item.Key, true);
+        }
+        foreach (var item in obj.Files)
+        {
+            WebFileManager.RemoveItem(obj, item.Key, false);
+        }
+        obj.Codes.Clear();
+        obj.Files.Clear();
+        ZipUtils.ZipDeCompress(temp, local);
+        var dir = new DirectoryInfo(local);
+        foreach (var item in FileUtils.GetDirectoryFile(dir))
+        {
+            string name = item.FullName.Replace(dir.FullName, "");
+            if (name.EndsWith(".html") || name.EndsWith(".css")
+            || name.EndsWith(".js") || name.EndsWith(".json")
+            || name.EndsWith(".txt") || name.EndsWith(".vue")
+            || name.EndsWith(".ts"))
+            {
+                obj.Codes.Add(name, File.ReadAllText(item.FullName));
+            }
+            else
+            {
+                obj.Files.Add(name, File.ReadAllBytes(item.FullName));
+            }
+        }
+
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Web[{json.UUID}]代码压缩包上传成功"
         };
     }
 }

@@ -20,7 +20,7 @@ public class WebApiView : CodeListView
         var list = await App.HttpUtils.GetList(Type);
         if (list == null)
         {
-            App.LogShow("刷新", $"{Type}刷新失败");
+            new InfoWindow("刷新", $"{Type}刷新失败");
             return;
         }
         CodeList = list.List;

@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
+using System;
 using System.Collections.Specialized;
 using System.Text;
 using System.Xml.Linq;
@@ -10,6 +11,32 @@ namespace ColoryrServer.ASP;
 
 public class HttpUtils
 {
+    public static RouteObj GetUUID(string name, out string funtion)
+    {
+        var args = name.Split('/');
+        string temp = "";
+        funtion = "";
+        for (int a = 0; a < args.Length; a++)
+        {
+            temp += args[a];
+            var route = HttpInvokeRoute.Get(temp);
+            if (route != null)
+            {
+                for (a++; a < args.Length; a++)
+                {
+                    funtion += args[a] + "/";
+                }
+                if (funtion.Length > 0)
+                {
+                    funtion = funtion[..^1];
+                }
+                return route;
+            }
+            temp += "/";
+        }
+
+        return null;
+    }
     public static async Task Static(string name, HttpRequest request, HttpResponse response)
     {
         if (ASPServer.Config.Requset.Stream)

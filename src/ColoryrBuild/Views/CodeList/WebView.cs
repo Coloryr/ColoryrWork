@@ -20,7 +20,7 @@ internal class WebView : CodeListView
         var list = await App.HttpUtils.GetList(Type);
         if (list == null)
         {
-            App.LogShow("刷新", $"{Type}刷新失败");
+            new InfoWindow("刷新", $"{Type}刷新失败");
             return;
         }
         CodeList = list.List;
@@ -47,7 +47,12 @@ internal class WebView : CodeListView
         var list = await App.HttpUtils.AddWeb(data, res);
         if (list == null)
         {
-            App.LogShow("添加", "服务器返回错误");
+            new InfoWindow("添加", "服务器返回错误");
+            return;
+        }
+        else if (!list.Build)
+        {
+            new InfoWindow("添加失败", list.Message);
             return;
         }
         App.LogShow("创建", list.Message);

@@ -55,7 +55,7 @@
             Click="ReCode_Click"
             Content="刷新" />
         <Button
-            Name="Updata_Button"
+            Name="Update_Button"
             Width="60"
             Margin="0,6,295,0"
             HorizontalAlignment="Right"

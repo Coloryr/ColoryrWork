@@ -3,7 +3,6 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.Core.WebSocket;
-using ColoryrServer.Utils;
 using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,9 +24,10 @@ public partial class HttpMultipartFile
 public partial class ServerContentType
 {
     public const string OSTREAM = "application/octet-stream";
-    public const string POSTXFORM = "application/x-www-form-urlencoded";
-    public const string JPG = "application/x-jpg";
+    public const string POSTXFORM = "application/x-www-form-urlencoded"; 
     public const string POSTFORMDATA = "multipart/form-data";
+
+    public const string JPG = "application/x-jpg";
     public const string JSON = "application/json";
     public const string XML = "application/xml";
     public const string HTML = "text/html";
@@ -39,7 +39,9 @@ public partial class ServerContentType
     public const string MP3 = "audio/mp3";
     public const string MP4 = "video/mpeg4";
     public const string GIF = "image/gif";
-    public const string ICO = "application/x-ico";
+    public const string ICO = "application/x-icon";
+    public const string JS = "application/x-javascript";
+    public const string TXT = "text/plain";
 
     public static string GetType(string type)
     {
@@ -57,8 +59,29 @@ public partial class ServerContentType
                 return MP3;
             case ".mp4":
                 return MP4;
-            default:
+            case ".js":
+                return JS;
+            case ".html":
                 return HTML;
+            case ".ppt":
+                return PPT;
+            case ".gif":
+                return GIF;
+            case ".ico":
+                return ICO;
+            default:
+                return TXT;
+        }
+    }
+
+    public static string EndType(string name) 
+    {
+        int index = name.LastIndexOf(".");
+        if (index == -1)
+            return GetType(name);
+        else
+        {
+            return GetType(name[index..]);
         }
     }
 }
@@ -544,21 +567,21 @@ public partial class Tools
     /// <param name="html">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressHTML(string html)
-        => CodeCompress.HTML(html);
+        => CodeCompressUtils.HTML(html);
     /// <summary>
     /// 压缩JS
     /// </summary>
     /// <param name="js">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressJS(string js)
-        => CodeCompress.JS(js);
+        => CodeCompressUtils.JS(js);
     /// <summary>
     /// 压缩CSS
     /// </summary>
     /// <param name="css">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressCSS(string css)
-        => CodeCompress.CSS(css);
+        => CodeCompressUtils.CSS(css);
     /// <summary>
     /// 获取机器人
     /// </summary>
