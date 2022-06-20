@@ -16,3 +16,13 @@ public class NotesSDK : Attribute
         this.Output = Output ?? new string[1];
     }
 }
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class DLLIN : Attribute
+{
+    public bool Debug;
+    public DLLIN(bool debug) 
+    {
+        Debug = debug;
+    }
+}

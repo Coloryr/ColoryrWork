@@ -434,11 +434,11 @@ public partial class CodeWebEditView : UserControl, IEditView
             var res = await App.HttpUtils.WebCodeZIP(WebObj, file);
             if (res == null)
             {
-                AddLog($"Web{WebObj.UUID}代码压缩包上传失败");
+                AddLog($"Web[{WebObj.UUID}]代码压缩包上传失败");
             }
             else if (!res.Build)
             {
-                AddLog($"Web{WebObj.UUID}代码压缩包上传失败：{res.Message}");
+                AddLog($"Web[{WebObj.UUID}]代码压缩包上传失败：{res.Message}");
             }
         }
     }
@@ -461,19 +461,23 @@ public partial class CodeWebEditView : UserControl, IEditView
         var res = await App.HttpUtils.SetIsVue(WebObj, set);
         if (res == null)
         {
-            AddLog($"设置Web{WebObj.UUID}的Vue模式失败");
+            AddLog($"设置Web[{WebObj.UUID}]的Vue模式失败");
             IsVue.IsEnabled = true;
             return;
         }
         else if (!res.Build)
         {
-            AddLog($"设置Web{WebObj.UUID}的Vue模式失败：{res.Message}");
+            AddLog($"设置Web[{WebObj.UUID}]的Vue模式失败：{res.Message}");
             IsVue.IsEnabled = true;
             return;
         }
         WebObj.IsVue = set;
-        Dispatcher.Invoke(() => IsVue.IsChecked = WebObj.IsVue);
-        AddLog($"设置Web{WebObj.UUID}的Vue模式完成");
+        Dispatcher.Invoke(() => 
+        {
+            IsVue.IsChecked = WebObj.IsVue;
+            Build_Button.IsEnabled = WebObj.IsVue;
+        });
+        AddLog($"设置Web[{WebObj.UUID}]的Vue模式完成");
         IsVue.IsEnabled = true;
     }
 }

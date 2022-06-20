@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.Http;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Server;
 using System;
 using System.Collections.Concurrent;
@@ -79,7 +80,7 @@ public static class DllStonge
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalDll + uuid);
+        RemoveAll(LocalDll + EnCode.SHA1(uuid));
     }
     public static DllAssembly GetDll(string uuid)
     {

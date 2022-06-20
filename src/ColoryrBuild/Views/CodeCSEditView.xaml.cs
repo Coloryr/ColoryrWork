@@ -104,16 +104,16 @@ public partial class CodeCSEditView : UserControl, IEditView
 
             foreach (var item in res.List)
             {
-                Files.Add(item.File);
-                FileMap.Add(item.File, item.Code);
+                Files.Add(item.name);
+                FileMap.Add(item.name, item.code);
 
-                string name = item.File + ".cs";
+                string name = item.name + ".cs";
 
                 if (File.Exists(Local + name))
                 {
                     File.Move(Local + name, newLocal + name);
                 }
-                CodeSave.Save(Local + name, item.Code);
+                CodeSave.Save(Local + name, item.code);
             }
 
             try

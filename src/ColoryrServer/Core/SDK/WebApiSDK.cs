@@ -40,7 +40,7 @@ public class HttpDllRequest
     public dynamic Get(string arg)
         => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
 }
-public abstract class HttpResponse
+public abstract class HttpDllResponse
 {
     /// <summary>
     /// 返回码
@@ -58,7 +58,7 @@ public abstract class HttpResponse
     /// 返回类型
     /// </summary>
     public string ContentType { get; init; }
-    public HttpResponse()
+    public HttpDllResponse()
     {
         if (Head == null)
             Head = new();
@@ -71,14 +71,14 @@ public abstract class HttpResponse
     /// </summary>
     /// <param name="Key">键</param>
     /// <param name="Value">值</param>
-    public HttpResponse AddHead(string Key, string Value)
+    public HttpDllResponse AddHead(string Key, string Value)
     {
         Head.Add(Key, Value);
         return this;
     }
 }
 
-public class HttpResponseString : HttpResponse
+public class HttpResponseString : HttpDllResponse
 {
     /// <summary>
     /// 返回数据
@@ -100,7 +100,7 @@ public class HttpResponseString : HttpResponse
        => Data += data + "\n";
 }
 
-public class HttpResponseDictionary : HttpResponse
+public class HttpResponseDictionary : HttpDllResponse
 {
     public Dictionary<string, object> Data { get; set; }
     /// <summary>
@@ -133,7 +133,7 @@ public class HttpResponseDictionary : HttpResponse
         return this;
     }
 }
-public class HttpResponseStream : HttpResponse
+public class HttpResponseStream : HttpDllResponse
 {
     /// <summary>
     /// 流
@@ -149,7 +149,7 @@ public class HttpResponseStream : HttpResponse
             Data = new MemoryStream();
     }
 }
-public class HttpResponseBytes : HttpResponse
+public class HttpResponseBytes : HttpDllResponse
 {
     /// <summary>
     /// 二进制

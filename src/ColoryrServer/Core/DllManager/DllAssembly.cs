@@ -24,7 +24,11 @@ public class DllAssembly : AssemblyLoadContext
     /// <summary>
     /// DLL类型
     /// </summary>
-    public CodeType DllType { get; init; }
+    public CodeType DllType { get; set; }
+    /// <summary>
+    /// 输出报错
+    /// </summary>
+    public bool Debug { get; set; }
     /// <summary>
     /// 类方法
     /// </summary>

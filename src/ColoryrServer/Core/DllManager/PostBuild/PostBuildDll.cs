@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
@@ -18,17 +19,13 @@ internal static class PostBuildDll
         {
             var time = string.Format("{0:s}", DateTime.Now);
             string uuid = json.UUID.Replace('\\', '/');
-            if (!uuid.EndsWith('/'))
-            {
-                uuid += '/';
-            }
             CSFileCode obj = new()
             {
                 UUID = uuid,
                 Type = CodeType.Dll,
                 CreateTime = time,
                 Code = DemoResource.Dll
-                .Replace(CodeDemo.Name, json.UUID)
+                .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
             };
             CodeFileManager.StorageDll(obj);
             res = new ReMessage

@@ -102,11 +102,11 @@ internal static class PostBuildClass
 
         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
 
-        code.Code = FileEdit.StartEdit(code.Code, list);
+        code.code = FileEdit.StartEdit(code.code, list);
         obj.Text = json.Text;
 
         obj.Next();
-        CodeFileManager.StorageClass(obj, json.Temp, code.Code);
+        CodeFileManager.StorageClass(obj, json.Temp, code.code);
 
         return new ReMessage
         {

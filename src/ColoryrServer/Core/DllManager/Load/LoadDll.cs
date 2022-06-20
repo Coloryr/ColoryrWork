@@ -5,6 +5,7 @@ using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
@@ -22,7 +23,7 @@ internal class LoadDll
         var assembly = new DllAssembly(CodeType.Dll, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First().GetTypes()
-                       .Where(x => x.Name == "app_" + uuid);
+                       .Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ
@@ -32,11 +33,13 @@ internal class LoadDll
             };
 
         assembly.SelfType = list.First();
+        var attr = assembly.SelfType.GetCustomAttribute<DLLIN>(true);
+        assembly.Debug = attr.Debug;
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is "GetType" or "ToString" or "debug"
-                or "Equals" or "GetHashCode" || !item.IsPublic)
+            if (item.Name is "GetType" or "ToString" or "Equals" or "GetHashCode" 
+                || !item.IsPublic)
                 continue;
             assembly.MethodInfos.Add(item.Name, item);
         }
@@ -60,18 +63,8 @@ internal class LoadDll
             List<NotesSDK> obj = new();
             foreach (var item in assembly.MethodInfos.Values)
             {
-                var listA = item.GetCustomAttributes(true);
-                bool have = false;
-                foreach (var item1 in listA)
-                {
-                    if (item1 is NotesSDK)
-                    {
-                        have = true;
-                        obj.Add(item1 as NotesSDK);
-                        break;
-                    }
-                }
-                if (!have)
+                var listA = item.GetCustomAttribute<NotesSDK>(true);
+                if (listA == null)
                 {
                     return new GenReOBJ
                     {
@@ -79,8 +72,12 @@ internal class LoadDll
                         Res = $"Dll[{uuid}]的方法[{item}]没有注释"
                     };
                 }
+                else
+                {
+                    obj.Add(listA);
+                }
             }
-            NoteFile.StorageDll(uuid, obj);
+            NoteFile.StorageDll(EnCode.SHA1(uuid), obj);
         }
         catch
         {

@@ -38,14 +38,14 @@ internal class NoteFile
         });
     }
 
-    public static void StorageDll(string UUID, List<NotesSDK> obj)
+    public static void StorageDll(string uuid, List<NotesSDK> obj)
     {
-        var url = DllFileLocal + UUID + ".json";
+        var url = DllFileLocal + uuid + ".json";
         Storage(url, obj);
     }
-    public static void StorageClass(string UUID, List<NotesSDK> obj)
+    public static void StorageClass(string uuid, List<NotesSDK> obj)
     {
-        var url = ClassFileLocal + UUID + ".json";
+        var url = ClassFileLocal + uuid + ".json";
         Storage(url, obj);
     }
 }

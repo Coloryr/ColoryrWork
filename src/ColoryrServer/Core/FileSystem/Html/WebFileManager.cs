@@ -229,29 +229,30 @@ public class WebFileManager
         string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
         string dir = WebRemoveLocal + $"{obj.UUID}-{time}" + "/";
         Directory.CreateDirectory(dir);
-        string info =
-$@"UUID:{obj.UUID}
+        File.WriteAllText(dir + "info.txt", $@"UUID:{obj.UUID}
 Text:{obj.Text}
 IsVue:{obj.IsVue}
 Version:{obj.Version}
 CreateTime:{obj.CreateTime}
-UpdateTime:{obj.UpdateTime}
-";
-        File.WriteAllText(dir + "info.txt", info);
+UpdateTime:{obj.UpdateTime}");
         foreach (var item in obj.Codes)
         {
+            var info = new FileInfo(dir + item.Key);
+            Directory.CreateDirectory(info.DirectoryName);
             File.WriteAllText(dir + item.Key, item.Value);
         }
         foreach (var item in obj.Files)
         {
-            File.WriteAllBytes(dir + item.Key, item.Value);
+            var info = new FileInfo(dir + item.Key);
+            Directory.CreateDirectory(info.DirectoryName);
+            File.WriteAllBytes(info.FullName, item.Value);
         }
 
         HtmlCodeList.TryRemove(obj.UUID, out var temp1);
         using var dataSQL = new SqliteConnection(WebDataConnStr);
         using var fileSQL = new SqliteConnection(WebFileConnStr);
         using var codeSQL = new SqliteConnection(WebCodeConnStr);
-        var arg = new { obj.UUID };
+        var arg = new { uuid = obj.UUID };
         fileSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
         codeSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
         dataSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
