@@ -37,7 +37,11 @@ internal class WebView : CodeListView
         var data = new InputWindow("UUID设置", "Web/").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-
+        data = data.Replace('\\', '/');
+        if (data.EndsWith('/'))
+        {
+            data = data[..^1];
+        }
         var res = new ChoseWindow("选择类型", "是否是Vue项目").Set();
 
         var list = await App.HttpUtils.AddWeb(data, res);

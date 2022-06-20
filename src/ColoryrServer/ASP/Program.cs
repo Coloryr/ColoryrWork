@@ -113,7 +113,9 @@ internal static class ASPServer
         Web.MapGet("/", Config.RoteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
 
         Web.MapGet("/{**name}", Config.RoteEnable ? HttpGet.RouteGet : HttpGet.Get);
-        //Web.MapPost("/{**name}", Config.RoteEnable ? RoteGetWeb : GetStatic);
+        Web.MapPost("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+        Web.MapPut("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+        Web.MapDelete("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
 
         Web.MapPost("/", PostBuild);
 
@@ -175,150 +177,6 @@ internal static class ASPServer
         }
     }
 
-    private static async Task POSTBack(HttpContext context)
-    {
-        HttpRequest Request = context.Request;
-        HttpResponse Response = context.Response;
-        HttpReturn httpReturn = null;
-        var uuid = context.GetRouteValue("uuid") as string;
-        var name = context.GetRouteValue("name") as string;
-
-        MyContentType type = MyContentType.XFormData;
-        var temp = new Dictionary<string, dynamic>();
-        if (Request.ContentType != null)
-        {
-            if (Request.ContentType is ServerContentType.POSTXFORM)
-            {
-                type = MyContentType.XFormData;
-                foreach (var item in Request.Form)
-                {
-                    temp.Add(item.Key, item.Value);
-                }
-                foreach (var item in Request.Form.Files)
-                {
-                    temp.Add(item.Name, item);
-                }
-            }
-            else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
-            {
-                try
-                {
-                    var parser = await MultipartFormDataParser.ParseAsync(Request.Body);
-                    foreach (var item in parser.Parameters)
-                    {
-                        temp.Add(item.Name, item.Data);
-                    }
-                    foreach (var item in parser.Files)
-                    {
-                        temp.Add(item.Name, new HttpMultipartFile()
-                        {
-                            Data = item.Data,
-                            FileName = item.FileName,
-                            ContentType = item.ContentType,
-                            ContentDisposition = item.ContentDisposition
-                        });
-                    }
-                    type = MyContentType.MFormData;
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                    var obj1 = new GetMeesage
-                    {
-                        Res = 123,
-                        Text = "表单解析发生错误，请检查数据"
-                    };
-                    Response.StatusCode = 500;
-                    await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-                    return;
-                }
-            }
-            else if (Request.ContentType.StartsWith(ServerContentType.JSON))
-            {
-                MemoryStream stream = new();
-                await Request.Body.CopyToAsync(stream);
-                var Str = Encoding.UTF8.GetString(stream.ToArray());
-                JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                foreach (var item in obj)
-                {
-                    temp.Add(item.Key, item.Value);
-                }
-                type = MyContentType.Json;
-            }
-            else
-            {
-                type = MyContentType.Other;
-            }
-        }
-
-        var Dll = DllStongeManager.GetDll(uuid);
-        if (Dll != null)
-        {
-            NameValueCollection collection = new();
-            foreach (var item in Request.Headers)
-            {
-                collection.Add(item.Key, item.Value);
-            }
-
-            //httpReturn = DllRun.DllGo(Dll, new()
-            //{
-            //    Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
-            //    Parameter = temp,
-            //    RowRequest = collection,
-            //    ContentType = type,
-            //    Method = Request.Method,
-            //    Stream = type == MyContentType.Other ? Request.Body : null
-            //}, name);
-        }
-        else
-        {
-            httpReturn = new HttpReturn
-            {
-                Data = WebBinManager.BaseDir.Html404,
-                ContentType = ServerContentType.HTML
-            };
-        }
-        Response.ContentType = httpReturn.ContentType;
-        Response.StatusCode = httpReturn.ReCode;
-        if (httpReturn.Head != null)
-            foreach (var Item in httpReturn.Head)
-            {
-                Response.Headers.Add(Item.Key, Item.Value);
-            }
-        if (httpReturn.Cookie != null)
-            foreach (var item in httpReturn.Cookie)
-            {
-                Response.Cookies.Append(item.Key, item.Value);
-            }
-        switch (httpReturn.Res)
-        {
-            case ResType.String:
-                await Response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
-                break;
-            case ResType.Byte:
-                var bytes = httpReturn.Data as byte[];
-                await Response.BodyWriter.WriteAsync(bytes);
-                break;
-            case ResType.Json:
-                var obj1 = httpReturn.Data;
-                await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-                break;
-            case ResType.Stream:
-                var stream = httpReturn.Data as Stream;
-                if (stream == null)
-                {
-                    Response.StatusCode = 500;
-                    await Response.WriteAsync("stream in null", httpReturn.Encoding);
-                }
-                else
-                {
-                    stream.Seek(httpReturn.Pos, SeekOrigin.Begin);
-                    Response.StatusCode = 206;
-                    await stream.CopyToAsync(Response.Body);
-                }
-                break;
-        }
-    }
     private static byte[] StringToByteArray(string hex)
     {
         int NumberChars = hex.Length;

@@ -20,10 +20,10 @@ internal static class HttpRoute
         }
 
         message.RequestUri = new Uri($"{rote.Url}{url}");
-        if (Request.Method is "POST")
-            message.Content = new StreamContent(Request.Body);
-        else
+        if (Request.Method is "GET")
             message.Content = new StringContent("");
+        else
+            message.Content = new StreamContent(Request.Body);
 
         foreach (var item in Request.Headers)
         {

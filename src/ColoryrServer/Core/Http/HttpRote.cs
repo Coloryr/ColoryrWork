@@ -56,6 +56,17 @@ public static class HttpInvokeRoute
 {
     private static ConcurrentDictionary<string, RouteObj> Routes = new();
 
+    public static bool CheckBase(string name)
+    {
+        foreach (var item in Routes.Keys)
+        {
+            if (item == name)
+                return true;
+        }
+
+        return false;
+    }
+
     public static void AddDll(string name, DllAssembly dll) 
     {
         if (Routes.ContainsKey(name))

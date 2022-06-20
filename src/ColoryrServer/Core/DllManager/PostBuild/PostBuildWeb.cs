@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Collections.Generic;
+using ColoryrServer.Core.Http;
 
 namespace ColoryrServer.Core.DllManager.PostBuild;
 
@@ -18,9 +19,17 @@ internal static class PostBuildWeb
             var time = string.Format("{0:s}", DateTime.Now);
             var isVue = json.Code.ToLower() == "true";
             string uuid = json.UUID.Replace('\\', '/');
-            if (!uuid.EndsWith('/'))
+            if (uuid.EndsWith('/'))
             {
-                uuid += '/';
+                uuid = uuid[..^1];
+            }
+            if (HttpInvokeRoute.CheckBase(uuid))
+            {
+                return new ReMessage
+                {
+                    Build = false,
+                    Message = $"Web[{uuid}]路由冲突"
+                };
             }
             WebObj File2;
             if (isVue)

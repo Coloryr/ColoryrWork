@@ -29,7 +29,14 @@ internal static class PostBuildDll
                 Message = $"Dll[{uuid}]已存在"
             };
         }
-
+        if (HttpInvokeRoute.CheckBase(uuid))
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Dll[{uuid}]路由冲突"
+            };
+        }
         var time = string.Format("{0:s}", DateTime.Now);
         
         CSFileCode obj = new()

@@ -1,70 +1,101 @@
 ﻿using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core;
 using ColoryrServer.SDK;
+using ColoryrWork.Lib.Server;
+using HttpMultipartParser;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using System.Collections.Specialized;
-using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
-using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 using System.Text;
-using System.Xml.Linq;
+using ColoryrWork.Lib.Build.Object;
+using Ubiety.Dns.Core;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace ColoryrServer.ASP;
 
-internal static class HttpGet
+internal static class HttpPost
 {
-    private static string[] data1 = Array.Empty<string>();
-    internal static async Task RoteGetIndex(HttpContext context)
+    private static async Task<HttpDllRequest?> InitArg(HttpRequest Request) 
     {
-        HttpRequest request = context.Request;
-        HttpResponse response = context.Response;
-
-        if (ASPServer.Config.UrlRotes.TryGetValue(request.Host.Host, out var rote1))
-        {
-            await HttpRoute.RouteDo(request, data1, rote1, response);
-        }
-        else
-        {
-            response.ContentType = ServerContentType.HTML;
-            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
-        }
-    }
-
-    internal static async Task GetIndex(HttpContext context)
-    {
-        HttpResponse Response = context.Response;
-        Response.ContentType = ServerContentType.HTML;
-        await Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
-    }
-
-    private static HttpDllRequest InitArg(HttpRequest request)
-    {
+        MyContentType type = MyContentType.XFormData;
         var temp = new Dictionary<string, dynamic>();
-        if (request.QueryString.HasValue)
+        if (Request.ContentType != null)
         {
-            var b = request.QueryString.ToUriComponent()[1..];
-            foreach (string a in b.Split('&'))
+            if (Request.ContentType is ServerContentType.POSTXFORM)
             {
-                var item = a.Split("=");
-                temp.Add(item[0], item[1]);
+                type = MyContentType.XFormData;
+                foreach (var item in Request.Form)
+                {
+                    temp.Add(item.Key, item.Value);
+                }
+                foreach (var item in Request.Form.Files)
+                {
+                    temp.Add(item.Name, item);
+                }
+            }
+            else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
+            {
+                try
+                {
+                    var parser = await MultipartFormDataParser.ParseAsync(Request.Body);
+                    foreach (var item in parser.Parameters)
+                    {
+                        temp.Add(item.Name, item.Data);
+                    }
+                    foreach (var item in parser.Files)
+                    {
+                        temp.Add(item.Name, new HttpMultipartFile()
+                        {
+                            Data = item.Data,
+                            FileName = item.FileName,
+                            ContentType = item.ContentType,
+                            ContentDisposition = item.ContentDisposition
+                        });
+                    }
+                    type = MyContentType.MFormData;
+                }
+                catch (Exception e)
+                {
+                    ServerMain.LogError(e);
+                    return null;
+                }
+            }
+            else if (Request.ContentType.StartsWith(ServerContentType.JSON))
+            {
+                MemoryStream stream = new();
+                await Request.Body.CopyToAsync(stream);
+                var Str = Encoding.UTF8.GetString(stream.ToArray());
+                JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+                foreach (var item in obj)
+                {
+                    temp.Add(item.Key, item.Value);
+                }
+                type = MyContentType.Json;
+            }
+            else
+            {
+                type = MyContentType.Other;
             }
         }
         NameValueCollection collection = new();
-        foreach (var item in request.Headers)
+        foreach (var item in Request.Headers)
         {
             collection.Add(item.Key, item.Value);
         }
-        return new HttpDllRequest()
+
+        return new()
         {
-            Cookie = ASPHttpUtils.HaveCookie(request.Headers.Cookie),
-            RowRequest = collection,
+            Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
             Parameter = temp,
-            Method = request.Method,
-            ContentType = MyContentType.XFormData
+            RowRequest = collection,
+            ContentType = type,
+            Method = Request.Method,
+            Stream = type == MyContentType.Other ? Request.Body : null
         };
     }
-
-    internal static async Task Get(HttpContext context)
+    internal static async Task Post(HttpContext context)
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
@@ -82,7 +113,7 @@ internal static class HttpGet
             uuid = name[..last];
             funtion = name[(last + 1)..];
         }
-        
+
         var route = HttpInvokeRoute.Get(uuid);
         if (route == null)
         {
@@ -96,13 +127,24 @@ internal static class HttpGet
         {
             if (route.IsDll)
             {
-                var arg = InitArg(request);
+                var arg = await InitArg(request);
+                if (arg == null)
+                {
+                    var obj1 = new GetMeesage
+                    {
+                        Res = 123,
+                        Text = "表单解析发生错误，请检查数据"
+                    };
+                    response.StatusCode = 500;
+                    await response.WriteAsync(JsonConvert.SerializeObject(obj1));
+                }
                 httpReturn = route.Invoke(arg, funtion);
             }
             else
             {
                 httpReturn = route.Invoke(null, funtion);
             }
+
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;
             if (httpReturn.Head != null)
@@ -148,9 +190,10 @@ internal static class HttpGet
         {
             await HttpUtils.Static(name, request, response);
         }
+
     }
 
-    internal static async Task RouteGet(HttpContext context)
+    internal static async Task RoutePost(HttpContext context)
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
@@ -168,7 +211,7 @@ internal static class HttpGet
         }
         else
         {
-            await Get(context);
+            await Post(context);
         }
     }
 }
