@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
@@ -39,7 +38,7 @@ internal class LoadDll
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is "GetType" or "ToString" or "Equals" or "GetHashCode" 
+            if (item.Name is "GetType" or "ToString" or "Equals" or "GetHashCode"
                 || !item.IsPublic)
                 continue;
             assembly.MethodInfos.Add(item.Name, item);

@@ -3,7 +3,7 @@
 namespace ColoryrWork.Lib.Build.Object;
 
 public record ClassCodeObj
-{ 
+{
     public string name { get; set; }
     public string code { get; set; }
 }

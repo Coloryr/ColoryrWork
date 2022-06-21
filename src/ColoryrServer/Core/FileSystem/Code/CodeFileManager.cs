@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ColoryrServer.Core.FileSystem.Code;
 
@@ -221,7 +220,7 @@ internal static class CodeFileManager
             if (list.Any())
             {
                 old = list.First();
-                codeSQL.Execute($"UPDATE class SET text=@text,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid", 
+                codeSQL.Execute($"UPDATE class SET text=@text,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid",
                     new { text = obj.Text, version = obj.Version, createtime = obj.CreateTime, updatetime = obj.UpdateTime, uuid = obj.UUID });
             }
             else
@@ -244,7 +243,7 @@ internal static class CodeFileManager
                         old.text,
                         old.code,
                         name,
-                        old.version, 
+                        old.version,
                         time = DateTime.Now.ToString()
                     });
                 }
@@ -277,7 +276,7 @@ internal static class CodeFileManager
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,time) VALUES(@uuid,@text,@code,@version,@time)", new 
+                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,time) VALUES(@uuid,@text,@code,@version,@time)", new
                     {
                         obj1.uuid,
                         obj1.text,
@@ -288,7 +287,7 @@ internal static class CodeFileManager
                 }
 
                 codeSQL.Execute($"UPDATE {type} SET text=@text,code=@code,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid", new
-                { 
+                {
                     uuid = obj.UUID,
                     text = obj.Text,
                     code = obj.Code,
@@ -300,7 +299,7 @@ internal static class CodeFileManager
             else
             {
                 codeSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,createtime,updatetime) VALUES(@uuid,@text,@code,@version,@createtime,@updatetime)", new
-                { 
+                {
                     uuid = obj.UUID,
                     text = obj.Text,
                     code = obj.Code,
@@ -354,7 +353,7 @@ internal static class CodeFileManager
                 QCodeObj obj1 = list.First();
                 using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
                 codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,code) VALUES(@uuid,@text,@version,@time,@code)", new
-                { 
+                {
                     obj1.uuid,
                     obj1.text,
                     obj1.code,

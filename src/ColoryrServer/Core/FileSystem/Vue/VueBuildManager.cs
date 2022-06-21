@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.FileSystem.Html;
+﻿using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
 using System.Collections.Concurrent;
@@ -19,7 +18,7 @@ public static class VueBuildManager
         item.Build();
     }
 
-    public static void BuildDone(WebObj web) 
+    public static void BuildDone(WebObj web)
     {
         if (NowBuild.TryRemove(web.UUID, out var item))
         {
@@ -28,12 +27,12 @@ public static class VueBuildManager
         }
     }
 
-    public static bool IsBuildNow(string uuid) 
+    public static bool IsBuildNow(string uuid)
     {
         return NowBuild.ContainsKey(uuid);
     }
 
-    public static string GetBuildRes(string uuid) 
+    public static string GetBuildRes(string uuid)
     {
         if (BuildRes.TryGetValue(uuid, out var item))
         {
@@ -43,7 +42,7 @@ public static class VueBuildManager
         return null;
     }
 
-    public static bool IsBuildDone(string uuid) 
+    public static bool IsBuildDone(string uuid)
     {
         return BuildRes.ContainsKey(uuid);
     }

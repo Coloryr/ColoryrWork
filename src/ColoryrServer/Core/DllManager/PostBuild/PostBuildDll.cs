@@ -38,7 +38,7 @@ internal static class PostBuildDll
             };
         }
         var time = string.Format("{0:s}", DateTime.Now);
-        
+
         CSFileCode obj = new()
         {
             UUID = uuid,

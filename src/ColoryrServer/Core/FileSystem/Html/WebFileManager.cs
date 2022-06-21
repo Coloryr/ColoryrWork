@@ -1,17 +1,12 @@
 ﻿using ColoryrServer.Core.Http;
-using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
 using Dapper;
 using Microsoft.Data.Sqlite;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ColoryrServer.Core.FileSystem.Html;
 
@@ -198,9 +193,9 @@ public class WebFileManager
                 {
                     obj.Codes.Add(item1.name, item1.code);
                 }
-                var list2 = fileSQL.Query<FWebObj>("SELECT name,data FROM web WHERE uuid=@uuid", 
+                var list2 = fileSQL.Query<FWebObj>("SELECT name,data FROM web WHERE uuid=@uuid",
                     new { item.uuid });
-                foreach (var item1 in list2) 
+                foreach (var item1 in list2)
                 {
                     obj.Files.Add(item1.name, item1.data);
                 }
@@ -350,7 +345,7 @@ UpdateTime:{obj.UpdateTime}");
     {
         using var fileSQL = new SqliteConnection(WebFileConnStr);
         string time = DateTime.Now.ToString();
-        var list = fileSQL.Query<FWebObj>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", new { uuid=obj.UUID, name });
+        var list = fileSQL.Query<FWebObj>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
         if (list.Any())
         {
             fileSQL.Execute("UPDATE web SET data=@data,time=@time WHERE uuid=@uuid AND name=@name",
@@ -433,7 +428,7 @@ UpdateTime:{obj.UpdateTime}");
         });
     }
 
-    public static void Add(WebObj obj) 
+    public static void Add(WebObj obj)
     {
         HtmlCodeList.TryAdd(obj.UUID, obj);
         HttpInvokeRoute.AddWeb(obj.UUID, obj);

@@ -1,11 +1,5 @@
 ﻿using ColoryrServer.SDK;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.TaskUtils;
 
@@ -13,12 +7,12 @@ internal static class TaskManager
 {
     private static readonly ConcurrentDictionary<string, TaskThread> Tasks = new();
 
-    public static void Remove(string task) 
+    public static void Remove(string task)
     {
         Tasks.TryRemove(task, out var _);
     }
 
-    private static void Stop() 
+    private static void Stop()
     {
         foreach (var item in Tasks.Values)
         {
@@ -26,7 +20,7 @@ internal static class TaskManager
         }
     }
 
-    public static void Start() 
+    public static void Start()
     {
         ServerMain.OnStop += Stop;
     }
@@ -81,7 +75,7 @@ internal static class TaskManager
         }
     }
 
-    public static void Pause(string name) 
+    public static void Pause(string name)
     {
         if (Tasks.ContainsKey(name))
         {
@@ -89,7 +83,7 @@ internal static class TaskManager
         }
     }
 
-    public static void Cancel(string name) 
+    public static void Cancel(string name)
     {
         if (Tasks.ContainsKey(name))
         {

@@ -1,30 +1,24 @@
-﻿using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.DllManager;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using StackExchange.Redis;
-using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ColoryrServer.Core.Http;
 
 public abstract class RouteObj
-{ 
+{
     public bool IsDll { get; protected set; }
-    public bool IsReload { get; }
+    public bool IsReload { get; protected set; }
     public abstract HttpReturn Invoke(HttpDllRequest arg, string function);
 }
 
 public class DllRoute : RouteObj
 {
     private DllAssembly dll;
-    public bool IsReload { get; set; }
     public DllRoute(DllAssembly dll)
     {
         IsDll = true;
@@ -52,7 +46,6 @@ public class WebRoute : RouteObj
 {
     private ConcurrentDictionary<string, byte[]> cache = new();
     private WebObj obj;
-    public bool IsReload { get; set; }
     public WebRoute(WebObj obj)
     {
         IsDll = false;
@@ -75,12 +68,7 @@ public class WebRoute : RouteObj
                 ContentType = ServerContentType.EndType(function)
             };
         }
-        return new HttpReturn
-        {
-            Data = WebBinManager.BaseDir.Html404,
-            ContentType = ServerContentType.HTML,
-            Res = ResType.Byte
-        };
+        return HttpReturnSave.Res404;
     }
 
     public void Reload(string name)
@@ -123,7 +111,7 @@ public class WebRoute : RouteObj
         IsReload = false;
     }
 
-    public void Reload() 
+    public void Reload()
     {
         IsReload = true;
         cache.Clear();
@@ -264,7 +252,7 @@ public static class HttpInvokeRoute
         }
     }
 
-    public static void RemoveFile(string uuid, string name) 
+    public static void RemoveFile(string uuid, string name)
     {
         if (Routes.TryGetValue(uuid, out var item))
         {
@@ -275,7 +263,7 @@ public static class HttpInvokeRoute
         }
     }
 
-    public static void Lock(string uuid) 
+    public static void Lock(string uuid)
     {
         if (Routes.TryGetValue(uuid, out var item))
         {

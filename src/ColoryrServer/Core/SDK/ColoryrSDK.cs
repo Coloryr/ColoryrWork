@@ -24,7 +24,7 @@ public partial class HttpMultipartFile
 public partial class ServerContentType
 {
     public const string OSTREAM = "application/octet-stream";
-    public const string POSTXFORM = "application/x-www-form-urlencoded"; 
+    public const string POSTXFORM = "application/x-www-form-urlencoded";
     public const string POSTFORMDATA = "multipart/form-data";
 
     public const string JPG = "application/x-jpg";
@@ -43,7 +43,7 @@ public partial class ServerContentType
     public const string JS = "application/x-javascript";
     public const string TXT = "text/plain";
 
-    public static string GetType(string type)
+    public static string GetType(string type, bool html = false)
     {
         switch (type.ToLower())
         {
@@ -70,18 +70,18 @@ public partial class ServerContentType
             case ".ico":
                 return ICO;
             default:
-                return TXT;
+                return html ? HTML : TXT;
         }
     }
 
-    public static string EndType(string name) 
+    public static string EndType(string name, bool html = false)
     {
         int index = name.LastIndexOf(".");
         if (index == -1)
-            return GetType(name);
+            return GetType(name, html);
         else
         {
-            return GetType(name[index..]);
+            return GetType(name[index..], html);
         }
     }
 }

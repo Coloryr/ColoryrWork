@@ -48,7 +48,7 @@ public class WebApiView : CodeListView
             new InfoWindow("添加", "服务器返回错误");
             return;
         }
-        else if (!list.Build) 
+        else if (!list.Build)
         {
             new InfoWindow("创建失败", list.Message);
             return;

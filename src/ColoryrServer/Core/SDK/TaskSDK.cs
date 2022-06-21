@@ -81,7 +81,7 @@ public class TaskUserArg
     /// </summary>
     public bool OverWrite { get; set; }
 }
-public class TaskRes 
+public class TaskRes
 {
     /// <summary>
     /// 新的循环次数

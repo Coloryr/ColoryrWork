@@ -21,7 +21,7 @@ internal class TaskThread
     public TaskState State { get; private set; } = TaskState.Init;
     public TaskUserArg Arg { get; private set; }
 
-    public TaskThread(TaskUserArg arg) 
+    public TaskThread(TaskUserArg arg)
     {
         Arg = arg;
         Assembly = DllStongeManager.GetTask(arg.Dll);
@@ -36,18 +36,18 @@ internal class TaskThread
         State = TaskState.Ready;
     }
 
-    public void Run() 
+    public void Run()
     {
         IsRun = true;
         Thread.Start();
     }
 
-    public void Pause() 
+    public void Pause()
     {
         State = TaskState.Pause;
     }
 
-    public void SetArg(TaskUserArg arg) 
+    public void SetArg(TaskUserArg arg)
     {
         State = TaskState.Init;
         NewArg = arg;
@@ -60,7 +60,7 @@ internal class TaskThread
         Worker?.Interrupt();
     }
 
-    public void Cancel() 
+    public void Cancel()
     {
         CancelToken.Cancel();
         State = TaskState.Cancel;

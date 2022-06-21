@@ -1,13 +1,12 @@
 ﻿using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
-using System;
 using System.Collections.Specialized;
 using System.Text;
 
 namespace ColoryrServer.ASP;
 
-public class HttpUtils
+public static class HttpUtils
 {
     public static RouteObj? GetUUID(string name, out string funtion)
     {
@@ -18,12 +17,12 @@ public class HttpUtils
         {
             temp += args[a];
             var route = HttpInvokeRoute.Get(temp);
-            if (route.IsReload)
-            {
-                return null;
-            }
             if (route != null)
             {
+                if (route.IsReload)
+                {
+                    return HttpReturnSave.Reload;
+                }
                 for (a++; a < args.Length; a++)
                 {
                     funtion += args[a] + "/";

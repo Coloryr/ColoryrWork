@@ -5,10 +5,8 @@ using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -131,7 +129,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             TextEditor.Text = WebObj.Codes[name];
             await UpdateTask();
         });
-        
+
         IsWrite = false;
     }
 
@@ -212,7 +210,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         WebObj.Text = Text.Text;
         if (FileName.EndsWith(".html") || FileName.EndsWith(".css")
         || FileName.EndsWith(".js") || FileName.EndsWith(".json")
-        || FileName.EndsWith(".txt") || FileName.EndsWith(".ts") 
+        || FileName.EndsWith(".txt") || FileName.EndsWith(".ts")
         || FileName.EndsWith(".vue"))
         {
             WebObj.Codes[FileName] = TextEditor.Text.Replace("\r", "");
@@ -275,7 +273,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         await UpdateTask();
     }
 
-    private async void Image_Click(object sender, RoutedEventArgs e) 
+    private async void Image_Click(object sender, RoutedEventArgs e)
     {
         if (FileList.SelectedItem == null || IsBuild)
             return;
@@ -547,7 +545,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             return;
         }
         WebObj.IsVue = set;
-        Dispatcher.Invoke(() => 
+        Dispatcher.Invoke(() =>
         {
             IsVue.IsChecked = WebObj.IsVue;
             Build_Button.IsEnabled = WebObj.IsVue;

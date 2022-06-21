@@ -1,6 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem.Html;
-
-namespace ColoryrServer.SDK;
+﻿namespace ColoryrServer.SDK;
 
 public class WebHtml
 {

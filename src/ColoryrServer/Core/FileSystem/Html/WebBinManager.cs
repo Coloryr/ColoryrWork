@@ -1,11 +1,6 @@
 ﻿using ColoryrServer.SDK;
-using ColoryrWork.Lib.Build.Object;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 
 namespace ColoryrServer.Core.FileSystem.Html;
 
@@ -15,7 +10,7 @@ public static class WebBinManager
 
     public static StaticDir BaseDir { get; private set; }
 
-    public static byte[] GetFile(string[] url, int index) 
+    public static byte[] GetFile(string[] url, int index)
     {
         return BaseDir.GetFile(url, index);
     }

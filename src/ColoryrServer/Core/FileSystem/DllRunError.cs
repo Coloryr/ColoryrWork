@@ -1,9 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem;
@@ -14,7 +11,7 @@ internal static class DllRunError
 
     private static string ErrorConnStr;
 
-    public static void Start() 
+    public static void Start()
     {
         ErrorConnStr = new SqliteConnectionStringBuilder("Data Source=" + ErrorDB)
         {
@@ -31,7 +28,7 @@ internal static class DllRunError
         ErrorSQL.Execute(sql);
     }
 
-    public static void PutError(string dll, string text) 
+    public static void PutError(string dll, string text)
     {
         DateTime time = DateTime.Now;
         string stime = time.ToString();

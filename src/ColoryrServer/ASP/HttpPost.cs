@@ -1,23 +1,19 @@
-﻿using ColoryrServer.Core.FileSystem.Html;
-using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core;
 using ColoryrServer.Core.Http;
-using ColoryrServer.Core;
 using ColoryrServer.SDK;
+using ColoryrWork.Lib.Build.Object;
 using ColoryrWork.Lib.Server;
 using HttpMultipartParser;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using System.Text;
-using ColoryrWork.Lib.Build.Object;
-using Ubiety.Dns.Core;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace ColoryrServer.ASP;
 
 internal static class HttpPost
 {
-    private static async Task<HttpDllRequest?> InitArg(HttpRequest Request) 
+    private static async Task<HttpDllRequest?> InitArg(HttpRequest Request)
     {
         MyContentType type = MyContentType.XFormData;
         var temp = new Dictionary<string, dynamic>();

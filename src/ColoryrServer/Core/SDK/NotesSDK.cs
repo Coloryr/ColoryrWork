@@ -21,7 +21,7 @@ public class NotesSDK : Attribute
 public class DLLIN : Attribute
 {
     public bool Debug;
-    public DLLIN(bool debug) 
+    public DLLIN(bool debug)
     {
         Debug = debug;
     }
