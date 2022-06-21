@@ -1,12 +1,16 @@
-﻿using ColoryrServer.Core.DllManager;
+﻿using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
+using StackExchange.Redis;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ColoryrServer.Core.Http;
 
@@ -35,6 +39,12 @@ public class DllRoute : RouteObj
     public void Update(DllAssembly dll)
     {
         this.dll = dll;
+        IsReload = false;
+    }
+
+    public void Lock()
+    {
+        IsReload = true;
     }
 }
 
@@ -71,6 +81,46 @@ public class WebRoute : RouteObj
             ContentType = ServerContentType.HTML,
             Res = ResType.Byte
         };
+    }
+
+    public void Reload(string name)
+    {
+        IsReload = true;
+
+        if (obj.Codes.ContainsKey(name))
+        {
+            string text = obj.Codes[name];
+            if (name.ToLower().EndsWith(".html"))
+            {
+                if (ServerMain.Config.CodeSetting.MinifyHtml)
+                {
+                    text = CodeCompressUtils.HTML(text);
+                }
+            }
+            else if (name.ToLower().EndsWith(".js"))
+            {
+                if (ServerMain.Config.CodeSetting.MinifyJS)
+                {
+                    text = CodeCompressUtils.JS(text);
+                }
+            }
+            else if (name.ToLower().EndsWith(".css"))
+            {
+                if (ServerMain.Config.CodeSetting.MinifyCSS)
+                {
+                    text = CodeCompressUtils.CSS(text);
+                }
+            }
+
+            cache.AddOrUpdate(name, Encoding.UTF8.GetBytes(text));
+        }
+        else
+        {
+            var data = obj.Files[name];
+            cache.AddOrUpdate(name, data);
+        }
+
+        IsReload = false;
     }
 
     public void Reload() 
@@ -142,6 +192,11 @@ public class WebRoute : RouteObj
         }
         IsReload = false;
     }
+
+    internal void Remove(string name)
+    {
+        cache.TryRemove(name, out var _);
+    }
 }
 
 public static class HttpInvokeRoute
@@ -196,5 +251,38 @@ public static class HttpInvokeRoute
     public static void Remove(string uuid)
     {
         Routes.TryRemove(uuid, out var _);
+    }
+
+    public static void ReloadFile(string uuid, string name)
+    {
+        if (Routes.TryGetValue(uuid, out var item))
+        {
+            if (item is WebRoute)
+            {
+                (item as WebRoute).Reload(name);
+            }
+        }
+    }
+
+    public static void RemoveFile(string uuid, string name) 
+    {
+        if (Routes.TryGetValue(uuid, out var item))
+        {
+            if (item is WebRoute)
+            {
+                (item as WebRoute).Remove(name);
+            }
+        }
+    }
+
+    public static void Lock(string uuid) 
+    {
+        if (Routes.TryGetValue(uuid, out var item))
+        {
+            if (item is DllRoute)
+            {
+                (item as DllRoute).Lock();
+            }
+        }
     }
 }

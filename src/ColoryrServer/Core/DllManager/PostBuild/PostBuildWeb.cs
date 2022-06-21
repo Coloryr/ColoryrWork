@@ -145,6 +145,10 @@ internal static class PostBuildWeb
         obj.Text = json.Text;
 
         WebFileManager.StorageCode(obj, json.Temp, code);
+        if (!obj.IsVue)
+        {
+            HttpInvokeRoute.ReloadFile(obj.UUID, json.Temp);
+        }
 
         return new ReMessage
         {

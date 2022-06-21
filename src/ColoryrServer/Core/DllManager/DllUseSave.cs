@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
+using ColoryrServer.Core.Http;
 using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,7 @@ public static class DllUseSave
         switch (name.DllType)
         {
             case CodeType.Dll:
+                HttpInvokeRoute.Lock(name.Name);
                 LoadDll.Reload(name.Name);
                 break;
             case CodeType.Class:

@@ -221,6 +221,8 @@ public class WebFileManager
     {
         obj.IsVue = IsVue;
         Storage(obj);
+
+        HttpInvokeRoute.AddWeb(obj.UUID, obj);
     }
     public static void DeleteAll(WebObj obj)
     {
@@ -258,22 +260,27 @@ UpdateTime:{obj.UpdateTime}");
 
         ServerMain.LogOut($"Web[{obj.UUID}]删除");
     }
-    public static void AddItem(WebObj obj, string file, bool isCode, string code = null, byte[] data = null)
+    public static void AddItem(WebObj obj, string name, bool isCode, string code = null, byte[] data = null)
     {
         if (isCode)
         {
-            HtmlCodeList[obj.UUID].Codes.Add(file, code);
-            StorageCode(obj, file, code);
+            HtmlCodeList[obj.UUID].Codes.Add(name, code);
+            StorageCode(obj, name, code);
         }
         else
         {
-            HtmlCodeList[obj.UUID].Files.Add(file, data);
-            StorageFile(obj, file, data);
+            HtmlCodeList[obj.UUID].Files.Add(name, data);
+            StorageFile(obj, name, data);
         }
 
 
         obj.Up();
         Storage(obj);
+
+        if (!obj.IsVue)
+        {
+            HttpInvokeRoute.ReloadFile(obj.UUID, name);
+        }
     }
     /// <summary>
     /// 保存代码文件
@@ -461,6 +468,11 @@ UpdateTime:{obj.UpdateTime}");
         }
         obj.Up();
         Storage(obj);
+
+        if (!obj.IsVue)
+        {
+            HttpInvokeRoute.RemoveFile(obj.UUID, name);
+        }
     }
 
     private static void RemoveCode(WebObj obj, string name)

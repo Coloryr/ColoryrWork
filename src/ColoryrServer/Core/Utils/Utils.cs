@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.SDK;
 using HtmlCompression.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -8,6 +9,16 @@ using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Core.Utils;
 
+/// <summary>
+/// 快速方法
+/// </summary>
+internal static class ExtensionMethods
+{
+    public static void AddOrUpdate<K, V>(this ConcurrentDictionary<K, V> dictionary, K key, V value)
+    {
+        dictionary.AddOrUpdate(key, value, (oldkey, oldvalue) => value);
+    }
+}
 internal static class CodeCompressUtils
 {
     private static readonly HtmlCompressor html = new();
@@ -28,7 +39,7 @@ internal static class CodeCompressUtils
 }
 
 
-public class StreamUtils
+internal static class StreamUtils
 {
     public static byte[] JsonOBJ(object obj)
     {
@@ -42,7 +53,7 @@ public class StreamUtils
     }
 }
 
-public class FileUtils
+internal static class FileUtils
 {
     /// <summary>
     /// 获得指定路径下所有文件名
@@ -75,7 +86,7 @@ public class FileUtils
     }
 }
 
-public static class ZipUtils
+internal static class ZipUtils
 {
     public static void ZipDeCompress(byte[] zip, string path)
     {

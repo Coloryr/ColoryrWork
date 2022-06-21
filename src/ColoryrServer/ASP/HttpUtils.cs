@@ -4,14 +4,12 @@ using ColoryrServer.SDK;
 using System;
 using System.Collections.Specialized;
 using System.Text;
-using System.Xml.Linq;
-using Ubiety.Dns.Core;
 
 namespace ColoryrServer.ASP;
 
 public class HttpUtils
 {
-    public static RouteObj GetUUID(string name, out string funtion)
+    public static RouteObj? GetUUID(string name, out string funtion)
     {
         var args = name.Split('/');
         string temp = "";
@@ -20,6 +18,10 @@ public class HttpUtils
         {
             temp += args[a];
             var route = HttpInvokeRoute.Get(temp);
+            if (route.IsReload)
+            {
+                return null;
+            }
             if (route != null)
             {
                 for (a++; a < args.Length; a++)
