@@ -8,13 +8,15 @@ using System.Runtime.Loader;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenCode
+internal static class GenCode
 {
     /// <summary>
     /// 编译引用
     /// </summary>
     private static readonly List<PortableExecutableReference> References = new();
-
+    /// <summary>
+    /// 外部dll加载
+    /// </summary>
     private static readonly string DllLibLocal = ServerMain.RunLocal + "Libs/";
 
     /// <summary>

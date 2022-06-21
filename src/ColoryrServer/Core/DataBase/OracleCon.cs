@@ -13,13 +13,19 @@ internal static class OracleCon
     /// <summary>
     /// 连接状态
     /// </summary>
-    private static Dictionary<int, bool> State = new();
+    private static readonly Dictionary<int, bool> State = new();
     /// <summary>
-    /// 连接池
+    /// 连接配置
     /// </summary>
     private static List<SQLConfig> Config;
-    private static ConcurrentDictionary<int, bool> Connecting = new();
-    private static Dictionary<int, string> ConnectStr = new();
+    /// <summary>
+    /// 连接字符串
+    /// </summary>
+    private static readonly Dictionary<int, string> ConnectStr = new();
+    /// <summary>
+    /// 连接状态
+    /// </summary>
+    private static readonly ConcurrentDictionary<int, bool> Connecting = new();
 
     /// <summary>
     /// 连接测试

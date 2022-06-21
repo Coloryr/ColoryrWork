@@ -2,6 +2,7 @@
 using ColoryrServer.SDK;
 using StackExchange.Redis;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ColoryrServer.Core.DataBase;
@@ -11,13 +12,15 @@ internal static class RedisCon
     /// <summary>
     /// 连接状态
     /// </summary>
-    internal static Dictionary<int, bool> State = new();
-
+    private static readonly Dictionary<int, bool> State = new();
     /// <summary>
-    /// 连接池
+    /// 连接配置
     /// </summary>
     private static List<RedisConfig> Config;
-    private static Dictionary<int, string> ConnectStr = new();
+    /// <summary>
+    /// 连接字符串
+    /// </summary>
+    private static readonly Dictionary<int, string> ConnectStr = new();
 
     /// <summary>
     /// 连接测试
