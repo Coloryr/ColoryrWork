@@ -93,9 +93,10 @@ internal class ServerWebSocket
                 DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
             };
         });
+        ServerMain.OnStop += Stop;
         ServerMain.LogOut("WebScoket服务器已启动");
     }
-    public static void Stop()
+    private static void Stop()
     {
         foreach (var item in Clients)
         {

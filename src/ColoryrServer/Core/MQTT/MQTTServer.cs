@@ -25,6 +25,7 @@ internal static class MQTTServer
         ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MQTTConfig.Port}");
         MqttServer = new MqttFactory().CreateMqttServer();
         await MqttServer.StartAsync(optionsBuilder.Build());
+        ServerMain.OnStop += Stop;
         ServerMain.LogOut("Mqtt服务器已启动");
     }
 
@@ -48,7 +49,7 @@ internal static class MQTTServer
     private static void SubscriptionInterceptor(MqttSubscriptionInterceptorContext data)
         => Task.Run(()
              => DllRun.MqttGo(new MqttSubscription(data)));
-    public static async void Stop()
+    private static async void Stop()
       => await MqttServer.StopAsync();
 
     public class MQTTC : IMqttServerUnsubscriptionInterceptor

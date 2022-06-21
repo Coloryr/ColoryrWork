@@ -156,11 +156,7 @@ public static class PostBuild
         }
         else
         {
-            resObj = new ReMessage
-            {
-                Build = false,
-                Message = "233"
-            };
+            resObj = HttpReturnSave.Res404;
         }
         return new HttpReturn
         {

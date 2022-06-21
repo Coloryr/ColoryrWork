@@ -12,7 +12,7 @@ internal static class RedisCon
     /// <summary>
     /// 连接状态
     /// </summary>
-    private static readonly Dictionary<int, bool> State = new();
+    public static readonly Dictionary<int, bool> State = new();
     /// <summary>
     /// 连接配置
     /// </summary>

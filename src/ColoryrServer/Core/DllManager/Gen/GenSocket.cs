@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenSocket
+internal static class GenSocket
 {
     /// <summary>
     /// 编译Socket

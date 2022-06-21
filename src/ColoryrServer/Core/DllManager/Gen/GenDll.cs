@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenDll
+internal static class GenDll
 {
     /// <summary>
     /// 编译Dll

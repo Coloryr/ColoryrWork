@@ -1,12 +1,14 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadSocket
+internal static class LoadSocket
 {
     /// <summary>
     /// 加载并验证.dll
@@ -20,7 +22,7 @@ internal class LoadSocket
         var assembly = new DllAssembly(CodeType.Socket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.Name == uuid);
+                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ

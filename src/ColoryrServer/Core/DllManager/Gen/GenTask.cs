@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenTask
+internal static class GenTask
 {
     /// <summary>
     /// 编译Task

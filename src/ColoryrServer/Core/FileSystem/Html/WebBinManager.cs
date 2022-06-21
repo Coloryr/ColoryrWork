@@ -41,5 +41,6 @@ public static class WebBinManager
         }
 
         BaseDir = new StaticDir(WebBinStatic);
+        ServerMain.OnStop += BaseDir.Stop;
     }
 }

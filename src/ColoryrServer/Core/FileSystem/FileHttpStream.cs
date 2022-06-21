@@ -12,9 +12,9 @@ internal class StreamTemp
     public Stream stream;
     public int time;
 
-    public void tick() { time--; }
+    public void Tick() { time--; }
 }
-internal class FileHttpStream
+internal static class FileHttpStream
 {
     private static readonly ConcurrentDictionary<string, StreamTemp> EtagTemp = new();
     public static string Local;
@@ -39,16 +39,17 @@ internal class FileHttpStream
                 Thread.Sleep(1000);
                 foreach (var item in EtagTemp)
                 {
-                    item.Value.tick();
+                    item.Value.Tick();
                     if (item.Value.time == 0)
                         EtagTemp.TryRemove(item.Key, out var v);
                 }
             }
         });
         thread.Start();
+        ServerMain.OnStop += Stop;
     }
 
-    public static void Stop()
+    private static void Stop()
     {
         IsRun = false;
         foreach (var item in EtagTemp.Values)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.IoT;
 
-internal class SocketServer
+internal static class SocketServer
 {
     private static TcpListener TcpServer;
     private static Socket UdpServer;
@@ -80,6 +80,7 @@ internal class SocketServer
             });
             thread1.Start();
             thread2.Start();
+            ServerMain.OnStop += Stop;
             ServerMain.LogOut("Socket服务器已启动");
         }
         catch (Exception e)
@@ -89,7 +90,7 @@ internal class SocketServer
         }
     }
 
-    public static void Stop()
+    private static void Stop()
     {
         ServerMain.LogOut("Socket服务器正在停止");
         RunFlag = false;

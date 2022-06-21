@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenMqtt
+internal static class GenMqtt
 {
     /// <summary>
     /// 编译Mqtt

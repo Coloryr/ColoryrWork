@@ -3,7 +3,7 @@ using ColoryrServer.SDK;
 using System.Collections.Generic;
 
 namespace ColoryrServer.Core.Robot;
-public class RobotUtils
+public static class RobotUtils
 {
     public static RobotSDK robot { get; } = new();
     private static void Message(byte type, object data)
@@ -83,12 +83,14 @@ public class RobotUtils
         robot.Set(config);
         robot.SetPipe(new ColorMiraiNetty(robot));
         robot.Start();
+
+        ServerMain.OnStop += Stop;
     }
 
     public static List<long> GetQQs()
         => robot.QQs;
 
-    public static void Stop()
+    private static void Stop()
     {
         ServerMain.LogOut("机器人正在断开");
         robot.Stop();

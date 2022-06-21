@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal class GenWebSocket
+internal static class GenWebSocket
 {
     /// <summary>
     /// 编译WebSocket

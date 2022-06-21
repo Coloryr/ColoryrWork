@@ -2217,7 +2217,8 @@ internal class ColorMiraiNetty : IColorMiraiPipe
     {
         Robot.IsConnect = false;
         Robot.RobotStateEvent.Invoke(StateType.Disconnect);
-        client.CloseAsync().Wait();
+        if (client != null)
+            client.CloseAsync().Wait();
     }
 }
 

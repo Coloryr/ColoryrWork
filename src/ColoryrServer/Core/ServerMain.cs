@@ -113,37 +113,20 @@ public class ServerMain
             }
             //设置编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             //创建日志文件
             Logs = new Logs(RunLocal);
             //配置文件
             ConfigUtil.Start();
+
+            DllLoad();
+
             CodeFileManager.Start();
             NoteFile.Start();
             APIFile.Start();
             FileTemp.Start();
             FileRam.Start();
             HttpClientUtils.Start();
-
-            //给编译用的，防DLL找不到
-            var test2 = new HtmlDocument();
-            dynamic test = new HttpResponseMessage();
-            var test1 = test.IsSuccessStatusCode;
-            test.Dispose();
-            Parallel.ForEach(new List<string>(), (i, b) => { });
-            Image<Rgba32> bitmap = new(1, 1);
-            SystemFonts.Families.GetEnumerator();
-            bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
-            bitmap.Dispose();
-            Stream zip = Stream.Null;
-            Stream zip1 = Stream.Null;
-            ZipEntry entry = new("1");
-            NameValueCollection nameValue = new();
-            Regex re = new("");
-            Aes aes = Aes.Create();
-            aes.Dispose();
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
             MQTTServer.Start();
             RobotUtils.Start();
             PostBuild.Start();
@@ -170,6 +153,27 @@ public class ServerMain
             LogError(e);
             Console.Read();
         }
+    }
+
+    public static void DllLoad() 
+    {
+        //给编译用的，防DLL找不到
+        var test2 = new HtmlDocument();
+        dynamic test = new HttpResponseMessage();
+        var test1 = test.IsSuccessStatusCode;
+        test.Dispose();
+        Parallel.ForEach(new List<string>(), (i, b) => { });
+        Image<Rgba32> bitmap = new(1, 1);
+        SystemFonts.Families.GetEnumerator();
+        bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
+        bitmap.Dispose();
+        Stream zip = Stream.Null;
+        Stream zip1 = Stream.Null;
+        ZipEntry entry = new("1");
+        NameValueCollection nameValue = new();
+        Regex re = new("");
+        Aes aes = Aes.Create();
+        aes.Dispose();
     }
 
     public static void Stop()

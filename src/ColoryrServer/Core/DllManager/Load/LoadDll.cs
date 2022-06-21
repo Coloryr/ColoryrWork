@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadDll
+internal static class LoadDll
 {
     /// <summary>
     /// 加载并验证.dll

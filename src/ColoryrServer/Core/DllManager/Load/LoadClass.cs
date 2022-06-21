@@ -5,10 +5,11 @@ using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
 
-internal class LoadClass
+internal static class LoadClass
 {
     /// <summary>
     /// 加载并验证.dll
@@ -22,7 +23,7 @@ internal class LoadClass
         var assembly = new DllAssembly(CodeType.Class, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.Name == uuid);
+                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN> (true) != null);
 
         if (!list.Any())
             return new GenReOBJ

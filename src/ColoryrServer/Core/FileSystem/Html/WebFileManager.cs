@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem.Html;
 
-public class WebFileManager
+public static class WebFileManager
 {
     /// <summary>
     /// Web项目储存
