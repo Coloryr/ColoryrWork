@@ -104,7 +104,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Netty\" />
     <Folder Include="OLD\" />
     <Folder Include="Resources\Demo\Vue\" />
     <Folder Include="Resources\OtherSDK\" />

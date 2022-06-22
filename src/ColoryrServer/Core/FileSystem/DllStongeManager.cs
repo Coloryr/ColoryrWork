@@ -3,6 +3,7 @@ using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.Netty;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Server;
 using System;
@@ -136,6 +137,7 @@ public static class DllStongeManager
 
     public static void AddSocket(string uuid, DllAssembly save)
     {
+        NettyManager.StopItem(uuid);
         if (MapSocket.ContainsKey(uuid))
         {
             var old = MapSocket[uuid];
@@ -152,6 +154,8 @@ public static class DllStongeManager
         {
             MapSocket.TryAdd(uuid, save);
         }
+
+        NettyManager.AddItem(save);
     }
     public static void RemoveSocket(string uuid)
     {
@@ -162,6 +166,10 @@ public static class DllStongeManager
             item.MethodInfos.Clear();
         }
         RemoveAll(LocalSocket + uuid);
+    }
+    public static List<DllAssembly> GetSocket()
+    {
+        return new List<DllAssembly>(MapSocket.Values);
     }
 
     public static void AddWebSocket(string uuid, DllAssembly save)

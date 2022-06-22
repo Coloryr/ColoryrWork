@@ -37,7 +37,9 @@ internal class SocketView : CodeListView
         var data = new InputWindow("UUID设置").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-        var list = await App.HttpUtils.Add(Type, data);
+        var res = new ChoseWindow("选择类型", "是否是Netty项目").Set();
+
+        var list = await App.HttpUtils.Add(Type, data, res.ToString());
         if (list == null)
         {
             App.LogShow("添加", "服务器返回错误");

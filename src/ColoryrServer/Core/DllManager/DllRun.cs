@@ -199,10 +199,12 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void SocketGo(TcpSocketRequest Head)
     {
-        foreach (var dll in DllStongeManager.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetSocket())
         {
             try
             {
+                if (dll.MethodInfos.ContainsKey("Netty"))
+                    continue;
                 MethodInfo mi = dll.MethodInfos[CodeDemo.SocketTcp];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
                 var res = mi.Invoke(obj1, new object[1] { Head });
@@ -233,10 +235,12 @@ internal static class DllRun
     /// <param name="Head"></param>
     public static void SocketGo(UdpSocketRequest Head)
     {
-        foreach (var dll in DllStongeManager.GetWebSocket())
+        foreach (var dll in DllStongeManager.GetSocket())
         {
             try
             {
+                if (dll.MethodInfos.ContainsKey("Netty"))
+                    continue;
                 MethodInfo mi = dll.MethodInfos[CodeDemo.SocketUdp];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
                 var res = mi.Invoke(obj1, new object[1] { Head });

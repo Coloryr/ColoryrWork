@@ -3,12 +3,12 @@ using ColoryrServer.SDK;
 [DLLIN]
 public class {name}
 {
-    public void OnTcpMessage(TcpSocketRequest head)
+    public bool OnTcpMessage(TcpSocketRequest head)
     {
-                
+        return true; //true表示事件已处理完毕
     }
-    public void OnUdpMessage(UdpSocketRequest head)
+    public bool OnUdpMessage(UdpSocketRequest head)
     {
-                
+        return true;
     }
 }

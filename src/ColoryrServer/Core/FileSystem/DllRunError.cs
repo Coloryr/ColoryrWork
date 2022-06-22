@@ -21,9 +21,9 @@ internal static class DllRunError
 
         string sql = @"create table if not exists error (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  `Dll` text,
-  `Text` text,
-  `Time` text
+  `dll` text,
+  `text` text,
+  `time` text
 );";
         ErrorSQL.Execute(sql);
     }
@@ -34,8 +34,8 @@ internal static class DllRunError
         string stime = time.ToString();
         Task.Run(() =>
         {
-            using var ErrorSQL = new SqliteConnection(ErrorConnStr);
-            ErrorSQL.Execute("INSERT INTO error (Dll,Text,Time) VALUES(@Dll,@Text,@Time)", new { Dll = dll, Text = text, Time = stime });
+            using var errorSQL = new SqliteConnection(ErrorConnStr);
+            errorSQL.Execute("INSERT INTO error (dll,text,time) VALUES(@dll,@text,@time)", new { dll, text, time });
         });
     }
 }

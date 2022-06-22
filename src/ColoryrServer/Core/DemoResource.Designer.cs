@@ -63,6 +63,7 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN]
         ///public class {name}
         ///{
         ///    public {name}()
@@ -85,11 +86,11 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN(true)]//true则报错输出至网页
         ///public class app_{name}
         ///{
-        ///    public void debug(){}//如果加上这个函数则报错输出至网页
         ///    [NotesSDK(&quot;一个接口&quot;, new string[1]{ &quot;输入&quot; }, new string[1]{ &quot;输出&quot; })]
-        ///    public dynamic Main(HttpRequest http)
+        ///    public dynamic Main(HttpDllRequest http)
         ///    {  
         ///        return &quot;true&quot;;
         ///    }
@@ -104,11 +105,12 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN]
         ///public class {name}
         ///{
         ///    public bool OnMessage(MqttMessage head)
         ///    {
-        ///        return true;
+        ///        return true; //true表示事件已处理完毕
         ///    }
         ///    public bool OnValidator(MqttConnectionValidator head)
         ///    {
@@ -132,20 +134,45 @@ namespace ColoryrServer.Core {
         
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
+        ///using System;
+        ///using DotNetty.Transport.Channels;
+        ///using DotNetty.Handlers.Logging;
+        ///using DotNetty.Handlers.Tls;
+        ///using DotNetty.Transport.Bootstrapping;
+        ///using DotNetty.Transport.Channels.Sockets;
+        ///using System.Security.Cryptography.X509Certificates;
         ///
+        ///[DLLIN]
+        ///public class {name} : INetty
+        ///{
+        ///    private IChannel bootstrapChannel;
+        ///    public async void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup)
+        ///    {
+        ///        X509Certificate2 tlsCertific [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Netty {
+            get {
+                return ResourceManager.GetString("Netty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        ///[DLLIN]
         ///public class {name}
         ///{
-        ///    public void OnMessage(RobotRequest head)
+        ///    public bool OnMessage(RobotMessage head)
         ///    {
-        ///             
+        ///        return true; //true表示事件已处理完毕
         ///    }
-        ///    public void OnMessagSend(RobotAfter head)
+        ///    public bool OnMessagSend(RobotSend head)
         ///    {
-        ///             
+        ///        return true;
         ///    }
-        ///    public void OnRobotEvent(RobotEvent head)
+        ///    public bool OnRobotEvent(RobotEvent head)
         ///    {
-        ///            
+        ///        return true;
         ///    }
         ///} 的本地化字符串。
         /// </summary>
@@ -158,15 +185,16 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN]
         ///public class {name}
         ///{
-        ///    public void OnTcpMessage(TcpSocketRequest head)
+        ///    public bool OnTcpMessage(TcpSocketRequest head)
         ///    {
-        ///                
+        ///        return true; //true表示事件已处理完毕
         ///    }
-        ///    public void OnUdpMessage(UdpSocketRequest head)
+        ///    public bool OnUdpMessage(UdpSocketRequest head)
         ///    {
-        ///                
+        ///        return true;
         ///    }
         ///} 的本地化字符串。
         /// </summary>
@@ -179,6 +207,7 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN]
         ///public class {name}
         ///{
         ///    public TaskRes Run(object[] args)
@@ -199,19 +228,20 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
+        ///[DLLIN]
         ///public class {name}
         ///{
-        ///    public void OnMessage(WebSocketMessage head)
+        ///    public bool OnMessage(WebSocketMessage head)
         ///    {
-        ///             
+        ///        return true; //true表示事件已处理完毕
         ///    }
-        ///    public void OnOpen(WebSocketOpen head)
+        ///    public bool OnOpen(WebSocketOpen head)
         ///    {
-        ///             
+        ///        return true;
         ///    }
-        ///    public void OnClose(WebSocketClose head)
+        ///    public bool OnClose(WebSocketClose head)
         ///    {
-        ///            
+        ///        return true;
         ///    }
         ///} 的本地化字符串。
         /// </summary>

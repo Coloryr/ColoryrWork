@@ -3,6 +3,7 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.Core.WebSocket;
+using DotNetty.Transport.Channels;
 using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +14,12 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace ColoryrServer.SDK;
+
+public abstract class INetty
+{
+    public abstract void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup);
+    public abstract void Stop();
+}
 
 public partial class HttpMultipartFile
 {

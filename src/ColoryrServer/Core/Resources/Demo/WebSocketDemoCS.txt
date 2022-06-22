@@ -3,16 +3,16 @@ using ColoryrServer.SDK;
 [DLLIN]
 public class {name}
 {
-    public void OnMessage(WebSocketMessage head)
+    public bool OnMessage(WebSocketMessage head)
     {
-             
+        return true; //true表示事件已处理完毕
     }
-    public void OnOpen(WebSocketOpen head)
+    public bool OnOpen(WebSocketOpen head)
     {
-             
+        return true;
     }
-    public void OnClose(WebSocketClose head)
+    public bool OnClose(WebSocketClose head)
     {
-            
+        return true;
     }
 }

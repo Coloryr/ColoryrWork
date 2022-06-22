@@ -7,6 +7,7 @@ using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Html;
 using ColoryrServer.Core.IoT;
 using ColoryrServer.Core.MQTT;
+using ColoryrServer.Core.Netty;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.TaskUtils;
 using ColoryrServer.Core.WebSocket;
@@ -131,6 +132,7 @@ public class ServerMain
             RobotUtils.Start();
             PostBuild.Start();
             WebBinManager.Start();
+            DllRunError.Start();
             MSCon.Start();
             RedisCon.Start();
             OracleCon.Start();
@@ -144,6 +146,7 @@ public class ServerMain
             SocketServer.Start();
             ServerWebSocket.Start();
             TaskManager.Start();
+            NettyManager.Start();
 
             //等待初始化完成
             Thread.Sleep(2000);

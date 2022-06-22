@@ -127,6 +127,9 @@
   <data name="Mqtt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\MqttDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="Netty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\NettyDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="Robot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\RobotDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>

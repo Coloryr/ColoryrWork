@@ -74,7 +74,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
     }
 
-    private void GetBuildRes(object? sender, ElapsedEventArgs e)
+    private void GetBuildRes(object sender, ElapsedEventArgs e)
     {
         var res = App.HttpUtils.BuildWebRes(WebObj).Result;
         if (res == null)

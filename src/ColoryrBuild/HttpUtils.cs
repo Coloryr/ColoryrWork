@@ -316,7 +316,7 @@ public class HttpUtils
         }
     }
 
-    public async Task<ReMessage> Add(CodeType type, string name)
+    public async Task<ReMessage> Add(CodeType type, string name, string arg = null)
     {
         try
         {
@@ -336,7 +336,8 @@ public class HttpUtils
                 User = App.Config.Name,
                 Token = App.Config.Token,
                 Mode = reType,
-                UUID = name
+                UUID = name,
+                Code = arg
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

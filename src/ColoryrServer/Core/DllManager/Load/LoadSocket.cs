@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Netty;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
@@ -33,18 +34,25 @@ internal static class LoadSocket
 
         assembly.SelfType = list.First();
 
-        foreach (var item in assembly.SelfType.GetMethods())
+        if (!NettyManager.Check(assembly.SelfType))
         {
-            if (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp && item.IsPublic)
-                assembly.MethodInfos.Add(item.Name, item);
-        }
-
-        if (assembly.MethodInfos.Count == 0)
-            return new GenReOBJ
+            foreach (var item in assembly.SelfType.GetMethods())
             {
-                Isok = false,
-                Res = $"Socket[{uuid}]没有方法"
-            };
+                if (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp && item.IsPublic)
+                    assembly.MethodInfos.Add(item.Name, item);
+            }
+
+            if (assembly.MethodInfos.Count == 0)
+                return new GenReOBJ
+                {
+                    Isok = false,
+                    Res = $"Socket[{uuid}]没有方法"
+                };
+        }
+        else
+        {
+            assembly.MethodInfos.Add("Netty", null);
+        }
 
         DllStongeManager.AddSocket(uuid, assembly);
 

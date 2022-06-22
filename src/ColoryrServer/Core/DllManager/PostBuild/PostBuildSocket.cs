@@ -17,12 +17,13 @@ internal static class PostBuildSocket
         if (CodeFileManager.GetSocket(json.UUID) == null)
         {
             var time = string.Format("{0:s}", DateTime.Now);
+            string code = json.Code.ToLower() == "true" ? DemoResource.Netty : DemoResource.Socket;
             CSFileCode obj = new()
             {
                 UUID = json.UUID,
                 Type = CodeType.Socket,
                 CreateTime = time,
-                Code = DemoResource.Socket
+                Code = code
                 .Replace(CodeDemo.Name, json.UUID)
             };
             CodeFileManager.StorageSocket(obj);

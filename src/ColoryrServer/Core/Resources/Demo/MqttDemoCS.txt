@@ -5,7 +5,7 @@ public class {name}
 {
     public bool OnMessage(MqttMessage head)
     {
-        return true;
+        return true; //true表示事件已处理完毕
     }
     public bool OnValidator(MqttConnectionValidator head)
     {

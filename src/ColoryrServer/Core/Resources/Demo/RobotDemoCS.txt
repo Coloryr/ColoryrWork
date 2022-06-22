@@ -3,16 +3,16 @@ using ColoryrServer.SDK;
 [DLLIN]
 public class {name}
 {
-    public void OnMessage(RobotRequest head)
+    public bool OnMessage(RobotMessage head)
     {
-             
+        return true; //true表示事件已处理完毕
     }
-    public void OnMessagSend(RobotAfter head)
+    public bool OnMessagSend(RobotSend head)
     {
-             
+        return true;
     }
-    public void OnRobotEvent(RobotEvent head)
+    public bool OnRobotEvent(RobotEvent head)
     {
-            
+        return true;
     }
 }
