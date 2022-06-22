@@ -8,93 +8,126 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <GroupBox
-                    Margin="2"
+    <DockPanel LastChildFill="False">
+        <GroupBox
+            Margin="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Header="Http服务器设定">
+            <Grid>
+                <ListView
+                    Name="HttpList"
+                    Width="300"
+                    Height="80"
+                    Style="{StaticResource ListViewStyle1}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                Width="200"
+                                DisplayMemberBinding="{Binding IP}"
+                                Header="IP" />
+                            <GridViewColumn
+                                Width="80"
+                                DisplayMemberBinding="{Binding Port}"
+                                Header="端口" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Click="Add_Click" Header="添加" />
+                            <MenuItem Click="Delete_Click" Header="删除" />
+                            <MenuItem Click="Edit_Click" Header="修改" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Margin="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Header="Socket服务器设置">
+            <Grid Margin="5">
+                <Label
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Header="Socket服务器设置">
-                    <Grid Margin="5">
-                        <Label
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="地址" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,3,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                        <Label
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="端口" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,28,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                    </Grid>
-                </GroupBox>
-                <GroupBox
-                    Margin="2"
+                    Content="地址" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,3,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+                <Label
+                    Margin="0,25,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Header="Mqtt服务器设置">
-                    <Grid Margin="5">
-                        <Label
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="地址" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,3,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                        <Label
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="端口" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,28,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                    </Grid>
-                </GroupBox>
-                <GroupBox Margin="2" Header="WebSocket设置">
-                    <Grid Margin="5">
-                        <Label
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="地址" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,3,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                        <Label
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="端口" />
-                        <TextBox
-                            Width="100"
-                            Height="20"
-                            Margin="34,28,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
-                    </Grid>
-                </GroupBox>
-            </StackPanel>
-        </StackPanel>
-    </Grid>
+                    Content="端口" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,28,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Margin="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Header="Mqtt服务器设置">
+            <Grid Margin="5">
+                <Label
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="地址" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,3,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+                <Label
+                    Margin="0,25,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="端口" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,28,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+            </Grid>
+        </GroupBox>
+        <GroupBox
+            Margin="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Header="WebSocket设置">
+            <Grid Margin="5">
+                <Label
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="地址" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,3,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+                <Label
+                    Margin="0,25,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="端口" />
+                <TextBox
+                    Width="100"
+                    Height="20"
+                    Margin="40,28,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top" />
+            </Grid>
+        </GroupBox>
+    </DockPanel>
 </UserControl>

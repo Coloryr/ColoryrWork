@@ -19,5 +19,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Object\CSFileObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Object\MessageOBJ.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BuildUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Object\ServerConfig.cs" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using ColoryrBuild.Views;
+﻿using ColoryrBuild.PostBuild;
+using ColoryrBuild.Views;
 using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;

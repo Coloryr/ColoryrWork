@@ -10,7 +10,8 @@ public enum ReType
     WebRemoveFile, WebAddFile, WebAddCode, WebCodeZIP, WebSetIsVue, WebBuild, WebBuildRes, WebDownloadFile,
     Check, Login, GetApi,
     SetRobot, GetConfig,
-    AddClassFile, RemoveClassFile, BuildClass
+    AddClassFile, RemoveClassFile, BuildClass,
+    GetServerHttpList
 }
 public record BuildOBJ
 {
