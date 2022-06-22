@@ -35,12 +35,14 @@ public static class DllUseSave
         var list = UseLoad.Keys.Where(a => a.Name == name.Name);
         if (list.Any())
         {
-            var list1 = UseLoad[list.First()];
+            var dll = list.First();
+            var list1 = UseLoad[dll];
             foreach (var item in list1)
             {
                 Reload(item);
             }
             list1.Clear();
+            UseLoad.Remove(dll);
         }
     }
 

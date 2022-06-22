@@ -104,7 +104,7 @@ public static class PostBuild
                 ReType.AddTask => PostBuildTask.Add(json),
                 ReType.AddWeb => PostBuildWeb.Add(json),
                 ReType.GetDll => PostBuildDll.GetList(),
-                ReType.GetClass => PostBuildDll.GetList(),
+                ReType.GetClass => PostBuildClass.GetList(),
                 ReType.GetSocket => PostBuildSocket.GetList(),
                 ReType.GetWebSocket => PostBuildWebSocket.GetList(),
                 ReType.GetRobot => PostBuildRobot.GetList(),

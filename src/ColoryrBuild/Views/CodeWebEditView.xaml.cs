@@ -258,7 +258,6 @@ public partial class CodeWebEditView : UserControl, IEditView
                 App.MainWindow_.RefreshCode(Type);
                 WebObj.Up();
             }
-            App.ClearContrast();
             Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
         }
         else

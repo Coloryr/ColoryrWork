@@ -5,11 +5,11 @@ using System.Windows;
 
 namespace ColoryrBuild.Views.CodeList;
 
-internal class ClassView : CodeListView
+internal class TaskView : CodeListView
 {
-    private const CodeType Type = CodeType.Class;
+    private const CodeType Type = CodeType.Task;
     public static Action Refresh;
-    public ClassView()
+    public TaskView()
     {
         MainWindow.CallRefresh += FRefresh;
         RefreshAction = Refresh = FRefresh;
@@ -80,3 +80,4 @@ internal class ClassView : CodeListView
         }
     }
 }
+

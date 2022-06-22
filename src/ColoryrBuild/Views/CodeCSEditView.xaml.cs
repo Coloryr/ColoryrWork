@@ -5,6 +5,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -125,10 +126,8 @@ public partial class CodeCSEditView : UserControl, IEditView
                 _ = new InfoWindow("代码备份失败", e.ToString());
             }
             Directory.Delete(newLocal, true);
-
-            FileName = Files.First();
-            OldCode = TextEditor.Text = FileMap[FileName];
-            FileList.SelectedItem = FileName;
+            FileName = null;
+            FileList.SelectedItem = Files.First();
         }
         else
         {
@@ -269,9 +268,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             }
             FileMap[FileName] = CsObj.Code;
             CsObj.Code = null;
-            App.ClearContrast();
             AddLog("代码上传成功");
-            Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
         }
         Updata_Button.IsEnabled = true;
         IsUpdate = false;
@@ -345,10 +342,10 @@ public partial class CodeCSEditView : UserControl, IEditView
             $"编译时间:{data.Time}");
         CsObj.Next();
         App.MainWindow_.RefreshCode(Type);
+        IsWrite = true;
         CodeSave.Save(Local + "main.cs", CsObj.Code);
-        App.ClearContrast();
+        IsWrite = false;
         IsBuild = false;
-        Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
     }
 
     private void Build_Click(object sender, RoutedEventArgs e)

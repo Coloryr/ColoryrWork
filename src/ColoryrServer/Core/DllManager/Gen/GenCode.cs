@@ -25,13 +25,32 @@ internal static class GenCode
     /// <param name="name">文件名</param>
     /// <param name="codes">代码树</param>
     /// <returns></returns>
-    public static GenReOBJ StartGen(string name, List<SyntaxTree> codes)
+    public static GenReOBJ StartGen(string name, List<SyntaxTree> codes, bool isClass = false)
     {
-        CSharpCompilation compilation = CSharpCompilation.Create(
+        CSharpCompilation compilation;
+        if (isClass)
+        {
+            var list = new List<PortableExecutableReference>();
+            foreach (var item in References)
+            {
+                if (item.FilePath.ToLower().Replace('\\', '/').EndsWith($"/{name}.dll"))
+                    continue;
+                list.Add(item);
+            }
+            compilation = CSharpCompilation.Create(
             name,
             syntaxTrees: codes,
-            references: References,
+            references: list,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        }
+        else
+        {
+            compilation = CSharpCompilation.Create(
+                name,
+                syntaxTrees: codes,
+                references: References,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        }
         var ms = new MemoryStream();
         var msPdb = new MemoryStream();
         EmitResult result = compilation.Emit(ms, msPdb);

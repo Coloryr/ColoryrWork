@@ -23,7 +23,7 @@ internal static class LoadClass
         var assembly = new DllAssembly(CodeType.Class, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN> (true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ

@@ -138,7 +138,7 @@ public static class DllStongeManager
     {
         if (MapSocket.ContainsKey(uuid))
         {
-            var old = MapDll[uuid];
+            var old = MapSocket[uuid];
             MapSocket[uuid] = save;
             Task.Run(() =>
             {
@@ -168,7 +168,7 @@ public static class DllStongeManager
     {
         if (MapWebSocket.ContainsKey(uuid))
         {
-            var old = MapDll[uuid];
+            var old = MapWebSocket[uuid];
             MapWebSocket[uuid] = save;
             Task.Run(() =>
             {
@@ -202,7 +202,7 @@ public static class DllStongeManager
     {
         if (MapRobot.ContainsKey(uuid))
         {
-            var old = MapDll[uuid];
+            var old = MapRobot[uuid];
             MapRobot[uuid] = save;
             Task.Run(() =>
             {
@@ -236,7 +236,7 @@ public static class DllStongeManager
     {
         if (MapMqtt.ContainsKey(uuid))
         {
-            var old = MapDll[uuid];
+            var old = MapMqtt[uuid];
             MapMqtt[uuid] = save;
             Task.Run(() =>
             {
@@ -270,7 +270,7 @@ public static class DllStongeManager
     {
         if (MapTask.ContainsKey(uuid))
         {
-            var old = MapDll[uuid];
+            var old = MapTask[uuid];
             MapTask[uuid] = save;
             Task.Run(() =>
             {

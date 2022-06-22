@@ -154,7 +154,6 @@ namespace ColoryrBuild
             DiffView.OldText = oldText;
             DiffView.NewText = obj.Code;
             DiffView.Refresh();
-            Tabs.SelectedIndex = 3;
             return DiffView.GetInlineDiffModel();
         }
 
@@ -164,16 +163,7 @@ namespace ColoryrBuild
             DiffView.OldText = oldText;
             DiffView.NewText = new_;
             DiffView.Refresh();
-            Tabs.SelectedIndex = 3;
             return DiffView.GetInlineDiffModel();
-        }
-
-        public void Clear()
-        {
-            Title = (Tabs.SelectedItem as TabItem).Header as string;
-            DiffView.OldText = " ";
-            DiffView.NewText = " ";
-            DiffView.Refresh();
         }
 
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)

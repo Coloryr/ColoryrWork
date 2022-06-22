@@ -192,7 +192,4 @@ public partial class App : Application
         MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
         e.SetObserved();
     }
-
-    internal static void ClearContrast()
-        => MainWindow_.Clear();
 }
