@@ -11,7 +11,8 @@ public enum ReType
     Check, Login, GetApi,
     SetRobot, GetConfig,
     AddClassFile, RemoveClassFile, BuildClass,
-    GetServerHttpList
+    GetServerHttpConfigList, GetServerSocketConfig, AddServerHttpConfig, RemoveServerHttpConfig, ServerReboot, AddServerHttpRoute,
+    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute
 }
 public record BuildOBJ
 {

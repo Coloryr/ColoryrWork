@@ -21,8 +21,8 @@ internal static class MQTTServer
                  .WithSubscriptionInterceptor(SubscriptionInterceptor)
                  .WithApplicationMessageInterceptor(ApplicationMessageInterceptor)
                  .WithUnsubscriptionInterceptor(mqttc)
-                 .WithDefaultEndpointPort(ServerMain.Config.MQTTConfig.Port);
-        ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MQTTConfig.Port}");
+                 .WithDefaultEndpointPort(ServerMain.Config.MqttConfig.Port);
+        ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MqttConfig.Port}");
         MqttServer = new MqttFactory().CreateMqttServer();
         await MqttServer.StartAsync(optionsBuilder.Build());
         ServerMain.OnStop += Stop;

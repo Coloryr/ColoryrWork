@@ -185,17 +185,4 @@ public class ServerMain
         OnStop.Invoke();
         LogOut("已关闭");
     }
-
-    public static void Command(string command)
-    {
-        if (command == null)
-            return;
-        var arg = command.Split(' ');
-        switch (arg[0])
-        {
-            case "html":
-                break;
-
-        }
-    }
 }

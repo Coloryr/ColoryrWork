@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ColoryrWork.Lib.Build.Object;
+using System.Collections.Generic;
 
 namespace ColoryrServer.Core.FileSystem;
 
@@ -43,7 +44,7 @@ public abstract record MainConfig
     /// <summary>
     /// MQTT配置
     /// </summary>
-    public MQTTConfig MQTTConfig { get; set; }
+    public SocketConfig MqttConfig { get; set; }
     /// <summary>
     /// 任务配置
     /// </summary>
@@ -136,13 +137,6 @@ public record RequsetChoose
     /// </summary>
     public List<string> StreamType { get; set; }
 }
-public record MQTTConfig
-{
-    /// <summary>
-    /// 端口
-    /// </summary>
-    public int Port { get; set; }
-}
 public record TaskUtilConfig
 {
     /// <summary>
@@ -160,17 +154,6 @@ public record UserConfig
     /// 密码SHA1
     /// </summary>
     public string Password { get; set; }
-}
-public record SocketConfig
-{
-    /// <summary>
-    /// socket设置的IP
-    /// </summary>
-    public string IP { get; set; }
-    /// <summary>
-    /// 端口
-    /// </summary>
-    public int Port { get; set; }
 }
 public record SQLConfig
 {
@@ -229,4 +212,8 @@ public abstract class ConfigUtil
     /// 读配置文件
     /// </summary>
     public abstract void Start();
+    /// <summary>
+    /// 保存配置文件
+    /// </summary>
+    public abstract void Save();
 }

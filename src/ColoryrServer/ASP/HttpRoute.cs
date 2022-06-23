@@ -1,11 +1,13 @@
 ﻿using ColoryrServer.Core;
+using ColoryrWork.Lib.Build.Object;
 using Microsoft.Extensions.Primitives;
 
 namespace ColoryrServer.ASP;
 
 internal static class HttpRoute
 {
-    internal static async Task RouteDo(HttpRequest Request, string[] arg, Rote rote, HttpResponse Response, int start = 1)
+    internal static async Task RouteDo(HttpRequest Request, string[] arg, 
+        RouteConfigObj rote, HttpResponse Response, int start = 1)
     {
         HttpClient ProxyRequest = ASPServer.Clients.GetOne();
         HttpRequestMessage message = new();

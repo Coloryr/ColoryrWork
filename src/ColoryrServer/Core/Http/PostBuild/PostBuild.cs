@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.Http.PostBuild;
 using ColoryrWork.Lib.Build.Object;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -147,6 +148,13 @@ public static class PostBuild
                 ReType.RemoveClassFile => PostBuildClass.RemoveFile(json),
                 ReType.BuildClass => PostBuildClass.Build(json),
                 ReType.WebDownloadFile => PostBuildWeb.Download(json),
+                ReType.GetServerHttpConfigList=> PostServerConfig.GetHttpConfigList(json),
+                ReType.AddServerHttpConfig => PostServerConfig.AddHttpConfig(json),
+                ReType.RemoveServerHttpConfig => PostServerConfig.RemoveHttpConfig(json),
+                ReType.AddServerHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),
+                ReType.RemoveServerHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
+                ReType.GetServerSocketConfig => PostServerConfig.GetSocketConfig(json),
+                ReType.ServerReboot => PostServerConfig.Reboot(),
                 _ => new ReMessage
                 {
                     Build = false,

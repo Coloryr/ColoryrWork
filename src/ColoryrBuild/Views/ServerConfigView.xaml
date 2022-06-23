@@ -3,131 +3,333 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:ColoryrBuild.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:ColoryrBuild.Views"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <DockPanel LastChildFill="False">
-        <GroupBox
-            Margin="2"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Header="Http服务器设定">
-            <Grid>
-                <ListView
-                    Name="HttpList"
-                    Width="300"
-                    Height="80"
-                    Style="{StaticResource ListViewStyle1}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn
-                                Width="200"
-                                DisplayMemberBinding="{Binding IP}"
-                                Header="IP" />
-                            <GridViewColumn
-                                Width="80"
-                                DisplayMemberBinding="{Binding Port}"
-                                Header="端口" />
-                        </GridView>
-                    </ListView.View>
-                    <ListView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Click="Add_Click" Header="添加" />
-                            <MenuItem Click="Delete_Click" Header="删除" />
-                            <MenuItem Click="Edit_Click" Header="修改" />
-                        </ContextMenu>
-                    </ListView.ContextMenu>
-                </ListView>
-            </Grid>
-        </GroupBox>
-        <GroupBox
-            Margin="2"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Header="Socket服务器设置">
-            <Grid Margin="5">
-                <Label
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="地址" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,3,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-                <Label
-                    Margin="0,25,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="端口" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,28,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-            </Grid>
-        </GroupBox>
-        <GroupBox
-            Margin="2"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Header="Mqtt服务器设置">
-            <Grid Margin="5">
-                <Label
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="地址" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,3,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-                <Label
-                    Margin="0,25,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="端口" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,28,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-            </Grid>
-        </GroupBox>
-        <GroupBox
-            Margin="2"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Header="WebSocket设置">
-            <Grid Margin="5">
-                <Label
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="地址" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,3,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-                <Label
-                    Margin="0,25,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="端口" />
-                <TextBox
-                    Width="100"
-                    Height="20"
-                    Margin="40,28,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top" />
-            </Grid>
-        </GroupBox>
-    </DockPanel>
+    <Grid>
+        <Rectangle
+            Fill="#FFF4F4F5"
+            Stroke="#FF5ABED6"
+            StrokeThickness="2" />
+        <TabControl Margin="2" TabStripPlacement="Left">
+            <TabItem Header="Http配置" Style="{StaticResource TabItem}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <GroupBox
+                            Margin="0,2,0,0"
+                            VerticalAlignment="Top"
+                            Header="Http服务器设定">
+                            <Grid>
+                                <ListView
+                                    Name="HttpList"
+                                    Height="80"
+                                    Style="{StaticResource ListViewStyle1}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding IP}"
+                                                Header="IP" />
+                                            <GridViewColumn
+                                                Width="80"
+                                                DisplayMemberBinding="{Binding Port}"
+                                                Header="端口" />
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="AddHttpClick" Header="添加" />
+                                            <MenuItem Click="DeleteHttpClick" Header="删除" />
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox
+                            Margin="0,2,0,0"
+                            VerticalAlignment="Top"
+                            Header="Http服务器反代设定">
+                            <Grid>
+                                <ListView
+                                    Name="HttpRouteList"
+                                    Height="80"
+                                    Style="{StaticResource ListViewStyle1}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding Key}"
+                                                Header="查找地址" />
+                                            <GridViewColumn
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding Value}"
+                                                Header="目标地址" />
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="AddRouteClick" Header="添加" />
+                                            <MenuItem Click="DeleteRouteClick" Header="删除" />
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox
+                            Margin="0,2,0,0"
+                            VerticalAlignment="Top"
+                            Header="Http服务器域名反代设定">
+                            <Grid>
+                                <ListView
+                                    Name="HttpUrlRouteList"
+                                    Height="80"
+                                    Style="{StaticResource ListViewStyle1}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding Key}"
+                                                Header="查找地址" />
+                                            <GridViewColumn
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding Value}"
+                                                Header="目标地址" />
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="AddUrlRouteClick" Header="添加" />
+                                            <MenuItem Click="DeleteUrlRouteClick" Header="删除" />
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                            </Grid>
+                        </GroupBox>
+                        <Button
+                            Width="160"
+                            Height="20"
+                            Margin="5,10,5,5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Click="ButtonClick"
+                            Content="重读配置" />
+                        <TextBlock
+                            Margin="5,2,5,5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Text="设置后要重启服务器才能生效" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="端口设置" Style="{StaticResource TabItem}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <GroupBox
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Header="Socket服务器设置">
+                            <Grid Margin="5">
+                                <Label
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="地址" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,3,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding Socket.IP}" />
+                                <Label
+                                    Margin="0,25,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="端口" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,28,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding Socket.Port}" />
+                                <Button
+                                    Width="150"
+                                    Height="20"
+                                    Margin="0,60,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="设置" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Header="Mqtt服务器设置">
+                            <Grid Margin="5">
+                                <Label
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="地址" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,3,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    IsEnabled="False"
+                                    Text="{Binding Mqtt.IP}" />
+                                <Label
+                                    Margin="0,25,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="端口" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,28,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding Mqtt.Port}" />
+                                <Button
+                                    Width="150"
+                                    Height="20"
+                                    Margin="0,60,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="设置" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Header="WebSocket设置">
+                            <Grid Margin="5">
+                                <Label
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="地址" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,3,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding WebSocket.IP}" />
+                                <Label
+                                    Margin="0,25,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="端口" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,28,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding WebSocket.Port}" />
+                                <Button
+                                    Width="150"
+                                    Height="20"
+                                    Margin="0,60,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="设置" />
+                            </Grid>
+                        </GroupBox>
+
+                    </StackPanel>
+                    <Button
+                        Width="120"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="ButtonClick1"
+                        Content="重读配置" />
+                </StackPanel>
+
+            </TabItem>
+            <TabItem Header="机器人设置" Style="{StaticResource TabItem}">
+                <Grid>
+                    <GroupBox
+                        Margin="2"
+                        VerticalAlignment="Top"
+                        Header="事件订阅设置">
+                        <Grid>
+                            <ListView
+                                Name="RobotEventList"
+                                Height="80"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource ListViewStyle1}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn
+                                            Width="100"
+                                            DisplayMemberBinding="{Binding ID}"
+                                            Header="事件ID" />
+                                        <GridViewColumn
+                                            Width="200"
+                                            DisplayMemberBinding="{Binding Name}"
+                                            Header="事件名字" />
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="AddRobotClick" Header="添加" />
+                                        <MenuItem Click="DeleteRobotClick" Header="删除" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                        </Grid>
+                    </GroupBox>
+                    <Label
+                        Width="50"
+                        Margin="4,117,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Content="IP" />
+                    <TextBox
+                        Width="200"
+                        Margin="59,121,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top" />
+                    <Label
+                        Width="50"
+                        Margin="4,147,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Content="Port" />
+                    <TextBox
+                        Width="200"
+                        Margin="59,151,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top" />
+                    <Button
+                        Width="150"
+                        Height="20"
+                        Margin="0,122,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Content="设置" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="控制面板" Style="{StaticResource TabItem}">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <Button
+                            Width="160"
+                            Height="20"
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Content="重启服务器" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </UserControl>

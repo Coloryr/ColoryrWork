@@ -16,7 +16,7 @@ internal static class HttpGet
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
 
-        if (ASPServer.Config.UrlRotes.TryGetValue(request.Host.Host, out var rote1))
+        if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
         {
             await HttpRoute.RouteDo(request, data1, rote1, response);
         }
@@ -134,11 +134,11 @@ internal static class HttpGet
         if (name == null)
             return;
         var arg = name.Split('/');
-        if (ASPServer.Config.UrlRotes.TryGetValue(request.Host.Host, out var rote1))
+        if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
         {
             await HttpRoute.RouteDo(request, arg, rote1, response, 0);
         }
-        else if (ASPServer.Config.Rotes.TryGetValue(arg[0], out var rote))
+        else if (ASPServer.Config.Routes.TryGetValue(arg[0], out var rote))
         {
             await HttpRoute.RouteDo(request, arg, rote, response);
         }

@@ -1,5 +1,6 @@
 using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.Http.PostBuild;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
@@ -25,101 +26,126 @@ internal static class ASPServer
     private const string http = "http";
     private static Dictionary<string, X509Certificate2> Ssls = new();
     private static X509Certificate2 DefaultSsl;
+    private static bool IsReboot = true;
+    private static bool IsRun = true;
 
     public static void Main()
     {
-        var builder = WebApplication.CreateBuilder();
-        builder.Logging.ClearProviders();
-        builder.Logging.AddProvider(new ColoryrLoggerProvider());
-
         ServerMain.ConfigUtil = new ASPConfigUtils();
         ServerMain.Start();
-
-        if (Config.Ssl)
+        PostServerConfig.Init(new ASPTopAPI());
+        StartRead();
+        while (IsReboot)
         {
-            builder.Services.AddCertificateForwarding(options =>
+            IsReboot = false;
+            var builder = WebApplication.CreateBuilder();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddProvider(new ColoryrLoggerProvider());
+            if (Config.Ssl)
             {
-                options.CertificateHeader = "X-SSL-CERT";
-                options.HeaderConverter = (headerValue) =>
+                builder.Services.AddCertificateForwarding(options =>
                 {
-                    if (!string.IsNullOrWhiteSpace(headerValue))
+                    options.CertificateHeader = "X-SSL-CERT";
+                    options.HeaderConverter = (headerValue) =>
                     {
-                        byte[] bytes = StringToByteArray(headerValue);
-                        var clientCertificate = new X509Certificate2(bytes);
-                        return clientCertificate;
-                    }
-                    return null;
-                };
-            });
-            ServerMain.LogOut("正在加载SSL证书");
-            builder.WebHost.UseKestrel(options =>
-                    options.ConfigureHttpsDefaults(i =>
-                          i.ServerCertificateSelector = ASPServer.Ssl));
-            foreach (var item in Config.Ssls)
-            {
-                if (File.Exists(item.Value.SslLocal))
+                        if (!string.IsNullOrWhiteSpace(headerValue))
+                        {
+                            byte[] bytes = StringToByteArray(headerValue);
+                            var clientCertificate = new X509Certificate2(bytes);
+                            return clientCertificate;
+                        }
+                        return null;
+                    };
+                });
+                ServerMain.LogOut("正在加载SSL证书");
+                builder.WebHost.UseKestrel(options =>
+                        options.ConfigureHttpsDefaults(i =>
+                              i.ServerCertificateSelector = ASPServer.Ssl));
+                foreach (var item in Config.Ssls)
                 {
-                    try
+                    if (File.Exists(item.Value.SslLocal))
                     {
-                        var ssl = new X509Certificate2(item.Value.SslLocal, item.Value.SslPassword);
-                        if (item.Key == "default")
-                            DefaultSsl = ssl;
-                        else
-                            Ssls.Add(item.Key, ssl);
+                        try
+                        {
+                            var ssl = new X509Certificate2(item.Value.SslLocal, item.Value.SslPassword);
+                            if (item.Key == "default")
+                                DefaultSsl = ssl;
+                            else
+                                Ssls.Add(item.Key, ssl);
+                        }
+                        catch (Exception e)
+                        {
+                            ServerMain.LogError(e);
+                        }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        ServerMain.LogError(e);
+                        ServerMain.LogError($"SSL证书找不到:{item.Value.SslLocal}");
                     }
-                }
-                else
-                {
-                    ServerMain.LogError($"SSL证书找不到:{item.Value.SslLocal}");
                 }
             }
-        }
-        string[] urls = new string[Config.Http.Count];
-        for (int a = 0; a < Config.Http.Count; a++)
-        {
-            var item = Config.Http[a];
-            urls[a] = $"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/";
-            ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
-        }
-
-        builder.WebHost.UseUrls(urls);
-
-        builder.Services.AddHttpClient<HttpClients>();
-        builder.Services.AddTransient<IHttpClients, HttpClients>();
-
-        bool Run = true;
-        if (!Config.NoInput)
-            new Thread(() =>
+            string[] urls = new string[Config.Http.Count];
+            for (int a = 0; a < Config.Http.Count; a++)
             {
-                while (Run)
-                {
-                    if (Run)
-                        ServerMain.Command(Console.ReadLine());
-                }
-            }).Start();
+                var item = Config.Http[a];
+                urls[a] = $"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/";
+                ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
+            }
 
-        Web = builder.Build();
-        Clients = Web.Services.GetRequiredService<IHttpClients>();
+            builder.WebHost.UseUrls(urls);
 
-        Web.MapGet("/", Config.RoteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
+            builder.Services.AddHttpClient<HttpClients>();
+            builder.Services.AddTransient<IHttpClients, HttpClients>();
 
-        Web.MapGet("/{**name}", Config.RoteEnable ? HttpGet.RouteGet : HttpGet.Get);
-        Web.MapPost("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
-        Web.MapPut("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
-        Web.MapDelete("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web = builder.Build();
+            Clients = Web.Services.GetRequiredService<IHttpClients>();
 
-        Web.MapPost("/", PostBuild);
+            Web.MapGet("/", Config.RoteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
 
-        Web.Run();
+            Web.MapGet("/{**name}", Config.RoteEnable ? HttpGet.RouteGet : HttpGet.Get);
+            Web.MapPost("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web.MapPut("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web.MapDelete("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
 
-        Run = false;
+            Web.MapPost("/", PostBuild);
+            Web.Run();
+            Web.DisposeAsync().AsTask().Wait();
+        }
+
+        IsRun = false;
         ServerMain.LogOut("正在关闭服务器");
         ServerMain.Stop();
         ServerMain.LogOut("按下回车键退出");
+    }
+
+    private static void StartRead()
+    {
+        if (!Config.NoInput)
+            new Thread(() =>
+            {
+                while (IsRun)
+                {
+                    string command = Console.ReadLine();
+                    if (command == null)
+                        return;
+                    var arg = command.Split(' ');
+                    switch (arg[0])
+                    {
+                        case "stop":
+                            Web.StopAsync().Wait();
+                            return;
+                        case "reboot":
+                            Reboot();
+                            break;
+                    }
+                }
+            }).Start();
+    }
+
+    public static void Reboot() 
+    {
+        IsReboot = true;
+        Web.StopAsync().Wait();
     }
 
     public static X509Certificate2? Ssl(ConnectionContext? context, string? url)

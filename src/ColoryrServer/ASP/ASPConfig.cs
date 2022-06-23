@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
 
 namespace ColoryrServer.ASP
 {
@@ -9,21 +10,16 @@ namespace ColoryrServer.ASP
         public string SslLocal { get; set; }
         public string SslPassword { get; set; }
     }
-    internal record Rote
-    {
-        public string Url { get; set; }
-        public Dictionary<string, string> Heads { get; set; }
-    }
     internal record ASPConfig : MainConfig
     {
         /// <summary>
         /// Http配置
         /// </summary>
         public List<SocketConfig> Http { get; set; }
-        public Dictionary<string, Rote> Rotes { get; set; }
+        public Dictionary<string, RouteConfigObj> Routes { get; set; }
         public bool Ssl { get; set; }
         public Dictionary<string, Ssl> Ssls { get; set; }
-        public Dictionary<string, Rote> UrlRotes { get; set; }
+        public Dictionary<string, RouteConfigObj> UrlRoutes { get; set; }
         public bool RoteEnable { get; set; }
         public bool NoInput { get; set; }
     }
@@ -34,7 +30,7 @@ namespace ColoryrServer.ASP
         {
             ServerMain.Config = ASPServer.Config = ConfigSave.Config(new ASPConfig
             {
-                Rotes = new()
+                Routes = new()
                 {
                     {
                         "turn",
@@ -45,7 +41,7 @@ namespace ColoryrServer.ASP
                         }
                     }
                 },
-                UrlRotes = new()
+                UrlRoutes = new()
                 {
                     {
                         "www.test.com",
@@ -175,7 +171,7 @@ namespace ColoryrServer.ASP
                         Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
                     }
                 },
-                MQTTConfig = new()
+                MqttConfig = new()
                 {
                     Port = 12345
                 },
@@ -207,6 +203,11 @@ namespace ColoryrServer.ASP
                     IV = "IV"
                 }
             }, FilePath);
+        }
+
+        public override void Save() 
+        {
+            ConfigSave.Save(ASPServer.Config, FilePath);
         }
     }
 }

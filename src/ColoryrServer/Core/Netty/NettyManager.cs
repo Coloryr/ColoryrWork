@@ -16,10 +16,6 @@ internal static class NettyManager
     private readonly static Dictionary<string, INetty> RunNetty = new();
     public static void Start() 
     {
-        //foreach (var item in DllStongeManager.GetSocket())
-        //{
-        //    AddItem(item);
-        //}
         ServerMain.OnStop += Stop;
     }
 
