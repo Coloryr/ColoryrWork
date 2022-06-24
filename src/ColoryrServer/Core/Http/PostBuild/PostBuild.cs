@@ -155,6 +155,7 @@ public static class PostBuild
                 PostBuildType.RemoveServerHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
                 PostBuildType.GetServerSocketConfig => PostServerConfig.GetSocketConfig(),
                 PostBuildType.GetRobotConfig => PostServerConfig.GetRobotConfig(),
+                PostBuildType.SetRobotConfig => PostServerConfig.SetRobotConfig(json),
                 PostBuildType.ServerReboot => PostServerConfig.Reboot(),
                 _ => new ReMessage
                 {

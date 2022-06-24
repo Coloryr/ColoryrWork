@@ -444,9 +444,32 @@ public partial class ServerConfigView : UserControl
         GetRobotConfig();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private async void RobotButtonClick(object sender, RoutedEventArgs e)
     {
+        string ip = Obj.Robot.IP;
+        int port = Obj.Robot.Port;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            _ = new InfoWindow("Robot设定", "参数非法");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
+        {
+            _ = new InfoWindow("Robot设定", "参数非法");
+            return;
+        }
 
+        var res1 = await App.HttpUtils.SetRobotConfig(ip, port, Obj.Packs);
+        if (res1 == null)
+        {
+            _ = new InfoWindow("修改Robot配置", "修改服务器Robot配置错误");
+            return;
+        }
+        else if (!res1.Build)
+        {
+            _ = new InfoWindow("修改Robot配置", res1.Message);
+            return;
+        }
     }
 
     private void ButtonClick1(object sender, RoutedEventArgs e)

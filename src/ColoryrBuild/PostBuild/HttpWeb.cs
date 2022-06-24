@@ -346,4 +346,33 @@ public partial class HttpUtils : HttpUtilsBase
             return null;
         }
     }
+
+    public async Task<ReMessage> SetRobotConfig(string ip, int port, List<int> packs) 
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = PostBuildType.SetRobotConfig,
+                Code = ip,
+                Version = port,
+                Text = JsonConvert.SerializeObject(packs)
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await SetRobotConfig(ip, port, packs);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

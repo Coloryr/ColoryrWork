@@ -1,5 +1,7 @@
 ﻿using ColoryrWork.Lib.Build.Object;
+using System.Collections.Generic;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace ColoryrServer.Core.Http.PostBuild;
 
@@ -128,6 +130,39 @@ public static class PostServerConfig
             IP = ServerMain.Config.Robot.Socket.IP,
             Port = ServerMain.Config.Robot.Socket.Port,
             Packs = ServerMain.Config.Robot.Packs
+        };
+    }
+    public static ReMessage SetRobotConfig(BuildOBJ json)
+    {
+        string ip = json.Code;
+        int port = json.Version;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            return new()
+            {
+                Build = false,
+                Message = "参数非法"
+            };
+        }
+        if (port > 0xFFFF || port < 0)
+        {
+            return new()
+            {
+                Build = false,
+                Message = "参数非法"
+            };
+        }
+
+        List<int> list = JsonConvert.DeserializeObject<List<int>>(json.Text);
+        ServerMain.Config.Robot.Socket.IP = ip;
+        ServerMain.Config.Robot.Socket.Port = port;
+        ServerMain.Config.Robot.Packs = list;
+        ServerMain.ConfigUtil.Save();
+
+        return new()
+        {
+            Build = true,
+            Message = "机器人配置设置完成"
         };
     }
     public static ReMessage Reboot()

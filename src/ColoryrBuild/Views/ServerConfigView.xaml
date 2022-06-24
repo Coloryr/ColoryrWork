@@ -323,7 +323,7 @@
                             Margin="0,39,10,0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
-                            Click="Button_Click"
+                            Click="RobotButtonClick"
                             Content="设置" />
                         <TextBlock
                             Margin="4,69,0,0"
