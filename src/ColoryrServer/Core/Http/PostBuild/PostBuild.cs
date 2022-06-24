@@ -148,7 +148,7 @@ public static class PostBuild
                 ReType.RemoveClassFile => PostBuildClass.RemoveFile(json),
                 ReType.BuildClass => PostBuildClass.Build(json),
                 ReType.WebDownloadFile => PostBuildWeb.Download(json),
-                ReType.GetServerHttpConfigList=> PostServerConfig.GetHttpConfigList(json),
+                ReType.GetServerHttpConfigList => PostServerConfig.GetHttpConfigList(json),
                 ReType.AddServerHttpConfig => PostServerConfig.AddHttpConfig(json),
                 ReType.RemoveServerHttpConfig => PostServerConfig.RemoveHttpConfig(json),
                 ReType.AddServerHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),

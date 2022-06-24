@@ -1,10 +1,8 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ColoryrBuild.Views;
 
@@ -32,7 +30,7 @@ public partial class ServerConfigView : UserControl
         private SocketConfig _mqtt { get; set; }
         private SocketConfig _websocket { get; set; }
 
-        public SocketConfig Socket 
+        public SocketConfig Socket
         {
             get { return _socket; }
             set { _socket = value; OnPropertyChanged(nameof(Socket)); }
@@ -69,7 +67,7 @@ public partial class ServerConfigView : UserControl
         GetSocketConfig();
     }
 
-    private async void GetSocketConfig() 
+    private async void GetSocketConfig()
     {
         var res = await App.HttpUtils.GetSocketConfig();
         if (res == null)
@@ -82,7 +80,7 @@ public partial class ServerConfigView : UserControl
         Obj.WebSocket = res.WebSocket;
     }
 
-    private async void GetHttpList() 
+    private async void GetHttpList()
     {
         var res = await App.HttpUtils.GetHttpConfigList();
         if (res == null)
@@ -99,7 +97,7 @@ public partial class ServerConfigView : UserControl
         }
         foreach (var item in res.RouteList)
         {
-            HttpRouteList.Items.Add(new KVConfig() 
+            HttpRouteList.Items.Add(new KVConfig()
             {
                 Key = item.Key,
                 Value = item.Value.Url
@@ -115,7 +113,7 @@ public partial class ServerConfigView : UserControl
         }
     }
 
-    private async void AddHttpClick(object sender, RoutedEventArgs e) 
+    private async void AddHttpClick(object sender, RoutedEventArgs e)
     {
         string ip;
         int port;
@@ -129,7 +127,7 @@ public partial class ServerConfigView : UserControl
             _ = new InfoWindow("添加配置", "添加服务器Http配置错误");
             return;
         }
-        else if(!res1.Build)
+        else if (!res1.Build)
         {
             _ = new InfoWindow("添加配置", res1.Message);
             return;
@@ -138,7 +136,7 @@ public partial class ServerConfigView : UserControl
         HttpList.Items.Add(new SocketConfig()
         {
             IP = ip,
-            Port =  port
+            Port = port
         });
     }
 
@@ -169,9 +167,14 @@ public partial class ServerConfigView : UserControl
         string key;
         RouteConfigObj obj;
         var res = new RouteWindow().Set(out key, out obj);
-
         if (!res)
             return;
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(obj.Url))
+        {
+            _ = new InfoWindow("添加反代", "请输入合适的值");
+            return;
+        }
+
         var res1 = await App.HttpUtils.AddHttpRoute(key, obj);
         if (res1 == null)
         {
@@ -223,9 +226,13 @@ public partial class ServerConfigView : UserControl
         string key;
         RouteConfigObj obj;
         var res = new RouteWindow().Set(out key, out obj);
-
         if (!res)
             return;
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(obj.Url))
+        {
+            _ = new InfoWindow("添加反代", "请输入合适的值");
+            return;
+        }
         var res1 = await App.HttpUtils.AddHttpUrlRoute(key, obj);
         if (res1 == null)
         {
@@ -272,14 +279,22 @@ public partial class ServerConfigView : UserControl
         HttpUrlRouteList.Items.Remove(item);
     }
 
-    private void AddRobotClick(object sender, RoutedEventArgs e) 
+    private void AddRobotClick(object sender, RoutedEventArgs e)
     {
-        
+
     }
 
     private void DeleteRobotClick(object sender, RoutedEventArgs e)
     {
 
+    }
+
+    private async void ButtonClick2(object sender, RoutedEventArgs e)
+    {
+        var res = new ChoseWindow("重启服务器", "服务器将在5秒后重启？").Set();
+        if (!res)
+            return;
+        await App.HttpUtils.Reboot();
     }
 
     private void ButtonClick1(object sender, RoutedEventArgs e)

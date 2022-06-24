@@ -35,7 +35,8 @@ internal static class LoadMqtt
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription && item.IsPublic)
+            if (item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTMessageLoading or
+                CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription && item.IsPublic)
                 assembly.MethodInfos.Add(item.Name, item);
         }
 

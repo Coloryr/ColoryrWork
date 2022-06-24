@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.SDK;
 using DotNetty.Transport.Channels;
 using System;
@@ -14,12 +13,12 @@ internal static class NettyManager
     private readonly static MultithreadEventLoopGroup BossGroup = new();
     private readonly static MultithreadEventLoopGroup WorkerGroup = new();
     private readonly static Dictionary<string, INetty> RunNetty = new();
-    public static void Start() 
+    public static void Start()
     {
         ServerMain.OnStop += Stop;
     }
 
-    private static void Stop() 
+    private static void Stop()
     {
         foreach (var item in RunNetty.Values)
         {
@@ -29,7 +28,7 @@ internal static class NettyManager
         Task.WaitAll(BossGroup.ShutdownGracefullyAsync(), WorkerGroup.ShutdownGracefullyAsync());
     }
 
-    public static void AddItem(DllAssembly dll) 
+    public static void AddItem(DllAssembly dll)
     {
         StopItem(dll.Name);
         if (Check(dll.SelfType))
@@ -50,7 +49,7 @@ internal static class NettyManager
         }
     }
 
-    public static void StopItem(string name) 
+    public static void StopItem(string name)
     {
         if (RunNetty.Remove(name, out var item))
         {

@@ -3,20 +3,24 @@ using ColoryrServer.SDK;
 [DLLIN]
 public class {name}
 {
-    public bool OnMessage(MqttMessage head)
+    public bool OnMessage(DllMqttMessage head)
     {
-        return true; //true表示事件已处理完毕
+        return false; //true表示事件已处理完毕
     }
-    public bool OnValidator(MqttConnectionValidator head)
+    public bool OnMessageLoading(DllMqttLoadingRetainedMessages head)
     {
-        return true;
+        return false;
     }
-    public bool OnSubscription(MqttSubscription head)
+    public bool OnValidator(DllMqttConnectionValidator head)
     {
-        return true;
+        return false;
     }
-    public bool OnUnsubscription(MqttUnsubscription head)
+    public bool OnSubscription(DllMqttSubscription head)
     {
-        return true;
+        return false;
+    }
+    public bool OnUnsubscription(DllMqttUnsubscription head)
+    {
+        return false;
     }
 }

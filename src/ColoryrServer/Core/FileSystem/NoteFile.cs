@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem;
 
-internal class NoteFile
+internal static class NoteFile
 {
-    private static readonly string DllFileLocal = ServerMain.RunLocal + @"Notes/Dll/";
-    private static readonly string ClassFileLocal = ServerMain.RunLocal + @"Notes/Class/";
+    private static readonly string DllFileLocal = ServerMain.RunLocal + "Notes/Dll/";
+    private static readonly string ClassFileLocal = ServerMain.RunLocal + "Notes/Class/";
 
     public static void Start()
     {
@@ -23,13 +23,13 @@ internal class NoteFile
             Directory.CreateDirectory(ClassFileLocal);
         }
     }
-    private static void Storage(string Local, object obj)
+    private static void Storage(string local, object obj)
     {
         Task.Run(() =>
         {
             try
             {
-                File.WriteAllText(Local, JsonConvert.SerializeObject(obj, Formatting.Indented));
+                File.WriteAllText(local, JsonConvert.SerializeObject(obj, Formatting.Indented));
             }
             catch (Exception e)
             {
@@ -40,12 +40,10 @@ internal class NoteFile
 
     public static void StorageDll(string uuid, List<NotesSDK> obj)
     {
-        var url = DllFileLocal + uuid + ".json";
-        Storage(url, obj);
+        Storage($"{DllFileLocal}{uuid}.json", obj);
     }
     public static void StorageClass(string uuid, List<NotesSDK> obj)
     {
-        var url = ClassFileLocal + uuid + ".json";
-        Storage(url, obj);
+        Storage($"{ClassFileLocal}{uuid}.json", obj);
     }
 }

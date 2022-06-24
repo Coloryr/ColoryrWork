@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ColoryrWork.Lib.Build.Object;
 
@@ -36,7 +34,7 @@ public record SocketObj
 }
 
 public record HttpListObj
-{ 
+{
     public List<SocketConfig> HttpList { get; set; }
     public Dictionary<string, RouteConfigObj> RouteList { get; set; }
     public Dictionary<string, RouteConfigObj> UrlRouteList { get; set; }

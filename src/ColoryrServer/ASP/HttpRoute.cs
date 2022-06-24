@@ -6,7 +6,7 @@ namespace ColoryrServer.ASP;
 
 internal static class HttpRoute
 {
-    internal static async Task RouteDo(HttpRequest Request, string[] arg, 
+    internal static async Task RouteDo(HttpRequest Request, string[] arg,
         RouteConfigObj rote, HttpResponse Response, int start = 1)
     {
         HttpClient ProxyRequest = ASPServer.Clients.GetOne();

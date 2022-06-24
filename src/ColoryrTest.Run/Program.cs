@@ -1,13 +1,12 @@
 ﻿using ColoryrServer.SDK;
 using DotNetty.Transport.Channels;
-using Fleck;
 using System.Diagnostics;
 
 namespace ColoryrTest.Run;
 
 internal class Program
 {
-    private static bool Check(Type type) 
+    private static bool Check(Type type)
     {
         bool find = false;
         do

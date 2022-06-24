@@ -1,9 +1,4 @@
 ﻿using ColoryrWork.Lib.Build.Object;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.Http.PostBuild;
 
@@ -59,7 +54,7 @@ public static class PostServerConfig
         return new()
         {
             Socket = ServerMain.Config.Socket,
-            Mqtt = ServerMain.Config.MqttConfig,
+            Mqtt = ServerMain.Config.MqttConfig.Socket,
             WebSocket = ServerMain.Config.WebSocket
         };
     }

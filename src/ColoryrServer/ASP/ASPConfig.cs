@@ -173,7 +173,13 @@ namespace ColoryrServer.ASP
                 },
                 MqttConfig = new()
                 {
-                    Port = 12345
+                    Ssl = "",
+                    Password = "",
+                    Socket = new()
+                    {
+                        IP = "0.0.0.0",
+                        Port = 12345
+                    }
                 },
                 TaskConfig = new()
                 {
@@ -205,7 +211,7 @@ namespace ColoryrServer.ASP
             }, FilePath);
         }
 
-        public override void Save() 
+        public override void Save()
         {
             ConfigSave.Save(ASPServer.Config, FilePath);
         }

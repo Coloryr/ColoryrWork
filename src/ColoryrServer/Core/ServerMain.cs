@@ -158,7 +158,7 @@ public class ServerMain
         }
     }
 
-    public static void DllLoad() 
+    public static void DllLoad()
     {
         //给编译用的，防DLL找不到
         var test2 = new HtmlDocument();
@@ -181,8 +181,6 @@ public class ServerMain
 
     public static void Stop()
     {
-        LogOut("正在关闭");
         OnStop.Invoke();
-        LogOut("已关闭");
     }
 }

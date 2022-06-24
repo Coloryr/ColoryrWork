@@ -1,12 +1,12 @@
 ﻿namespace ColoryrTest.Run;
 
 using ColoryrServer.SDK;
-using System;
-using DotNetty.Transport.Channels;
 using DotNetty.Handlers.Logging;
 using DotNetty.Handlers.Tls;
 using DotNetty.Transport.Bootstrapping;
+using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 [DLLIN]
@@ -14,10 +14,10 @@ public class NettyDemoCS : INetty
 {
     private IChannel bootstrapChannel;
     public override void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup)
-    { 
-        
+    {
+
     }
-    public void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup ,int port)
+    public void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup, int port)
     {
         X509Certificate2 tlsCertificate = null;
         //tlsCertificate = new X509Certificate2(Path.Combine(local, "dotnetty.com.pfx"), "password");

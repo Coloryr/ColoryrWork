@@ -180,7 +180,6 @@
                                     Margin="40,3,0,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    IsEnabled="False"
                                     Text="{Binding Mqtt.IP}" />
                                 <Label
                                     Margin="0,25,0,0"
@@ -326,6 +325,7 @@
                             Margin="2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
+                            Click="ButtonClick2"
                             Content="重启服务器" />
                     </StackPanel>
                 </StackPanel>

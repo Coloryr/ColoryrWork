@@ -11,6 +11,7 @@ internal class HttpClientUtils
     private static object _lock = new();
     public static void Start()
     {
+        ServerMain.OnStop += Stop;
         Clients = new ExHttpClient[ServerMain.Config.HttpClientNumber];
         for (int a = 0; a < ServerMain.Config.HttpClientNumber; a++)
         {
@@ -19,7 +20,7 @@ internal class HttpClientUtils
             {
                 Client = new HttpClient(handler)
                 {
-                    Timeout = TimeSpan.FromSeconds(5)
+                    Timeout = TimeSpan.FromSeconds(10)
                 },
                 State = ClientState.Ready
             };
@@ -56,7 +57,7 @@ internal class HttpClientUtils
         }
     }
 
-    public static void Stop()
+    private static void Stop()
     {
         foreach (var item in Clients)
         {

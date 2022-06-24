@@ -5,10 +5,10 @@ public class {name}
 {
     public bool OnTcpMessage(TcpSocketRequest head)
     {
-        return true; //true表示事件已处理完毕
+        return false; //true表示事件已处理完毕
     }
     public bool OnUdpMessage(UdpSocketRequest head)
     {
-        return true;
+        return false;
     }
 }

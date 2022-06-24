@@ -5,14 +5,14 @@ public class {name}
 {
     public bool OnMessage(RobotMessage head)
     {
-        return true; //true表示事件已处理完毕
+        return false; //true表示事件已处理完毕
     }
     public bool OnMessagSend(RobotSend head)
     {
-        return true;
+        return false;
     }
     public bool OnRobotEvent(RobotEvent head)
     {
-        return true;
+        return false;
     }
 }

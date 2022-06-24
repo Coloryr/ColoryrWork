@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ColoryrServer.Core.FileSystem.Code;
 
@@ -19,7 +18,8 @@ internal static class CodeFileManager
     private static readonly string CodeDB = ServerMain.RunLocal + @"Codes/Code.db";
     private static readonly string CodeLogDB = ServerMain.RunLocal + @"Codes/CodeLog.db";
 
-    private static string CodeConnStr;    private static string CodeLogConnStr;
+    private static string CodeConnStr;
+    private static string CodeLogConnStr;
 
     private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
     private static readonly string RemoveDir = ServerMain.RunLocal + @"Removes/";
@@ -32,8 +32,20 @@ internal static class CodeFileManager
     public static readonly ConcurrentDictionary<string, CSFileCode> MqttFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> TaskFileList = new();
 
+    private static void Stop()
+    {
+        DllFileList.Clear();
+        ClassFileList.Clear();
+        SocketFileList.Clear();
+        WebSocketFileList.Clear();
+        RobotFileList.Clear();
+        MqttFileList.Clear();
+        TaskFileList.Clear();
+    }
+
     public static void Start()
     {
+        ServerMain.OnStop += Stop;
         if (!Directory.Exists(DBLocal))
         {
             Directory.CreateDirectory(DBLocal);
@@ -218,25 +230,25 @@ internal static class CodeFileManager
             {
                 old = list.First();
                 codeSQL.Execute($"UPDATE class SET text=@text,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid",
-                    new 
-                    { 
-                        text = obj.Text, 
-                        version = obj.Version, 
-                        createtime = obj.CreateTime, 
-                        updatetime = obj.UpdateTime, 
-                        uuid = obj.UUID 
+                    new
+                    {
+                        text = obj.Text,
+                        version = obj.Version,
+                        createtime = obj.CreateTime,
+                        updatetime = obj.UpdateTime,
+                        uuid = obj.UUID
                     });
             }
             else
             {
-                codeSQL.Execute($"INSERT INTO class (uuid,text,version,createtime,updatetime) VALUES(@uuid,@text,@version,@createtime,@updatetime)", 
-                    new 
-                    { 
-                        text = obj.Text, 
-                        version = obj.Version, 
-                        createtime = obj.CreateTime, 
-                        updatetime = obj.UpdateTime, 
-                        uuid = obj.UUID 
+                codeSQL.Execute($"INSERT INTO class (uuid,text,version,createtime,updatetime) VALUES(@uuid,@text,@version,@createtime,@updatetime)",
+                    new
+                    {
+                        text = obj.Text,
+                        version = obj.Version,
+                        createtime = obj.CreateTime,
+                        updatetime = obj.UpdateTime,
+                        uuid = obj.UUID
                     });
             }
 
@@ -333,7 +345,7 @@ internal static class CodeFileManager
             {
                 ClassCodeObj obj1 = list.First();
                 using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new 
+                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new
                 { uuid, name, obj1.code, time = DateTime.Now.ToString() });
             }
 
@@ -368,7 +380,7 @@ internal static class CodeFileManager
                 {
                     var list1 = codeSQL.Query<ClassCodeObj>($"SELECT code,name FROM classcode WHERE uuid=@uuid", new { uuid });
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    
+
                     foreach (var item in list1)
                     {
                         codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new

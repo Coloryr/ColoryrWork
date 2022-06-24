@@ -5,13 +5,13 @@ using System.Threading;
 
 namespace ColoryrServer.Core.FileSystem;
 
-internal class FileTemp
+internal static class FileTemp
 {
     public static string Local;
 
     public static void Start()
     {
-        Local = ServerMain.RunLocal + @"/TempFile/";
+        Local = ServerMain.RunLocal + "TempFile/";
         if (!Directory.Exists(Local))
         {
             Directory.CreateDirectory(Local);

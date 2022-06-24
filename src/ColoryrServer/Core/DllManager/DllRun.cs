@@ -479,10 +479,47 @@ internal static class DllRun
         }
     }
     /// <summary>
+    /// Mqtt加载消息
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void MqttGo(DllMqttLoadingRetainedMessages Head)
+    {
+        foreach (var dll in DllStongeManager.GetMqtt())
+        {
+            try
+            {
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTMessageLoading))
+                {
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTMessageLoading];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+            }
+        }
+    }
+    /// <summary>
     /// Mqtt验证
     /// </summary>
     /// <param name="Head"></param>
-    public static void MqttGo(MqttConnectionValidator Head)
+    public static void MqttGo(DllMqttConnectionValidator Head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -519,7 +556,7 @@ internal static class DllRun
     /// Mqtt取消订阅
     /// </summary>
     /// <param name="Head"></param>
-    public static void MqttGo(MqttUnsubscription Head)
+    public static void MqttGo(DllMqttUnsubscription Head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -556,7 +593,7 @@ internal static class DllRun
     /// Mqtt消息
     /// </summary>
     /// <param name="Head"></param>
-    public static void MqttGo(MqttMessage Head)
+    public static void MqttGo(DllMqttMessage Head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -593,7 +630,7 @@ internal static class DllRun
     /// Mqtt订阅
     /// </summary>
     /// <param name="Head"></param>
-    public static void MqttGo(MqttSubscription Head)
+    public static void MqttGo(DllMqttSubscription Head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {

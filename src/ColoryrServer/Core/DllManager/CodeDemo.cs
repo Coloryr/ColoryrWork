@@ -11,6 +11,7 @@ internal static class CodeDemo
     public const string RobotMessage = "OnMessage";
     public const string RobotEvent = "OnRobotEvent";
     public const string RobotSend = "OnMessagSend";
+    public const string MQTTMessageLoading = "OnMessageLoading";
     public const string MQTTMessage = "OnMessage";
     public const string MQTTValidator = "OnValidator";
     public const string MQTTSubscription = "OnSubscription";

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Input1Window"
     Width="284"
-    Height="118"
+    Height="160"
     mc:Ignorable="d">
     <Grid>
         <Rectangle
@@ -19,7 +19,7 @@
             <TextBox Name="Input1" VerticalAlignment="Top" />
             <Label Name="Lable2" />
             <TextBox Name="Input2" VerticalAlignment="Top" />
-            <Grid Margin="0,4,0,0">
+            <Grid Margin="10,6,10,0">
                 <Button
                     Width="100"
                     HorizontalAlignment="Left"
@@ -28,7 +28,8 @@
                 <Button
                     Width="100"
                     HorizontalAlignment="Right"
-                    Content="取消" Click="Button_Click_1" />
+                    Click="Button_Click_1"
+                    Content="取消" />
             </Grid>
         </StackPanel>
     </Grid>

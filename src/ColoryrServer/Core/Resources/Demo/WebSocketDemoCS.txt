@@ -5,14 +5,14 @@ public class {name}
 {
     public bool OnMessage(WebSocketMessage head)
     {
-        return true; //true表示事件已处理完毕
+        return false; //true表示事件已处理完毕
     }
     public bool OnOpen(WebSocketOpen head)
     {
-        return true;
+        return false;
     }
     public bool OnClose(WebSocketClose head)
     {
-        return true;
+        return false;
     }
 }

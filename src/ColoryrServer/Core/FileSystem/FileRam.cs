@@ -14,7 +14,7 @@ internal static class FileRam
 
     public static void Start()
     {
-        Local = ServerMain.RunLocal + @"/FileRam/";
+        Local = ServerMain.RunLocal + "FileRam/";
         if (!Directory.Exists(Local))
         {
             Directory.CreateDirectory(Local);

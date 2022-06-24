@@ -32,12 +32,12 @@ internal static class ASPServer
     public static void Main()
     {
         ServerMain.ConfigUtil = new ASPConfigUtils();
-        ServerMain.Start();
         PostServerConfig.Init(new ASPTopAPI());
-        StartRead();
         while (IsReboot)
         {
             IsReboot = false;
+            ServerMain.Start();
+            StartRead();
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(new ColoryrLoggerProvider());
@@ -110,18 +110,22 @@ internal static class ASPServer
             Web.MapPost("/", PostBuild);
             Web.Run();
             Web.DisposeAsync().AsTask().Wait();
+            ServerMain.LogOut("正在关闭服务器");
+            ServerMain.Stop();
+            ReadThread.Interrupt();
         }
 
         IsRun = false;
-        ServerMain.LogOut("正在关闭服务器");
-        ServerMain.Stop();
         ServerMain.LogOut("按下回车键退出");
     }
+
+    private static Thread ReadThread;
 
     private static void StartRead()
     {
         if (!Config.NoInput)
-            new Thread(() =>
+        {
+            ReadThread = new Thread(() =>
             {
                 while (IsRun)
                 {
@@ -136,15 +140,18 @@ internal static class ASPServer
                             return;
                         case "reboot":
                             Reboot();
-                            break;
+                            return;
                     }
                 }
-            }).Start();
+            });
+            ReadThread.Start();
+        }
     }
 
-    public static void Reboot() 
+    public static void Reboot()
     {
         IsReboot = true;
+        ServerMain.LogOut("重启服务器");
         Web.StopAsync().Wait();
     }
 

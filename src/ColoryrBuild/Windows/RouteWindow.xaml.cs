@@ -1,17 +1,5 @@
 ﻿using ColoryrWork.Lib.Build.Object;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ColoryrBuild.Windows;
 
@@ -26,7 +14,7 @@ public partial class RouteWindow : Window
         InitializeComponent();
     }
 
-    private void AddClick(object sender, RoutedEventArgs e) 
+    private void AddClick(object sender, RoutedEventArgs e)
     {
         string key, value;
         var res = new Input1Window("请求头设置", "键", "值").Set(out key, out value);
@@ -62,7 +50,7 @@ public partial class RouteWindow : Window
         Close();
     }
 
-    public bool Set(out string key, out RouteConfigObj obj) 
+    public bool Set(out string key, out RouteConfigObj obj)
     {
         ShowDialog();
         obj = new()

@@ -44,7 +44,7 @@ public abstract record MainConfig
     /// <summary>
     /// MQTT配置
     /// </summary>
-    public SocketConfig MqttConfig { get; set; }
+    public MqttConfigObj MqttConfig { get; set; }
     /// <summary>
     /// 任务配置
     /// </summary>
@@ -69,6 +69,26 @@ public abstract record MainConfig
     /// 代码设置选项
     /// </summary>
     public CodeConfigObj CodeSetting { get; set; }
+}
+
+public record MqttConfigObj
+{
+    /// <summary>
+    /// 使用SSL证书
+    /// </summary>
+    public bool UseSsl { get; set; }
+    /// <summary>
+    /// SSL证书存放位置
+    /// </summary>
+    public string Ssl { get; set; }
+    /// <summary>
+    /// SSL证书密码
+    /// </summary>
+    public string Password { get; set; }
+    /// <summary>
+    /// 绑定端口
+    /// </summary>
+    public SocketConfig Socket { get; set; }
 }
 
 public record CodeConfigObj
