@@ -7,7 +7,7 @@ namespace ColoryrServer.Core.FileSystem;
 
 internal static class DllRunError
 {
-    private static readonly string ErrorDB = ServerMain.RunLocal + @"Error.db";
+    private static readonly string ErrorDB = ServerMain.RunLocal + "Error.db";
 
     private static string ErrorConnStr;
 

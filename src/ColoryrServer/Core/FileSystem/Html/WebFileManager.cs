@@ -62,10 +62,6 @@ public static class WebFileManager
     /// Web项目储存
     /// </summary>
     public static ConcurrentDictionary<string, WebObj> HtmlCodeList { get; } = new();
-    /// <summary>
-    /// 软路由路径
-    /// </summary>
-    public static ConcurrentDictionary<string, WebObj> Rote { get; set; } = new();
 
     /// <summary>
     /// 获取Web项目
@@ -81,8 +77,13 @@ public static class WebFileManager
         return item;
     }
 
+    private static void Stop() 
+    {
+        HtmlCodeList.Clear();
+    }
     public static void Start()
     {
+        ServerMain.OnStop += Stop;
         if (!Directory.Exists(WebCodeLocal))
             Directory.CreateDirectory(WebCodeLocal);
         if (!Directory.Exists(WebRemoveLocal))

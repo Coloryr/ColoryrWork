@@ -23,7 +23,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebSetIsVue,
+                Mode = PostBuildType.WebSetIsVue,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -58,7 +58,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebCodeZIP,
+                Mode = PostBuildType.WebCodeZIP,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -94,7 +94,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.UpdataWeb,
+                Mode = PostBuildType.UpdataWeb,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -125,7 +125,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddWeb,
+                Mode = PostBuildType.AddWeb,
                 UUID = name,
                 Code = IsVue.ToString()
             };
@@ -152,7 +152,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.CodeWeb,
+                Mode = PostBuildType.CodeWeb,
                 UUID = name
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -178,7 +178,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebBuild,
+                Mode = PostBuildType.WebBuild,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text
@@ -207,7 +207,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebBuildRes,
+                Mode = PostBuildType.WebBuildRes,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text
@@ -236,7 +236,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebAddCode,
+                Mode = PostBuildType.WebAddCode,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -266,7 +266,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebAddFile,
+                Mode = PostBuildType.WebAddFile,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -296,7 +296,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebRemoveFile,
+                Mode = PostBuildType.WebRemoveFile,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -309,6 +309,35 @@ public partial class HttpUtils : HttpUtilsBase
             if (!CheckLogin(data))
             {
                 return await WebRemoveFile(obj, Name);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<ReMessage> WebSetSocket(string ip, int port, string type) 
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = PostBuildType.WebSetSocket,
+                Code = ip,
+                Version = port,
+                Text = type
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await WebSetSocket(ip, port, type);
             }
             return JsonConvert.DeserializeObject<ReMessage>(data);
         }

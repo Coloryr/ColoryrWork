@@ -76,7 +76,11 @@
             Margin="0,6,10,10"
             HorizontalAlignment="Right"
             Header="代码选择">
-            <ListView x:Name="FileList" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionChanged="FileList_SelectionChanged">
+            <ListView
+                x:Name="FileList"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                SelectionChanged="FileList_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="Auto" Header="名字" />

@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Style/Button.xaml" />
                 <ResourceDictionary Source="Style/CheckBox.xaml" />
+                <ResourceDictionary Source="Style/ComboBox.xaml" />
                 <ResourceDictionary Source="Style/ContextMenu.xaml" />
                 <ResourceDictionary Source="Style/Label.xaml" />
                 <ResourceDictionary Source="Style/ListView.xaml" />

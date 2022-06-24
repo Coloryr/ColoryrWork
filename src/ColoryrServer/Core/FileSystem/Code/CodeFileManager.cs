@@ -14,15 +14,15 @@ namespace ColoryrServer.Core.FileSystem.Code;
 
 internal static class CodeFileManager
 {
-    private static readonly string DBLocal = ServerMain.RunLocal + @"Codes";
-    private static readonly string CodeDB = ServerMain.RunLocal + @"Codes/Code.db";
-    private static readonly string CodeLogDB = ServerMain.RunLocal + @"Codes/CodeLog.db";
+    private static readonly string DBLocal = ServerMain.RunLocal + "Codes";
+    private static readonly string CodeDB = ServerMain.RunLocal + "Codes/Code.db";
+    private static readonly string CodeLogDB = ServerMain.RunLocal + "Codes/CodeLog.db";
 
     private static string CodeConnStr;
     private static string CodeLogConnStr;
 
-    private static readonly string DllMap = ServerMain.RunLocal + @"DllMap.json";
-    private static readonly string RemoveDir = ServerMain.RunLocal + @"Removes/";
+    private static readonly string DllMap = ServerMain.RunLocal + "DllMap.json";
+    private static readonly string RemoveDir = ServerMain.RunLocal + "Removes/";
 
     public static readonly ConcurrentDictionary<string, CSFileCode> DllFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> ClassFileList = new();

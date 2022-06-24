@@ -100,6 +100,9 @@ internal static class MysqlCon
             State[item.Key] = false;
         }
         MySqlConnection.ClearAllPools();
+        State.Clear();
+        ConnectStr.Clear();
+        Connecting.Clear();
         ServerMain.LogOut("Mysql数据库已断开");
     }
 

@@ -140,12 +140,12 @@ public class ServerMain
             SqliteCon.Start();
             RamDataBase.Start();
             GenCode.Start();
+            TaskManager.Start();
             DllStongeManager.Start();
             WebFileManager.Start();
             FileHttpStream.Start();
             SocketServer.Start();
             ServerWebSocket.Start();
-            TaskManager.Start();
             NettyManager.Start();
 
             //等待初始化完成

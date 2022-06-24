@@ -594,7 +594,7 @@ public partial class Tools
     /// </summary>
     /// <returns>机器人</returns>
     public static RobotSDK GetRobot()
-        => RobotUtils.robot;
+        => RobotUtils.Robot;
     /// <summary>
     /// 获取一个WebSocket客户端
     /// </summary>

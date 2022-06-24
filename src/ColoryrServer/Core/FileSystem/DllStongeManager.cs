@@ -25,13 +25,52 @@ public static class DllStongeManager
     private static readonly ConcurrentDictionary<string, DllAssembly> MapMqtt = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapTask = new();
 
-    public static readonly string LocalDll = ServerMain.RunLocal + @"Dll/Dll/";
-    public static readonly string LocalClass = ServerMain.RunLocal + @"Dll/Class/";
-    public static readonly string LocalSocket = ServerMain.RunLocal + @"Dll/Socket/";
-    public static readonly string LocalWebSocket = ServerMain.RunLocal + @"Dll/WebSocket/";
-    public static readonly string LocalRobot = ServerMain.RunLocal + @"Dll/Robot/";
-    public static readonly string LocalMqtt = ServerMain.RunLocal + @"Dll/Mqtt/";
-    public static readonly string LocalTask = ServerMain.RunLocal + @"Dll/Task/";
+    public static readonly string LocalDll = ServerMain.RunLocal + "Dll/Dll/";
+    public static readonly string LocalClass = ServerMain.RunLocal + "Dll/Class/";
+    public static readonly string LocalSocket = ServerMain.RunLocal + "Dll/Socket/";
+    public static readonly string LocalWebSocket = ServerMain.RunLocal + "Dll/WebSocket/";
+    public static readonly string LocalRobot = ServerMain.RunLocal + "Dll/Robot/";
+    public static readonly string LocalMqtt = ServerMain.RunLocal + "Dll/Mqtt/";
+    public static readonly string LocalTask = ServerMain.RunLocal + "Dll/Task/";
+
+    private static void Stop() 
+    {
+        foreach (var item in MapDll.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapClass.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapSocket.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapWebSocket.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapRobot.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapMqtt.Values)
+        {
+            item.Unload();
+        }
+        foreach (var item in MapTask.Values)
+        {
+            item.Unload();
+        }
+        MapDll.Clear();
+        MapClass.Clear();
+        MapSocket.Clear();
+        MapWebSocket.Clear();
+        MapRobot.Clear();
+        MapMqtt.Clear();
+        MapTask.Clear();
+    }
 
     private static void RemoveAll(string dir)
     {
@@ -309,6 +348,7 @@ public static class DllStongeManager
     }
     public static void Start()
     {
+        ServerMain.OnStop += Stop;
         if (!Directory.Exists(LocalDll))
         {
             Directory.CreateDirectory(LocalDll);

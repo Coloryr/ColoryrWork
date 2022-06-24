@@ -9,10 +9,10 @@ public class StaticDir
 {
     private ConcurrentDictionary<string, StaticDir> NextDir = new();
     private ConcurrentDictionary<string, StaticTempFile> FileTempMap = new();
-    private FileSystemWatcher watch;
-    private string dir;
+    private FileSystemWatcher FileWatch;
+    private string Dir;
     private bool IsRun = false;
-    private Thread thread;
+    private Thread TickThread;
 
     public byte[] HtmlIcon { get; private set; }
     public byte[] Html404 { get; private set; }
@@ -20,26 +20,26 @@ public class StaticDir
 
     public StaticDir(string dir)
     {
-        this.dir = dir;
+        Dir = dir;
         IsRun = true;
-        thread = new(TickTask)
+        TickThread = new(TickTask)
         {
             Name = $"watch {dir}"
         };
-        watch = new()
+        FileWatch = new()
         {
             Path = dir,
             NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.Size
         };
-        watch.BeginInit();
-        watch.Changed += OnChanged;
-        watch.Created += OnCreated;
-        watch.Deleted += OnDeleted;
-        watch.Renamed += OnRnamed;
-        watch.Error += OnError;
-        watch.EndInit();
-        watch.EnableRaisingEvents = true;
-        thread.Start();
+        FileWatch.BeginInit();
+        FileWatch.Changed += OnChanged;
+        FileWatch.Created += OnCreated;
+        FileWatch.Deleted += OnDeleted;
+        FileWatch.Renamed += OnRnamed;
+        FileWatch.Error += OnError;
+        FileWatch.EndInit();
+        FileWatch.EnableRaisingEvents = true;
+        TickThread.Start();
         var info = new DirectoryInfo(dir);
         foreach (var item in info.GetDirectories())
         {
@@ -59,9 +59,9 @@ public class StaticDir
 
     public void DirRename(string now)
     {
-        watch.EnableRaisingEvents = false;
-        watch.Path = now;
-        watch.EnableRaisingEvents = true;
+        FileWatch.EnableRaisingEvents = false;
+        FileWatch.Path = now;
+        FileWatch.EnableRaisingEvents = true;
     }
 
     public void OnError(object sender, ErrorEventArgs e)
@@ -137,7 +137,7 @@ public class StaticDir
     public void Stop()
     {
         IsRun = false;
-        watch.Dispose();
+        FileWatch.Dispose();
         FileTempMap.Clear();
         foreach (var item in NextDir)
         {
@@ -199,11 +199,11 @@ public class StaticDir
                 item.Reset();
                 return item.Data;
             }
-            else if (File.Exists(dir + name))
+            else if (File.Exists(Dir + name))
             {
                 var file = new StaticTempFile()
                 {
-                    Data = FileTemp.LoadBytes(dir + name, false)
+                    Data = FileTemp.LoadBytes(Dir + name, false)
                 };
                 file.Reset();
                 FileTempMap.TryAdd(name, file);

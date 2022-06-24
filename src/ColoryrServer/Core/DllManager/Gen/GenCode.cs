@@ -92,11 +92,16 @@ internal static class GenCode
             };
         }
     }
+    private static void Stop() 
+    {
+        References.Clear();
+    }
     /// <summary>
     /// 初始化编译
     /// </summary>
     public static void Start()
     {
+        ServerMain.OnStop += Stop;
         if (!Directory.Exists(DllLibLocal))
         {
             Directory.CreateDirectory(DllLibLocal);

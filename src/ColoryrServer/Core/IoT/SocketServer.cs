@@ -18,8 +18,8 @@ internal static class SocketServer
     private static readonly ReaderWriterLockSlim Lock1 = new();
     private static readonly ReaderWriterLockSlim Lock2 = new();
 
-    private static Thread thread1;
-    private static Thread thread2;
+    private static Thread TcpThread;
+    private static Thread UdpThread;
 
     public static bool RunFlag;
 
@@ -37,7 +37,7 @@ internal static class SocketServer
 
             RunFlag = true;
 
-            thread1 = new(() =>
+            TcpThread = new(() =>
             {
                 while (RunFlag)
                 {
@@ -52,8 +52,11 @@ internal static class SocketServer
                             ServerMain.LogError(e);
                     }
                 }
-            });
-            thread2 = new(() =>
+            })
+            { 
+                Name = "TcpThread"
+            };
+            UdpThread = new(() =>
             {
                 while (RunFlag)
                 {
@@ -77,9 +80,12 @@ internal static class SocketServer
                             ServerMain.LogError(e);
                     }
                 }
-            });
-            thread1.Start();
-            thread2.Start();
+            })
+            {
+                Name = "UdpThread"
+            };
+            TcpThread.Start();
+            UdpThread.Start();
             ServerMain.OnStop += Stop;
             ServerMain.LogOut("Socket服务器已启动");
         }

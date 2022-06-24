@@ -1,6 +1,8 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,6 +13,12 @@ namespace ColoryrBuild.Views;
 /// </summary>
 public partial class ServerConfigView : UserControl
 {
+    private record EventObj
+    { 
+        public int ID { get; set; }
+        public string Name { get; set; } 
+    }
+
     private record SocketConfigObj : INotifyPropertyChanged
     {
         private string _ip;
@@ -29,6 +37,9 @@ public partial class ServerConfigView : UserControl
         private SocketConfig _socket { get; set; }
         private SocketConfig _mqtt { get; set; }
         private SocketConfig _websocket { get; set; }
+        private SocketConfig _robot { get; set; }
+
+        public List<int> Packs { get; set; }
 
         public SocketConfig Socket
         {
@@ -44,6 +55,11 @@ public partial class ServerConfigView : UserControl
         {
             get { return _websocket; }
             set { _websocket = value; OnPropertyChanged(nameof(WebSocket)); }
+        }
+        public SocketConfig Robot
+        {
+            get { return _robot; }
+            set { _robot = value; OnPropertyChanged(nameof(Robot)); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -65,6 +81,32 @@ public partial class ServerConfigView : UserControl
     {
         GetHttpList();
         GetSocketConfig();
+        GetRobotConfig();
+    }
+
+    private async void GetRobotConfig() 
+    {
+        var res = await App.HttpUtils.GetRobotConfig();
+        if (res == null)
+        {
+            _ = new InfoWindow("获取配置", "获取服务器Socket配置错误");
+            return;
+        }
+        Obj.Robot = new()
+        {
+            IP = res.IP,
+            Port = res.Port
+        };
+        Obj.Packs = res.Packs;
+        RobotEventList.Items.Clear();
+        foreach (var item in Obj.Packs)
+        {
+            RobotEventList.Items.Add(new EventObj()
+            {
+                ID = item,
+                Name = RobotConfigSet.PackType[item]
+            });
+        }
     }
 
     private async void GetSocketConfig()
@@ -281,12 +323,28 @@ public partial class ServerConfigView : UserControl
 
     private void AddRobotClick(object sender, RoutedEventArgs e)
     {
+        int index;
+        var res = new RobotWindow(Obj.Packs).Set(out index);
+        if (!res)
+            return;
 
+        Obj.Packs.Add(index);
+        RobotEventList.Items.Add(new EventObj()
+        { 
+            ID = index,
+            Name = RobotConfigSet.PackType[index]
+        });
     }
 
     private void DeleteRobotClick(object sender, RoutedEventArgs e)
     {
+        var item = RobotEventList.SelectedItem as EventObj;
+        if (item == null)
+            return;
 
+        Obj.Packs.Remove(item.ID);
+        RobotEventList.SelectedItem = null;
+        RobotEventList.Items.Remove(item);
     }
 
     private async void ButtonClick2(object sender, RoutedEventArgs e)
@@ -295,6 +353,100 @@ public partial class ServerConfigView : UserControl
         if (!res)
             return;
         await App.HttpUtils.Reboot();
+    }
+
+    private async void SocketButtonClick(object sender, RoutedEventArgs e)
+    {
+        string ip = Obj.Socket.IP;
+        int port = Obj.Socket.Port;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            _ = new InfoWindow("Socket设定", "参数非法");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
+        {
+            _ = new InfoWindow("Socket设定", "参数非法");
+            return;
+        }
+
+        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        if (res1 == null)
+        {
+            _ = new InfoWindow("修改Socket配置", "修改服务器Socket配置错误");
+            return;
+        }
+        else if (!res1.Build)
+        {
+            _ = new InfoWindow("修改Socket配置", res1.Message);
+            return;
+        }
+    }
+
+    private async void MqttButtonClick(object sender, RoutedEventArgs e)
+    {
+        string ip = Obj.Mqtt.IP;
+        int port = Obj.Mqtt.Port;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            _ = new InfoWindow("Mqtt设定", "参数非法");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
+        {
+            _ = new InfoWindow("Mqtt设定", "参数非法");
+            return;
+        }
+
+        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        if (res1 == null)
+        {
+            _ = new InfoWindow("修改Mqtt配置", "修改服务器Mqtt配置错误");
+            return;
+        }
+        else if (!res1.Build)
+        {
+            _ = new InfoWindow("修改Mqtt配置", res1.Message);
+            return;
+        }
+    }
+
+    private async void WebSocketButtonClick(object sender, RoutedEventArgs e)
+    {
+        string ip = Obj.WebSocket.IP;
+        int port = Obj.WebSocket.Port;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            _ = new InfoWindow("WebSocket设定", "参数非法");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
+        {
+            _ = new InfoWindow("WebSocket设定", "参数非法");
+            return;
+        }
+
+        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        if (res1 == null)
+        {
+            _ = new InfoWindow("修改WebSocket配置", "修改服务器WebSocket配置错误");
+            return;
+        }
+        else if (!res1.Build)
+        {
+            _ = new InfoWindow("修改WebSocket配置", res1.Message);
+            return;
+        }
+    }
+
+    private void ButtonClick3(object sender, RoutedEventArgs e)
+    {
+        GetRobotConfig();
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
     }
 
     private void ButtonClick1(object sender, RoutedEventArgs e)

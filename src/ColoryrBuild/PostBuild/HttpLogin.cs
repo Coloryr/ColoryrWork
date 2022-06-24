@@ -44,7 +44,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.Check
+                Mode = PostBuildType.Check
             };
 
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -81,7 +81,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Code = Pass,
-                Mode = ReType.Login
+                Mode = PostBuildType.Login
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

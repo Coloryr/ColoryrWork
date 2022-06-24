@@ -53,6 +53,8 @@ internal static class RedisCon
         {
             State[item.Key] = false;
         }
+        State.Clear();
+        ConnectStr.Clear();
         ServerMain.LogOut("Redis数据库已断开");
     }
 

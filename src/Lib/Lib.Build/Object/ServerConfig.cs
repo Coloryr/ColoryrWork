@@ -39,3 +39,10 @@ public record HttpListObj
     public Dictionary<string, RouteConfigObj> RouteList { get; set; }
     public Dictionary<string, RouteConfigObj> UrlRouteList { get; set; }
 }
+
+public record RobotObj
+{
+    public string IP { get; set; }
+    public int Port { get; set; }
+    public List<int> Packs { get; set; }
+}

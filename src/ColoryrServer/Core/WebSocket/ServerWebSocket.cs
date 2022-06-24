@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ColoryrServer.Core.WebSocket;
 
-internal class ServerWebSocket
+internal static class ServerWebSocket
 {
     private record SocketObj
     {

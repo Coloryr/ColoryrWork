@@ -1,6 +1,6 @@
 ﻿namespace ColoryrWork.Lib.Build.Object;
 
-public enum ReType
+public enum PostBuildType
 {
     AddDll, AddClass, AddSocket, AddWebSocket, AddRobot, AddMqtt, AddTask, AddWeb,
     GetDll, GetClass, GetSocket, GetWebSocket, GetRobot, GetMqtt, GetTask, GetWeb,
@@ -12,13 +12,13 @@ public enum ReType
     SetRobot, GetConfig,
     AddClassFile, RemoveClassFile, BuildClass,
     GetServerHttpConfigList, GetServerSocketConfig, AddServerHttpConfig, RemoveServerHttpConfig, ServerReboot, AddServerHttpRoute,
-    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute
+    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute, WebSetSocket, GetRobotConfig, SetRobotConfig
 }
 public record BuildOBJ
 {
     public string Token { get; set; }
     public string User { get; set; }
-    public ReType Mode { get; set; }
+    public PostBuildType Mode { get; set; }
     public string UUID { get; set; }
     public string Code { get; set; }
     public string Text { get; set; }

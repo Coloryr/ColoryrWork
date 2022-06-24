@@ -9,6 +9,31 @@ namespace ColoryrBuild.PostBuild;
 
 public partial class HttpUtils : HttpUtilsBase
 {
+    public async Task<RobotObj> GetRobotConfig()
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = PostBuildType.GetRobotConfig
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+            {
+                return await GetRobotConfig();
+            }
+            return JsonConvert.DeserializeObject<RobotObj>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
     public async Task<SocketObj> GetSocketConfig()
     {
         try
@@ -17,7 +42,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.GetServerSocketConfig
+                Mode = PostBuildType.GetServerSocketConfig
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -42,7 +67,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.GetServerHttpConfigList
+                Mode = PostBuildType.GetServerHttpConfigList
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -68,7 +93,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddServerHttpConfig,
+                Mode = PostBuildType.AddServerHttpConfig,
                 Code = ip,
                 Version = port
             };
@@ -96,7 +121,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.RemoveServerHttpConfig,
+                Mode = PostBuildType.RemoveServerHttpConfig,
                 Code = ip,
                 Version = port
             };
@@ -124,7 +149,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddServerHttpRoute,
+                Mode = PostBuildType.AddServerHttpRoute,
                 Temp = key,
                 Code = JsonUtils.ToString(obj)
             };
@@ -152,7 +177,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddServerHttpRoute,
+                Mode = PostBuildType.AddServerHttpRoute,
                 Code = key
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -179,7 +204,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddServerHttpUrlRoute,
+                Mode = PostBuildType.AddServerHttpUrlRoute,
                 Temp = key,
                 Code = JsonUtils.ToString(obj)
             };
@@ -207,7 +232,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.RemoveServerHttpUrlRoute,
+                Mode = PostBuildType.RemoveServerHttpUrlRoute,
                 Code = key
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -234,7 +259,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.ServerReboot
+                Mode = PostBuildType.ServerReboot
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

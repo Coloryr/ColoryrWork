@@ -1,21 +1,75 @@
-﻿<Window x:Class="ColoryrBuild.Windows.Login"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ColoryrBuild.Windows"
-        mc:Ignorable="d"
-        Title="ColoryrWork登录" Height="150" Width="260" ResizeMode="NoResize" Icon="/ColoryrWork.png" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
+﻿<Window
+    x:Class="ColoryrBuild.Windows.Login"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ColoryrBuild.Windows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ColoryrWork登录"
+    Width="260"
+    Height="150"
+    Closed="Window_Closed"
+    Closing="Window_Closing"
+    Icon="/ColoryrWork.png"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Grid>
-        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <Label Content="账户：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0"/>
-        <Label Content="密码：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,60,0,0"/>
-        <TextBox Text="" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="56,14,0,0" HorizontalAlignment="Left" Width="174" x:Name="Addr"/>
-        <TextBox Text="" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="56,39,0,0" HorizontalAlignment="Left" Width="174" x:Name="User"/>
-        <CheckBox Content="保存令牌" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,89,0,0" Style="{DynamicResource Check}"
-                  Name="Token"/>
-        <Button Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,86,0,0" Width="55" IsDefault="True" Click="Button_Click"/>
-        <Label Content="网址：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
-        <PasswordBox VerticalAlignment="Top" Margin="56,64,0,0" HorizontalAlignment="Left" Width="174" x:Name="Pass"/>
+        <Rectangle
+            Fill="#FFF4F4F5"
+            Stroke="#FF5ABED6"
+            StrokeThickness="2" />
+        <Label
+            Margin="10,35,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="账户：" />
+        <Label
+            Margin="10,60,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="密码：" />
+        <TextBox
+            x:Name="Addr"
+            Width="174"
+            Margin="56,14,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text=""
+            TextWrapping="NoWrap" />
+        <TextBox
+            x:Name="User"
+            Width="174"
+            Margin="56,39,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text=""
+            TextWrapping="NoWrap" />
+        <CheckBox
+            Name="Token"
+            Margin="10,89,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="保存令牌"
+            Style="{DynamicResource Check}" />
+        <Button
+            Width="55"
+            Margin="175,86,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Click="Button_Click"
+            Content="登录"
+            IsDefault="True" />
+        <Label
+            Margin="10,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="网址：" />
+        <PasswordBox
+            x:Name="Pass"
+            Width="174"
+            Margin="56,64,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
     </Grid>
 </Window>

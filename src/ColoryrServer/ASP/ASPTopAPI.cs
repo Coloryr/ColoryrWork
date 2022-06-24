@@ -5,7 +5,7 @@ using ColoryrWork.Lib.Build.Object;
 
 namespace ColoryrServer.ASP;
 
-public class ASPTopAPI : TopAPI
+public class ASPTopAPI : ITopAPI
 {
     public HttpListObj GetHttpConfigList(BuildOBJ json)
     {

@@ -20,19 +20,19 @@ internal static class FileHttpStream
     public static string Local;
 
     private static bool IsRun;
-    private static Thread thread;
+    private static Thread TickThread;
 
     private const int ResetTime = 180;
 
     public static void Start()
     {
-        Local = ServerMain.RunLocal + @"/Stream/";
+        Local = ServerMain.RunLocal + "Stream/";
         if (!Directory.Exists(Local))
         {
             Directory.CreateDirectory(Local);
         }
         IsRun = true;
-        thread = new(() =>
+        TickThread = new(() =>
         {
             while (IsRun)
             {
@@ -44,8 +44,11 @@ internal static class FileHttpStream
                         EtagTemp.TryRemove(item.Key, out var v);
                 }
             }
-        });
-        thread.Start();
+        })
+        {
+            Name = "StreamTickThread"
+        };
+        TickThread.Start();
         ServerMain.OnStop += Stop;
     }
 
@@ -56,6 +59,7 @@ internal static class FileHttpStream
         {
             item.stream.Dispose();
         }
+        EtagTemp.Clear();
     }
 
     public static bool Have(string cookie)

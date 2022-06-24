@@ -99,6 +99,9 @@ internal static class OracleCon
             State[item.Key] = false;
         }
         OracleConnection.ClearAllPools();
+        State.Clear();
+        ConnectStr.Clear();
+        Connecting.Clear();
         ServerMain.LogOut("Oracle数据库已断开");
     }
 

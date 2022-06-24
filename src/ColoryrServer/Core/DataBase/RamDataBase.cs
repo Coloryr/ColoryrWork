@@ -30,6 +30,9 @@ internal static class RamDataBase
                     FileRam.Save(item.Key, item.Value.Data);
             }
         }
+        RamCache.Clear();
+        QueueSave.Clear();
+        QueueRemove.Clear();
     }
 
     /// <summary>
@@ -152,7 +155,10 @@ internal static class RamDataBase
                     FileRam.Remove(temp1);
                 }
             }
-        });
+        })
+        {
+            Name = "RamDataThread"
+        };
         SaveThread.Start();
         ServerMain.OnStop += Stop;
     }

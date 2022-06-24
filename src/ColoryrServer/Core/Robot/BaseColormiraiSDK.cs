@@ -788,28 +788,6 @@ public record GroupAllowMemberInviteEventPack : PackBase
     public bool now { get; set; }
 }
 /// <summary>
-/// 27 [机器人]入群公告改变（事件）
-/// </summary>
-public record GroupEntranceAnnouncementChangeEventPack : PackBase
-{
-    /// <summary>
-    /// 群号
-    /// </summary>
-    public long id { get; set; }
-    /// <summary>
-    /// 执行人QQ号
-    /// </summary>
-    public long fid { get; set; }
-    /// <summary>
-    /// 旧的状态
-    /// </summary>
-    public bool old { get; set; }
-    /// <summary>
-    /// 新的状态
-    /// </summary>
-    public bool now { get; set; }
-}
-/// <summary>
 /// 28 [机器人]在群消息发送后广播（事件）
 /// </summary>
 public record GroupMessagePostSendEventPack : PackBase
@@ -2631,7 +2609,7 @@ public partial class RobotSDK
         { 24, typeof(GroupAllowAnonymousChatEventPack) },
         { 25, typeof(GroupAllowConfessTalkEventPack) },
         { 26, typeof(GroupAllowMemberInviteEventPack) },
-        { 27, typeof(GroupEntranceAnnouncementChangeEventPack) },
+        //27待定
         { 28, typeof(GroupMessagePostSendEventPack) },
         { 29, typeof(GroupMessagePreSendEventPack) },
         { 30, typeof(GroupMuteAllEventPack) },
@@ -2827,7 +2805,10 @@ public partial class RobotSDK
         if (DoThread?.IsAlive == true)
             return;
         QueueRead = new();
-        DoThread = new(Read);
+        DoThread = new(Read)
+        { 
+            Name = "RobotDoThread"
+        };
         IsRun = true;
         DoThread.Start();
         Pipe.StartRead();

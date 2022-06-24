@@ -10,11 +10,13 @@ namespace ColoryrServer.Core.Netty;
 
 internal static class NettyManager
 {
-    private readonly static MultithreadEventLoopGroup BossGroup = new();
-    private readonly static MultithreadEventLoopGroup WorkerGroup = new();
+    private static MultithreadEventLoopGroup BossGroup;
+    private static MultithreadEventLoopGroup WorkerGroup;
     private readonly static Dictionary<string, INetty> RunNetty = new();
     public static void Start()
     {
+        BossGroup = new();
+        WorkerGroup = new();
         ServerMain.OnStop += Stop;
     }
 

@@ -56,6 +56,9 @@ internal static class SqliteCon
             State[item.Key] = false;
         }
         SqliteConnection.ClearAllPools();
+        State.Clear();
+        ConnectStr.Clear();
+        Connecting.Clear();
         ServerMain.LogOut("SQLite数据库已断开");
     }
 

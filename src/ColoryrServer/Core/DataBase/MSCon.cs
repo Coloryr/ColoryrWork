@@ -100,6 +100,9 @@ internal static class MSCon
             State[item.Key] = false;
         }
         SqlConnection.ClearAllPools();
+        State.Clear();
+        ConnectStr.Clear();
+        Connecting.Clear();
         ServerMain.LogOut("Ms数据库已断开");
     }
 

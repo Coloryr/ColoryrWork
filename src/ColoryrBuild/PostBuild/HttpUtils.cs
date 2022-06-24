@@ -16,14 +16,14 @@ public partial class HttpUtils : HttpUtilsBase
         {
             var reType = type switch
             {
-                CodeType.Class => ReType.GetClass,
-                CodeType.Socket => ReType.GetSocket,
-                CodeType.Robot => ReType.GetRobot,
-                CodeType.WebSocket => ReType.GetWebSocket,
-                CodeType.Mqtt => ReType.GetMqtt,
-                CodeType.Task => ReType.GetTask,
-                CodeType.Web => ReType.GetWeb,
-                CodeType.Dll => ReType.GetDll,
+                CodeType.Class => PostBuildType.GetClass,
+                CodeType.Socket => PostBuildType.GetSocket,
+                CodeType.Robot => PostBuildType.GetRobot,
+                CodeType.WebSocket => PostBuildType.GetWebSocket,
+                CodeType.Mqtt => PostBuildType.GetMqtt,
+                CodeType.Task => PostBuildType.GetTask,
+                CodeType.Web => PostBuildType.GetWeb,
+                CodeType.Dll => PostBuildType.GetDll,
                 _ => throw new NotImplementedException()
             };
             var pack = new BuildOBJ
@@ -56,7 +56,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.UpdataClass,
+                Mode = PostBuildType.UpdataClass,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -85,14 +85,14 @@ public partial class HttpUtils : HttpUtilsBase
         {
             var reType = type switch
             {
-                CodeType.Class => ReType.AddClass,
-                CodeType.Socket => ReType.AddSocket,
-                CodeType.Robot => ReType.AddRobot,
-                CodeType.WebSocket => ReType.AddWebSocket,
-                CodeType.Mqtt => ReType.AddMqtt,
-                CodeType.Task => ReType.AddTask,
-                CodeType.Web => ReType.AddWeb,
-                _ => ReType.AddDll,
+                CodeType.Class => PostBuildType.AddClass,
+                CodeType.Socket => PostBuildType.AddSocket,
+                CodeType.Robot => PostBuildType.AddRobot,
+                CodeType.WebSocket => PostBuildType.AddWebSocket,
+                CodeType.Mqtt => PostBuildType.AddMqtt,
+                CodeType.Task => PostBuildType.AddTask,
+                CodeType.Web => PostBuildType.AddWeb,
+                _ => PostBuildType.AddDll,
             };
             var pack = new BuildOBJ
             {
@@ -126,7 +126,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.WebDownloadFile,
+                Mode = PostBuildType.WebDownloadFile,
                 UUID = obj.UUID,
                 Version = obj.Version,
                 Text = obj.Text,
@@ -154,14 +154,14 @@ public partial class HttpUtils : HttpUtilsBase
         {
             var reType = type switch
             {
-                CodeType.Class => ReType.RemoveClass,
-                CodeType.Socket => ReType.RemoveSocket,
-                CodeType.Robot => ReType.RemoveRobot,
-                CodeType.WebSocket => ReType.RemoveWebSocket,
-                CodeType.Mqtt => ReType.RemoveMqtt,
-                CodeType.Task => ReType.RemoveTask,
-                CodeType.Web => ReType.RemoveWeb,
-                _ => ReType.RemoveDll,
+                CodeType.Class => PostBuildType.RemoveClass,
+                CodeType.Socket => PostBuildType.RemoveSocket,
+                CodeType.Robot => PostBuildType.RemoveRobot,
+                CodeType.WebSocket => PostBuildType.RemoveWebSocket,
+                CodeType.Mqtt => PostBuildType.RemoveMqtt,
+                CodeType.Task => PostBuildType.RemoveTask,
+                CodeType.Web => PostBuildType.RemoveWeb,
+                _ => PostBuildType.RemoveDll,
             };
             var pack = new BuildOBJ
             {
@@ -192,13 +192,13 @@ public partial class HttpUtils : HttpUtilsBase
         {
             var reType = type switch
             {
-                CodeType.Class => ReType.CodeClass,
-                CodeType.Socket => ReType.CodeSocket,
-                CodeType.Robot => ReType.CodeRobot,
-                CodeType.WebSocket => ReType.CodeWebSocket,
-                CodeType.Mqtt => ReType.CodeMqtt,
-                CodeType.Task => ReType.CodeTask,
-                _ => ReType.CodeDll,
+                CodeType.Class => PostBuildType.CodeClass,
+                CodeType.Socket => PostBuildType.CodeSocket,
+                CodeType.Robot => PostBuildType.CodeRobot,
+                CodeType.WebSocket => PostBuildType.CodeWebSocket,
+                CodeType.Mqtt => PostBuildType.CodeMqtt,
+                CodeType.Task => PostBuildType.CodeTask,
+                _ => PostBuildType.CodeDll,
             };
             var pack = new BuildOBJ
             {
@@ -232,13 +232,13 @@ public partial class HttpUtils : HttpUtilsBase
         {
             var reType = type switch
             {
-                CodeType.Class => ReType.BuildClass,
-                CodeType.Socket => ReType.UpdataSocket,
-                CodeType.Robot => ReType.UpdataRobot,
-                CodeType.WebSocket => ReType.UpdataWebSocket,
-                CodeType.Mqtt => ReType.UpdataMqtt,
-                CodeType.Task => ReType.UpdataTask,
-                _ => ReType.UpdataDll,
+                CodeType.Class => PostBuildType.BuildClass,
+                CodeType.Socket => PostBuildType.UpdataSocket,
+                CodeType.Robot => PostBuildType.UpdataRobot,
+                CodeType.WebSocket => PostBuildType.UpdataWebSocket,
+                CodeType.Mqtt => PostBuildType.UpdataMqtt,
+                CodeType.Task => PostBuildType.UpdataTask,
+                _ => PostBuildType.UpdataDll,
             };
             var pack = new BuildOBJ
             {
@@ -276,7 +276,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.GetApi
+                Mode = PostBuildType.GetApi
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -302,7 +302,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.AddClassFile,
+                Mode = PostBuildType.AddClassFile,
                 UUID = obj.UUID,
                 Temp = file
             };
@@ -330,7 +330,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.RemoveClassFile,
+                Mode = PostBuildType.RemoveClassFile,
                 UUID = obj.UUID,
                 Temp = file
             };
@@ -358,7 +358,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = ReType.CodeClass,
+                Mode = PostBuildType.CodeClass,
                 UUID = obj.UUID
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));

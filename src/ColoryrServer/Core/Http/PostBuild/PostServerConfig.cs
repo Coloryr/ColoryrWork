@@ -1,8 +1,9 @@
 ﻿using ColoryrWork.Lib.Build.Object;
+using System.Net;
 
 namespace ColoryrServer.Core.Http.PostBuild;
 
-public interface TopAPI
+public interface ITopAPI
 {
     public HttpListObj GetHttpConfigList(BuildOBJ json);
     public ReMessage AddHttpConfig(BuildOBJ json);
@@ -16,8 +17,8 @@ public interface TopAPI
 
 public static class PostServerConfig
 {
-    public static TopAPI top;
-    public static void Init(TopAPI api)
+    public static ITopAPI top;
+    public static void Init(ITopAPI api)
     {
         top = api;
     }
@@ -49,13 +50,84 @@ public static class PostServerConfig
     {
         return top.RemoveHttpUrlRouteConfig(json);
     }
-    public static SocketObj GetSocketConfig(BuildOBJ json)
+    public static SocketObj GetSocketConfig()
     {
         return new()
         {
             Socket = ServerMain.Config.Socket,
             Mqtt = ServerMain.Config.MqttConfig.Socket,
             WebSocket = ServerMain.Config.WebSocket
+        };
+    }
+    public static ReMessage WebSetSocket(BuildOBJ json)
+    {
+        string ip = json.Code;
+        int port = json.Version;
+        if (IPAddress.TryParse(ip, out _) == false)
+        {
+            return new()
+            {
+                Build = false,
+                Message = "参数非法"
+            };
+        }
+        if (port > 0xFFFF || port < 0) 
+        {
+            return new()
+            {
+                Build = false,
+                Message = "参数非法"
+            };
+        }
+        if (json.Text is "Socket")
+        {
+            ServerMain.Config.Socket.IP = ip;
+            ServerMain.Config.Socket.Port = port;
+            ServerMain.ConfigUtil.Save();
+            return new()
+            {
+                Build = true,
+                Message = "设置Socket配置完成"
+            };
+        }
+        else if (json.Text is "Mqtt")
+        {
+            ServerMain.Config.MqttConfig.Socket.IP = ip;
+            ServerMain.Config.MqttConfig.Socket.Port = port;
+            ServerMain.ConfigUtil.Save();
+            return new()
+            {
+                Build = true,
+                Message = "设置Mqtt配置完成"
+            };
+        }
+        else if (json.Text is "WebSocket")
+        {
+            ServerMain.Config.WebSocket.IP = ip;
+            ServerMain.Config.WebSocket.Port = port;
+            ServerMain.ConfigUtil.Save();
+            return new()
+            {
+                Build = true,
+                Message = "设置WebSocket配置完成"
+            };
+        }
+        else
+        {
+            return new()
+            {
+                Build = false,
+                Message = "参数错误"
+            };
+        }
+    }
+    public static RobotObj GetRobotConfig()
+    {
+        return new()
+        {
+            IP = ServerMain.Config.Robot.Socket.IP,
+            Port = ServerMain.Config.Robot.Socket.Port,
+            Packs = ServerMain.Config.Robot.Packs
         };
     }
     public static ReMessage Reboot()
