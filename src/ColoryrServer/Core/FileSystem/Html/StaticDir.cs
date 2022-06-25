@@ -71,12 +71,12 @@ public class StaticDir
 
     public void OnRnamed(object sender, RenamedEventArgs e)
     {
-        if (e.Name.Contains('.'))
+        if (File.Exists(e.FullPath))
         {
             if (FileTempMap.TryRemove(e.OldName, out var v))
             {
                 FileTempMap.TryAdd(e.Name, v);
-                Console.WriteLine($"rename file:{e.FullPath}");
+                ServerMain.LogOut($"重命名文件:{e.FullPath}");
             }
         }
         else if (NextDir.ContainsKey(e.OldName))
@@ -85,7 +85,7 @@ public class StaticDir
             {
                 v1.DirRename(e.FullPath);
                 NextDir.TryAdd(e.Name, v1);
-                Console.WriteLine($"rename dir:{e.FullPath}");
+                ServerMain.LogOut($"重命名路径:{e.FullPath}");
             }
         }
     }
@@ -95,13 +95,14 @@ public class StaticDir
         if (e.Name.Contains('.'))
         {
             FileTempMap.TryRemove(e.Name, out var v);
+            ServerMain.LogOut($"删除文件:{e.FullPath}");
         }
         else if (NextDir.ContainsKey(e.Name))
         {
             if (NextDir.TryRemove(e.Name, out var v1))
             {
                 v1.Stop();
-                Console.WriteLine($"delete dir:{e.FullPath}");
+                ServerMain.LogOut($"删除路径:{e.FullPath}");
             }
         }
     }
@@ -112,7 +113,7 @@ public class StaticDir
         {
             var dir = new StaticDir(e.FullPath);
             NextDir.TryAdd(e.Name, dir);
-            Console.WriteLine($"create dir:{e.FullPath}");
+            ServerMain.LogOut($"创建路径:{e.FullPath}");
         }
     }
 
@@ -127,10 +128,8 @@ public class StaticDir
             else if (e.Name.ToLower() is "index.html")
                 HtmlIndex = FileTemp.LoadBytes(e.FullPath, false);
             else if (FileTempMap.TryGetValue(e.Name, out var v))
-            {
                 v.Data = FileTemp.LoadBytes(e.FullPath, false);
-                Console.WriteLine($"reload file:{e.FullPath}");
-            }
+            ServerMain.LogOut($"重读文件:{e.FullPath}");
         }
     }
 
@@ -183,10 +182,8 @@ public class StaticDir
             {
                 if (NextDir.ContainsKey(rote[index]))
                     return NextDir[rote[index]].GetFileIndex();
-                else
-                    return null;
             }
-            if (name.ToLower() is "404.html")
+            else if (name.ToLower() is "404.html")
                 return Html404;
             else if (name.ToLower() is "favicon.ico")
                 return HtmlIcon;

@@ -35,6 +35,7 @@ public record SocketObj
 
 public record HttpListObj
 {
+    public bool EnableRoute { get; set; }
     public List<SocketConfig> HttpList { get; set; }
     public Dictionary<string, RouteConfigObj> RouteList { get; set; }
     public Dictionary<string, RouteConfigObj> UrlRouteList { get; set; }

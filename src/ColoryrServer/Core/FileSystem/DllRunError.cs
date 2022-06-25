@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem;
 
-internal static class DllRunError
+public static class DllRunError
 {
     private static readonly string ErrorDB = ServerMain.RunLocal + "Error.db";
 

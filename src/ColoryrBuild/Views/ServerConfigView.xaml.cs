@@ -153,6 +153,7 @@ public partial class ServerConfigView : UserControl
                 Value = item.Value.Url
             });
         }
+        EnableRoute.IsChecked = res.EnableRoute;
     }
 
     private async void AddHttpClick(object sender, RoutedEventArgs e)
@@ -442,6 +443,22 @@ public partial class ServerConfigView : UserControl
     private void ButtonClick3(object sender, RoutedEventArgs e)
     {
         GetRobotConfig();
+    }
+
+    private async void EnableRoute_Click(object sender, RoutedEventArgs e)
+    {
+        bool check = (bool)EnableRoute.IsChecked;
+        var res = await App.HttpUtils.SetServerEnable(check, "Route");
+        if (res == null)
+        {
+            _ = new InfoWindow("路由设置", "服务器错误");
+            return;
+        }
+        else if(!res.Build)
+        {
+            _ = new InfoWindow("路由设置", res.Message);
+            return;
+        }
     }
 
     private async void RobotButtonClick(object sender, RoutedEventArgs e)

@@ -20,7 +20,7 @@ namespace ColoryrServer.ASP
         public bool Ssl { get; set; }
         public Dictionary<string, Ssl> Ssls { get; set; }
         public Dictionary<string, RouteConfigObj> UrlRoutes { get; set; }
-        public bool RoteEnable { get; set; }
+        public bool RouteEnable { get; set; }
         public bool NoInput { get; set; }
     }
 
@@ -52,7 +52,7 @@ namespace ColoryrServer.ASP
                         }
                     }
                 },
-                RoteEnable = false,
+                RouteEnable = false,
                 Ssl = false,
                 Ssls = new()
                 {

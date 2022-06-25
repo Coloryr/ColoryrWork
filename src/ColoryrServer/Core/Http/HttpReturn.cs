@@ -25,8 +25,24 @@ public static class HttpReturnSave
 {
     public static HttpReturn ResReload = new()
     {
-        Res = ResType.String,
-        Data = "{\"res\":90,\"text\":\"正在重载\"}"
+        Res = ResType.Json,
+        ContentType = "application/json; charset=UTF-8",
+        Data = new
+        { 
+            res = 90,
+            text = "服务器正在重载"
+        }
+    };
+    public static HttpReturn ResError = new()
+    {
+        Res = ResType.Json,
+        ReCode = 500,
+        ContentType = "application/json; charset=UTF-8",
+        Data = new
+        {
+            res = 500,
+            text = "服务器内部错误"
+        }
     };
     public static HttpReturn Res404 = new()
     {

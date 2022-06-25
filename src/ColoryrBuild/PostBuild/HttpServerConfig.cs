@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ColoryrBuild.PostBuild;
 
@@ -177,7 +178,7 @@ public partial class HttpUtils : HttpUtilsBase
             {
                 User = App.Config.Name,
                 Token = App.Config.Token,
-                Mode = PostBuildType.AddServerHttpRoute,
+                Mode = PostBuildType.RemoveServerHttpRoute,
                 Code = key
             };
             HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
@@ -242,6 +243,34 @@ public partial class HttpUtils : HttpUtilsBase
             if (!CheckLogin(data))
             {
                 return await RemoveHttpUrlRoute(key);
+            }
+            return JsonConvert.DeserializeObject<ReMessage>(data);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<ReMessage> SetServerEnable(bool enable, string type) 
+    {
+        try
+        {
+            var pack = new BuildOBJ
+            {
+                User = App.Config.Name,
+                Token = App.Config.Token,
+                Mode = PostBuildType.SetServerEnable,
+                Code = enable.ToString(),
+                Text = type
+            };
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            var data = await temp.Content.ReadAsStringAsync();
+            if (!CheckLogin(data))
+{
+                return await SetServerEnable(enable, type);
             }
             return JsonConvert.DeserializeObject<ReMessage>(data);
         }

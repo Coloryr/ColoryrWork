@@ -107,14 +107,22 @@
                                 </ListView>
                             </Grid>
                         </GroupBox>
-                        <Button
-                            Width="160"
-                            Height="20"
-                            Margin="5,10,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Click="ButtonClick"
-                            Content="重读配置" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox
+                                x:Name="EnableRoute"
+                                Margin="5,10,5,5"
+                                Click="EnableRoute_Click"
+                                Content="启用端口转发"
+                                Style="{StaticResource Check}" />
+                            <Button
+                                Width="160"
+                                Height="20"
+                                Margin="5,10,5,5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Click="ButtonClick"
+                                Content="重读配置" />
+                        </StackPanel>
                         <TextBlock
                             Margin="5,2,5,5"
                             HorizontalAlignment="Left"

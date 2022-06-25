@@ -7,6 +7,25 @@ namespace ColoryrServer.ASP;
 
 public class ASPTopAPI : ITopAPI
 {
+    public ReMessage SetServerEnable(BuildOBJ json)
+    {
+        if (json.Text == "Route")
+        {
+            var res = json.Code.ToLower() == "true";
+            ASPServer.Config.RouteEnable = res;
+            ServerMain.ConfigUtil.Save();
+            return new()
+            {
+                Build = true,
+                Message = "设置完成"
+            };
+        }
+        return new()
+        {
+            Build = false,
+            Message = "错误的类型"
+        };
+    }
     public HttpListObj GetHttpConfigList(BuildOBJ json)
     {
         var list = new HttpListObj()
@@ -27,6 +46,7 @@ public class ASPTopAPI : ITopAPI
         {
             list.UrlRouteList.Add(item.Key, item.Value);
         }
+        list.EnableRoute = ASPServer.Config.RouteEnable;
 
         return list;
     }
@@ -92,11 +112,7 @@ public class ASPTopAPI : ITopAPI
     public ReMessage AddHttpRouteConfig(BuildOBJ json)
     {
         string targe = json.Temp;
-        RouteConfigObj item = new()
-        {
-            Url = json.Code,
-            Heads = JsonUtils.ToObj<Dictionary<string, string>>(json.Text)
-        };
+        RouteConfigObj item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
 
         if (ASPServer.Config.Routes.ContainsKey(targe))
         {
@@ -142,11 +158,7 @@ public class ASPTopAPI : ITopAPI
     public ReMessage AddHttpUrlRouteConfig(BuildOBJ json)
     {
         string targe = json.Temp;
-        RouteConfigObj item = new()
-        {
-            Url = json.Code,
-            Heads = JsonUtils.ToObj<Dictionary<string, string>>(json.Text)
-        };
+        RouteConfigObj item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
 
         if (ASPServer.Config.UrlRoutes.ContainsKey(targe))
         {

@@ -100,12 +100,12 @@ internal static class ASPServer
             Web = builder.Build();
             Clients = Web.Services.GetRequiredService<IHttpClients>();
 
-            Web.MapGet("/", Config.RoteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
+            Web.MapGet("/", Config.RouteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
 
-            Web.MapGet("/{**name}", Config.RoteEnable ? HttpGet.RouteGet : HttpGet.Get);
-            Web.MapPost("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
-            Web.MapPut("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
-            Web.MapDelete("/{**name}", Config.RoteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web.MapGet("/{**name}", Config.RouteEnable ? HttpGet.RouteGet : HttpGet.Get);
+            Web.MapPost("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web.MapPut("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
+            Web.MapDelete("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
 
             Web.MapPost("/", PostBuild);
             Web.Run();
@@ -116,6 +116,7 @@ internal static class ASPServer
         }
 
         IsRun = false;
+        ReadThread.Interrupt();
         ServerMain.LogOut("按下回车键退出");
     }
 
@@ -129,18 +130,25 @@ internal static class ASPServer
             {
                 while (IsRun)
                 {
-                    string command = Console.ReadLine();
-                    if (command == null)
-                        return;
-                    var arg = command.Split(' ');
-                    switch (arg[0])
+                    try
                     {
-                        case "stop":
-                            Web.StopAsync().Wait();
+                        string command = Console.ReadLine();
+                        if (command == null)
                             return;
-                        case "reboot":
-                            Reboot();
-                            return;
+                        var arg = command.Split(' ');
+                        switch (arg[0])
+                        {
+                            case "stop":
+                                Web.StopAsync().Wait();
+                                return;
+                            case "reboot":
+                                Reboot();
+                                return;
+                        }
+                    }
+                    catch (Exception e)
+                    { 
+                    
                     }
                 }
             });

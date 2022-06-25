@@ -64,7 +64,6 @@ internal class HttpClientUtils
             if (item != null)
             {
                 item.State = ClientState.Close;
-                item.Client.CancelPendingRequests();
                 item.Client.Dispose();
             }
         }

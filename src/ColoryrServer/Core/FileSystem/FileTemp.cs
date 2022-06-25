@@ -35,18 +35,30 @@ internal static class FileTemp
 
     public static byte[] LoadBytes(string filename, bool IsTemp = true)
     {
-        try
+        int times = 10;
+        Exception e;
+        do
         {
-            string name = IsTemp ? Local + filename : filename;
-            using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-            Thread.Sleep(20);
-            var outputdata = new byte[Stream.Length];
-            Stream.Read(outputdata, 0, outputdata.Length);
-            return outputdata;
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("读取文件错误", e);
-        }
+            try
+            {
+                string name = IsTemp ? Local + filename : filename;
+                using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                Thread.Sleep(20);
+                var outputdata = new byte[Stream.Length];
+                Stream.Read(outputdata, 0, outputdata.Length);
+                return outputdata;
+            }
+            catch (Exception e1)
+            {
+                e = e1;
+                if (times > 0)
+                {
+                    times--;
+                    ServerMain.LogError($"文件:{filename} 被占用 剩余重试测试:{times}");
+                    Thread.Sleep(100);
+                }
+            }
+        } while (times > 0);
+        throw new ErrorDump("读取文件错误", e);
     }
 }

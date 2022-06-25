@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ColoryrBuild.Views;
 
@@ -551,5 +552,13 @@ public partial class CodeWebEditView : UserControl, IEditView
         });
         AddLog($"设置Web[{WebObj.UUID}]的Vue模式完成");
         IsVue.IsEnabled = true;
+    }
+
+    private async void TextEditor_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.S)
+        {
+            await UpdateTask();
+        }
     }
 }

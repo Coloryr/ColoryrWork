@@ -106,6 +106,7 @@ public class ServerMain
         try
         {
             Console.WriteLine($"ColoryrServer版本:{Version}");
+            OnStop = null;
             //初始化运行路径
             RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
             if (!Directory.Exists(RunLocal))

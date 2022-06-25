@@ -14,6 +14,7 @@ public interface ITopAPI
     public ReMessage RemoveHttpRouteConfig(BuildOBJ json);
     public ReMessage AddHttpUrlRouteConfig(BuildOBJ json);
     public ReMessage RemoveHttpUrlRouteConfig(BuildOBJ json);
+    public ReMessage SetServerEnable(BuildOBJ json);
     public void Reboot();
 }
 
@@ -51,6 +52,10 @@ public static class PostServerConfig
     public static ReMessage RemoveHttpUrlRouteConfig(BuildOBJ json)
     {
         return top.RemoveHttpUrlRouteConfig(json);
+    }
+    public static ReMessage SetServerEnable(BuildOBJ json) 
+    {
+        return top.SetServerEnable(json);
     }
     public static SocketObj GetSocketConfig()
     {

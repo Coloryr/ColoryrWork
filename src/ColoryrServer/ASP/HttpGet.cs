@@ -1,8 +1,12 @@
-﻿using ColoryrServer.Core.FileSystem.Html;
+﻿using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Unicode;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
@@ -101,8 +105,7 @@ internal static class HttpGet
                     await response.BodyWriter.WriteAsync(bytes);
                     break;
                 case ResType.Json:
-                    var obj1 = httpReturn.Data;
-                    await response.WriteAsync(JsonConvert.SerializeObject(obj1));
+                    await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data));
                     break;
                 case ResType.Stream:
                     var stream = httpReturn.Data as Stream;
@@ -134,17 +137,28 @@ internal static class HttpGet
         if (name == null)
             return;
         var arg = name.Split('/');
-        if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
+        try
         {
-            await HttpRoute.RouteDo(request, arg, rote1, response, 0);
+            if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
+            {
+                await HttpRoute.RouteDo(request, arg, rote1, response, 0);
+            }
+            else if (ASPServer.Config.Routes.TryGetValue(arg[0], out var rote))
+            {
+                await HttpRoute.RouteDo(request, arg, rote, response);
+            }
+            else
+            {
+                await Get(context);
+            }
         }
-        else if (ASPServer.Config.Routes.TryGetValue(arg[0], out var rote))
+        catch (Exception e)
         {
-            await HttpRoute.RouteDo(request, arg, rote, response);
-        }
-        else
-        {
-            await Get(context);
+            DllRunError.PutError("Server Route", e.ToString());
+            var httpReturn = HttpReturnSave.ResError;
+            response.ContentType = httpReturn.ContentType;
+            response.StatusCode = httpReturn.ReCode;
+            await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data));
         }
     }
 }

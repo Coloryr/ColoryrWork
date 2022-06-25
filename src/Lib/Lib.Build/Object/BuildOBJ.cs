@@ -12,7 +12,8 @@ public enum PostBuildType
     SetRobot, GetConfig,
     AddClassFile, RemoveClassFile, BuildClass,
     GetServerHttpConfigList, GetServerSocketConfig, AddServerHttpConfig, RemoveServerHttpConfig, ServerReboot, AddServerHttpRoute,
-    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute, WebSetSocket, GetRobotConfig, SetRobotConfig
+    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute, WebSetSocket, GetRobotConfig, SetRobotConfig,
+    SetServerEnable
 }
 public record BuildOBJ
 {
