@@ -1,0 +1,65 @@
+﻿#region 程序集 MQTTnet, Version=4.0.1.184, Culture=neutral, PublicKeyToken=fdb7629f2e364a63
+// C:\Users\40206\.nuget\packages\mqttnet\4.0.1.184\lib\net6.0\MQTTnet.dll
+#endregion
+
+using MQTTnet.Packets;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+
+namespace MQTTnet.Server
+{
+    public sealed class InterceptingSubscriptionEventArgs : EventArgs
+    {
+        public InterceptingSubscriptionEventArgs();
+
+        //
+        // 摘要:
+        //     Gets the cancellation token which can indicate that the client connection gets
+        //     down.
+        public CancellationToken CancellationToken { get; }
+        //
+        // 摘要:
+        //     Gets the client identifier. Hint: This identifier needs to be unique over all
+        //     used clients / devices on the broker to avoid connection issues.
+        public string ClientId { get; }
+        //
+        // 摘要:
+        //     Gets or sets whether the broker should close the client connection.
+        public bool CloseConnection { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets whether the broker should create an internal subscription for the
+        //     client. The broker can also avoid this and return "success" to the client. This
+        //     feature allows using the MQTT Broker as the Frontend and another system as the
+        //     backend.
+        public bool ProcessSubscription { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the reason string which will be sent to the client in the SUBACK
+        //     packet.
+        public string ReasonString { get; set; }
+        //
+        // 摘要:
+        //     Gets the response which will be sent to the client via the SUBACK packet.
+        public SubscribeResponse Response { get; }
+        //
+        // 摘要:
+        //     Gets the current client session.
+        public MqttSessionStatus Session { get; }
+        //
+        // 摘要:
+        //     Gets or sets a key/value collection that can be used to share data within the
+        //     scope of this session.
+        public IDictionary SessionItems { get; }
+        //
+        // 摘要:
+        //     Gets or sets the topic filter. The topic filter can contain topics and wildcards.
+        public MqttTopicFilter TopicFilter { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the user properties.
+        public List<MqttUserProperty> UserProperties { get; set; }
+    }
+}

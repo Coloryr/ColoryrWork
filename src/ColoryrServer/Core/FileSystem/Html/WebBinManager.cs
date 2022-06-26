@@ -10,9 +10,9 @@ public static class WebBinManager
 
     public static StaticDir BaseDir { get; private set; }
 
-    public static byte[] GetFile(string[] url, int index)
+    public static byte[] GetFile(string[] url)
     {
-        return BaseDir.GetFile(url, index);
+        return BaseDir.GetFile(url, 0);
     }
 
     public static HttpResponseStream GetStream(HttpDllRequest request, string arg)

@@ -39,7 +39,7 @@ internal class SocketView : CodeListView
             return;
         var res = new ChoseWindow("选择类型", "是否是Netty项目").Set();
 
-        var list = await App.HttpUtils.Add(Type, data, res.ToString());
+        var list = await App.HttpUtils.AddObj(Type, data, res.ToString());
         if (list == null)
         {
             App.LogShow("添加", "服务器返回错误");
@@ -68,7 +68,7 @@ internal class SocketView : CodeListView
         var res = new ChoseWindow("删除确认", "是否要删除").Set();
         if (res)
         {
-            var data = await App.HttpUtils.Remove(Type, item);
+            var data = await App.HttpUtils.RemoveObj(Type, item);
             if (data == null)
             {
                 App.LogShow("删除", "服务器返回错误");

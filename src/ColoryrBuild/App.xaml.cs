@@ -26,7 +26,7 @@ public partial class App : Application
     /// </summary>
     public static string RunLocal { get; private set; }
 
-    public static HttpUtils HttpUtils;
+    public static HttpBuild HttpUtils;
     public static bool IsLogin { get; private set; }
     public static ConfigObj Config { get; private set; }
     public static MainWindow MainWindow_;

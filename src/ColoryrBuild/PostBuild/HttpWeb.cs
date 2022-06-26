@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
 
-public partial class HttpUtils : HttpUtilsBase
+public partial class HttpBuild : HttpUtilsBase
 {
     /// <summary>
     /// 设置Vue项目
@@ -117,6 +117,30 @@ public partial class HttpUtils : HttpUtilsBase
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public async Task<ReMessage> WebDownloadFile(WebObj obj, string name)
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebDownloadFile,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = name
+        });
+        if (!CheckLogin(data))
+        {
+            return await WebDownloadFile(obj, name);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
     public async Task<ReMessage> AddWeb(string name, bool IsVue)
     {
         try

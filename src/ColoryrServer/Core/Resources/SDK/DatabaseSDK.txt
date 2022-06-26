@@ -1,4 +1,4 @@
-using ColoryrServer.DataBase;
+using ColoryrServer.Core.DataBase;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
@@ -8,23 +8,21 @@ using System.Data.SqlClient;
 
 namespace ColoryrServer.SDK;
 
-public class Mysql
+public partial class Mysql
 {
     private string Database;
     private int ID;
     /// <summary>
     /// Mysql数据库
     /// </summary>
-    /// <param name="Database">数据库名</param>
-    /// <param name="ID">数据库ID</param>
-    public Mysql(string Database, int ID = 0)
+    /// <param name="database">数据库名</param>
+    /// <param name="id">数据库ID</param>
+    public Mysql(string database = "", int id = 0)
     {
-        this.ID = ID;
-        this.Database = Database;
-        if (!MysqlCon.Contains(ID))
-            throw new ErrorDump($"没有Mysql数据库{ID}");
-        if (string.IsNullOrWhiteSpace(Database))
-            throw new ErrorDump("没有选择数据库");
+        ID = id;
+        Database = database;
+        if (!MysqlCon.Contains(id))
+            throw new ErrorDump($"没有Mysql数据库{id}");
     }
 
     /// <summary>
@@ -138,24 +136,21 @@ public class Mysql
     }
 }
 
-public class MSsql
+public partial class MSsql
 {
     private string Database;
     private int ID;
     /// <summary>
     /// MSsql数据库
     /// </summary>
-    /// <param name="Database">数据库名</param>
-    /// <param name="ID">数据库ID</param>
-    public MSsql(string Database, int ID = 0)
+    /// <param name="database">数据库名</param>
+    /// <param name="id">数据库ID</param>
+    public MSsql(string database = "", int id = 0)
     {
-        this.Database = Database;
-        this.ID = ID;
-        if (!MSCon.Contains(ID))
-            throw new ErrorDump($"没有MS数据库{ID}");
-        if (string.IsNullOrWhiteSpace(Database))
-            throw new ErrorDump("没有选择数据库");
-
+        Database = database;
+        ID = id;
+        if (!MSCon.Contains(id))
+            throw new ErrorDump($"没有MS数据库{id}");
     }
 
     /// <summary>
@@ -269,23 +264,21 @@ public class MSsql
     }
 }
 
-public class Oracle
+public partial class Oracle
 {
     private string Database;
     private int ID;
     /// <summary>
     /// MSsql数据库
     /// </summary>
-    /// <param name="Database">数据库名</param>
-    /// <param name="ID">数据库ID</param>
-    public Oracle(string Database = "", int ID = 0)
+    /// <param name="database">数据库名</param>
+    /// <param name="id">数据库ID</param>
+    public Oracle(string database = "", int id = 0)
     {
-        this.ID = ID;
-        if (!OracleCon.Contains(ID))
-            throw new ErrorDump($"没有Oracle数据库{ID}");
-        if (string.IsNullOrWhiteSpace(Database))
-            throw new ErrorDump("没有选择数据库");
-        this.Database = Database;
+        ID = id;
+        if (!OracleCon.Contains(id))
+            throw new ErrorDump($"没有Oracle数据库{id}");
+        Database = database;
     }
 
     /// <summary>
@@ -399,19 +392,19 @@ public class Oracle
     }
 }
 
-public class Redis
+public partial class Redis
 {
     private int ID;
     /// <summary>
     /// Redis数据库
     /// </summary>
-    /// <param name="ID">数据库ID</param>
-    public Redis(int ID = 0)
+    /// <param name="id">数据库ID</param>
+    public Redis(int id = 0)
     {
-        this.ID = ID;
-        if (!RedisCon.State.ContainsKey(ID))
-            throw new ErrorDump($"没有Redis数据库{ID}");
-        if (RedisCon.State[ID] == false)
+        ID = id;
+        if (!RedisCon.State.ContainsKey(id))
+            throw new ErrorDump($"没有Redis数据库{id}");
+        if (RedisCon.State[id] == false)
             throw new ErrorDump("Redis没有链接");
     }
     /// <summary>
@@ -459,10 +452,10 @@ public partial class RamData
     /// <summary>
     /// 启用缓存
     /// </summary>
-    /// <param name="Name">缓存名</param>
-    public RamData(string Name, bool save = false)
+    /// <param name="name">缓存名</param>
+    public RamData(string name, bool save = false)
     {
-        this.Name = RamDataBase.NewCache(Name);
+        Name = RamDataBase.NewCache(name, save);
     }
     /// <summary>
     /// 获取值

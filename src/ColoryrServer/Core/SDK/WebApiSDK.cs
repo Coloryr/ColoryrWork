@@ -69,11 +69,11 @@ public abstract class HttpDllResponse
     /// <summary>
     /// 往返回头写数据
     /// </summary>
-    /// <param name="Key">键</param>
-    /// <param name="Value">值</param>
-    public HttpDllResponse AddHead(string Key, string Value)
+    /// <param name="key">键</param>
+    /// <param name="value">值</param>
+    public HttpDllResponse AddHead(string key, string value)
     {
-        Head.Add(Key, Value);
+        Head.Add(key, value);
         return this;
     }
 }

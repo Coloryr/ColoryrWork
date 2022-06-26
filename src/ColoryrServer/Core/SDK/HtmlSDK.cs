@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK;
 
-public class NewHttpHtml
+public partial class NewHttpHtml
 {
     public CancellationTokenSource Cancel;
     public CookieContainer Cookies { get; private set; }
@@ -18,13 +18,13 @@ public class NewHttpHtml
     private ExHttpClient Client;
     private Dictionary<string, string> Head;
 
-    public NewHttpHtml(CookieContainer Cookie = null,
-                CancellationTokenSource Cancel = null,
-                Dictionary<string, string> Head = null)
+    public NewHttpHtml(CookieContainer cookie = null,
+                CancellationTokenSource cancel = null,
+                Dictionary<string, string> head = null)
     {
-        this.Cancel = Cancel ?? new();
-        this.Cookies = Cookie ?? new();
-        this.Head = Head ?? new();
+        Cancel = cancel ?? new();
+        Cookies = cookie ?? new();
+        Head = head ?? new();
         Client = HttpClientUtils.Get();
     }
 
@@ -199,22 +199,22 @@ public class NewHttpHtml
         return result;
     }
 }
-public class HttpHtml
+public partial class HttpHtml
 {
     public CancellationTokenSource Cancel;
     private HttpClient Client;
 
     public WebProxy proxy { get; init; }
 
-    public HttpHtml(CookieContainer Cookie = null,
-                CancellationTokenSource Cancel = null,
-                Dictionary<string, string> Head = null)
+    public HttpHtml(CookieContainer cookie = null,
+                CancellationTokenSource cancel = null,
+                Dictionary<string, string> head = null)
     {
-        this.Cancel = Cancel ?? new();
-        Cookie ??= new();
+        Cancel = cancel ?? new();
+        cookie ??= new();
         var HttpClientHandler = new HttpClientHandler()
         {
-            CookieContainer = Cookie,
+            CookieContainer = cookie,
             Proxy = proxy
         };
         Client = new HttpClient(HttpClientHandler)
@@ -222,9 +222,9 @@ public class HttpHtml
             Timeout = TimeSpan.FromSeconds(5)
         };
         Client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
-        if (Head != null)
+        if (head != null)
         {
-            foreach (var item in Head)
+            foreach (var item in head)
             {
                 Client.DefaultRequestHeaders.Add(item.Key, item.Value);
             }
@@ -305,7 +305,7 @@ public class HttpHtml
         => Client.GetAsync(url, Cancel.Token).Result;
 }
 
-public class HtmlAsync
+public partial class HtmlAsync
 {
     private HttpClient Http;
     public CancellationTokenSource Cancel;
@@ -314,27 +314,27 @@ public class HtmlAsync
     /// http爬虫异步
     /// </summary>
     /// <param name="timeOut">请求超时时间</param>
-    /// <param name="Cookie">Cookie</param>
-    /// <param name="Cancel">取消请求</param>
-    /// <param name="Head">请求头</param>
-    public HtmlAsync(TimeSpan timeOut, CookieContainer Cookie = null,
-        CancellationTokenSource Cancel = null,
-        Dictionary<string, string> Head = null)
+    /// <param name="cookie">Cookie</param>
+    /// <param name="cancel">取消请求</param>
+    /// <param name="head">请求头</param>
+    public HtmlAsync(TimeSpan timeOut, CookieContainer cookie = null,
+        CancellationTokenSource cancel = null,
+        Dictionary<string, string> head = null)
     {
-        this.Cookie = Cookie ?? new();
-        this.Cancel = Cancel ?? new();
+        Cookie = cookie ?? new();
+        Cancel = cancel ?? new();
         var Handler = new HttpClientHandler()
         {
-            CookieContainer = Cookie
+            CookieContainer = cookie
         };
         Http = new(Handler)
         {
             Timeout = timeOut
         };
         Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
-        if (Head != null)
+        if (head != null)
         {
-            foreach (var Item in Head)
+            foreach (var Item in head)
             {
                 Http.DefaultRequestHeaders.Add(Item.Key, Item.Value);
             }
@@ -343,9 +343,7 @@ public class HtmlAsync
     /// <summary>
     /// http爬虫异步
     /// </summary>
-    public HtmlAsync() : this(TimeSpan.FromSeconds(10))
-    {
-    }
+    public HtmlAsync() : this(TimeSpan.FromSeconds(10)) { }
 
     ~HtmlAsync()
         => Http.Dispose();
@@ -423,7 +421,7 @@ public class HtmlAsync
     public async Task<HttpResponseMessage> GetData(string url)
         => await Http.GetAsync(url, Cancel.Token);
 }
-public class HtmlDoc
+public partial class HtmlDoc
 {
     public HtmlDocument html = new();
     /// <summary>
@@ -441,58 +439,58 @@ public class HtmlDoc
     /// <summary>
     /// 选择节点
     /// </summary>
-    /// <param name="NodeName">标签名</param>
-    /// <param name="ClassName">class名字</param>
+    /// <param name="node">标签名</param>
+    /// <param name="name">class名字</param>
     /// <returns></returns>
-    public List<HtmlNode> Select(string NodeName, string ClassName)
+    public List<HtmlNode> Select(string node, string name)
     {
         try
         {
-            return html.DocumentNode.Descendants(NodeName)
+            return html.DocumentNode.Descendants(node)
                     .Where(x => x.Attributes.Contains("class")
-                    && x.Attributes["class"].Value == ClassName)
+                    && x.Attributes["class"].Value == name)
                     .ToList();
         }
         catch
         {
-            throw new ErrorDump("选择" + NodeName + "_Class:" + ClassName + "出错");
+            throw new ErrorDump("选择" + node + "_Class:" + name + "出错");
         }
     }
     /// <summary>
     /// 选择节点
     /// </summary>
-    /// <param name="NodeName">标签名</param>
-    /// <param name="AttributesName">元素名字</param>
-    /// <param name="Attributes">元素</param>
+    /// <param name="node">标签名</param>
+    /// <param name="name">元素名字</param>
+    /// <param name="attributes">元素</param>
     /// <returns></returns>
-    public List<HtmlNode> Select(string NodeName, string AttributesName, string Attributes)
+    public List<HtmlNode> Select(string node, string name, string attributes)
     {
         try
         {
-            return html.DocumentNode.Descendants(NodeName)
-                    .Where(x => x.Attributes.Contains(AttributesName)
-                    && x.Attributes[AttributesName].Value == Attributes)
+            return html.DocumentNode.Descendants(node)
+                    .Where(x => x.Attributes.Contains(name)
+                    && x.Attributes[name].Value == attributes)
                     .ToList();
         }
         catch (Exception e)
         {
-            throw new ErrorDump("选择" + NodeName + "_" + NodeName + ":" + Attributes + "出错", e);
+            throw new ErrorDump("选择" + node + "_" + node + ":" + attributes + "出错", e);
         }
     }
     /// <summary>
     /// 选择节点
     /// </summary>
-    /// <param name="NodeName">标签名</param>
+    /// <param name="node">标签名</param>
     /// <returns></returns>
-    public List<HtmlNode> Select(string NodeName)
+    public List<HtmlNode> Select(string node)
     {
         try
         {
-            return html.DocumentNode.Descendants(NodeName).ToList();
+            return html.DocumentNode.Descendants(node).ToList();
         }
         catch (Exception e)
         {
-            throw new ErrorDump("选择" + NodeName + "出错", e);
+            throw new ErrorDump("选择" + node + "出错", e);
         }
     }
 }

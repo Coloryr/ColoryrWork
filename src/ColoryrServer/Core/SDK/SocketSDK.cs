@@ -1,22 +1,34 @@
 ﻿using ColoryrServer.Core.IoT;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace ColoryrServer.SDK;
 
-public class TcpSocketRequest
+public partial class TcpSocketRequest
 {
-    public int Port { get; init; }
+    /// <summary>
+    /// 端口
+    /// </summary>
+    public IPEndPoint Port { get; init; }
+    /// <summary>
+    /// 数据
+    /// </summary>
     public byte[] Data { get; init; }
+    /// <summary>
+    /// 长度
+    /// </summary>
+    public int Length { get; set; }
     /// <summary>
     /// 构造方法
     /// </summary>
-    /// <param name="Port">Socket端口</param>
-    /// <param name="Data">Socket发送的数据</param>
-    public TcpSocketRequest(int Port, byte[] Data)
+    /// <param name="port">Socket端口</param>
+    /// <param name="data">Socket发送的数据</param>
+    public TcpSocketRequest(IPEndPoint port, byte[] data, int length)
     {
-        this.Port = Port;
-        this.Data = Data;
+        Port = port;
+        Data = data;
+        Length = length;
     }
     /// <summary>
     /// 向Socket设备发送字符串
@@ -24,65 +36,72 @@ public class TcpSocketRequest
     /// <param name="Data">字符串</param>
     public void Send(string Data)
         => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
-    public void Send(int Port, string Data)
-        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
+    public void Send(IPEndPoint Port, string data)
+        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
-    /// <param name="Data">数据</param>
-    public void Send(byte[] Data)
-        => SocketServer.TcpSendData(Port, Data);
-    public void Send(int Port, byte[] Data)
-       => SocketServer.TcpSendData(Port, Data);
+    /// <param name="data">数据</param>
+    public void Send(byte[] data)
+        => SocketServer.TcpSendData(Port, data);
+    public void Send(IPEndPoint port, byte[] data)
+       => SocketServer.TcpSendData(port, data);
 }
-public class UdpSocketRequest
+public partial class UdpSocketRequest
 {
-    public int Port { get; init; }
+    /// <summary>
+    /// 端口
+    /// </summary>
+    public IPEndPoint Port { get; init; }
+    /// <summary>
+    /// 数据
+    /// </summary>
     public byte[] Data { get; init; }
+    /// <summary>
+    /// 长度
+    /// </summary>
+    public int Length { get; set; }
     /// <summary>
     /// 构造方法
     /// </summary>
-    /// <param name="Port">Socket端口</param>
-    /// <param name="Data">Socket发送的数据</param>
-    public UdpSocketRequest(int Port, byte[] Data)
+    /// <param name="port">Socket端口</param>
+    /// <param name="data">Socket发送的数据</param>
+    public UdpSocketRequest(IPEndPoint port, byte[] data, int length)
     {
-        this.Port = Port;
-        this.Data = Data;
+        Port = port;
+        Data = data;
+        Length = length;
     }
     /// <summary>
     /// 向Socket设备发送字符串
     /// </summary>
-    /// <param name="Data">字符串</param>
-    public void Send(string Data)
-        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(Data));
-    public void Send(int Port, string Data)
-        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(Data));
+    /// <param name="data">字符串</param>
+    public void Send(string data)
+        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(data));
+    public void Send(IPEndPoint port, string Data)
+        => SocketServer.UdpSendData(port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
-    /// <param name="Data">数据</param>
-    public void Send(byte[] Data)
-       => SocketServer.UdpSendData(Port, Data);
-    public void Send(int Port, byte[] Data)
-       => SocketServer.UdpSendData(Port, Data);
+    /// <param name="data">数据</param>
+    public void Send(byte[] data)
+       => SocketServer.UdpSendData(Port, data);
+    public void Send(IPEndPoint port, byte[] data)
+       => SocketServer.UdpSendData(port, data);
 }
 
-public class TcpSocket
+public static class SocketUtils
 {
     /// <summary>
     /// 获取Socket设备列表
     /// </summary>
     /// <returns>设备列表</returns>
-    public static List<int> GetList()
+    public static List<IPEndPoint> GetTcpList()
         => SocketServer.GetTcpList();
-}
-
-public class UdpSocket
-{
     /// <summary>
     /// 获取Socket设备列表
     /// </summary>
     /// <returns>设备列表</returns>
-    public static List<int> GetList()
+    public static List<IPEndPoint> GetUdpList()
         => SocketServer.GetUdpList();
 }

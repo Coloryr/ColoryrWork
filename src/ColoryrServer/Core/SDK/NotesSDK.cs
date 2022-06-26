@@ -9,11 +9,11 @@ public class NotesSDK : Attribute
     public string[] Input;
     public string[] Output;
 
-    public NotesSDK(string Text, string[] Input = null, string[] Output = null)
+    public NotesSDK(string text, string[] input = null, string[] output = null)
     {
-        this.Text = Text;
-        this.Input = Input ?? new string[1];
-        this.Output = Output ?? new string[1];
+        Text = text;
+        Input = input ?? new string[1];
+        Output = output ?? new string[1];
     }
 }
 

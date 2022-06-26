@@ -3,6 +3,21 @@ using Fleck;
 
 namespace ColoryrServer.SDK;
 
+public static class WebSocketUtils
+{
+    /// <summary>
+    /// 发送数据
+    /// </summary>
+    /// <param name="info">接口</param>
+    /// <param name="data">数据</param>
+    public static void Send(IWebSocketConnectionInfo info, string data)
+        => ServerWebSocket.Send(info.ClientPort, data);
+    public static void Send(IWebSocketConnectionInfo info, byte[] data)
+        => ServerWebSocket.Send(info.ClientPort, data);
+    public static void Close(IWebSocketConnectionInfo info)
+        => ServerWebSocket.Close(info.ClientPort);
+}
+
 public class WebSocketMessage
 {
     public bool IsAvailable { get; init; }
@@ -11,20 +26,14 @@ public class WebSocketMessage
     /// <summary>
     /// WebSocket传来数据
     /// </summary>
-    /// <param name="Client">WS客户端</param>
-    /// <param name="Data">WS本次传来的数据</param>
-    public WebSocketMessage(IWebSocketConnection Client, string Data)
+    /// <param name="client">WS客户端</param>
+    /// <param name="data">WS本次传来的数据</param>
+    public WebSocketMessage(IWebSocketConnection client, string data)
     {
-        IsAvailable = Client.IsAvailable;
-        Info = Client.ConnectionInfo;
-        this.Data = Data;
+        IsAvailable = client.IsAvailable;
+        Info = client.ConnectionInfo;
+        Data = data;
     }
-    public void Send(string data)
-        => ServerWebSocket.Send(Info.ClientPort, data);
-    public void Send(byte[] data)
-        => ServerWebSocket.Send(Info.ClientPort, data);
-    public void Close()
-        => ServerWebSocket.Close(Info.ClientPort);
 }
 public class WebSocketOpen
 {
@@ -33,23 +42,17 @@ public class WebSocketOpen
     /// <summary>
     /// WebSocket连接
     /// </summary>
-    /// <param name="Client">WS客户端</param>
-    public WebSocketOpen(IWebSocketConnection Client)
+    /// <param name="client">WS客户端</param>
+    public WebSocketOpen(IWebSocketConnection client)
     {
-        IsAvailable = Client.IsAvailable;
-        Info = Client.ConnectionInfo;
+        IsAvailable = client.IsAvailable;
+        Info = client.ConnectionInfo;
     }
-    public WebSocketOpen(bool IsAvailable, IWebSocketConnectionInfo Info)
+    public WebSocketOpen(bool isAvailable, IWebSocketConnectionInfo info)
     {
-        this.IsAvailable = IsAvailable;
-        this.Info = Info;
+        IsAvailable = isAvailable;
+        Info = info;
     }
-    public void Send(string data)
-        => ServerWebSocket.Send(Info.ClientPort, data);
-    public void Send(byte[] data)
-        => ServerWebSocket.Send(Info.ClientPort, data);
-    public void Close()
-        => ServerWebSocket.Close(Info.ClientPort);
 }
 public class WebSocketClose
 {
@@ -57,9 +60,9 @@ public class WebSocketClose
     /// <summary>
     /// WebSocket断开
     /// </summary>
-    /// <param name="Client">WS客户端</param>
-    public WebSocketClose(IWebSocketConnection Client)
-        => Info = Client.ConnectionInfo;
-    public WebSocketClose(IWebSocketConnectionInfo Info)
-        => this.Info = Info;
+    /// <param name="client">WS客户端</param>
+    public WebSocketClose(IWebSocketConnection client)
+        => Info = client.ConnectionInfo;
+    public WebSocketClose(IWebSocketConnectionInfo info)
+        => Info = info;
 }

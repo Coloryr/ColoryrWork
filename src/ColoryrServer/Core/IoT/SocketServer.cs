@@ -13,8 +13,8 @@ internal static class SocketServer
 {
     private static TcpListener TcpServer;
     private static Socket UdpServer;
-    private static readonly Dictionary<int, Socket> TcpClients = new();
-    private static readonly Dictionary<int, EndPoint> UdpClients = new();
+    private static readonly Dictionary<IPEndPoint, Socket> TcpClients = new();
+    private static readonly Dictionary<IPEndPoint, EndPoint> UdpClients = new();
     private static readonly ReaderWriterLockSlim Lock1 = new();
     private static readonly ReaderWriterLockSlim Lock2 = new();
 
@@ -31,9 +31,9 @@ internal static class SocketServer
             var ip = IPAddress.Parse(ServerMain.Config.Socket.IP);
             TcpServer = new TcpListener(ip, ServerMain.Config.Socket.Port);
             TcpServer.Start();
-            ServerMain.LogOut($"Socket服务器监听{ServerMain.Config.Socket.IP}:{ServerMain.Config.Socket.Port}");
             UdpServer = new Socket(SocketType.Dgram, ProtocolType.Udp);
             UdpServer.Bind(new IPEndPoint(ip, ServerMain.Config.Socket.Port));
+            ServerMain.LogOut($"Socket服务器监听{ServerMain.Config.Socket.IP}:{ServerMain.Config.Socket.Port}");
 
             RunFlag = true;
 
@@ -67,10 +67,12 @@ internal static class SocketServer
                         int length = UdpServer.ReceiveFrom(buffer, ref point);//接收数据报
                         if (point is IPEndPoint temp)
                         {
-                            UdpClients.Add(temp.Port, temp);
+                            UdpClients.Remove(temp);
+                            UdpClients.Add(temp, point);
+                            ServerMain.LogOut("Socket|Udp:" + temp + " 已连接");
                             Task.Run(() =>
                             {
-                                DllRun.SocketGo(new UdpSocketRequest(temp.Port, buffer));
+                                DllRun.SocketGo(new UdpSocketRequest(temp, buffer, length));
                             });
                         }
                     }
@@ -118,33 +120,32 @@ internal static class SocketServer
     {
         try
         {
-            byte[] Data;
-            var Client = (Socket)temp;
-            int Port = 0;
-            if (Client == null || !Client.Connected)
+            byte[] data;
+            var client = temp as Socket;
+            IPEndPoint port = null;
+            if (client == null || !client.Connected)
             {
-                Client.Dispose();
-                var ip = (IPEndPoint)Client.RemoteEndPoint;
-                Port = ip.Port;
-                Remove(Port);
+                client.Dispose();
+                port = client.RemoteEndPoint as IPEndPoint;
+                Remove(port);
                 return;
             }
-            Add(Port, Client);
+            Add(port, client);
             while (true)
             {
-                if (!RunFlag || Client == null || Client.Available == -1)
+                if (!RunFlag || client == null || client.Available == -1)
                 {
-                    Client.Dispose();
-                    Remove(Port);
+                    client.Dispose();
+                    Remove(port);
                     return;
                 }
-                else if (Client.Available != 0)
+                else if (client.Available != 0)
                 {
-                    Data = new byte[Client.Available];
-                    Client.Receive(Data);
+                    data = new byte[client.Available];
+                    client.Receive(data);
                     Task.Run(() =>
                     {
-                        DllRun.SocketGo(new TcpSocketRequest(Port, Data));
+                        DllRun.SocketGo(new TcpSocketRequest(port, data, client.Available));
                     });
                 }
                 Thread.Sleep(100);
@@ -156,57 +157,33 @@ internal static class SocketServer
         }
     }
 
-    private static void Add(int Port, Socket Client)
-    {
-        if (Client.ProtocolType == ProtocolType.Tcp)
-        {
-            Lock1.EnterWriteLock();
-            try
-            {
-                if (Port != 0)
-                {
-                    if (TcpClients.ContainsKey(Port))
-                    {
-                        TcpClients[Port].Dispose();
-                        TcpClients.Remove(Port);
-                    }
-                    ServerMain.LogOut("Socket|Tcp:" + Port + " 已连接");
-                }
-                TcpClients.Add(Port, Client);
-            }
-            finally
-            {
-                Lock1.ExitWriteLock();
-            }
-        }
-        else if (Client.ProtocolType == ProtocolType.Udp)
-        {
-            Lock2.EnterWriteLock();
-            try
-            {
-                if (Port != 0)
-                {
-                    if (TcpClients.ContainsKey(Port))
-                    {
-                        TcpClients[Port].Dispose();
-                        TcpClients.Remove(Port);
-                    }
-                    ServerMain.LogOut("Socket|Udp:" + Port + " 已连接");
-                }
-                TcpClients.Add(Port, Client);
-            }
-            finally
-            {
-                Lock2.ExitWriteLock();
-            }
-        }
-    }
-    private static void Remove(int port)
+    private static void Add(IPEndPoint port, Socket client)
     {
         Lock1.EnterWriteLock();
         try
         {
-            if (port != 0)
+            if (port != null)
+            {
+                if (TcpClients.ContainsKey(port))
+                {
+                    TcpClients[port].Dispose();
+                    TcpClients.Remove(port);
+                }
+                TcpClients.Add(port, client);
+                ServerMain.LogOut("Socket|Tcp:" + port + " 已连接");
+            }
+        }
+        finally
+        {
+            Lock1.ExitWriteLock();
+        }
+    }
+    private static void Remove(IPEndPoint port)
+    {
+        Lock1.EnterWriteLock();
+        try
+        {
+            if (port != null)
             {
                 TcpClients.Remove(port);
                 ServerMain.LogOut("Socket|Tcp:" + port + " 已断开");
@@ -218,7 +195,7 @@ internal static class SocketServer
         }
     }
 
-    public static void TcpSendData(int port, byte[] data)
+    public static void TcpSendData(IPEndPoint port, byte[] data)
     {
         if (TcpClients.TryGetValue(port, out var socket))
         {
@@ -233,7 +210,7 @@ internal static class SocketServer
             }
         }
     }
-    public static void UdpSendData(int port, byte[] data)
+    public static void UdpSendData(IPEndPoint port, byte[] data)
     {
         if (UdpClients.TryGetValue(port, out var socket))
         {
@@ -241,13 +218,13 @@ internal static class SocketServer
         }
     }
 
-    public static List<int> GetTcpList()
+    public static List<IPEndPoint> GetTcpList()
     {
-        return new List<int>(TcpClients.Keys);
+        return new List<IPEndPoint>(TcpClients.Keys);
     }
 
-    public static List<int> GetUdpList()
+    public static List<IPEndPoint> GetUdpList()
     {
-        return new List<int>(UdpClients.Keys);
+        return new List<IPEndPoint>(UdpClients.Keys);
     }
 }

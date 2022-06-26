@@ -1,85 +1,30 @@
-using ColoryrServer.FileSystem;
-using System;
+using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.Http;
+using DotNetty.Codecs.Http;
 
 namespace ColoryrServer.SDK;
 
-public class WebHtml
+public static class WebHtml
 {
     /// <summary>
-    /// 向前端添加Web资源
+    /// 获取动态前端资源
     /// </summary>
-    /// <param name="uuid">资源UUID</param>
-    /// <param name="name">名字</param>
-    /// <param name="code">内容</param>
-    public static void AddHtml(string uuid, string name, string code)
+    /// <param name="uuid"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static byte[] GetWebFile(string uuid, string name)
     {
-        var web = HtmlUtils.GetHtml(uuid);
-        if (web == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            web = new()
-            {
-                UUID = uuid,
-                CreateTime = time,
-                Text = "",
-                Codes = new()
-                {
-                    { name, code }
-                },
-                Files = new()
-            };
-            HtmlUtils.New(web);
-        }
-        else
-        {
-            if (!web.Codes.ContainsKey(name))
-                HtmlUtils.AddCode(web, name, code);
-            else
-            {
-                HtmlUtils.Save(web, name, code);
-            }
-        }
+        var route = HttpInvokeRoute.Get(uuid);
+        return route.Invoke(null, name).Data as byte[];
     }
     /// <summary>
-    /// 向前端添加Web文件
-    /// </summary>
-    /// <param name="uuid">资源UUID</param>
-    /// <param name="name">名字</param>
-    /// <param name="code">内容</param>
-    public static void AddFile(string uuid, string name, byte[] code)
-    {
-        var web = HtmlUtils.GetHtml(uuid);
-        if (web == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            web = new()
-            {
-                UUID = uuid,
-                CreateTime = time,
-                Text = "",
-                Codes = new(),
-                Files = new()
-            };
-            HtmlUtils.New(web);
-        }
-        else
-        {
-            if (!web.Codes.ContainsKey(name))
-                HtmlUtils.AddFile(web, name, code);
-            else
-            {
-                HtmlUtils.SaveFile(web, name, code);
-            }
-        }
-    }
-    /// <summary>
-    /// 获取前端资源
+    /// 获取静态前端资源
     /// </summary>
     /// <param name="uuid">资源UUID</param>
     /// <param name="name">名字</param>
     /// <returns></returns>
-    public static byte[] GetWeb(string uuid, string name)
+    public static byte[] GetStaticWebFile(string[] uuid)
     {
-        return HtmlUtils.GetFile(uuid, name);
+        return WebBinManager.GetFile(uuid);
     }
 }

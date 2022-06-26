@@ -9,10 +9,10 @@ public static class MqttSDK
     /// <summary>
     /// 发送消息
     /// </summary>
-    /// <param name="Topic">标题</param>
+    /// <param name="topic">标题</param>
     /// <param name="data">数据</param>
-    public static void Send(string Topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
-        => MQTTServer.Send(Topic, data, level);
+    public static void Send(string topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => MQTTServer.Send(topic, data, level);
 }
 
 public class DllMqttLoadingRetainedMessages
@@ -21,9 +21,9 @@ public class DllMqttLoadingRetainedMessages
     /// <summary>
     /// MQTT加载信息
     /// </summary>
-    /// <param name="Context">数据</param>
-    public DllMqttLoadingRetainedMessages(LoadingRetainedMessagesEventArgs Context)
-        => this.Context = Context;
+    /// <param name="context">数据</param>
+    public DllMqttLoadingRetainedMessages(LoadingRetainedMessagesEventArgs context)
+        => Context = context;
 }
 
 public class DllMqttConnectionValidator
@@ -32,9 +32,9 @@ public class DllMqttConnectionValidator
     /// <summary>
     /// MQTT服务器验证
     /// </summary>
-    /// <param name="Context">数据</param>
-    public DllMqttConnectionValidator(ValidatingConnectionEventArgs Context)
-        => this.Context = Context;
+    /// <param name="context">数据</param>
+    public DllMqttConnectionValidator(ValidatingConnectionEventArgs context)
+        => Context = context;
     /// <summary>
     /// 设置验证后的返回
     /// </summary>
@@ -60,9 +60,9 @@ public class DllMqttSubscription
     /// <summary>
     /// Mqtt订阅
     /// </summary>
-    /// <param name="Context">数据</param>
-    public DllMqttSubscription(InterceptingSubscriptionEventArgs Context)
-       => this.Context = Context;
+    /// <param name="context">数据</param>
+    public DllMqttSubscription(InterceptingSubscriptionEventArgs context)
+       => Context = context;
     /// <summary>
 }
 
@@ -72,7 +72,7 @@ public class DllMqttUnsubscription
     /// <summary>
     /// Mqtt取消订阅
     /// </summary>
-    /// <param name="Context">数据</param>
-    public DllMqttUnsubscription(InterceptingUnsubscriptionEventArgs Context)
-       => this.Context = Context;
+    /// <param name="context">数据</param>
+    public DllMqttUnsubscription(InterceptingUnsubscriptionEventArgs context)
+       => Context = context;
 }

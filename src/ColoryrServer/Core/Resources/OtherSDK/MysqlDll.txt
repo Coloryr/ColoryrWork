@@ -1,0 +1,495 @@
+﻿#region 程序集 MySql.Data, Version=8.0.29.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d
+// C:\Users\40206\.nuget\packages\mysql.data\8.0.29\lib\net6.0\MySql.Data.dll
+#endregion
+
+using System;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Transactions;
+
+namespace MySql.Data.MySqlClient
+{
+    //
+    // 摘要:
+    //     Represents a connection to a MySQL Server database. This class cannot be inherited.
+    //
+    // 言论：
+    //     A MySql.Data.MySqlClient.MySqlConnection object represents a session to a MySQL
+    //     Server data source. When you create an instance of MySql.Data.MySqlClient.MySqlConnection,
+    //     all properties are set to their initial values.
+    //     If the MySql.Data.MySqlClient.MySqlConnection goes out of scope, it is not closed.
+    //     Therefore, you must explicitly close the connection by calling MySql.Data.MySqlClient.MySqlConnection.Close
+    //     or MySql.Data.MySqlClient.MySqlConnection.Dispose.
+    [DesignerCategory("Code")]
+    [ToolboxItem(true)]
+    public sealed class MySqlConnection : DbConnection, ICloneable
+    {
+        //
+        // 摘要:
+        //     Initializes a new instance of the MySql.Data.MySqlClient.MySqlConnection class.
+        //
+        // 言论：
+        //     You can read more about it here.
+        public MySqlConnection();
+        //
+        // 摘要:
+        //     Initializes a new instance of the MySql.Data.MySqlClient.MySqlConnection class
+        //     when given a string containing the connection string.
+        //
+        // 参数:
+        //   connectionString:
+        //     The connection properties used to open the MySQL database.
+        //
+        // 言论：
+        //     You can read more about it here.
+        public MySqlConnection(string connectionString);
+
+        ~MySqlConnection();
+
+        //
+        // 摘要:
+        //     Gets a boolean value that indicates whether the password associated to the connection
+        //     is expired.
+        public bool IsPasswordExpired { get; }
+        //
+        // 摘要:
+        //     Gets or sets the string used to connect to a MySQL Server database.
+        //
+        // 言论：
+        //     You can read more about it here.
+        [Browsable(true)]
+        [Category("Data")]
+        [Description("Information used to connect to a DataSource, such as 'Server=xxx;UserId=yyy;Password=zzz;Database=dbdb'.")]
+        public override string ConnectionString { get; set; }
+        //
+        // 摘要:
+        //     Gets a string containing the version of the MySQL server to which the client
+        //     is connected.
+        //
+        // 返回结果:
+        //     The version of the instance of MySQL.
+        //
+        // 异常:
+        //   T:System.InvalidOperationException:
+        //     The connection is closed.
+        [Browsable(false)]
+        public override string ServerVersion { get; }
+        //
+        // 摘要:
+        //     Gets the current state of the connection.
+        //
+        // 返回结果:
+        //     A bitwise combination of the System.Data.ConnectionState values. The default
+        //     is System.Data.ConnectionState.Closed.
+        //
+        // 言论：
+        //     The allowed state changes are:
+        //     • From System.Data.ConnectionState.Closed to System.Data.ConnectionState.Open,
+        //     using the System.Data.ConnectionState.Open method of the connection object.
+        //     • From Open to Closed, using either the Close method or the Dispose method of
+        //     the connection object.
+        [Browsable(false)]
+        public override ConnectionState State { get; }
+        //
+        // 摘要:
+        //     Indicates if this connection should use compression when communicating with the
+        //     server.
+        [Browsable(false)]
+        public bool UseCompression { get; }
+        //
+        // 摘要:
+        //     Gets the name of the current database or the database to be used after a connection
+        //     is opened.
+        //
+        // 返回结果:
+        //     The name of the current database or the name of the database to be used after
+        //     a connection is opened. The default value is an empty string.
+        //
+        // 言论：
+        //     The MySql.Data.MySqlClient.MySqlConnection.Database property does not update
+        //     dynamically. If you change the current database using a SQL statement, then this
+        //     property may reflect the wrong value. If you change the current database using
+        //     the MySql.Data.MySqlClient.MySqlConnection.ChangeDatabase(System.String) method,
+        //     this property is updated to reflect the new database.
+        [Browsable(true)]
+        public override string Database { get; }
+        //
+        // 摘要:
+        //     Gets the time to wait while trying to establish a connection before terminating
+        //     the attempt and generating an error.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     The value set is less than 0.
+        //
+        // 言论：
+        //     A value of 0 indicates no limit, and should be avoided in a MySql.Data.MySqlClient.MySqlConnection.ConnectionString
+        //     because an attempt to connect will wait indefinitely.
+        [Browsable(true)]
+        public override int ConnectionTimeout { get; }
+        //
+        // 摘要:
+        //     Gets the name of the MySQL server to which to connect.
+        [Browsable(true)]
+        public override string DataSource { get; }
+        //
+        // 摘要:
+        //     Returns the id of the server thread this connection is executing on
+        [Browsable(false)]
+        public int ServerThread { get; }
+        //
+        // 摘要:
+        //     Gets the instance of the MySql.Data.MySqlClient.MySqlClientFactory
+        protected override DbProviderFactory DbProviderFactory { get; }
+
+        //
+        // 摘要:
+        //     Occurs when FIDO authentication request to perform gesture action on a device.
+        public event FidoActionCallback FidoActionRequested;
+        //
+        // 摘要:
+        //     Occurs when MySQL returns warnings as a result of executing a command or query.
+        public event MySqlInfoMessageEventHandler InfoMessage;
+
+        //
+        // 摘要:
+        //     Clears all connection pools.
+        //
+        // 言论：
+        //     ClearAllPools essentially performs a MySql.Data.MySqlClient.MySqlConnection.ClearPool(MySql.Data.MySqlClient.MySqlConnection)
+        //     on all current connection pools.
+        public static void ClearAllPools();
+        //
+        // 摘要:
+        //     Empties the connection pool associated with the specified connection.
+        //
+        // 参数:
+        //   connection:
+        //     The MySql.Data.MySqlClient.MySqlConnection associated with the pool to be cleared.
+        //
+        // 言论：
+        //     MySql.Data.MySqlClient.MySqlConnection.ClearPool(MySql.Data.MySqlClient.MySqlConnection)
+        //     clears the connection pool that is associated with the connection. If additional
+        //     connections associated with connection are in use at the time of the call, they
+        //     are marked appropriately and are discarded (instead of being returned to the
+        //     pool) when MySql.Data.MySqlClient.MySqlConnection.Close is called on them.
+        public static void ClearPool(MySqlConnection connection);
+        public MySqlTransaction BeginTransaction();
+        public MySqlTransaction BeginTransaction(System.Data.IsolationLevel iso, string scope = "");
+        //
+        // 摘要:
+        //     Initiates the asynchronous execution of a transaction.
+        //
+        // 返回结果:
+        //     An object representing the new transaction.
+        public Task<MySqlTransaction> BeginTransactionAsync();
+        //
+        // 摘要:
+        //     Asynchronous version of BeginTransaction.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation token.
+        //
+        // 返回结果:
+        //     An object representing the new transaction.
+        public Task<MySqlTransaction> BeginTransactionAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Asynchronous version of BeginTransaction.
+        //
+        // 参数:
+        //   iso:
+        //     The isolation level under which the transaction should run.
+        //
+        // 返回结果:
+        //     An object representing the new transaction.
+        public Task<MySqlTransaction> BeginTransactionAsync(System.Data.IsolationLevel iso);
+        //
+        // 摘要:
+        //     Asynchronous version of BeginTransaction.
+        //
+        // 参数:
+        //   iso:
+        //     The isolation level under which the transaction should run.
+        //
+        //   cancellationToken:
+        //     The cancellation token.
+        //
+        // 返回结果:
+        //     An object representing the new transaction.
+        public Task<MySqlTransaction> BeginTransactionAsync(System.Data.IsolationLevel iso, CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Cancels the query after the specified time interval.
+        //
+        // 参数:
+        //   timeout:
+        //     The length of time (in seconds) to wait for the cancelation of the command execution.
+        public void CancelQuery(int timeout);
+        //
+        // 摘要:
+        //     Changes the current database for an open MySqlConnection.
+        //
+        // 参数:
+        //   databaseName:
+        //     The name of the database to use.
+        //
+        // 异常:
+        //   T:System.ArgumentException:
+        //     The database name is not valid.
+        //
+        //   T:System.InvalidOperationException:
+        //     The connection is not open.
+        //
+        //   T:MySql.Data.MySqlClient.MySqlException:
+        //     Cannot change the database.
+        //
+        // 言论：
+        //     The value supplied in the databaseName parameter must be a valid database name.
+        //     The databaseName parameter cannot contain a null value, an empty string, or a
+        //     string with only blank characters.
+        //     When you are using connection pooling against MySQL, and you close the connection,
+        //     it is returned to the connection pool. The next time the connection is retrieved
+        //     from the pool, the reset connection request executes before the user performs
+        //     any operations.
+        public override void ChangeDatabase(string databaseName);
+        //
+        // 摘要:
+        //     Asynchronous version of the ChangeDataBase method.
+        //
+        // 参数:
+        //   databaseName:
+        //     The name of the database to use.
+        //
+        //   cancellationToken:
+        //     The cancellation token.
+        public Task ChangeDataBaseAsync(string databaseName, CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Asynchronous version of the ChangeDataBase method.
+        //
+        // 参数:
+        //   databaseName:
+        //     The name of the database to use.
+        public Task ChangeDataBaseAsync(string databaseName);
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.ClearAllPools
+        //     method.
+        public Task ClearAllPoolsAsync();
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.ClearAllPools
+        //     method.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation token.
+        public Task ClearAllPoolsAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.ClearPool(MySql.Data.MySqlClient.MySqlConnection)
+        //     method.
+        //
+        // 参数:
+        //   connection:
+        //     The connection associated with the pool to be cleared.
+        //
+        //   cancellationToken:
+        //     The cancellation token.
+        public Task ClearPoolAsync(MySqlConnection connection, CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.ClearPool(MySql.Data.MySqlClient.MySqlConnection)
+        //     method.
+        //
+        // 参数:
+        //   connection:
+        //     The connection associated with the pool to be cleared.
+        public Task ClearPoolAsync(MySqlConnection connection);
+        //
+        // 摘要:
+        //     Creates a new MySqlConnection object with the exact same ConnectionString value
+        //
+        // 返回结果:
+        //     A cloned MySqlConnection object
+        public object Clone();
+        //
+        // 摘要:
+        //     Closes the connection to the database. This is the preferred method of closing
+        //     any open connection.
+        //
+        // 言论：
+        //     The MySql.Data.MySqlClient.MySqlConnection.Close method rolls back any pending
+        //     transactions. It then releases the connection to the connection pool, or closes
+        //     the connection if connection pooling is disabled.
+        //     An application can call MySql.Data.MySqlClient.MySqlConnection.Close more than
+        //     one time. No exception is generated.
+        public override void Close();
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.Close method.
+        //
+        // 参数:
+        //   cancellationToken:
+        //     The cancellation token.
+        public Task CloseAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Asynchronous version of the Close method.
+        public Task CloseAsync();
+        //
+        // 摘要:
+        //     Creates and returns a MySql.Data.MySqlClient.MySqlCommand object associated with
+        //     the MySql.Data.MySqlClient.MySqlConnection.
+        //
+        // 返回结果:
+        //     A MySql.Data.MySqlClient.MySqlCommand object.
+        public MySqlCommand CreateCommand();
+        //
+        // 摘要:
+        //     Releases the resources used by the MySql.Data.MySqlClient.MySqlConnection
+        public void Dispose();
+        //
+        // 摘要:
+        //     Enlists in the specified transaction.
+        //
+        // 参数:
+        //   transaction:
+        //     A reference to an existing System.Transactions.Transaction in which to enlist.
+        public override void EnlistTransaction(Transaction transaction);
+        //
+        // 摘要:
+        //     Returns schema information for the data source of this System.Data.Common.DbConnection.
+        //
+        // 返回结果:
+        //     A System.Data.DataTable that contains schema information.
+        public override DataTable GetSchema();
+        //
+        // 摘要:
+        //     Returns schema information for the data source of this System.Data.Common.DbConnection
+        //     using the specified string for the schema name.
+        //
+        // 参数:
+        //   collectionName:
+        //     Specifies the name of the schema to return.
+        //
+        // 返回结果:
+        //     A System.Data.DataTable that contains schema information.
+        public override DataTable GetSchema(string collectionName);
+        //
+        // 摘要:
+        //     Returns schema information for the data source of this System.Data.Common.DbConnection
+        //     using the specified string for the schema name and the specified string array
+        //     for the restriction values.
+        //
+        // 参数:
+        //   collectionName:
+        //     Specifies the name of the schema to return.
+        //
+        //   restrictionValues:
+        //     Specifies a set of restriction values for the requested schema.
+        //
+        // 返回结果:
+        //     A System.Data.DataTable that contains schema information.
+        public override DataTable GetSchema(string collectionName, string[] restrictionValues);
+        //
+        // 摘要:
+        //     Gets a schema collection based on the provided restriction values.
+        //
+        // 参数:
+        //   collectionName:
+        //     The name of the collection.
+        //
+        //   restrictionValues:
+        //     The values to restrict.
+        //
+        // 返回结果:
+        //     A schema collection object.
+        public MySqlSchemaCollection GetSchemaCollection(string collectionName, string[] restrictionValues);
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.GetSchemaCollection(System.String,System.String[])
+        //     method.
+        //
+        // 参数:
+        //   collectionName:
+        //     The name of the collection.
+        //
+        //   restrictionValues:
+        //     The values to restrict.
+        //
+        // 返回结果:
+        //     A collection of schema objects.
+        public Task<MySqlSchemaCollection> GetSchemaCollectionAsync(string collectionName, string[] restrictionValues);
+        //
+        // 摘要:
+        //     Asynchronous version of the MySql.Data.MySqlClient.MySqlConnection.GetSchemaCollection(System.String,System.String[])
+        //     method.
+        //
+        // 参数:
+        //   collectionName:
+        //     The name of the collection.
+        //
+        //   restrictionValues:
+        //     The values to restrict.
+        //
+        //   cancellationToken:
+        //     The cancellation token.
+        //
+        // 返回结果:
+        //     A collection of schema objects.
+        public Task<MySqlSchemaCollection> GetSchemaCollectionAsync(string collectionName, string[] restrictionValues, CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Opens a database connection with the property settings specified by the MySql.Data.MySqlClient.MySqlConnection.ConnectionString.
+        //
+        // 异常:
+        //   T:System.InvalidOperationException:
+        //     Cannot open a connection without specifying a data source or server.
+        //
+        //   T:MySql.Data.MySqlClient.MySqlException:
+        //     A connection-level error occurred while opening the connection.
+        //
+        // 言论：
+        //     The MySql.Data.MySqlClient.MySqlConnection draws an open connection from the
+        //     connection pool if one is available. Otherwise, it establishes a new connection
+        //     to an instance of MySQL.
+        public override void Open();
+        //
+        // 摘要:
+        //     Executes the MySql.Data.MySqlClient.MySqlConnection.Open method as a Task.
+        public override Task OpenAsync(CancellationToken cancellationToken);
+        //
+        // 摘要:
+        //     Pings the server.
+        //
+        // 返回结果:
+        //     true if the ping was successful; otherwise, false.
+        public bool Ping();
+        //
+        // 摘要:
+        //     Starts a database transaction.
+        //
+        // 参数:
+        //   isolationLevel:
+        //     Specifies the isolation level for the transaction.
+        //
+        // 返回结果:
+        //     An object representing the new transaction.
+        protected override DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel);
+        //
+        // 摘要:
+        //     Creates and returns a System.Data.Common.DbCommand object associated with the
+        //     current connection.
+        //
+        // 返回结果:
+        //     A System.Data.Common.DbCommand object.
+        protected override DbCommand CreateDbCommand();
+        protected override void Dispose(bool disposing);
+    }
+}

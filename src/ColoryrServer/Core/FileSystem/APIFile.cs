@@ -20,5 +20,20 @@ internal static class APIFile
         list.List.Add("RobotPacks", SDKResource.RobotPacks);
         list.List.Add("MqttSDK", SDKResource.MqttSDK);
         list.List.Add("WebHtmlSDK", SDKResource.WebHtmlSDK);
+
+        list.List.Add("MysqlDll", OtherSDKResource.MysqlDll);
+        list.List.Add("SqlClientDll", OtherSDKResource.SqlClientDll);
+        list.List.Add("OracleDll", OtherSDKResource.OracleDll);
+        list.List.Add("RedisDll", OtherSDKResource.RedisDll);
+        list.List.Add("WebSocketDll", OtherSDKResource.WebSocketDll);
+        list.List.Add("HtmlDll", OtherSDKResource.HtmlDll);
+        list.List.Add("HtmlDll1", OtherSDKResource.HtmlDll1);
+        list.List.Add("MqttDll", OtherSDKResource.MqttDll);
+        list.List.Add("MqttDll1", OtherSDKResource.MqttDll1);
+        list.List.Add("MqttDll2", OtherSDKResource.MqttDll2);
+        list.List.Add("MqttDll3", OtherSDKResource.MqttDll3);
+        list.List.Add("MqttDll4", OtherSDKResource.MqttDll4);
+        list.List.Add("MqttDll5", OtherSDKResource.MqttDll5);
+        list.List.Add("MqttDll6", OtherSDKResource.MqttDll6);
     }
 }

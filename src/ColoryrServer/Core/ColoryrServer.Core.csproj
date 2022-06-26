@@ -63,6 +63,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DemoWebResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="OtherSDKResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OtherSDKResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="SDKResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -89,6 +94,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DemoWebResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="OtherSDKResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OtherSDKResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="SDKResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SDKResource.Designer.cs</LastGenOutput>
@@ -106,7 +115,6 @@
   <ItemGroup>
     <Folder Include="OLD\" />
     <Folder Include="Resources\Demo\Vue\" />
-    <Folder Include="Resources\OtherSDK\" />
   </ItemGroup>
 
   <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />

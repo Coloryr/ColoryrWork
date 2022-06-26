@@ -1,8 +1,9 @@
-using ColoryrServer.DllManager;
-using ColoryrServer.FileSystem;
-using ColoryrServer.Robot;
-using ColoryrServer.Utils;
-using ColoryrServer.WebSocket;
+using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Robot;
+using ColoryrServer.Core.Utils;
+using ColoryrServer.Core.WebSocket;
+using DotNetty.Transport.Channels;
 using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,6 +15,17 @@ using System.Text;
 
 namespace ColoryrServer.SDK;
 
+/// <summary>
+/// Netty接口
+/// </summary>
+public abstract class INetty
+{
+    public abstract void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup);
+    public abstract void Stop();
+}
+/// <summary>
+/// Http请求文件类型
+/// </summary>
 public partial class HttpMultipartFile
 {
     public Stream Data { get; set; }
@@ -21,12 +33,16 @@ public partial class HttpMultipartFile
     public string ContentType { get; set; }
     public string ContentDisposition { get; set; }
 }
+/// <summary>
+/// Http返回体类型
+/// </summary>
 public partial class ServerContentType
 {
     public const string OSTREAM = "application/octet-stream";
     public const string POSTXFORM = "application/x-www-form-urlencoded";
-    public const string JPG = "application/x-jpg";
     public const string POSTFORMDATA = "multipart/form-data";
+
+    public const string JPG = "application/x-jpg";
     public const string JSON = "application/json";
     public const string XML = "application/xml";
     public const string HTML = "text/html";
@@ -38,9 +54,16 @@ public partial class ServerContentType
     public const string MP3 = "audio/mp3";
     public const string MP4 = "video/mpeg4";
     public const string GIF = "image/gif";
-    public const string ICO = "application/x-ico";
-
-    public static string GetType(string type)
+    public const string ICO = "application/x-icon";
+    public const string JS = "application/x-javascript";
+    public const string TXT = "text/plain";
+    /// <summary>
+    /// 直接获取返回类型
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <param name="html">默认为Http</param>
+    /// <returns>类型</returns>
+    public static string GetType(string type, bool html = false)
     {
         switch (type.ToLower())
         {
@@ -56,18 +79,43 @@ public partial class ServerContentType
                 return MP3;
             case ".mp4":
                 return MP4;
-            default:
+            case ".js":
+                return JS;
+            case ".html":
                 return HTML;
+            case ".ppt":
+                return PPT;
+            case ".gif":
+                return GIF;
+            case ".ico":
+                return ICO;
+            default:
+                return html ? HTML : TXT;
+        }
+    }
+    /// <summary>
+    /// 从全程获取类型
+    /// </summary>
+    /// <param name="name">名字</param>
+    /// <param name="html">默认为Http</param>
+    /// <returns>类型</returns>
+    public static string EndType(string name, bool html = false)
+    {
+        int index = name.LastIndexOf(".");
+        if (index == -1)
+            return GetType(name, html);
+        else
+        {
+            return GetType(name[index..], html);
         }
     }
 }
+/// <summary>
+/// 请求体类型
+/// </summary>
 public enum MyContentType
 {
     Json, XFormData, MFormData, Other
-}
-public enum EncodeType
-{
-    UTF8, Default, ASCII
 }
 public partial class EnCode
 {
@@ -131,19 +179,13 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv)
-    {
-        return AES128(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
+    public static byte[] AES128(byte[] data, string key, string iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
-    {
-        return AES128(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+    public static byte[] AES128(byte[] data, byte[] key, byte[] iv,
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rDel = Aes.Create();
         var size = rDel.KeySize / 8;
@@ -177,20 +219,13 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv)
-    {
-        return AES256(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
+    public static byte[] AES256(byte[] data, string key, string iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
-    {
-        return AES256(data, key, iv, PaddingMode.PKCS7);
-    }
-
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rDel = Aes.Create();
         var size = rDel.KeySize / 8;
@@ -235,19 +270,13 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv)
-    {
-        return AES128(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES128(byte[] data, string key, string iv, PaddingMode mode)
+    public static byte[] AES128(byte[] data, string key, string iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv)
-    {
-        return AES128(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+    public static byte[] AES128(byte[] data, byte[] key, byte[] iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();
         var size = rijalg.KeySize / 8;
@@ -280,19 +309,13 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv)
-    {
-        return AES256(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES256(byte[] data, string key, string iv, PaddingMode mode)
+    public static byte[] AES256(byte[] data, string key, string iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv)
-    {
-        return AES256(data, key, iv, PaddingMode.PKCS7);
-    }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, PaddingMode mode)
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+        PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();
         var size = rijalg.KeySize / 8;
@@ -320,7 +343,6 @@ public partial class DeCode
 
         return resultArray;
     }
-
 
     /// <summary>
     /// OPENSSL解码
@@ -415,6 +437,7 @@ public partial class Tools
         else
             return a[x..];
     }
+    private readonly static Encoding GBK = Encoding.GetEncoding("GBK");
     /// <summary>
     /// GBK到UTF-8
     /// </summary>
@@ -425,7 +448,7 @@ public partial class Tools
         try
         {
             byte[] srcBytes = Encoding.Default.GetBytes(msg);
-            byte[] bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, srcBytes);
+            byte[] bytes = Encoding.Convert(GBK, Encoding.UTF8, srcBytes);
             return Encoding.UTF8.GetString(bytes);
         }
         catch
@@ -443,7 +466,7 @@ public partial class Tools
         try
         {
             byte[] srcBytes = Encoding.UTF8.GetBytes(msg);
-            byte[] bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, srcBytes);
+            byte[] bytes = Encoding.Convert(Encoding.UTF8, GBK, srcBytes);
             return Encoding.Default.GetString(bytes);
         }
         catch
@@ -507,12 +530,12 @@ public partial class Tools
     /// <returns>类</returns>
     public static dynamic GetClass(string classname, params object[] obj)
     {
-        var data = DllStonge.GetClass(classname);
+        var data = DllStongeManager.GetClass(classname);
         if (data == null)
             throw new ErrorDump("没有这个类:" + classname);
         try
         {
-            return Activator.CreateInstance(data.DllType, obj);
+            return Activator.CreateInstance(data.SelfType, obj);
         }
         catch (Exception e)
         {
@@ -527,24 +550,6 @@ public partial class Tools
     {
         TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
         return Convert.ToInt64(ts.TotalSeconds);
-    }
-    /// <summary>
-    /// 转码
-    /// </summary>
-    /// <param name="InputType">输入格式</param>
-    /// <param name="OutputType">输出格式</param>
-    /// <param name="InputData">输入数据</param>
-    /// <returns>转码后的数据</returns>
-    public static byte[] Transcoding(TranscodeType InputType, TranscodeType OutputType, byte[] InputData)
-    {
-        try
-        {
-            return Transcode.Start(InputType, OutputType, InputData);
-        }
-        catch (Exception e)
-        {
-            throw new ErrorDump("转码失败", e);
-        }
     }
     /// <summary>
     /// 判断WebSocket客户端是否在线
@@ -565,27 +570,27 @@ public partial class Tools
     /// <param name="html">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressHTML(string html)
-        => CodeCompress.HTML(html);
+        => CodeCompressUtils.HTML(html);
     /// <summary>
     /// 压缩JS
     /// </summary>
     /// <param name="js">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressJS(string js)
-        => CodeCompress.JS(js);
+        => CodeCompressUtils.JS(js);
     /// <summary>
     /// 压缩CSS
     /// </summary>
     /// <param name="css">原始数据</param>
     /// <returns>压缩后的数据</returns>
     public static string CompressCSS(string css)
-        => CodeCompress.CSS(css);
+        => CodeCompressUtils.CSS(css);
     /// <summary>
     /// 获取机器人
     /// </summary>
     /// <returns>机器人</returns>
     public static RobotSDK GetRobot()
-        => RobotUtils.robot;
+        => RobotUtils.Robot;
     /// <summary>
     /// 获取一个WebSocket客户端
     /// </summary>
@@ -624,7 +629,7 @@ public partial class FileLoad
     /// <param name="local">文件夹</param>
     /// <param name="name">文件名</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpRequest http, string local, string name)
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
         => FileHttpStream.StartStream(http, local, name);
 }
 public partial class ErrorDump : Exception
@@ -644,14 +649,14 @@ public partial class ErrorDump : Exception
         string a = "";
         Exception b = ex;
         while (b != null)
-        { 
+        {
             a += b?.Message + "\n" + b?.StackTrace + "\n";
             b = ex.InnerException;
         }
         return a;
     }
 }
-public class VarDump : Exception
+public partial class VarDump : Exception
 {
     private object[] obj;
     /// <summary>
@@ -697,7 +702,7 @@ public class VarDump : Exception
         }
     }
 }
-class RepeatDictionaryComparer : IEqualityComparer<string>
+internal class RepeatDictionaryComparer : IEqualityComparer<string>
 {
     public bool Equals(string x, string y)
     {

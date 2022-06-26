@@ -1,0 +1,515 @@
+﻿#region 程序集 StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46
+// C:\Users\40206\.nuget\packages\stackexchange.redis\2.6.45\lib\net5.0\StackExchange.Redis.dll
+#endregion
+
+#nullable enable
+
+using StackExchange.Redis.Maintenance;
+using StackExchange.Redis.Profiling;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+namespace StackExchange.Redis
+{
+    //
+    // 摘要:
+    //     Represents an inter-related group of connections to redis servers. A reference
+    //     to this should be held and re-used.
+    //
+    // 言论：
+    //     https://stackexchange.github.io/StackExchange.Redis/PipelinesMultiplexers
+    public sealed class ConnectionMultiplexer : IInternalConnectionMultiplexer, IConnectionMultiplexer, IDisposable
+    {
+        //
+        // 摘要:
+        //     Invoked by the garbage collector.
+        ~ConnectionMultiplexer();
+
+        //
+        // 摘要:
+        //     No longer used.
+        [Obsolete("No longer used, will be removed in 3.0.")]
+        public static TaskFactory Factory { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets whether asynchronous operations should be invoked in a way that
+        //     guarantees their original delivery order.
+        [Obsolete("Not supported; if you require ordered pub/sub, please see ChannelMessageQueue, will be removed in 3.0", false)]
+        public bool PreserveAsyncOrder { get; set; }
+        //
+        // 摘要:
+        //     Should exceptions include identifiable details? (key names, additional .Data
+        //     annotations)
+        [Obsolete("Please use ConfigurationOptions.IncludeDetailInExceptions instead - this will be removed in 3.0.")]
+        public bool IncludeDetailInExceptions { get; set; }
+        //
+        // 摘要:
+        //     Should exceptions include performance counter details?
+        //
+        // 言论：
+        //     CPU usage, etc - note that this can be problematic on some platforms.
+        [Obsolete("Please use ConfigurationOptions.IncludePerformanceCountersInExceptions instead - this will be removed in 3.0.")]
+        public bool IncludePerformanceCountersInExceptions { get; set; }
+        //
+        // 摘要:
+        //     Gets the synchronous timeout associated with the connections.
+        public int TimeoutMilliseconds { get; }
+        //
+        // 摘要:
+        //     Gets the client-name that will be used on all new connections.
+        //
+        // 言论：
+        //     We null coalesce here instead of in Options so that we don't populate it everywhere
+        //     (e.g. .ToString()), given it's a default.
+        public string ClientName { get; }
+        //
+        // 摘要:
+        //     Gets the configuration of the connection.
+        public string Configuration { get; }
+        //
+        // 摘要:
+        //     Indicates whether any servers are connected.
+        public bool IsConnected { get; }
+        //
+        // 摘要:
+        //     Indicates whether any servers are currently trying to connect.
+        public bool IsConnecting { get; }
+        //
+        // 摘要:
+        //     Limit at which to start recording unusual busy patterns (only one log will be
+        //     retained at a time). Set to a negative value to disable this feature.
+        public int StormLogThreshold { get; set; }
+        //
+        // 摘要:
+        //     The number of operations that have been performed on all connections.
+        public long OperationCount { get; }
+
+        //
+        // 摘要:
+        //     Raised whenever a physical connection fails.
+        public event EventHandler<ConnectionFailedEventArgs>? ConnectionFailed;
+        //
+        // 摘要:
+        //     Raised whenever an internal error occurs (this is primarily for debugging).
+        public event EventHandler<InternalErrorEventArgs>? InternalError;
+        //
+        // 摘要:
+        //     Raised whenever a physical connection is established.
+        public event EventHandler<ConnectionFailedEventArgs>? ConnectionRestored;
+        //
+        // 摘要:
+        //     Raised when configuration changes are detected.
+        public event EventHandler<EndPointEventArgs>? ConfigurationChanged;
+        //
+        // 摘要:
+        //     Raised when nodes are explicitly requested to reconfigure via broadcast. This
+        //     usually means primary/replica changes.
+        public event EventHandler<EndPointEventArgs>? ConfigurationChangedBroadcast;
+        //
+        // 摘要:
+        //     Raised when server indicates a maintenance event is going to happen.
+        public event EventHandler<ServerMaintenanceEvent>? ServerMaintenanceEvent;
+        //
+        // 摘要:
+        //     Raised when a hash-slot has been relocated.
+        public event EventHandler<HashSlotMovedEventArgs>? HashSlotMoved;
+        //
+        // 摘要:
+        //     Raised when a server replied with an error message.
+        public event EventHandler<RedisErrorEventArgs>? ErrorMessage;
+
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static ConnectionMultiplexer Connect(string configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   configure:
+        //     Action to further modify the parsed configuration options.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static ConnectionMultiplexer Connect(string configuration, Action<ConfigurationOptions> configure, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The configuration options to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        //
+        // 言论：
+        //     Note: For Sentinel, do not specify a StackExchange.Redis.ConfigurationOptions.CommandMap
+        //     - this is handled automatically.
+        public static ConnectionMultiplexer Connect(ConfigurationOptions configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static Task<ConnectionMultiplexer> ConnectAsync(string configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   configure:
+        //     Action to further modify the parsed configuration options.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static Task<ConnectionMultiplexer> ConnectAsync(string configuration, Action<ConfigurationOptions> configure, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Creates a new StackExchange.Redis.ConnectionMultiplexer instance.
+        //
+        // 参数:
+        //   configuration:
+        //     The configuration options to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        //
+        // 言论：
+        //     Note: For Sentinel, do not specify a StackExchange.Redis.ConfigurationOptions.CommandMap
+        //     - this is handled automatically.
+        public static Task<ConnectionMultiplexer> ConnectAsync(ConfigurationOptions configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Returns the state of a feature flag. This should only be used under support guidance.
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool GetFeatureFlag(string flag);
+        //
+        // 摘要:
+        //     Create a new StackExchange.Redis.ConnectionMultiplexer instance that connects
+        //     to a Sentinel server.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static ConnectionMultiplexer SentinelConnect(string configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Create a new StackExchange.Redis.ConnectionMultiplexer instance that connects
+        //     to a Sentinel server.
+        //
+        // 参数:
+        //   configuration:
+        //     The configuration options to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static ConnectionMultiplexer SentinelConnect(ConfigurationOptions configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Create a new StackExchange.Redis.ConnectionMultiplexer instance that connects
+        //     to a Sentinel server.
+        //
+        // 参数:
+        //   configuration:
+        //     The configuration options to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static Task<ConnectionMultiplexer> SentinelConnectAsync(ConfigurationOptions configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Create a new StackExchange.Redis.ConnectionMultiplexer instance that connects
+        //     to a Sentinel server.
+        //
+        // 参数:
+        //   configuration:
+        //     The string configuration to use for this multiplexer.
+        //
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public static Task<ConnectionMultiplexer> SentinelConnectAsync(string configuration, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Enables or disables a feature flag. This should only be used under support guidance,
+        //     and should not be rapidly toggled.
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void SetFeatureFlag(string flag, bool enabled);
+        //
+        // 摘要:
+        //     Close all connections and release all resources associated with this object.
+        //
+        // 参数:
+        //   allowCommandsToComplete:
+        //     Whether to allow all in-queue commands to complete first.
+        public void Close(bool allowCommandsToComplete = true);
+        //
+        // 摘要:
+        //     Close all connections and release all resources associated with this object.
+        //
+        // 参数:
+        //   allowCommandsToComplete:
+        //     Whether to allow all in-queue commands to complete first.
+        [AsyncStateMachine(typeof(<CloseAsync>d__151))]
+        public Task CloseAsync(bool allowCommandsToComplete = true);
+        //
+        // 摘要:
+        //     Reconfigure the current connections based on the existing configuration.
+        //
+        // 参数:
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public bool Configure(TextWriter? log = null);
+        //
+        // 摘要:
+        //     Reconfigure the current connections based on the existing configuration.
+        //
+        // 参数:
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        [AsyncStateMachine(typeof(<ConfigureAsync>d__117))]
+        public Task<bool> ConfigureAsync(TextWriter? log = null);
+        //
+        // 摘要:
+        //     Release all resources associated with this object.
+        public void Dispose();
+        //
+        // 摘要:
+        //     Write the configuration of all servers to an output stream.
+        //
+        // 参数:
+        //   destination:
+        //     The destination stream to write the export to.
+        //
+        //   options:
+        //     The options to use for this export.
+        public void ExportConfiguration(Stream destination, ExportOptions options = (ExportOptions)(-1));
+        //
+        // 摘要:
+        //     Get summary statistics associated with all servers in this multiplexer.
+        public ServerCounters GetCounters();
+        //
+        // 摘要:
+        //     Obtain an interactive connection to a database inside redis.
+        //
+        // 参数:
+        //   db:
+        //     The ID to get a database for.
+        //
+        //   asyncState:
+        //     The async state to pass into the resulting StackExchange.Redis.RedisDatabase.
+        public IDatabase GetDatabase(int db = -1, object? asyncState = null);
+        //
+        // 摘要:
+        //     Gets all endpoints defined on the multiplexer.
+        //
+        // 参数:
+        //   configuredOnly:
+        //     Whether to get only the endpoints specified explicitly in the config.
+        public EndPoint[] GetEndPoints(bool configuredOnly = false);
+        //
+        // 摘要:
+        //     Get the hash-slot associated with a given key, if applicable. This can be useful
+        //     for grouping operations.
+        //
+        // 参数:
+        //   key:
+        //     The StackExchange.Redis.RedisKey to determine the hash slot for.
+        public int GetHashSlot(RedisKey key);
+        //
+        // 摘要:
+        //     Returns a managed connection to the primary server indicated by the StackExchange.Redis.ConfigurationOptions.ServiceName
+        //     in the config.
+        //
+        // 参数:
+        //   config:
+        //     The configuration to be used when connecting to the primary.
+        //
+        //   log:
+        //     The writer to log to, if any.
+        public ConnectionMultiplexer GetSentinelMasterConnection(ConfigurationOptions config, TextWriter? log = null);
+        //
+        // 摘要:
+        //     Obtain a configuration API for an individual server.
+        //
+        // 参数:
+        //   endpoint:
+        //     The endpoint to get a server for.
+        //
+        //   asyncState:
+        //     The async state to pass into the resulting StackExchange.Redis.RedisServer.
+        public IServer GetServer(EndPoint? endpoint, object? asyncState = null);
+        //
+        // 摘要:
+        //     Obtain a configuration API for an individual server.
+        //
+        // 参数:
+        //   host:
+        //     The host to get a server for.
+        //
+        //   port:
+        //     The port for host to get a server for.
+        public IServer GetServer(IPAddress host, int port);
+        //
+        // 摘要:
+        //     Obtain a configuration API for an individual server.
+        //
+        // 参数:
+        //   hostAndPort:
+        //     The "host:port" string to get a server for.
+        //
+        //   asyncState:
+        //     The async state to pass into the resulting StackExchange.Redis.RedisServer.
+        public IServer GetServer(string hostAndPort, object? asyncState = null);
+        //
+        // 摘要:
+        //     Obtain a configuration API for an individual server.
+        //
+        // 参数:
+        //   host:
+        //     The host to get a server for.
+        //
+        //   port:
+        //     The port for host to get a server for.
+        //
+        //   asyncState:
+        //     The async state to pass into the resulting StackExchange.Redis.RedisServer.
+        public IServer GetServer(string host, int port, object? asyncState = null);
+        //
+        // 摘要:
+        //     Provides a text overview of the status of all connections.
+        public string GetStatus();
+        //
+        // 摘要:
+        //     Provides a text overview of the status of all connections.
+        //
+        // 参数:
+        //   log:
+        //     The System.IO.TextWriter to log to.
+        public void GetStatus(TextWriter log);
+        //
+        // 摘要:
+        //     Obtains the log of unusual busy patterns.
+        public string? GetStormLog();
+        //
+        // 摘要:
+        //     Obtain a pub/sub subscriber connection to the specified server.
+        //
+        // 参数:
+        //   asyncState:
+        //     The async state object to pass to the created StackExchange.Redis.RedisSubscriber.
+        public ISubscriber GetSubscriber(object? asyncState = null);
+        //
+        // 摘要:
+        //     Compute the hash-slot of a specified key.
+        //
+        // 参数:
+        //   key:
+        //     The key to get a hash slot ID for.
+        public int HashSlot(RedisKey key);
+        //
+        // 摘要:
+        //     Sends request to all compatible clients to reconfigure or reconnect.
+        //
+        // 参数:
+        //   flags:
+        //     The command flags to use.
+        //
+        // 返回结果:
+        //     The number of instances known to have received the message (however, the actual
+        //     number can be higher; returns -1 if the operation is pending).
+        public long PublishReconfigure(CommandFlags flags = CommandFlags.None);
+        //
+        // 摘要:
+        //     Sends request to all compatible clients to reconfigure or reconnect.
+        //
+        // 参数:
+        //   flags:
+        //     The command flags to use.
+        //
+        // 返回结果:
+        //     The number of instances known to have received the message (however, the actual
+        //     number can be higher).
+        public Task<long> PublishReconfigureAsync(CommandFlags flags = CommandFlags.None);
+        //
+        // 摘要:
+        //     Triggers a reconfigure of this multiplexer. This re-assessment of all server
+        //     endpoints to get the current topology and adjust, the same as if we had first
+        //     connected.
+        public Task<bool> ReconfigureAsync(string reason);
+        //
+        // 摘要:
+        //     Register a callback to provide an on-demand ambient session provider based on
+        //     the calling context; the implementing code is responsible for reliably resolving
+        //     the same provider based on ambient context, or returning null to not profile
+        //
+        // 参数:
+        //   profilingSessionProvider:
+        //     The session provider to register.
+        public void RegisterProfiler(Func<ProfilingSession> profilingSessionProvider);
+        //
+        // 摘要:
+        //     Resets the log of unusual busy patterns.
+        public void ResetStormLog();
+        //
+        // 摘要:
+        //     Gets the client name for this multiplexer.
+        public override string ToString();
+        //
+        // 摘要:
+        //     Wait for a given asynchronous operation to complete (or timeout).
+        //
+        // 参数:
+        //   task:
+        //     The task to wait on.
+        //
+        // 类型参数:
+        //   T:
+        //     The type contains in the task to wait on.
+        public T Wait<T>(Task<T> task);
+        //
+        // 摘要:
+        //     Wait for a given asynchronous operation to complete (or timeout).
+        //
+        // 参数:
+        //   task:
+        //     The task to wait on.
+        public void Wait(Task task);
+        //
+        // 摘要:
+        //     Wait for the given asynchronous operations to complete (or timeout).
+        //
+        // 参数:
+        //   tasks:
+        //     The tasks to wait on.
+        public void WaitAll(params Task[] tasks);
+    }
+}

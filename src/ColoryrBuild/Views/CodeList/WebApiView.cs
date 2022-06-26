@@ -42,7 +42,7 @@ public class WebApiView : CodeListView
         {
             data = data[..^1];
         }
-        var list = await App.HttpUtils.Add(Type, data);
+        var list = await App.HttpUtils.AddObj(Type, data);
         if (list == null)
         {
             new InfoWindow("添加", "服务器返回错误");
@@ -76,7 +76,7 @@ public class WebApiView : CodeListView
         var res = new ChoseWindow("删除确认", "是否要删除").Set();
         if (res)
         {
-            var data = await App.HttpUtils.Remove(Type, item);
+            var data = await App.HttpUtils.RemoveObj(Type, item);
             if (data == null)
             {
                 App.LogShow("删除", "服务器返回错误");

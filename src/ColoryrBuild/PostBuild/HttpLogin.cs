@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
 
-public partial class HttpUtils : HttpUtilsBase
+public partial class HttpBuild : HttpUtilsBase
 {
     /// <summary>
     /// 检查登录
@@ -38,35 +38,22 @@ public partial class HttpUtils : HttpUtilsBase
     /// <returns>登录结果</returns>
     public async Task<bool> AutoLogin()
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.Check
-            };
-
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
-            if (res?.Build == true)
-            {
-                return true;
-            }
-            else
-            {
-                App.LogShow("登录", "自动登录失败");
-            }
-            return false;
-        }
-        catch (Exception e)
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.Check
+        });
+        ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
+        if (res?.Build == true)
         {
-            _ = new InfoWindow("自动登录错误", e.ToString());
-            return false;
+            return true;
         }
+        else
+        {
+            _ = new InfoWindow("自动登录错误", $"自动登录错误:{res?.Message}");
+        }
+        return false;
     }
     /// <summary>
     /// 手动登录
@@ -75,34 +62,23 @@ public partial class HttpUtils : HttpUtilsBase
     /// <returns>登录结果</returns>
     public async Task<bool> Login(string Pass)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Code = Pass,
-                Mode = PostBuildType.Login
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
-            if (res.Build == true)
-            {
-                App.Config.Token = res.Message;
-                App.LogShow("登录", "登录成功");
-                return true;
-            }
-            else
-            {
-                _ = new InfoWindow("登录错误", res.Message);
-            }
-            return false;
-        }
-        catch
+            User = App.Config.Name,
+            Code = Pass,
+            Mode = PostBuildType.Login
+        });
+        ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
+        if (res?.Build == true)
         {
-            return false;
+            App.Config.Token = res.Message;
+            App.LogShow("登录", "登录成功");
+            return true;
         }
+        else
+        {
+            _ = new InfoWindow("登录错误", $"登录错误:{res.Message}");
+        }
+        return false;
     }
 }

@@ -1,0 +1,23 @@
+﻿#region 程序集 Fleck, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null
+// C:\Users\40206\.nuget\packages\fleck\1.2.0\lib\netcoreapp2.0\Fleck.dll
+#endregion
+
+using System;
+using System.Collections.Generic;
+
+namespace Fleck
+{
+    public interface IWebSocketConnectionInfo
+    {
+        string SubProtocol { get; }
+        string Origin { get; }
+        string Host { get; }
+        string Path { get; }
+        string ClientIpAddress { get; }
+        int ClientPort { get; }
+        IDictionary<string, string> Cookies { get; }
+        IDictionary<string, string> Headers { get; }
+        Guid Id { get; }
+        string NegotiatedSubProtocol { get; }
+    }
+}

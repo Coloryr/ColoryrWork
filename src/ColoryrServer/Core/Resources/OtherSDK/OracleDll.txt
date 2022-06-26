@@ -1,0 +1,200 @@
+﻿#region 程序集 Oracle.ManagedDataAccess, Version=3.1.21.1, Culture=neutral, PublicKeyToken=89b483f429c47342
+// C:\Users\40206\.nuget\packages\oracle.manageddataaccess.core\3.21.61\lib\netstandard2.1\Oracle.ManagedDataAccess.dll
+#endregion
+
+using System;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Security;
+using System.Transactions;
+
+namespace Oracle.ManagedDataAccess.Client
+{
+    [DefaultEvent("InfoMessage")]
+    public sealed class OracleConnection : DbConnection, ICloneable
+    {
+        public OracleConnection();
+        public OracleConnection(string connectionString);
+        public OracleConnection(string connectionString, OracleCredential orclCredential);
+
+        ~OracleConnection();
+
+        public static bool IsAvailable { get; }
+        [Browsable(false)]
+        [DefaultValue("")]
+        [Description("")]
+        public static string ProviderVersion { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string ClientInfo { set; }
+        [Browsable(false)]
+        [DefaultValue(15)]
+        [Description("")]
+        public override int ConnectionTimeout { get; }
+        public override string Database { get; }
+        [Browsable(false)]
+        [DefaultValue("")]
+        [Description("")]
+        public override string ServerVersion { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string DatabaseDomainName { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string HostName { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string InstanceName { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string ServiceName { get; set; }
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public string DatabaseEditionName { get; set; }
+        [DefaultValue("")]
+        [Description("")]
+        public override string DataSource { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string ActionName { set; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string ClientId { set; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string DatabaseName { get; }
+        [Category("Behavior")]
+        [DefaultValue(null)]
+        [Description("")]
+        public string DRCPConnectionClass { get; set; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string ModuleName { set; }
+        [Category("Behavior")]
+        [DefaultValue(OracleDRCPPurity.Pooled)]
+        [Description("")]
+        public OracleDRCPPurity DRCPPurity { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool UseHourOffsetForUnsupportedTimezone { get; set; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        public string PDBName { get; set; }
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool SwitchedConnection { get; }
+        [Browsable(false)]
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public OracleCredential Credential { get; set; }
+        [Browsable(false)]
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public OracleAccessToken AccessToken { get; set; }
+        [DefaultValue(OracleTokenAuth.Disabled)]
+        public OracleTokenAuth TokenAuthentication { get; set; }
+        [DefaultValue(null)]
+        public string TokenLocation { get; set; }
+        [DefaultValue(OraclePasswordAuth.PasswordVerifier)]
+        public OraclePasswordAuth PasswordAuthentication { get; set; }
+        [DefaultValue(null)]
+        public string OciIamUrl { get; set; }
+        [DefaultValue(null)]
+        public string OciTenancy { get; set; }
+        [DefaultValue(null)]
+        public string OciCompartment { get; set; }
+        [DefaultValue(null)]
+        public string OciDatabase { get; set; }
+        [Browsable(false)]
+        [DefaultValue(0)]
+        [Description("")]
+        public int StatementCacheSize { get; }
+        [Category("Data")]
+        [DefaultValue("")]
+        [Description("")]
+        [Editor("Oracle.VsDevTools.OracleVSGConnStringEditor, Oracle.VsDevTools, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=X86", "System.Drawing.Design.UITypeEditor")]
+        public override string ConnectionString { get; set; }
+        [Browsable(false)]
+        [DefaultValue(ConnectionState.Closed)]
+        [Description("")]
+        public override ConnectionState State { get; }
+        [Category("Data")]
+        [DefaultValue(6)]
+        [Description("")]
+        public int KeepAliveInterval { get; set; }
+        public string ChunkMigrationConnectionTimeout { get; set; }
+        [Category("Data")]
+        [DefaultValue(60)]
+        [Description("")]
+        public int KeepAliveTime { get; set; }
+        [Category("Data")]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool KeepAlive { get; set; }
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public string WalletLocation { get; set; }
+        [Category("Data")]
+        [DefaultValue(null)]
+        [Description("")]
+        public string TnsAdmin { get; set; }
+        protected override DbProviderFactory DbProviderFactory { get; }
+
+        public static event OracleHAEventHandler HAEvent;
+        public event OracleRefreshAccessTokenEventHandler RefreshIAMDBToken;
+        public event OracleConnectionOpenEventHandler ConnectionOpen;
+        public event OracleInfoMessageEventHandler InfoMessage;
+        public override event StateChangeEventHandler StateChange;
+
+        public static void ClearAllPools();
+        public static void ClearPool(OracleConnection conn);
+        public OracleTransaction BeginTransaction(System.Data.IsolationLevel isolationLevel);
+        public OracleTransaction BeginTransaction();
+        public override void ChangeDatabase(string pdbName);
+        public object Clone();
+        public override void Close();
+        public OracleCommand CreateCommand();
+        public override void EnlistTransaction(Transaction transaction);
+        public void FlushCache();
+        public override DataTable GetSchema(string collectionName, string[] restrictionsArray);
+        public override DataTable GetSchema();
+        public override DataTable GetSchema(string collectionName);
+        public void GetSessionInfo(OracleGlobalization oraGlob);
+        public OracleGlobalization GetSessionInfo();
+        public override void Open();
+        public void OpenWithNewPassword(string newPassword);
+        public void OpenWithNewPassword(SecureString secureNewPassword);
+        public void OpenWithNewToken(char[] dbToken, char[] privateKey);
+        public void PurgeStatementCache();
+        public void SetSessionInfo(OracleGlobalization oraGlob);
+        public void SetShardingKey(OracleShardingKey shardingKey, OracleShardingKey superShardingKey);
+        public void SetShardingKey(OracleShardingKey shardingKey);
+        protected override DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel);
+        protected override DbCommand CreateDbCommand();
+        protected override void Dispose(bool disposing);
+        protected override void OnStateChange(StateChangeEventArgs eventArgs);
+
+        public enum OracleDRCPPurity
+        {
+            New = 1,
+            Pooled = 2
+        }
+    }
+}

@@ -1,8 +1,12 @@
 ﻿using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
 
@@ -70,5 +74,20 @@ public abstract class HttpUtilsBase
             return resultArray;
         }
         return Encoding.UTF8.GetBytes(data);
+    }
+
+    public async Task<string> DoPost(BuildOBJ pack)
+    {
+        try
+        {
+            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var temp = await httpClient.PostAsync(App.Config.Http, Content);
+            return await temp.Content.ReadAsStringAsync();
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
