@@ -119,45 +119,45 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="HtmlDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\htmldll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\HtmlDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="HtmlDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\htmldll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\HtmlDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll5.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll5.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mqttdll6.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MqttDll6.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MysqlDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\mysqldll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\MysqlDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="OracleDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\oracledll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\OracleDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="RedisDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\redisdll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\RedisDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SqlClientDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\sqlclientdll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\SqlClientDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="WebSocketDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\othersdk\websocketdll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>resources\othersdk\WebSocketDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
