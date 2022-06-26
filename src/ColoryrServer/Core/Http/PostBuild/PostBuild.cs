@@ -12,6 +12,13 @@ namespace ColoryrServer.Core.DllManager.PostBuild;
 
 public static class PostBuild
 {
+    private record LoginObj
+    {
+        public string User { get; set; }
+        public string UUID { get; set; }
+        public DateTime Time { get; set; }
+    }
+
     private static readonly string DB = ServerMain.RunLocal + "Login.db";
     private static string connStr;
     public static void Start()
@@ -29,20 +36,20 @@ public static class PostBuild
 );";
         DBSQL.Execute(sql);
     }
-    private record LoginObj
-    {
-        public string User { get; set; }
-        public string UUID { get; set; }
-        public DateTime Time { get; set; }
-    }
-    private static bool Check(string User, string UUID)
+    /// <summary>
+    /// 检查登录
+    /// </summary>
+    /// <param name="user">用户名</param>
+    /// <param name="uuid">密钥</param>
+    /// <returns>结果</returns>
+    private static bool CheckLogin(string user, string uuid)
     {
         using var DBSQL = new SqliteConnection(connStr);
-        var list = DBSQL.Query<LoginObj>("SELECT User,UUID,Time FROM login WHERE User=@User", new { User });
+        var list = DBSQL.Query<LoginObj>("SELECT User,UUID,Time FROM login WHERE User=@User", new { user });
         if (!list.Any())
             return false;
         LoginObj item = list.First();
-        if (item.UUID != UUID)
+        if (item.UUID != uuid)
             return false;
         if (DateTime.Now - item.Time > TimeSpan.FromDays(7))
             return false;
@@ -88,11 +95,11 @@ public static class PostBuild
         {
             resObj = new ReMessage
             {
-                Build = Check(json.User, json.UUID),
+                Build = CheckLogin(json.User, json.UUID),
                 Message = "自动登录"
             };
         }
-        else if (Check(json.User, json.Token))
+        else if (CheckLogin(json.User, json.Token))
         {
             resObj = json.Mode switch
             {

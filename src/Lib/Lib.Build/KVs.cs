@@ -2,7 +2,6 @@
 
 public class BuildKV
 {
-    public const string BuildK = "Build";
-    public const string BuildV = "201";
-    public const string BuildK1 = "AES";
+    public const string BuildK = "Build-Version";
+    public const string BuildV = "202";
 }

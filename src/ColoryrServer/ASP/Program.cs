@@ -1,4 +1,6 @@
 using ColoryrServer.Core;
+using ColoryrServer.Core.DllManager.PostBuild;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http.PostBuild;
 using ColoryrServer.SDK;
@@ -107,7 +109,7 @@ internal static class ASPServer
             Web.MapPut("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
             Web.MapDelete("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
 
-            Web.MapPost("/", PostBuild);
+            Web.MapPost("/", Build);
             Web.Run();
             Web.DisposeAsync().AsTask().Wait();
             ServerMain.LogOut("正在关闭服务器");
@@ -170,30 +172,22 @@ internal static class ASPServer
         return DefaultSsl;
     }
 
-    private static async Task PostBuild(HttpContext context)
+    private static async Task Build(HttpContext context)
     {
         HttpRequest Request = context.Request;
         HttpResponse Response = context.Response;
         if (Request.Headers[BuildKV.BuildK] == BuildKV.BuildV)
         {
-            string Str;
             MemoryStream stream = new();
             await Request.Body.CopyToAsync(stream);
-            if (Request.Headers[BuildKV.BuildK1] == "true")
-            {
-                var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-                Str = Encoding.UTF8.GetString(receivedData);
-            }
-            else
-            {
-                Str = Encoding.UTF8.GetString(stream.ToArray());
-            }
-            JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
+            var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+            var str = Encoding.UTF8.GetString(receivedData);
+            JObject obj = JObject.Parse(Function.GetSrings(str, "{"));
             var Json = obj.ToObject<BuildOBJ>();
-            var List = ServerMain.Config.User.Where(a => a.Username == Json?.User);
-            if (List.Any())
+            var list = ServerMain.Config.User.Where(a => a.Username == Json?.User);
+            if (list.Any())
             {
-                var obj1 = Core.DllManager.PostBuild.PostBuild.StartBuild(Json, List.First<Core.FileSystem.UserConfig>()).Data;
+                var obj1 = PostBuild.StartBuild(Json, list.First()).Data;
                 await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
             }
             else
@@ -215,10 +209,10 @@ internal static class ASPServer
 
     private static byte[] StringToByteArray(string hex)
     {
-        int NumberChars = hex.Length;
-        byte[] bytes = new byte[NumberChars / 2];
+        int number = hex.Length;
+        byte[] bytes = new byte[number / 2];
 
-        for (int i = 0; i < NumberChars; i += 2)
+        for (int i = 0; i < number; i += 2)
         {
             bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
         }

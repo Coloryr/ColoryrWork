@@ -14,8 +14,8 @@ public abstract class HttpUtilsBase
 {
     protected HttpClient httpClient;
 
-    private byte[] keyArray;
-    private byte[] ivArray;
+    private byte[] KeyArray;
+    private byte[] IvArray;
     public HttpUtilsBase()
     {
         var Handler = new HttpClientHandler();
@@ -24,7 +24,6 @@ public abstract class HttpUtilsBase
             Timeout = TimeSpan.FromSeconds(10)
         };
         httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK, BuildKV.BuildV);
-        httpClient.DefaultRequestHeaders.Add(BuildKV.BuildK1, App.Config.AES.ToString());
 
         string key = App.Config.Key;
         string iv = App.Config.IV;
@@ -50,32 +49,36 @@ public abstract class HttpUtilsBase
                 iv += new string(new char[16 - iv.Length]);
             }
         }
-        keyArray = Encoding.UTF8.GetBytes(key);
-        ivArray = Encoding.UTF8.GetBytes(iv);
+        KeyArray = Encoding.UTF8.GetBytes(key);
+        IvArray = Encoding.UTF8.GetBytes(iv);
     }
-
+    /// <summary>
+    /// AES加密
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     protected byte[] AES(string data)
     {
-        if (App.Config.AES)
-        {
-            byte[] toEncryptArray = Encoding.UTF8.GetBytes(data);
-            using var rDel = Aes.Create();
-            rDel.BlockSize = 128;
-            rDel.KeySize = 256;
-            rDel.FeedbackSize = 128;
-            rDel.Padding = PaddingMode.PKCS7;
-            rDel.Mode = CipherMode.CBC;
-            rDel.Key = keyArray;
-            rDel.IV = ivArray;
+        byte[] toEncryptArray = Encoding.UTF8.GetBytes(data);
+        using var rDel = Aes.Create();
+        rDel.BlockSize = 128;
+        rDel.KeySize = 256;
+        rDel.FeedbackSize = 128;
+        rDel.Padding = PaddingMode.PKCS7;
+        rDel.Mode = CipherMode.CBC;
+        rDel.Key = KeyArray;
+        rDel.IV = IvArray;
 
-            using var cTransform = rDel.CreateEncryptor();
-            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+        using var cTransform = rDel.CreateEncryptor();
+        byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
-            return resultArray;
-        }
-        return Encoding.UTF8.GetBytes(data);
+        return resultArray;
     }
-
+    /// <summary>
+    /// 发送POST请求
+    /// </summary>
+    /// <param name="pack">数据包</param>
+    /// <returns>结果</returns>
     public async Task<string> DoPost(BuildOBJ pack)
     {
         try
