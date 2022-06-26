@@ -131,7 +131,7 @@ internal class TaskThread
                         {
                             error = e.ToString();
                         }
-                        DllRunError.PutError($"[Task]{Arg.Name}", error);
+                        DllRunLog.PutError($"[Task]{Arg.Name}", error);
                         State = TaskState.Error;
                     }
                     else if (ok == null)
@@ -161,7 +161,7 @@ internal class TaskThread
             }
             catch (Exception e)
             {
-                DllRunError.PutError($"[Task]{Arg.Name}", e.ToString());
+                DllRunLog.PutError($"[Task]{Arg.Name}", e.ToString());
                 ServerMain.LogError(e);
             }
             Thread.Sleep(50);

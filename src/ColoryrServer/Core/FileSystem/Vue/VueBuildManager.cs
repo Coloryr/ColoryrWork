@@ -23,6 +23,7 @@ public static class VueBuildManager
         if (NowBuild.TryRemove(web.UUID, out var item))
         {
             BuildRes.AddOrUpdate(web.UUID, item.Res);
+            DllRunLog.PutBuildLog($"Web:{web.UUID}", item.Res);
             WebFileManager.Add(web);
         }
     }

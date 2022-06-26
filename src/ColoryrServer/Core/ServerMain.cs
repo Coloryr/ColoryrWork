@@ -133,7 +133,7 @@ public class ServerMain
             RobotUtils.Start();
             PostBuild.Start();
             WebBinManager.Start();
-            DllRunError.Start();
+            DllRunLog.Start();
             MSCon.Start();
             RedisCon.Start();
             OracleCon.Start();

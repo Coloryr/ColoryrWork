@@ -45,7 +45,7 @@ internal static class NettyManager
             catch (Exception e)
             {
                 string error = e.ToString();
-                DllRunError.PutError($"[Socket]{dll.Name}", error);
+                DllRunLog.PutError($"[Socket]{dll.Name}", error);
                 ServerMain.LogOut($"Netty[{dll.Name}]启动错误:{e}");
             }
         }

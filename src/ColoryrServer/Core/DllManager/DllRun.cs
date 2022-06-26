@@ -29,7 +29,6 @@ internal static class DllRun
     /// <returns></returns>
     internal static HttpReturn DllGo(DllAssembly dll, HttpDllRequest arg, string function)
     {
-        bool isDebug = false;
         try
         {
             if (string.IsNullOrWhiteSpace(function))
@@ -51,7 +50,6 @@ internal static class DllRun
                 };
             }
 
-            isDebug = dll.MethodInfos.ContainsKey("debug");
             MethodInfo mi = dll.MethodInfos[function];
 
             var obj1 = Activator.CreateInstance(dll.SelfType);
@@ -138,7 +136,7 @@ internal static class DllRun
         {
             if (e.InnerException is VarDump dump)
             {
-                if (isDebug)
+                if (dll.Debug)
                     return new HttpReturn
                     {
                         Data = dump.Get(),
@@ -156,8 +154,8 @@ internal static class DllRun
             else if (e.InnerException is ErrorDump dump1)
             {
                 string error = dump1.data + "\n" + e.ToString();
-                DllRunError.PutError($"[Dll]{dll.Name}", error);
-                if (isDebug)
+                DllRunLog.PutError($"[Dll]{dll.Name}", error);
+                if (dll.Debug)
                     return new HttpReturn
                     {
                         Data = error,
@@ -175,8 +173,8 @@ internal static class DllRun
             else
             {
                 string error = e.ToString();
-                DllRunError.PutError($"[Dll]{dll.Name}", error);
-                if (isDebug)
+                DllRunLog.PutError($"[Dll]{dll.Name}", error);
+                if (dll.Debug)
                     return new HttpReturn
                     {
                         Data = error,
@@ -225,7 +223,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Socket]{dll.Name}", error);
+                DllRunLog.PutError($"[Socket]{dll.Name}", error);
             }
         }
     }
@@ -261,7 +259,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Socket]{dll.Name}", error);
+                DllRunLog.PutError($"[Socket]{dll.Name}", error);
             }
         }
     }
@@ -295,7 +293,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
+                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
@@ -329,7 +327,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
+                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
@@ -363,7 +361,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[WebSocket]{dll.Name}", error);
+                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
     }
@@ -400,7 +398,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Robot]{dll.Name}", error);
+                DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
@@ -437,7 +435,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Robot]{dll.Name}", error);
+                DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
@@ -474,7 +472,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Robot]{dll.Name}", error);
+                DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
     }
@@ -511,7 +509,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
@@ -548,7 +546,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
@@ -585,7 +583,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
@@ -622,7 +620,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
@@ -659,7 +657,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
-                DllRunError.PutError($"[Mqtt]{dll.Name}", error);
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
     }
@@ -694,7 +692,7 @@ internal static class DllRun
                 ServerMain.LogError(e);
             }
 
-            DllRunError.PutError($"[Task]{dll.Name}", error);
+            DllRunLog.PutError($"[Task]{dll.Name}", error);
         }
         return null;
     }

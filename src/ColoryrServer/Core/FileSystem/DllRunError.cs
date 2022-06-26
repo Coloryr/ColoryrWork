@@ -5,37 +5,49 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem;
 
-public static class DllRunError
+public static class DllRunLog
 {
-    private static readonly string ErrorDB = ServerMain.RunLocal + "Error.db";
+    private static readonly string DB = ServerMain.RunLocal + "DllLog.db";
 
-    private static string ErrorConnStr;
+    private static string DBConnStr;
 
     public static void Start()
     {
-        ErrorConnStr = new SqliteConnectionStringBuilder("Data Source=" + ErrorDB)
+        DBConnStr = new SqliteConnectionStringBuilder("Data Source=" + DB)
         {
             Mode = SqliteOpenMode.ReadWriteCreate
         }.ToString();
-        using var ErrorSQL = new SqliteConnection(ErrorConnStr);
+        using var sql = new SqliteConnection(DBConnStr);
 
-        string sql = @"create table if not exists error (
+        sql.Execute(@"create table if not exists error (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `dll` text,
   `text` text,
   `time` text
-);";
-        ErrorSQL.Execute(sql);
+);");
+        sql.Execute(@"create table if not exists webbuild (
+  `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `name` text,
+  `text` text,
+  `time` text
+);");
     }
 
     public static void PutError(string dll, string text)
     {
-        DateTime time = DateTime.Now;
-        string stime = time.ToString();
         Task.Run(() =>
         {
-            using var errorSQL = new SqliteConnection(ErrorConnStr);
-            errorSQL.Execute("INSERT INTO error (dll,text,time) VALUES(@dll,@text,@time)", new { dll, text, time });
+            using var sql = new SqliteConnection(DBConnStr);
+            sql.Execute("INSERT INTO error (dll,text,time) VALUES(@dll,@text,@time)", new { dll, text, time = DateTime.Now.ToString() });
+        });
+    }
+
+    public static void PutBuildLog(string name, string text) 
+    {
+        Task.Run(() =>
+        {
+            using var sql = new SqliteConnection(DBConnStr);
+            sql.Execute("INSERT INTO webbuild (name,text,time) VALUES(@name,@text,@time)", new { name, text, time = DateTime.Now.ToString() });
         });
     }
 }

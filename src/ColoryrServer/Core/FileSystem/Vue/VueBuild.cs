@@ -47,7 +47,6 @@ public class VueBuild
 
     private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        ServerMain.LogOut(e.Data);
         Res += e.Data + Environment.NewLine;
     }
 

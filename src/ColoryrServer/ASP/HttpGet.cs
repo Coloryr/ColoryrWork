@@ -151,7 +151,7 @@ internal static class HttpGet
         }
         catch (Exception e)
         {
-            DllRunError.PutError("Server Route", e.ToString());
+            DllRunLog.PutError("Server Route", e.ToString());
             var httpReturn = HttpReturnSave.ResError;
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;
