@@ -53,7 +53,7 @@ internal static class SocketServer
                     }
                 }
             })
-            { 
+            {
                 Name = "TcpThread"
             };
             UdpThread = new(() =>

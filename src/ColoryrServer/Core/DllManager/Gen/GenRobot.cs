@@ -22,7 +22,8 @@ internal class GenRobot
         {
             CSharpSyntaxTree.ParseText(obj.Code)
         });
-        Task.Run(() => CodeFileManager.StorageRobot(obj));
+        obj.UpdateTime = DateTime.Now.ToString();
+        CodeFileManager.StorageRobot(obj);
         if (!build.Isok)
         {
             build.Res = $"Robot[{obj.UUID}]" + build.Res;

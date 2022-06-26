@@ -147,8 +147,8 @@ internal static class ASPServer
                         }
                     }
                     catch (Exception e)
-                    { 
-                    
+                    {
+
                     }
                 }
             });

@@ -77,7 +77,7 @@ public static class WebFileManager
         return item;
     }
 
-    private static void Stop() 
+    private static void Stop()
     {
         HtmlCodeList.Clear();
     }

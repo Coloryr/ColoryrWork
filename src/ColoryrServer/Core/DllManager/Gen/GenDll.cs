@@ -26,6 +26,7 @@ internal static class GenDll
         {
             CSharpSyntaxTree.ParseText(obj.Code)
         });
+        obj.UpdateTime = DateTime.Now.ToString();
         CodeFileManager.StorageDll(obj);
         if (!build.Isok)
         {

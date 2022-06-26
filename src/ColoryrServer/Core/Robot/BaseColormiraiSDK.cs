@@ -2806,7 +2806,7 @@ public partial class RobotSDK
             return;
         QueueRead = new();
         DoThread = new(Read)
-        { 
+        {
             Name = "RobotDoThread"
         };
         IsRun = true;

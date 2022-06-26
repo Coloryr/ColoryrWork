@@ -1,7 +1,7 @@
 ﻿using ColoryrWork.Lib.Build.Object;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
-using Newtonsoft.Json;
 
 namespace ColoryrServer.Core.Http.PostBuild;
 
@@ -53,7 +53,7 @@ public static class PostServerConfig
     {
         return top.RemoveHttpUrlRouteConfig(json);
     }
-    public static ReMessage SetServerEnable(BuildOBJ json) 
+    public static ReMessage SetServerEnable(BuildOBJ json)
     {
         return top.SetServerEnable(json);
     }
@@ -78,7 +78,7 @@ public static class PostServerConfig
                 Message = "参数非法"
             };
         }
-        if (port > 0xFFFF || port < 0) 
+        if (port > 0xFFFF || port < 0)
         {
             return new()
             {

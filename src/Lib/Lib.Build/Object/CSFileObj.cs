@@ -31,8 +31,7 @@ public class CSFileObj
     public string UpdateTime { get; set; }
     public void Up()
     {
-        var time = string.Format("{0:s}", DateTime.Now);
-        UpdateTime = time;
+        UpdateTime = DateTime.Now.ToString();
         Version++;
     }
     public void Next()

@@ -14,9 +14,9 @@ namespace ColoryrBuild.Views;
 public partial class ServerConfigView : UserControl
 {
     private record EventObj
-    { 
+    {
         public int ID { get; set; }
-        public string Name { get; set; } 
+        public string Name { get; set; }
     }
 
     private record SocketConfigObj : INotifyPropertyChanged
@@ -84,7 +84,7 @@ public partial class ServerConfigView : UserControl
         GetRobotConfig();
     }
 
-    private async void GetRobotConfig() 
+    private async void GetRobotConfig()
     {
         var res = await App.HttpUtils.GetRobotConfig();
         if (res == null)
@@ -331,7 +331,7 @@ public partial class ServerConfigView : UserControl
 
         Obj.Packs.Add(index);
         RobotEventList.Items.Add(new EventObj()
-        { 
+        {
             ID = index,
             Name = RobotConfigSet.PackType[index]
         });
@@ -454,7 +454,7 @@ public partial class ServerConfigView : UserControl
             _ = new InfoWindow("路由设置", "服务器错误");
             return;
         }
-        else if(!res.Build)
+        else if (!res.Build)
         {
             _ = new InfoWindow("路由设置", res.Message);
             return;

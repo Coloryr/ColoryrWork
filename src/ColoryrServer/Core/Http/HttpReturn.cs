@@ -28,7 +28,7 @@ public static class HttpReturnSave
         Res = ResType.Json,
         ContentType = "application/json; charset=UTF-8",
         Data = new
-        { 
+        {
             res = 90,
             text = "服务器正在重载"
         }

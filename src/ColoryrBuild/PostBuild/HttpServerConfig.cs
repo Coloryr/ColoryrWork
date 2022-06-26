@@ -2,11 +2,7 @@
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Markup;
 
 namespace ColoryrBuild.PostBuild;
 
@@ -24,6 +20,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.GetRobotConfig
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetRobotConfig();
@@ -42,6 +40,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.GetServerSocketConfig
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetSocketConfig();
@@ -60,6 +60,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.GetServerHttpConfigList
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetHttpConfigList();
@@ -82,6 +84,8 @@ public partial class HttpBuild : HttpUtilsBase
             Code = ip,
             Version = port
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddHttpConfig(ip, port);
@@ -104,6 +108,8 @@ public partial class HttpBuild : HttpUtilsBase
             Code = ip,
             Version = port
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await RemoveHttpConfig(ip, port);
@@ -126,6 +132,8 @@ public partial class HttpBuild : HttpUtilsBase
             Temp = key,
             Code = JsonUtils.ToString(obj)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddHttpRoute(key, obj);
@@ -146,6 +154,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = PostBuildType.RemoveServerHttpRoute,
             Code = key
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await RemoveHttpRoute(key);
@@ -168,6 +178,8 @@ public partial class HttpBuild : HttpUtilsBase
             Temp = key,
             Code = JsonUtils.ToString(obj)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddHttpUrlRoute(key, obj);
@@ -188,6 +200,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = PostBuildType.RemoveServerHttpUrlRoute,
             Code = key
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await RemoveHttpUrlRoute(key);
@@ -210,6 +224,8 @@ public partial class HttpBuild : HttpUtilsBase
             Code = enable.ToString(),
             Text = type
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await SetServerEnable(enable, type);
@@ -234,6 +250,8 @@ public partial class HttpBuild : HttpUtilsBase
             Version = port,
             Text = type
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await SetSocket(ip, port, type);
@@ -258,6 +276,8 @@ public partial class HttpBuild : HttpUtilsBase
             Version = port,
             Text = JsonConvert.SerializeObject(packs)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await SetRobotConfig(ip, port, packs);
@@ -275,6 +295,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.ServerReboot
         });
+        if (data == null)
+            return;
         if (!CheckLogin(data))
         {
             await Reboot();

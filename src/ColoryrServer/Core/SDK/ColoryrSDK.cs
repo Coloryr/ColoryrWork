@@ -179,7 +179,7 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv, 
+    public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
@@ -219,12 +219,12 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv, 
+    public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rDel = Aes.Create();
@@ -270,12 +270,12 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv, 
+    public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES128(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();
@@ -309,12 +309,12 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv, 
+    public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();

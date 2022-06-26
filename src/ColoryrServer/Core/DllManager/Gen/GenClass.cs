@@ -24,6 +24,7 @@ internal class GenClass
         var build = GenCode.StartGen(obj.UUID,
             CodeFileManager.GetClassCode(obj.UUID).Select(a =>
             CSharpSyntaxTree.ParseText(a.code, path: a.name, encoding: Encoding.UTF8)).ToList(), true);
+        obj.UpdateTime = DateTime.Now.ToString();
         if (!build.Isok)
         {
             build.Res = $"Class[{obj.UUID}]" + build.Res;

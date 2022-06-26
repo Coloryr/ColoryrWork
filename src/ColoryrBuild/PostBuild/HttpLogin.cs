@@ -2,9 +2,6 @@
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
@@ -44,6 +41,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.Check
         });
+        if (data == null)
+            return false;
         ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
         if (res?.Build == true)
         {
@@ -68,6 +67,8 @@ public partial class HttpBuild : HttpUtilsBase
             Code = Pass,
             Mode = PostBuildType.Login
         });
+        if (data == null)
+            return false;
         ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
         if (res?.Build == true)
         {

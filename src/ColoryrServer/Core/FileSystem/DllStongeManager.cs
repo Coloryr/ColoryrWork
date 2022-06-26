@@ -33,7 +33,7 @@ public static class DllStongeManager
     public static readonly string LocalMqtt = ServerMain.RunLocal + "Dll/Mqtt/";
     public static readonly string LocalTask = ServerMain.RunLocal + "Dll/Task/";
 
-    private static void Stop() 
+    private static void Stop()
     {
         foreach (var item in MapDll.Values)
         {

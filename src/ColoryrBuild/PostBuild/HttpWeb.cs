@@ -1,8 +1,6 @@
 ﻿using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
@@ -27,6 +25,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = set.ToString()
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await SetIsVue(obj, set);
@@ -51,6 +51,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = file
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await WebCodeZIP(obj, file);
@@ -77,6 +79,8 @@ public partial class HttpBuild : HttpUtilsBase
             Temp = name,
             Code = JsonConvert.SerializeObject(list)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await WebFileEdit(obj, name, list);
@@ -102,6 +106,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = name
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await WebDownloadFile(obj, name);
@@ -124,6 +130,8 @@ public partial class HttpBuild : HttpUtilsBase
             UUID = name,
             Code = isVue.ToString()
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddWeb(name, isVue);
@@ -144,6 +152,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = PostBuildType.CodeWeb,
             UUID = name
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetWebCode(name);
@@ -166,6 +176,8 @@ public partial class HttpBuild : HttpUtilsBase
             Version = obj.Version,
             Text = obj.Text
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await BuildWeb(obj);
@@ -188,6 +200,8 @@ public partial class HttpBuild : HttpUtilsBase
             Version = obj.Version,
             Text = obj.Text
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await BuildWebRes(obj);
@@ -212,6 +226,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = name
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddWebCode(obj, name);
@@ -238,6 +254,8 @@ public partial class HttpBuild : HttpUtilsBase
             Code = name,
             Temp = by
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddWebFile(obj, name, by);
@@ -262,6 +280,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = name
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await WebRemoveFile(obj, name);

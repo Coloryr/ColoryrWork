@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.FileSystem.Html;
 using ColoryrServer.Core.Http;
-using DotNetty.Codecs.Http;
 
 namespace ColoryrServer.SDK;
 

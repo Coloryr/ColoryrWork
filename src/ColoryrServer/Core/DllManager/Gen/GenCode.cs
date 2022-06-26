@@ -92,7 +92,7 @@ internal static class GenCode
             };
         }
     }
-    private static void Stop() 
+    private static void Stop()
     {
         References.Clear();
     }

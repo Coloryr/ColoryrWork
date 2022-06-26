@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
@@ -27,6 +25,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Task => PostBuildType.GetTask,
             CodeType.Web => PostBuildType.GetWeb,
             CodeType.Dll => PostBuildType.GetDll,
+            _ => throw new NotImplementedException(),
         };
         var data = await DoPost(new BuildOBJ
         {
@@ -34,6 +33,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = reType
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetList(type);
@@ -60,6 +61,8 @@ public partial class HttpBuild : HttpUtilsBase
             Temp = file,
             Code = JsonConvert.SerializeObject(list)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await ClassFileEdit(obj, file, list);
@@ -94,6 +97,8 @@ public partial class HttpBuild : HttpUtilsBase
             UUID = name,
             Code = arg
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddObj(type, name);
@@ -126,6 +131,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = reType,
             UUID = obj.UUID
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await RemoveObj(type, obj);
@@ -157,6 +164,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = reType,
             UUID = name
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetCode(type, name);
@@ -192,6 +201,8 @@ public partial class HttpBuild : HttpUtilsBase
             Text = obj.Text,
             Code = JsonConvert.SerializeObject(list)
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await Build(obj, type, list);
@@ -210,6 +221,8 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.GetApi
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetApi();
@@ -232,6 +245,8 @@ public partial class HttpBuild : HttpUtilsBase
             UUID = obj.UUID,
             Temp = file
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddClassFile(obj, file);
@@ -254,6 +269,8 @@ public partial class HttpBuild : HttpUtilsBase
             UUID = obj.UUID,
             Temp = file
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await AddClassFile(obj, file);
@@ -274,6 +291,8 @@ public partial class HttpBuild : HttpUtilsBase
             Mode = PostBuildType.CodeClass,
             UUID = obj.UUID
         });
+        if (data == null)
+            return null;
         if (!CheckLogin(data))
         {
             return await GetClassCode(obj);
