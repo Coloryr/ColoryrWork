@@ -1,5 +1,9 @@
 # [ColoryrWork](https://github.com/Coloryr/ColoryrWork) 
 ![ico](./ColoryrWork.png)  
+
+2.0.0版本正在进行中  
+2.0.0B2已完成
+
 一个多功能服务器/应用框架  
 
 ## ColoryrServer  
