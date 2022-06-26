@@ -17,32 +17,21 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage> SetIsVue(WebObj obj, bool set)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebSetIsVue,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Code = set.ToString()
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await SetIsVue(obj, set);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebSetIsVue,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = set.ToString()
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await SetIsVue(obj, set);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
     /// <summary>
     /// 代码压缩包
@@ -52,32 +41,21 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage> WebCodeZIP(WebObj obj, string file)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebCodeZIP,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Code = file
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await WebCodeZIP(obj, file);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebCodeZIP,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = file
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await WebCodeZIP(obj, file);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
     /// <summary>
     /// 修改文件
@@ -88,41 +66,30 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage> WebFileEdit(WebObj obj, string name, List<CodeEditObj> list)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.UpdataWeb,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Temp = name,
-                Code = JsonConvert.SerializeObject(list)
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await WebFileEdit(obj, name, list);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.UpdataWeb,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Temp = name,
+            Code = JsonConvert.SerializeObject(list)
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await WebFileEdit(obj, name, list);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
 
     /// <summary>
-    /// 
+    /// 下载文件
     /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="name"></param>
-    /// <returns></returns>
+    /// <param name="obj">工程对象</param>
+    /// <param name="name">文件名</param>
+    /// <returns>结果</returns>
     public async Task<ReMessage> WebDownloadFile(WebObj obj, string name)
     {
         var data = await DoPost(new BuildOBJ
@@ -141,262 +108,164 @@ public partial class HttpBuild : HttpUtilsBase
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-    public async Task<ReMessage> AddWeb(string name, bool IsVue)
+    /// <summary>
+    /// 添加Web项目
+    /// </summary>
+    /// <param name="name">名字</param>
+    /// <param name="isVue">Vue项目</param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> AddWeb(string name, bool isVue)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.AddWeb,
-                UUID = name,
-                Code = IsVue.ToString()
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await AddWeb(name, IsVue);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.AddWeb,
+            UUID = name,
+            Code = isVue.ToString()
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await AddWeb(name, isVue);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
+    /// <summary>
+    /// 获取Web代码
+    /// </summary>
+    /// <param name="name">文件名</param>
+    /// <returns>结果</returns>
     public async Task<WebObj> GetWebCode(string name)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.CodeWeb,
-                UUID = name
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await GetWebCode(name);
-            }
-            return JsonConvert.DeserializeObject<WebObj>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.CodeWeb,
+            UUID = name
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await GetWebCode(name);
         }
+        return JsonConvert.DeserializeObject<WebObj>(data);
     }
+    /// <summary>
+    /// 构建Web项目
+    /// </summary>
+    /// <param name="obj">Web工程</param>
+    /// <returns>结果</returns>
     public async Task<ReMessage> BuildWeb(CSFileObj obj)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebBuild,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await BuildWeb(obj);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebBuild,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await BuildWeb(obj);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-
+    /// <summary>
+    /// 获取构建Web项目结果
+    /// </summary>
+    /// <param name="obj">Web工程</param>
+    /// <returns>结果</returns>
     public async Task<ReMessage> BuildWebRes(CSFileObj obj)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebBuildRes,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await BuildWebRes(obj);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebBuildRes,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await BuildWebRes(obj);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-
-    public async Task<ReMessage> AddWebCode(CSFileObj obj, string Name)
+    /// <summary>
+    /// 添加Web代码
+    /// </summary>
+    /// <param name="obj">Web工程</param>
+    /// <param name="name">文件名</param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> AddWebCode(CSFileObj obj, string name)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebAddCode,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Code = Name
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await AddWebCode(obj, Name);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebAddCode,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = name
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await AddWebCode(obj, name);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-
-    public async Task<ReMessage> AddWebFile(CSFileObj obj, string Name, string by)
+    /// <summary>
+    /// 添加Web文件
+    /// </summary>
+    /// <param name="obj">Web工程</param>
+    /// <param name="name">文件名</param>
+    /// <param name="by">数据</param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> AddWebFile(CSFileObj obj, string name, string by)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebAddFile,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Code = Name,
-                Temp = by
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await AddWebFile(obj, Name, by);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebAddFile,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = name,
+            Temp = by
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await AddWebFile(obj, name, by);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-    public async Task<ReMessage> WebRemoveFile(CSFileObj obj, string Name)
+    /// <summary>
+    /// 删除Web文件
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="name"></param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> WebRemoveFile(CSFileObj obj, string name)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebRemoveFile,
-                UUID = obj.UUID,
-                Version = obj.Version,
-                Text = obj.Text,
-                Code = Name
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await WebRemoveFile(obj, Name);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.WebRemoveFile,
+            UUID = obj.UUID,
+            Version = obj.Version,
+            Text = obj.Text,
+            Code = name
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await WebRemoveFile(obj, name);
         }
-    }
-
-    public async Task<ReMessage> WebSetSocket(string ip, int port, string type) 
-    {
-        try
-        {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.WebSetSocket,
-                Code = ip,
-                Version = port,
-                Text = type
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await WebSetSocket(ip, port, type);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    public async Task<ReMessage> SetRobotConfig(string ip, int port, List<int> packs) 
-    {
-        try
-        {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.SetRobotConfig,
-                Code = ip,
-                Version = port,
-                Text = JsonConvert.SerializeObject(packs)
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await SetRobotConfig(ip, port, packs);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
-        {
-            return null;
-        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
 }

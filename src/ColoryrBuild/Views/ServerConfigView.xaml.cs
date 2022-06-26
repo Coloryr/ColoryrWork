@@ -371,7 +371,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
             _ = new InfoWindow("修改Socket配置", "修改服务器Socket配置错误");
@@ -399,7 +399,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
             _ = new InfoWindow("修改Mqtt配置", "修改服务器Mqtt配置错误");
@@ -427,7 +427,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.WebSetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
             _ = new InfoWindow("修改WebSocket配置", "修改服务器WebSocket配置错误");

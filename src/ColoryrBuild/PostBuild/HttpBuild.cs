@@ -216,87 +216,68 @@ public partial class HttpBuild : HttpUtilsBase
         }
         return JsonConvert.DeserializeObject<APIFileObj>(data);
     }
-
+    /// <summary>
+    /// 添加Class文件
+    /// </summary>
+    /// <param name="obj">代码对象</param>
+    /// <param name="file">文件名</param>
+    /// <returns>结果</returns>
     public async Task<ReMessage> AddClassFile(CSFileObj obj, string file)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.AddClassFile,
-                UUID = obj.UUID,
-                Temp = file
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await AddClassFile(obj, file);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.AddClassFile,
+            UUID = obj.UUID,
+            Temp = file
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await AddClassFile(obj, file);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-
+    /// <summary>
+    /// 删除Class文件
+    /// </summary>
+    /// <param name="obj">代码对象</param>
+    /// <param name="file">文件名</param>
+    /// <returns>结果</returns>
     public async Task<ReMessage> RemoveClassFile(CSFileObj obj, string file)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.RemoveClassFile,
-                UUID = obj.UUID,
-                Temp = file
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await AddClassFile(obj, file);
-            }
-            return JsonConvert.DeserializeObject<ReMessage>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.RemoveClassFile,
+            UUID = obj.UUID,
+            Temp = file
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await AddClassFile(obj, file);
         }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
-
+    /// <summary>
+    /// 获取Class代码
+    /// </summary>
+    /// <param name="obj">代码对象</param>
+    /// <returns>结果</returns>
     public async Task<ClassCodeGetObj> GetClassCode(CSFileObj obj)
     {
-        try
+        var data = await DoPost(new BuildOBJ
         {
-            var pack = new BuildOBJ
-            {
-                User = App.Config.Name,
-                Token = App.Config.Token,
-                Mode = PostBuildType.CodeClass,
-                UUID = obj.UUID
-            };
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
-            Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var temp = await httpClient.PostAsync(App.Config.Http, Content);
-            var data = await temp.Content.ReadAsStringAsync();
-            if (!CheckLogin(data))
-            {
-                return await GetClassCode(obj);
-            }
-            return JsonConvert.DeserializeObject<ClassCodeGetObj>(data);
-        }
-        catch
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.CodeClass,
+            UUID = obj.UUID
+        });
+        if (!CheckLogin(data))
         {
-            return null;
+            return await GetClassCode(obj);
         }
+        return JsonConvert.DeserializeObject<ClassCodeGetObj>(data);
     }
 }

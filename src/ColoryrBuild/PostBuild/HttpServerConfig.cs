@@ -1,6 +1,7 @@
 ﻿using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -199,7 +200,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="enable">启用</param>
     /// <param name="type">类型</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> SetServerEnable(bool enable, string type) 
+    public async Task<ReMessage> SetServerEnable(bool enable, string type)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -212,6 +213,54 @@ public partial class HttpBuild : HttpUtilsBase
         if (!CheckLogin(data))
         {
             return await SetServerEnable(enable, type);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+    /// <summary>
+    /// 设置服务器端口
+    /// </summary>
+    /// <param name="ip">IP</param>
+    /// <param name="port">端口</param>
+    /// <param name="type">类型</param>
+    /// <returns></returns>
+    public async Task<ReMessage> SetSocket(string ip, int port, string type)
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.ServerConfigSetSocket,
+            Code = ip,
+            Version = port,
+            Text = type
+        });
+        if (!CheckLogin(data))
+        {
+            return await SetSocket(ip, port, type);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+    /// <summary>
+    /// 设置机器人配置
+    /// </summary>
+    /// <param name="ip">IP</param>
+    /// <param name="port">端口</param>
+    /// <param name="packs">订阅的包</param>
+    /// <returns></returns>
+    public async Task<ReMessage> SetRobotConfig(string ip, int port, List<int> packs)
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.SetRobotConfig,
+            Code = ip,
+            Version = port,
+            Text = JsonConvert.SerializeObject(packs)
+        });
+        if (!CheckLogin(data))
+        {
+            return await SetRobotConfig(ip, port, packs);
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }
