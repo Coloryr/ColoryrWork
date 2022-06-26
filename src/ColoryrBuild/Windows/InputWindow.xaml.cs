@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace ColoryrBuild.Windows
 {
@@ -32,6 +33,15 @@ namespace ColoryrBuild.Windows
         {
             Data = "";
             Close();
+        }
+
+        private void Text_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Data = Text.Text;
+                Close();
+            }
         }
     }
 }

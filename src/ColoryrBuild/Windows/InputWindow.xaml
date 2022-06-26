@@ -23,15 +23,14 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Text="{Binding Data}"
-            TextWrapping="NoWrap" />
+            TextWrapping="NoWrap" KeyDown="Text_KeyDown" />
         <Button
             Width="42"
             Margin="0,5,10,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="Button_Click_1"
-            Content="取消"
-            IsDefault="True" />
+            Content="取消" />
         <Button
             Width="42"
             Margin="0,5,57,0"
@@ -40,6 +39,5 @@
             Click="Button_Click"
             Content="确定"
             IsDefault="True" />
-
     </Grid>
 </Window>

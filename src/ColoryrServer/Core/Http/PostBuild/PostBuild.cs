@@ -30,9 +30,9 @@ public static class PostBuild
         using var DBSQL = new SqliteConnection(connStr);
         string sql = @"create table if not exists login (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  `User` text,
-  `UUID` text,
-  `Time` datetime
+  `user` text,
+  `uuid` text,
+  `time` datetime
 );";
         DBSQL.Execute(sql);
     }
@@ -45,7 +45,7 @@ public static class PostBuild
     private static bool CheckLogin(string user, string uuid)
     {
         using var DBSQL = new SqliteConnection(connStr);
-        var list = DBSQL.Query<LoginObj>("SELECT User,UUID,Time FROM login WHERE User=@User", new { user });
+        var list = DBSQL.Query<LoginObj>("SELECT user,uuid,time FROM login WHERE user=@user", new { user });
         if (!list.Any())
             return false;
         LoginObj item = list.First();
@@ -73,11 +73,11 @@ public static class PostBuild
             {
                 json.UUID = Guid.NewGuid().ToString().Replace("-", "");
                 using var DBSQL = new SqliteConnection(connStr);
-                var list = DBSQL.Query("SELECT id FROM login WHERE User=@User", new { json.User });
+                var list = DBSQL.Query("SELECT id FROM login WHERE user=@user", new { user = json.User });
                 if (list.Any())
-                    DBSQL.Execute("UPDATE login SET UUID=@UUID,Time=@Time WHERE User=@User", new { json.UUID, json.User, Time = DateTime.Now });
+                    DBSQL.Execute("UPDATE login SET uuid=@uuid,time=@time WHERE user=@user", new { uuid = json.UUID, user = json.User, time = DateTime.Now });
                 else
-                    DBSQL.Execute("INSERT INTO login (UUID,User,Time) VALUES(@UUID,@User,@Time)", new { json.UUID, json.User, Time = DateTime.Now });
+                    DBSQL.Execute("INSERT INTO login (uuid,user,time) VALUES(@uuid,@user,@time)", new { uuid = json.UUID, user = json.User, time = DateTime.Now });
                 resObj = new ReMessage
                 {
                     Build = true,
