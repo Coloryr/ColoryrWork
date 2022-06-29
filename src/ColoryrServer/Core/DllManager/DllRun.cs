@@ -5,6 +5,7 @@ using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager;
 /// <summary>
@@ -134,6 +135,7 @@ internal static class DllRun
         }
         catch (Exception e)
         {
+            Task.Run(() => TaskGo(e));
             if (e.InnerException is VarDump dump)
             {
                 if (dll.Debug)
@@ -223,6 +225,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Socket]{dll.Name}", error);
             }
         }
@@ -259,6 +262,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Socket]{dll.Name}", error);
             }
         }
@@ -293,6 +297,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
@@ -327,6 +332,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
@@ -361,6 +367,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
             }
         }
@@ -398,6 +405,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
@@ -435,6 +443,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
@@ -472,6 +481,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
             }
         }
@@ -509,6 +519,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
@@ -546,6 +557,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
@@ -583,6 +595,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
@@ -620,6 +633,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
@@ -657,6 +671,7 @@ internal static class DllRun
                     ServerMain.LogError(e);
                 }
 
+                Task.Run(() => TaskGo(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
             }
         }
@@ -673,6 +688,8 @@ internal static class DllRun
             return null;
         try
         {
+            if (!dll.MethodInfos.ContainsKey(CodeDemo.TaskRun))
+                return null;
             MethodInfo mi = dll.MethodInfos[CodeDemo.TaskRun];
             var obj1 = Activator.CreateInstance(dll.SelfType);
             var res = mi.Invoke(obj1, name.Arg);
@@ -691,9 +708,104 @@ internal static class DllRun
                 error = e.ToString();
                 ServerMain.LogError(e);
             }
-
-            DllRunLog.PutError($"[Task]{dll.Name}", error);
+            Task.Run(() => TaskGo(e));
+            DllRunLog.PutError($"[Task]{dll.Name}", error.ToString());
         }
         return null;
+    }
+
+    public static void TaskGo(Exception arg)
+    {
+        foreach (var item in DllStongeManager.GetTask())
+        {
+            try
+            {
+                if (!item.MethodInfos.ContainsKey(CodeDemo.TaskError))
+                    continue;
+                MethodInfo mi = item.MethodInfos[CodeDemo.TaskError];
+                var obj1 = Activator.CreateInstance(item.SelfType);
+                var res = mi.Invoke(obj1, new object[] { arg });
+                if (res is true)
+                    return;
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                DllRunLog.PutError($"[Task]{item.Name}", error);
+            }
+        }
+    }
+
+    public static void TaskGoOnStart() 
+    {
+        foreach (var item in DllStongeManager.GetTask())
+        {
+            try
+            {
+                if (!item.MethodInfos.ContainsKey(CodeDemo.TaskStart))
+                    continue;
+                MethodInfo mi = item.MethodInfos[CodeDemo.TaskStart];
+                var obj1 = Activator.CreateInstance(item.SelfType);
+                mi.Invoke(obj1, null);
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                DllRunLog.PutError($"[Task]{item.Name}", error);
+            }
+        }
+    }
+
+    public static void TaskGoOnStop()
+    {
+        foreach (var item in DllStongeManager.GetTask())
+        {
+            try
+            {
+                if (!item.MethodInfos.ContainsKey(CodeDemo.TaskStop))
+                    continue;
+                MethodInfo mi = item.MethodInfos[CodeDemo.TaskStop];
+                var obj1 = Activator.CreateInstance(item.SelfType);
+                mi.Invoke(obj1, null);
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                DllRunLog.PutError($"[Task]{item.Name}", error);
+            }
+        }
     }
 }

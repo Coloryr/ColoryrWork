@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem;
@@ -148,6 +149,8 @@ public class ServerMain
 
             //等待初始化完成
             Thread.Sleep(2000);
+
+            DllRun.TaskGoOnStart();
         }
         catch (Exception e)
         {
@@ -179,6 +182,7 @@ public class ServerMain
 
     public static void Stop()
     {
+        DllRun.TaskGoOnStop();
         OnStop.Invoke();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using ColoryrServer.SDK;
 
 [DLLIN]
@@ -9,5 +10,20 @@ public class {name}
         {
             Res = true
         };
+    }
+
+    public void OnStart()
+    {
+        
+    }
+
+    public void OnStop()
+    {
+        
+    }
+    
+    public bool OnError(Exception e)
+    {
+        return false;
     }
 }

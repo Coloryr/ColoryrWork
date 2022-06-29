@@ -35,10 +35,10 @@ internal static class LoadTask
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is CodeDemo.TaskRun && item.IsPublic)
+            if (item.Name is CodeDemo.TaskRun or CodeDemo.TaskStart 
+                or CodeDemo.TaskStop or CodeDemo.TaskError && item.IsPublic)
             {
                 assembly.MethodInfos.Add(item.Name, item);
-                break;
             }
         }
 

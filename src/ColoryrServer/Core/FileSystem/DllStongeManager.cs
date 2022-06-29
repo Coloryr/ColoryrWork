@@ -346,6 +346,10 @@ public static class DllStongeManager
     {
         return MapTask.TryGetValue(uuid, out var dll) ? dll : null;
     }
+    public static List<DllAssembly> GetTask()
+    {
+        return new List<DllAssembly>(MapTask.Values);
+    }
     public static void Start()
     {
         ServerMain.OnStop += Stop;

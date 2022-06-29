@@ -17,6 +17,9 @@ internal static class CodeDemo
     public const string MQTTSubscription = "OnSubscription";
     public const string MQTTUnsubscription = "OnUnsubscription";
     public const string TaskRun = "Run";
+    public const string TaskStart = "OnStart";
+    public const string TaskStop = "OnStop";
+    public const string TaskError = "OnError";
 
     public const string Name = "{name}";
 }

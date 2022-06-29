@@ -131,6 +131,7 @@ internal class TaskThread
                         {
                             error = e.ToString();
                         }
+                        Task.Run(() => DllRun.TaskGo(e));
                         DllRunLog.PutError($"[Task]{Arg.Name}", error);
                         State = TaskState.Error;
                     }
@@ -161,6 +162,7 @@ internal class TaskThread
             }
             catch (Exception e)
             {
+                Task.Run(() => DllRun.TaskGo(e));
                 DllRunLog.PutError($"[Task]{Arg.Name}", e.ToString());
                 ServerMain.LogError(e);
             }
