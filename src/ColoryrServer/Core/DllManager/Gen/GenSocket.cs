@@ -16,14 +16,14 @@ internal static class GenSocket
     /// </summary>
     /// <param name="obj">构建信息</param>
     /// <returns>编译结果</returns>
-    public static GenReOBJ StartGen(CSFileCode obj)
+    public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
         var build = GenCode.StartGen(obj.UUID, new()
         {
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageSocket(obj);
+        CodeFileManager.StorageSocket(obj,user);
         if (!build.Isok)
         {
             build.Res = $"Socket[{obj.UUID}]" + build.Res;

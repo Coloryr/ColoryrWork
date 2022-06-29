@@ -121,6 +121,11 @@ public partial class CodeWebEditView : UserControl, IEditView
             return;
         IsWrite = true;
         string name = e.FullPath.Replace(Local, "").Replace('\\', '/');
+        if (!WebObj.Codes.ContainsKey(name))
+        {
+            IsWrite = false;
+            return;
+        }
         FileName = name;
         OldCode = WebObj.Codes[name];
         WebObj.Codes[name] = CodeSave.Load(e.FullPath).Replace("\r", "");

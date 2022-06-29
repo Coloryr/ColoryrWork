@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.IoT;
+﻿using ColoryrServer.Core.PortServer;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -35,17 +35,17 @@ public partial class TcpSocketRequest
     /// </summary>
     /// <param name="Data">字符串</param>
     public void Send(string Data)
-        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
+        => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
     public void Send(IPEndPoint Port, string data)
-        => SocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(data));
+        => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
     /// <param name="data">数据</param>
     public void Send(byte[] data)
-        => SocketServer.TcpSendData(Port, data);
+        => PortSocketServer.TcpSendData(Port, data);
     public void Send(IPEndPoint port, byte[] data)
-       => SocketServer.TcpSendData(port, data);
+       => PortSocketServer.TcpSendData(port, data);
 }
 public partial class UdpSocketRequest
 {
@@ -77,17 +77,17 @@ public partial class UdpSocketRequest
     /// </summary>
     /// <param name="data">字符串</param>
     public void Send(string data)
-        => SocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(data));
+        => PortSocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(data));
     public void Send(IPEndPoint port, string Data)
-        => SocketServer.UdpSendData(port, Encoding.UTF8.GetBytes(Data));
+        => PortSocketServer.UdpSendData(port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
     /// 向Socket设备发送数据
     /// </summary>
     /// <param name="data">数据</param>
     public void Send(byte[] data)
-       => SocketServer.UdpSendData(Port, data);
+       => PortSocketServer.UdpSendData(Port, data);
     public void Send(IPEndPoint port, byte[] data)
-       => SocketServer.UdpSendData(port, data);
+       => PortSocketServer.UdpSendData(port, data);
 }
 
 public static class SocketUtils
@@ -97,11 +97,11 @@ public static class SocketUtils
     /// </summary>
     /// <returns>设备列表</returns>
     public static List<IPEndPoint> GetTcpList()
-        => SocketServer.GetTcpList();
+        => PortSocketServer.GetTcpList();
     /// <summary>
     /// 获取Socket设备列表
     /// </summary>
     /// <returns>设备列表</returns>
     public static List<IPEndPoint> GetUdpList()
-        => SocketServer.GetUdpList();
+        => PortSocketServer.GetUdpList();
 }

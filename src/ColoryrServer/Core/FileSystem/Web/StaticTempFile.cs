@@ -1,4 +1,4 @@
-﻿namespace ColoryrServer.Core.FileSystem.Html;
+﻿namespace ColoryrServer.Core.FileSystem.Web;
 
 internal class StaticTempFile
 {

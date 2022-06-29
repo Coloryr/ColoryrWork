@@ -7,9 +7,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.IoT;
+namespace ColoryrServer.Core.PortServer;
 
-internal static class SocketServer
+internal static class PortSocketServer
 {
     private static TcpListener TcpServer;
     private static Socket UdpServer;

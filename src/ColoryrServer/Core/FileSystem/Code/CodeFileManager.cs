@@ -155,6 +155,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists class (
@@ -162,6 +163,7 @@ internal static class CodeFileManager
   `uuid` text,
   `text` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists classcode (
@@ -169,6 +171,7 @@ internal static class CodeFileManager
   `uuid` text,
   `name` text,
   `code` text,
+  `user` text,
   `time` text
 );");
 
@@ -178,6 +181,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists socket (
@@ -186,6 +190,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists task (
@@ -194,6 +199,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists websocket (
@@ -202,6 +208,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
             codeLogSQL.Execute(@"create table if not exists mqtt (
@@ -210,6 +217,7 @@ internal static class CodeFileManager
   `text` text,
   `code` text,
   `version` integer,
+  `user` text,
   `time` text
 );");
         }
@@ -217,7 +225,7 @@ internal static class CodeFileManager
         LoadAll();
     }
 
-    private static void SaveCode(CSFileCode obj, string name = null, string code = null)
+    private static void SaveCode(CSFileCode obj, string user, string name = null, string code = null)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
 
@@ -261,11 +269,12 @@ internal static class CodeFileManager
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
                     {
                         old.uuid,
                         old.code,
                         name,
+                        user,
                         time = DateTime.Now.ToString()
                     });
                 }
@@ -298,12 +307,13 @@ internal static class CodeFileManager
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,time) VALUES(@uuid,@text,@code,@version,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,user,time) VALUES(@uuid,@text,@code,@version,@user,@time)", new
                     {
                         obj1.uuid,
                         obj1.text,
                         obj1.code,
                         obj1.version,
+                        user,
                         time = DateTime.Now.ToString()
                     });
                 }
@@ -333,7 +343,7 @@ internal static class CodeFileManager
         }
     }
 
-    public static void RemoveClassCode(string uuid, string name)
+    public static void RemoveClassCode(string uuid, string name,string user)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
         var arg = new { uuid, name };
@@ -345,15 +355,15 @@ internal static class CodeFileManager
             {
                 ClassCodeObj obj1 = list.First();
                 using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new
-                { uuid, name, obj1.code, time = DateTime.Now.ToString() });
+                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
+                { uuid, name, obj1.code, user, time = DateTime.Now.ToString() });
             }
 
             codeSQL.Execute("DELETE FROM class WHERE uuid=@uuid AND name=@name", arg);
         }
     }
 
-    private static void RemoveCode(CodeType type, string uuid)
+    private static void RemoveCode(CodeType type, string uuid, string user)
     {
         if (type == CodeType.Class)
         {
@@ -366,11 +376,12 @@ internal static class CodeFileManager
                 {
                     QCodeObj obj1 = list.First();
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO class (uuid,text,version,time) VALUES(@uuid,@text,@version,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO class (uuid,text,version,user,time) VALUES(@uuid,@text,@version,@user,@time)", new
                     {
                         obj1.uuid,
                         obj1.text,
                         obj1.version,
+                        user,
                         time = DateTime.Now.ToString()
                     });
                 }
@@ -383,11 +394,12 @@ internal static class CodeFileManager
 
                     foreach (var item in list1)
                     {
-                        codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,time) VALUES(@uuid,@name,@code,@time)", new
+                        codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
                         {
                             uuid,
                             item.name,
                             item.code,
+                            user,
                             time = DateTime.Now.ToString()
                         });
                     }
@@ -417,12 +429,13 @@ internal static class CodeFileManager
                 {
                     QCodeObj obj1 = list.First();
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,code) VALUES(@uuid,@text,@version,@time,@code)", new
+                    codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,user,code) VALUES(@uuid,@text,@version,@time,@user,@code)", new
                     {
                         obj1.uuid,
                         obj1.text,
                         obj1.code,
                         obj1.version,
+                        user,
                         time = DateTime.Now.ToString()
                     });
                 }
@@ -450,63 +463,63 @@ internal static class CodeFileManager
         return list.FirstOrDefault();
     }
 
-    public static void StorageDll(CSFileCode obj)
+    public static void StorageDll(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (DllFileList.ContainsKey(obj.UUID))
             DllFileList[obj.UUID] = obj;
         else
             DllFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageClass(CSFileCode obj, string file, string code)
+    public static void StorageClass(CSFileCode obj, string file, string code, string user)
     {
-        SaveCode(obj, file, code);
+        SaveCode(obj, user, file, code);
         if (ClassFileList.ContainsKey(obj.UUID))
             ClassFileList[obj.UUID] = obj;
         else
             ClassFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageSocket(CSFileCode obj)
+    public static void StorageSocket(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (SocketFileList.ContainsKey(obj.UUID))
             SocketFileList[obj.UUID] = obj;
         else
             SocketFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageWebSocket(CSFileCode obj)
+    public static void StorageWebSocket(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (WebSocketFileList.ContainsKey(obj.UUID))
             WebSocketFileList[obj.UUID] = obj;
         else
             WebSocketFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageRobot(CSFileCode obj)
+    public static void StorageRobot(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (RobotFileList.ContainsKey(obj.UUID))
             RobotFileList[obj.UUID] = obj;
         else
             RobotFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageMqtt(CSFileCode obj)
+    public static void StorageMqtt(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (MqttFileList.ContainsKey(obj.UUID))
             MqttFileList[obj.UUID] = obj;
         else
             MqttFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageTask(CSFileCode obj)
+    public static void StorageTask(CSFileCode obj, string user)
     {
-        Task.Run(() => SaveCode(obj));
+        Task.Run(() => SaveCode(obj, user));
         if (TaskFileList.ContainsKey(obj.UUID))
             TaskFileList[obj.UUID] = obj;
         else
@@ -570,7 +583,7 @@ internal static class CodeFileManager
         return null;
     }
 
-    public static void RemoveFile(CodeType type, string uuid)
+    public static void RemoveFile(CodeType type, string uuid,string user)
     {
         try
         {
@@ -624,8 +637,8 @@ internal static class CodeFileManager
                     break;
             }
 
-            ServerMain.LogOut($"删除{type}[{uuid}]");
-            RemoveCode(type, uuid);
+            ServerMain.LogOut($"[{user}]删除{type}[{uuid}]");
+            RemoveCode(type, uuid, user);
             uuid = uuid.Replace("/", "_");
 
             string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");

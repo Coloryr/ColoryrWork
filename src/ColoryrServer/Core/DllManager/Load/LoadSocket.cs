@@ -1,6 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.Netty;
+using ColoryrServer.Core.PortServer;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
@@ -34,7 +34,7 @@ internal static class LoadSocket
 
         assembly.SelfType = list.First();
 
-        if (!NettyManager.Check(assembly.SelfType))
+        if (!PortNettyManager.Check(assembly.SelfType))
         {
             foreach (var item in assembly.SelfType.GetMethods())
             {

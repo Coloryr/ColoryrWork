@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using Newtonsoft.Json;

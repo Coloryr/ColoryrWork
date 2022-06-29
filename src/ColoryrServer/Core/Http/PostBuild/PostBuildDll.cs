@@ -47,14 +47,14 @@ internal static class PostBuildDll
             Code = DemoResource.Dll
             .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
         };
-        CodeFileManager.StorageDll(obj);
+        CodeFileManager.StorageDll(obj, json.User);
         res = new ReMessage
         {
             Build = true,
             Message = $"Dll[{uuid}]已创建"
         };
-        GenDll.StartGen(obj);
-        ServerMain.LogOut($"Dll[{uuid}]创建");
+        GenDll.StartGen(obj, json.User);
+        ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]");
 
 
         return res;
@@ -73,7 +73,7 @@ internal static class PostBuildDll
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Dll, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Dll, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -107,7 +107,7 @@ internal static class PostBuildDll
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenDll.StartGen(obj);
+        var build = GenDll.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

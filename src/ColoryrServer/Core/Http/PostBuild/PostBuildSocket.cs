@@ -26,14 +26,14 @@ internal static class PostBuildSocket
                 Code = code
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageSocket(obj);
+            CodeFileManager.StorageSocket(obj, json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"Socket[{json.UUID}]已创建"
             };
-            GenSocket.StartGen(obj);
-            ServerMain.LogOut($"Socket[{json.UUID}]创建");
+            GenSocket.StartGen(obj, json.User);
+            ServerMain.LogOut($"[{json.User}]创建Socket[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -58,7 +58,7 @@ internal static class PostBuildSocket
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Socket, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Socket, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -92,7 +92,7 @@ internal static class PostBuildSocket
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenSocket.StartGen(obj);
+        var build = GenSocket.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

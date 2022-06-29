@@ -60,7 +60,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         try
         {
             FileSystemWatcher.Path = Local;
-            FileSystemWatcher.Changed += new FileSystemEventHandler(OnChanged);
+            FileSystemWatcher.Changed += OnChanged;
             FileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
             FileSystemWatcher.EnableRaisingEvents = true;
         }

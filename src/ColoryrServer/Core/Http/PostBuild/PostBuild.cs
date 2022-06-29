@@ -12,80 +12,30 @@ namespace ColoryrServer.Core.DllManager.PostBuild;
 
 public static class PostBuild
 {
-    private record LoginObj
+    public static object StartBuild(BuildOBJ json)
     {
-        public string User { get; set; }
-        public string UUID { get; set; }
-        public DateTime Time { get; set; }
-    }
-
-    private static readonly string DB = ServerMain.RunLocal + "Login.db";
-    private static string connStr;
-    public static void Start()
-    {
-        connStr = new SqliteConnectionStringBuilder("Data Source=" + DB)
-        {
-            Mode = SqliteOpenMode.ReadWriteCreate
-        }.ToString();
-        using var DBSQL = new SqliteConnection(connStr);
-        string sql = @"create table if not exists login (
-  `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  `user` text,
-  `uuid` text,
-  `time` datetime
-);";
-        DBSQL.Execute(sql);
-    }
-    /// <summary>
-    /// 检查登录
-    /// </summary>
-    /// <param name="user">用户名</param>
-    /// <param name="uuid">密钥</param>
-    /// <returns>结果</returns>
-    private static bool CheckLogin(string user, string uuid)
-    {
-        using var DBSQL = new SqliteConnection(connStr);
-        var list = DBSQL.Query<LoginObj>("SELECT user,uuid,time FROM login WHERE user=@user", new { user });
-        if (!list.Any())
-            return false;
-        LoginObj item = list.First();
-        if (item.UUID != uuid)
-            return false;
-        if (DateTime.Now - item.Time > TimeSpan.FromDays(7))
-            return false;
-
-        return true;
-    }
-    public static HttpReturn StartBuild(BuildOBJ json, UserConfig user)
-    {
-        object resObj = null;
         if (json.Mode == PostBuildType.Login)
         {
             if (json.Code == null)
             {
-                resObj = new ReMessage
+                return new ReMessage
                 {
                     Build = false,
                     Message = "账户或密码错误"
                 };
             }
-            else if (user.Password.ToLower() == json.Code.ToLower())
+            else if (LoginSave.CheckPassword(json.User.ToLower(), json.Code.ToLower()))
             {
-                json.UUID = Guid.NewGuid().ToString().Replace("-", "");
-                using var DBSQL = new SqliteConnection(connStr);
-                var list = DBSQL.Query("SELECT id FROM login WHERE user=@user", new { user = json.User });
-                if (list.Any())
-                    DBSQL.Execute("UPDATE login SET uuid=@uuid,time=@time WHERE user=@user", new { uuid = json.UUID, user = json.User, time = DateTime.Now });
-                else
-                    DBSQL.Execute("INSERT INTO login (uuid,user,time) VALUES(@uuid,@user,@time)", new { uuid = json.UUID, user = json.User, time = DateTime.Now });
-                resObj = new ReMessage
+                string uuid = Guid.NewGuid().ToString().Replace("-", "");
+                LoginSave.UpdateToken(json.User.ToLower(), uuid.ToLower());
+                return new ReMessage
                 {
                     Build = true,
-                    Message = json.UUID
+                    Message = uuid
                 };
             }
             else
-                resObj = new ReMessage
+                return new ReMessage
                 {
                     Build = false,
                     Message = "账户或密码错误"
@@ -93,15 +43,15 @@ public static class PostBuild
         }
         else if (json.Mode == PostBuildType.Check)
         {
-            resObj = new ReMessage
+            return new ReMessage
             {
-                Build = CheckLogin(json.User, json.UUID),
+                Build = LoginSave.CheckLogin(json.User.ToLower(), json.UUID.ToLower()),
                 Message = "自动登录"
             };
         }
-        else if (CheckLogin(json.User, json.Token))
+        else if (LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
         {
-            resObj = json.Mode switch
+            return json.Mode switch
             {
                 PostBuildType.AddDll => PostBuildDll.Add(json),
                 PostBuildType.AddClass => PostBuildClass.Add(json),
@@ -155,18 +105,21 @@ public static class PostBuild
                 PostBuildType.RemoveClassFile => PostBuildClass.RemoveFile(json),
                 PostBuildType.BuildClass => PostBuildClass.Build(json),
                 PostBuildType.WebDownloadFile => PostBuildWeb.Download(json),
-                PostBuildType.GetServerHttpConfigList => PostServerConfig.GetHttpConfigList(json),
-                PostBuildType.AddServerHttpConfig => PostServerConfig.AddHttpConfig(json),
-                PostBuildType.RemoveServerHttpConfig => PostServerConfig.RemoveHttpConfig(json),
-                PostBuildType.AddServerHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),
-                PostBuildType.RemoveServerHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
-                PostBuildType.GetServerSocketConfig => PostServerConfig.GetSocketConfig(),
-                PostBuildType.GetRobotConfig => PostServerConfig.GetRobotConfig(),
-                PostBuildType.SetRobotConfig => PostServerConfig.SetRobotConfig(json),
-                PostBuildType.AddServerHttpRoute => PostServerConfig.AddHttpRouteConfig(json),
-                PostBuildType.RemoveServerHttpRoute => PostServerConfig.RemoveHttpRouteConfig(json),
+                PostBuildType.ConfigGetHttpList => PostServerConfig.GetHttpConfigList(json),
+                PostBuildType.ConfigAddHttp => PostServerConfig.AddHttpConfig(json),
+                PostBuildType.ConfigRemoveHttp => PostServerConfig.RemoveHttpConfig(json),
+                PostBuildType.ConfigAddHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),
+                PostBuildType.ConfigRemoveHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
+                PostBuildType.ConfigGetSocket => PostServerConfig.GetSocketConfig(),
+                PostBuildType.ConfigGetRobot => PostServerConfig.GetRobotConfig(),
+                PostBuildType.ConfigSetRobot => PostServerConfig.SetRobotConfig(json),
+                PostBuildType.ConfigAddHttpRoute => PostServerConfig.AddHttpRouteConfig(json),
+                PostBuildType.ConfigRemoveHttpRoute => PostServerConfig.RemoveHttpRouteConfig(json),
                 PostBuildType.SetServerEnable => PostServerConfig.SetServerEnable(json),
                 PostBuildType.ServerReboot => PostServerConfig.Reboot(),
+                PostBuildType.ConfigGetUser => PostUser.GetAll(),
+                PostBuildType.ConfigAddUser => PostUser.Add(json),
+                PostBuildType.ConfigRemoveUser => PostUser.Remove(json),
                 _ => new ReMessage
                 {
                     Build = false,
@@ -176,12 +129,7 @@ public static class PostBuild
         }
         else
         {
-            resObj = HttpReturnSave.Res404;
+            return HttpReturnSave.Res404;
         }
-        return new HttpReturn
-        {
-            Data = resObj,
-            Res = ResType.Json
-        };
     }
 }

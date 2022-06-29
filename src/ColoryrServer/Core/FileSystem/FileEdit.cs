@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ColoryrServer.Core.FileSystem;
 
-internal class FileEdit
+internal static class FileEdit
 {
     public static string StartEdit(string old, List<CodeEditObj> editText)
     {

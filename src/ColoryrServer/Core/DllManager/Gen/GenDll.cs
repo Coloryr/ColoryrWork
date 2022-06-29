@@ -19,7 +19,7 @@ internal static class GenDll
     /// </summary>
     /// <param name="obj">构建信息</param>
     /// <returns>编译结果</returns>
-    public static GenReOBJ StartGen(CSFileCode obj)
+    public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
         string name = EnCode.SHA1(obj.UUID);
         var build = GenCode.StartGen(name, new List<SyntaxTree>
@@ -27,7 +27,7 @@ internal static class GenDll
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageDll(obj);
+        CodeFileManager.StorageDll(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Dll[{obj.UUID}]" + build.Res;

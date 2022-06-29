@@ -48,7 +48,7 @@
                     <TabItem Header="WebSocket" Style="{DynamicResource TabItem}">
                         <local:WebSocketView />
                     </TabItem>
-                    <TabItem Header="MQTT" Style="{DynamicResource TabItem}">
+                    <TabItem Header="Mqtt" Style="{DynamicResource TabItem}">
                         <local:MqttView />
                     </TabItem>
                     <TabItem Header="Task" Style="{DynamicResource TabItem}">

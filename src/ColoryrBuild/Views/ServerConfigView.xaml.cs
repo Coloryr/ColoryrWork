@@ -82,6 +82,22 @@ public partial class ServerConfigView : UserControl
         GetHttpList();
         GetSocketConfig();
         GetRobotConfig();
+        GetUserConfig();
+    }
+
+    private async void GetUserConfig() 
+    {
+        var res = await App.HttpUtils.GetAllUser();
+        if (res == null)
+        {
+            _ = new InfoWindow("获取配置", "获取服务器Socket配置错误");
+            return;
+        }
+        UserList.Items.Clear();
+        foreach (var item in res.List)
+        {
+            UserList.Items.Add(item);
+        }
     }
 
     private async void GetRobotConfig()
@@ -337,6 +353,51 @@ public partial class ServerConfigView : UserControl
         });
     }
 
+    private async void AddUserClick(object sender, RoutedEventArgs e)
+    {
+        string user, password;
+        var res = new Input1Window("新建用户", "用户名", "密码").Set(out user, out password);
+        if (!res)
+            return;
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
+        {
+            _ = new InfoWindow("添加用户", "请输入用户信息");
+            return;
+        }
+
+        var res1 = await App.HttpUtils.AddUser(user, password);
+        if (res1 == null)
+        {
+            _ = new InfoWindow("添加用户", "添加用户错误");
+            return;
+        }
+        else if (!res1.Build)
+        {
+            _ = new InfoWindow("添加用户", res1.Message);
+            return;
+        }
+        GetUserConfig();
+    }
+
+    private async void DeleteUserClick(object sender, RoutedEventArgs e)
+    {
+        var item = UserList.SelectedItem as UserObj;
+        if (item == null)
+            return;
+
+        var res = await App.HttpUtils.RemoveUser(item.User);
+        if (res == null)
+        {
+            _ = new InfoWindow("删除用户", "删除用户错误");
+            return;
+        }
+        else if (!res.Build)
+        {
+            _ = new InfoWindow("删除用户", res.Message);
+            return;
+        }
+    }
+
     private void DeleteRobotClick(object sender, RoutedEventArgs e)
     {
         var item = RobotEventList.SelectedItem as EventObj;
@@ -459,6 +520,11 @@ public partial class ServerConfigView : UserControl
             _ = new InfoWindow("路由设置", res.Message);
             return;
         }
+    }
+
+    private void ButtonClick4(object sender, RoutedEventArgs e)
+    {
+        GetUserConfig();
     }
 
     private async void RobotButtonClick(object sender, RoutedEventArgs e)

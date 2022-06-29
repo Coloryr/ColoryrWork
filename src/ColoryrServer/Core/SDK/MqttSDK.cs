@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.MQTT;
+﻿using ColoryrServer.Core.PortServer;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 
@@ -12,7 +12,7 @@ public static class MqttSDK
     /// <param name="topic">标题</param>
     /// <param name="data">数据</param>
     public static void Send(string topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
-        => MQTTServer.Send(topic, data, level);
+        => PortMqttServer.Send(topic, data, level);
 }
 
 public class DllMqttLoadingRetainedMessages

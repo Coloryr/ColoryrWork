@@ -38,10 +38,6 @@ public abstract record MainConfig
     /// </summary>
     public List<RedisConfig> Redis { get; set; }
     /// <summary>
-    /// 编辑用户设置
-    /// </summary>
-    public List<UserConfig> User { get; set; }
-    /// <summary>
     /// MQTT配置
     /// </summary>
     public MqttConfigObj MqttConfig { get; set; }
@@ -163,17 +159,6 @@ public record TaskUtilConfig
     /// 最大运行时间
     /// </summary>
     public int MaxTime { get; set; }
-}
-public record UserConfig
-{
-    /// <summary>
-    /// 用户名
-    /// </summary>
-    public string Username { get; set; }
-    /// <summary>
-    /// 密码SHA1
-    /// </summary>
-    public string Password { get; set; }
 }
 public record SQLConfig
 {

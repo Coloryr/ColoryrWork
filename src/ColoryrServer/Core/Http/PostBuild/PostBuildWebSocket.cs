@@ -25,14 +25,14 @@ internal class PostBuildWebSocket
                 Code = DemoResource.WebSocket
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageWebSocket(obj);
+            CodeFileManager.StorageWebSocket(obj, json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"WebSocket[{json.UUID}]已创建"
             };
-            GenWebSocket.StartGen(obj);
-            ServerMain.LogOut($"WebSocket[{json.UUID}]创建");
+            GenWebSocket.StartGen(obj, json.User);
+            ServerMain.LogOut($"[{json.User}]创建WebSocket[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -57,7 +57,7 @@ internal class PostBuildWebSocket
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.WebSocket, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.WebSocket, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -91,7 +91,7 @@ internal class PostBuildWebSocket
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenWebSocket.StartGen(obj);
+        var build = GenWebSocket.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

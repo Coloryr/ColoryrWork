@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace ColoryrServer.Core.FileSystem.Html;
+namespace ColoryrServer.Core.FileSystem.Web;
 
 public static class WebBinManager
 {

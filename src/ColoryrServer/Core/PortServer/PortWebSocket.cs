@@ -5,18 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ColoryrServer.Core.WebSocket;
+namespace ColoryrServer.Core.PortServer;
 
-internal static class ServerWebSocket
+internal static class PortWebSocket
 {
-    private record SocketObj
+    private record PortWebSocketObj
     {
         public int Port { get; set; }
         public Guid UUID { get; set; }
     }
 
     private static WebSocketServer Server;
-    private static readonly Dictionary<SocketObj, IWebSocketConnection> Clients = new();
+    private static readonly Dictionary<PortWebSocketObj, IWebSocketConnection> Clients = new();
     internal static IWebSocketConnection Get(int port)
     {
         var data = Clients.Where(a => a.Key.Port == port);
@@ -71,7 +71,7 @@ internal static class ServerWebSocket
         {
             Socket.OnOpen = () =>
             {
-                Clients.Add(new SocketObj
+                Clients.Add(new PortWebSocketObj
                 {
                     Port = Socket.ConnectionInfo.ClientPort,
                     UUID = Socket.ConnectionInfo.Id

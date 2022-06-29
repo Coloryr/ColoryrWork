@@ -18,14 +18,14 @@ internal static class GenTask
     /// </summary>
     /// <param name="obj">构建信息</param>
     /// <returns>编译结果</returns>
-    public static GenReOBJ StartGen(CSFileCode obj)
+    public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
         var build = GenCode.StartGen(obj.UUID, new List<SyntaxTree>
         {
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageTask(obj);
+        CodeFileManager.StorageTask(obj,user);
         if (!build.Isok)
         {
             build.Res = $"Task[{obj.UUID}]" + build.Res;

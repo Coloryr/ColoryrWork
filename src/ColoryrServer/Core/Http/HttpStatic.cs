@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem.Html;
+﻿using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.SDK;
 
 namespace ColoryrServer.Core.Http;

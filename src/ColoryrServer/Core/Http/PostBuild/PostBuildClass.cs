@@ -24,14 +24,15 @@ internal static class PostBuildClass
                 CreateTime = time
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageClass(obj, json.UUID, DemoResource.Class.Replace(CodeDemo.Name, json.UUID));
+            CodeFileManager.StorageClass(obj, json.UUID, 
+                DemoResource.Class.Replace(CodeDemo.Name, json.UUID), json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"Class[{json.UUID}]已创建"
             };
             GenClass.StartGen(obj);
-            ServerMain.LogOut($"Class[{json.UUID}]创建");
+            ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -56,7 +57,7 @@ internal static class PostBuildClass
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Class, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Class, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -106,7 +107,7 @@ internal static class PostBuildClass
         obj.Text = json.Text;
 
         obj.Next();
-        CodeFileManager.StorageClass(obj, json.Temp, code.code);
+        CodeFileManager.StorageClass(obj, json.Temp, code.code, json.User);
 
         return new ReMessage
         {
@@ -161,7 +162,8 @@ internal static class PostBuildClass
             };
         }
 
-        CodeFileManager.StorageClass(obj, json.Temp, DemoResource.Class.Replace(CodeDemo.Name, json.Temp));
+        CodeFileManager.StorageClass(obj, json.Temp, 
+            DemoResource.Class.Replace(CodeDemo.Name, json.Temp), json.User);
 
         return new ReMessage
         {
@@ -191,7 +193,7 @@ internal static class PostBuildClass
             };
         }
 
-        CodeFileManager.RemoveClassCode(json.UUID, json.Temp);
+        CodeFileManager.RemoveClassCode(json.UUID, json.Temp, json.User);
 
         return new ReMessage
         {

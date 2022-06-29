@@ -25,14 +25,14 @@ internal static class PostBuildMqtt
                 Code = DemoResource.Mqtt
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageMqtt(obj);
+            CodeFileManager.StorageMqtt(obj, json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"Mqtt[{json.UUID}]已创建"
             };
-            GenMqtt.StartGen(obj);
-            ServerMain.LogOut($"Mqtt[{json.UUID}]创建");
+            GenMqtt.StartGen(obj, json.User);
+            ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -57,7 +57,7 @@ internal static class PostBuildMqtt
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Mqtt, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Mqtt, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -91,7 +91,7 @@ internal static class PostBuildMqtt
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenMqtt.StartGen(obj);
+        var build = GenMqtt.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

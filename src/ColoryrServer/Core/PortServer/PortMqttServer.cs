@@ -9,9 +9,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.MQTT;
+namespace ColoryrServer.Core.PortServer;
 
-internal static class MQTTServer
+internal static class PortMqttServer
 {
     private static MqttServer MqttServer;
     public static async void Start()

@@ -1,7 +1,7 @@
 using ColoryrServer.Core;
 using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http.PostBuild;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
@@ -10,6 +10,7 @@ using ColoryrWork.Lib.Server;
 using Microsoft.AspNetCore.Connections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
@@ -184,21 +185,8 @@ internal static class ASPServer
             var str = Encoding.UTF8.GetString(receivedData);
             JObject obj = JObject.Parse(Function.GetSrings(str, "{"));
             var Json = obj.ToObject<BuildOBJ>();
-            var list = ServerMain.Config.User.Where(a => a.Username == Json?.User);
-            if (list.Any())
-            {
-                var obj1 = PostBuild.StartBuild(Json, list.First()).Data;
-                await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-            }
-            else
-            {
-                var obj1 = new ReMessage
-                {
-                    Build = false,
-                    Message = "账户或密码错误"
-                };
-                await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
-            }
+            var obj1 = PostBuild.StartBuild(Json);
+            await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
         }
         else
         {

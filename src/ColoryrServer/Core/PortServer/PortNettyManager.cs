@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.Netty;
+namespace ColoryrServer.Core.PortServer;
 
-internal static class NettyManager
+internal static class PortNettyManager
 {
     private static MultithreadEventLoopGroup BossGroup;
     private static MultithreadEventLoopGroup WorkerGroup;

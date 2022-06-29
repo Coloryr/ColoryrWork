@@ -25,14 +25,14 @@ internal class PostBuildRobot
                 Code = DemoResource.Robot
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageRobot(obj);
+            CodeFileManager.StorageRobot(obj, json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"Robot[{json.UUID}]已创建"
             };
-            GenRobot.StartGen(obj);
-            ServerMain.LogOut($"Robot[{json.UUID}]创建");
+            GenRobot.StartGen(obj, json.User);
+            ServerMain.LogOut($"[{json.User}]创建Robot[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -57,7 +57,7 @@ internal class PostBuildRobot
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Robot, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Robot, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -91,7 +91,7 @@ internal class PostBuildRobot
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenRobot.StartGen(obj);
+        var build = GenRobot.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

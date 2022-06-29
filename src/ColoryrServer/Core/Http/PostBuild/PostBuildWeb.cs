@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Html;
+using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.FileSystem.Vue;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.Utils;
@@ -84,7 +84,7 @@ internal static class PostBuildWeb
                 Build = true,
                 Message = $"Web[{json.UUID}]已创建"
             };
-            ServerMain.LogOut($"Web[{json.UUID}]创建");
+            ServerMain.LogOut($"[{json.User}]创建Web[{json.UUID}]");
         }
         else
             res = new ReMessage

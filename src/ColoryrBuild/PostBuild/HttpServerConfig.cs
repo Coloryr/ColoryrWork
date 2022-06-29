@@ -18,7 +18,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.GetRobotConfig
+            Mode = PostBuildType.ConfigGetRobot
         });
         if (data == null)
             return null;
@@ -38,7 +38,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.GetServerSocketConfig
+            Mode = PostBuildType.ConfigGetSocket
         });
         if (data == null)
             return null;
@@ -58,7 +58,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.GetServerHttpConfigList
+            Mode = PostBuildType.ConfigGetHttpList
         });
         if (data == null)
             return null;
@@ -80,7 +80,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.AddServerHttpConfig,
+            Mode = PostBuildType.ConfigAddHttp,
             Code = ip,
             Version = port
         });
@@ -104,7 +104,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.RemoveServerHttpConfig,
+            Mode = PostBuildType.ConfigRemoveHttp,
             Code = ip,
             Version = port
         });
@@ -128,7 +128,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.AddServerHttpRoute,
+            Mode = PostBuildType.ConfigAddHttpRoute,
             Temp = key,
             Code = JsonUtils.ToString(obj)
         });
@@ -151,7 +151,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.RemoveServerHttpRoute,
+            Mode = PostBuildType.ConfigRemoveHttpRoute,
             Code = key
         });
         if (data == null)
@@ -174,7 +174,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.AddServerHttpUrlRoute,
+            Mode = PostBuildType.ConfigAddHttpUrlRoute,
             Temp = key,
             Code = JsonUtils.ToString(obj)
         });
@@ -197,7 +197,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.RemoveServerHttpUrlRoute,
+            Mode = PostBuildType.ConfigRemoveHttpUrlRoute,
             Code = key
         });
         if (data == null)
@@ -245,7 +245,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.ServerConfigSetSocket,
+            Mode = PostBuildType.ConfigSetSocket,
             Code = ip,
             Version = port,
             Text = type
@@ -271,7 +271,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             User = App.Config.Name,
             Token = App.Config.Token,
-            Mode = PostBuildType.SetRobotConfig,
+            Mode = PostBuildType.ConfigSetRobot,
             Code = ip,
             Version = port,
             Text = JsonConvert.SerializeObject(packs)
@@ -301,5 +301,72 @@ public partial class HttpBuild : HttpUtilsBase
         {
             await Reboot();
         }
+    }
+    /// <summary>
+    /// 获取所有用户信息
+    /// </summary>
+    /// <returns>返回</returns>
+    public async Task<UserList> GetAllUser() 
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.ConfigGetUser
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            await GetAllUser();
+        }
+        return JsonConvert.DeserializeObject<UserList>(data);
+    }
+
+    /// <summary>
+    /// 添加用户
+    /// </summary>
+    /// <param name="user">用户名</param>
+    /// <param name="password">密码</param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> AddUser(string user, string password)
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.ConfigAddUser,
+            Code = user.ToLower(),
+            Text = BuildUtils.GetSHA1(password)
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            await AddUser(user, password);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+    /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <param name="user">用户名</param>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> RemoveUser(string user) 
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.ConfigRemoveUser,
+            Code = user
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            await RemoveUser(user);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
     }
 }

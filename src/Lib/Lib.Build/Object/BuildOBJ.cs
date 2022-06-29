@@ -8,12 +8,14 @@ public enum PostBuildType
     RemoveDll, RemoveClass, RemoveSocket, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveTask, RemoveWeb,
     UpdataDll, UpdataClass, UpdataSocket, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask, UpdataWeb,
     WebRemoveFile, WebAddFile, WebAddCode, WebCodeZIP, WebSetIsVue, WebBuild, WebBuildRes, WebDownloadFile,
-    Check, Login, GetApi,
-    SetRobot, GetConfig,
     AddClassFile, RemoveClassFile, BuildClass,
-    GetServerHttpConfigList, GetServerSocketConfig, AddServerHttpConfig, RemoveServerHttpConfig, ServerReboot, AddServerHttpRoute,
-    RemoveServerHttpRoute, AddServerHttpUrlRoute, RemoveServerHttpUrlRoute, ServerConfigSetSocket, GetRobotConfig, SetRobotConfig,
-    SetServerEnable
+    ConfigGetHttpList, ConfigGetSocket, ConfigGetRobot, ConfigGetUser,
+    ConfigAddHttp, ConfigAddHttpRoute, ConfigAddHttpUrlRoute,
+    ConfigRemoveHttp, ConfigRemoveHttpRoute,  ConfigRemoveHttpUrlRoute,
+    ConfigAddUser, ConfigRemoveUser,
+    ConfigSetSocket,  ConfigSetRobot, 
+    SetServerEnable,
+    Check, Login, GetApi, ServerReboot
 }
 public record BuildOBJ
 {

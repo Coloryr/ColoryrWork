@@ -163,14 +163,6 @@ namespace ColoryrServer.ASP
                         Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
                     }
                 },
-                User = new()
-                {
-                    new()
-                    {
-                        Username = "Admin",
-                        Password = "4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
-                    }
-                },
                 MqttConfig = new()
                 {
                     Ssl = "",

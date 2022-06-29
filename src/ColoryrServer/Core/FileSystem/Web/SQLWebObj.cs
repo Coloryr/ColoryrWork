@@ -1,6 +1,6 @@
 ﻿using ColoryrWork.Lib.Build.Object;
 
-namespace ColoryrServer.Core.FileSystem.Html;
+namespace ColoryrServer.Core.FileSystem.Web;
 
 public class QWebObj
 {

@@ -25,14 +25,14 @@ internal class PostBuildTask
                 Code = DemoResource.Task
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageTask(obj);
+            CodeFileManager.StorageTask(obj, json.User);
             res = new ReMessage
             {
                 Build = true,
                 Message = $"Task[{json.UUID}]已创建"
             };
-            GenTask.StartGen(obj);
-            ServerMain.LogOut($"Task[{json.UUID}]创建");
+            GenTask.StartGen(obj, json.User);
+            ServerMain.LogOut($"[{json.User}]创建Task[{json.UUID}]");
         }
         else
             res = new ReMessage
@@ -57,7 +57,7 @@ internal class PostBuildTask
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Task, json.UUID);
+        CodeFileManager.RemoveFile(CodeType.Task, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -91,7 +91,7 @@ internal class PostBuildTask
 
         var sw = new Stopwatch();
         sw.Start();
-        var build = GenTask.StartGen(obj);
+        var build = GenTask.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
         return new ReMessage

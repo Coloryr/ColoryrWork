@@ -1,8 +1,8 @@
 ﻿using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
-using ColoryrServer.Core.WebSocket;
 using DotNetty.Transport.Channels;
 using Fleck;
 using Newtonsoft.Json;
@@ -557,7 +557,7 @@ public partial class Tools
     /// <param name="id">客户端ID</param>
     /// <returns>是否在线</returns>
     public static bool WebSocketIsOnline(string id)
-        => ServerWebSocket.IsOnline(id);
+        => PortWebSocket.IsOnline(id);
     /// <summary>
     /// 获取在线的机器人
     /// </summary>
@@ -597,14 +597,14 @@ public partial class Tools
     /// <param name="uuid">客户端UUID</param>
     /// <returns>WebSocket客户端</returns>
     public static IWebSocketConnection GetWebSocket(Guid uuid)
-        => ServerWebSocket.Get(uuid);
+        => PortWebSocket.Get(uuid);
     /// <summary>
     /// 获取一个WebSocket客户端
     /// </summary>
     /// <param name="port">端口</param>
     /// <returns>WebSocket客户端</returns>
     public static IWebSocketConnection GetWebSocket(int port)
-        => ServerWebSocket.Get(port);
+        => PortWebSocket.Get(port);
 }
 public partial class FileLoad
 {
