@@ -44,7 +44,7 @@ internal static class ASPServer
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(new ColoryrLoggerProvider());
-            if (Config.Ssl)
+            if (Config.UseSsl)
             {
                 builder.Services.AddCertificateForwarding(options =>
                 {
@@ -54,8 +54,7 @@ internal static class ASPServer
                         if (!string.IsNullOrWhiteSpace(headerValue))
                         {
                             byte[] bytes = StringToByteArray(headerValue);
-                            var clientCertificate = new X509Certificate2(bytes);
-                            return clientCertificate;
+                            return new X509Certificate2(bytes);
                         }
                         return null;
                     };
@@ -66,11 +65,11 @@ internal static class ASPServer
                               i.ServerCertificateSelector = ASPServer.Ssl));
                 foreach (var item in Config.Ssls)
                 {
-                    if (File.Exists(item.Value.SslLocal))
+                    if (File.Exists(item.Value.Ssl))
                     {
                         try
                         {
-                            var ssl = new X509Certificate2(item.Value.SslLocal, item.Value.SslPassword);
+                            var ssl = new X509Certificate2(item.Value.Ssl, item.Value.Password);
                             if (item.Key == "default")
                                 DefaultSsl = ssl;
                             else
@@ -83,7 +82,7 @@ internal static class ASPServer
                     }
                     else
                     {
-                        ServerMain.LogError($"SSL证书找不到:{item.Value.SslLocal}");
+                        ServerMain.LogError($"SSL证书找不到:{item.Value.Ssl}");
                     }
                 }
             }
@@ -91,7 +90,7 @@ internal static class ASPServer
             for (int a = 0; a < Config.Http.Count; a++)
             {
                 var item = Config.Http[a];
-                urls[a] = $"{(Config.Ssl ? https : http)}://{item.IP}:{item.Port}/";
+                urls[a] = $"{(Config.UseSsl ? https : http)}://{item.IP}:{item.Port}/";
                 ServerMain.LogOut($"Http服务器监听{item.IP}:{item.Port}");
             }
 

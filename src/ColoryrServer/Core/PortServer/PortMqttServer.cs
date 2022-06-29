@@ -5,6 +5,7 @@ using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System.Net;
 using System.Security.Authentication;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,10 +23,18 @@ internal static class PortMqttServer
             .WithDefaultEndpointPort(ServerMain.Config.MqttConfig.Socket.Port);
         if (ServerMain.Config.MqttConfig.UseSsl)
         {
-            optionsBuilder = optionsBuilder.WithEncryptionSslProtocol(SslProtocols.Tls13)
-                .WithEncryptionCertificate(
-                new X509Certificate2(ServerMain.Config.MqttConfig.Ssl,
-                        ServerMain.Config.MqttConfig.Password));
+            try
+            {
+                optionsBuilder = optionsBuilder.WithEncryptionSslProtocol(SslProtocols.Tls13)
+                .WithEncryptionCertificate(new X509Certificate2(ServerMain.Config.MqttConfig.Ssl,
+                            ServerMain.Config.MqttConfig.Password));
+                ServerMain.LogOut($"Mqtt服务器加载SSL证书{ServerMain.Config.MqttConfig.Ssl}");
+            }
+            catch (CryptographicException e)
+            {
+                ServerMain.LogError($"Mqtt服务器加载SSL证书{ServerMain.Config.MqttConfig.Ssl}错误");
+                ServerMain.LogError(e);
+            }
         }
         ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MqttConfig.Socket.IP}:{ServerMain.Config.MqttConfig.Socket.Port}");
         MqttServer = new MqttFactory().CreateMqttServer(optionsBuilder.Build());

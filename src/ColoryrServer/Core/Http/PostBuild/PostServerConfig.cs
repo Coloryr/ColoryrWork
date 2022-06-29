@@ -63,7 +63,7 @@ public static class PostServerConfig
         {
             Socket = ServerMain.Config.Socket,
             Mqtt = ServerMain.Config.MqttConfig.Socket,
-            WebSocket = ServerMain.Config.WebSocket
+            WebSocket = ServerMain.Config.WebSocket.Socket
         };
     }
     public static ReMessage WebSetSocket(BuildOBJ json)
@@ -110,8 +110,8 @@ public static class PostServerConfig
         }
         else if (json.Text is "WebSocket")
         {
-            ServerMain.Config.WebSocket.IP = ip;
-            ServerMain.Config.WebSocket.Port = port;
+            ServerMain.Config.WebSocket.Socket.IP = ip;
+            ServerMain.Config.WebSocket.Socket.Port = port;
             ServerMain.ConfigUtil.Save();
             return new()
             {

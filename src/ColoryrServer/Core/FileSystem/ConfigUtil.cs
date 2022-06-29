@@ -12,7 +12,7 @@ public abstract record MainConfig
     /// <summary>
     /// WebSocket配置
     /// </summary>
-    public SocketConfig WebSocket { get; set; }
+    public SslConfigObj WebSocket { get; set; }
     /// <summary>
     /// Reboot配置
     /// </summary>
@@ -40,7 +40,7 @@ public abstract record MainConfig
     /// <summary>
     /// MQTT配置
     /// </summary>
-    public MqttConfigObj MqttConfig { get; set; }
+    public SslConfigObj MqttConfig { get; set; }
     /// <summary>
     /// 任务配置
     /// </summary>
@@ -63,7 +63,7 @@ public abstract record MainConfig
     public CodeConfigObj CodeSetting { get; set; }
 }
 
-public record MqttConfigObj
+public record SslConfigObj
 {
     /// <summary>
     /// 使用SSL证书

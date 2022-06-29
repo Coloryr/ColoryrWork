@@ -5,10 +5,10 @@ using ColoryrWork.Lib.Build.Object;
 
 namespace ColoryrServer.ASP
 {
-    internal record Ssl
+    internal record SslObj
     {
-        public string SslLocal { get; set; }
-        public string SslPassword { get; set; }
+        public string Ssl { get; set; }
+        public string Password { get; set; }
     }
     internal record ASPConfig : MainConfig
     {
@@ -17,8 +17,8 @@ namespace ColoryrServer.ASP
         /// </summary>
         public List<SocketConfig> Http { get; set; }
         public Dictionary<string, RouteConfigObj> Routes { get; set; }
-        public bool Ssl { get; set; }
-        public Dictionary<string, Ssl> Ssls { get; set; }
+        public bool UseSsl { get; set; }
+        public Dictionary<string, SslObj> Ssls { get; set; }
         public Dictionary<string, RouteConfigObj> UrlRoutes { get; set; }
         public bool RouteEnable { get; set; }
         public bool NoInput { get; set; }
@@ -53,15 +53,15 @@ namespace ColoryrServer.ASP
                     }
                 },
                 RouteEnable = false,
-                Ssl = false,
+                UseSsl = false,
                 Ssls = new()
                 {
                     {
                         "default",
                         new()
                         {
-                            SslLocal = "./test.sfx",
-                            SslPassword = "123456"
+                            Ssl = "./test.sfx",
+                            Password = "123456"
                         }
                     }
                 },
@@ -92,8 +92,14 @@ namespace ColoryrServer.ASP
                 },
                 WebSocket = new()
                 {
-                    IP = "0.0.0.0",
-                    Port = 25557
+                    Ssl = "",
+                    Password = "",
+                    UseSsl = false,
+                    Socket = new() 
+                    {
+                        IP = "0.0.0.0",
+                        Port = 25557
+                    }
                 },
                 Robot = new()
                 {

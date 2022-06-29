@@ -21,13 +21,13 @@
       "Heads": {}
     }
   },
-  //是否启用SSL
-  "Ssl": false,
-  //SSL配置
+  //是否启用Http的SSL
+  "UseSsl": false,
+  //Http的SSL配置
   "Ssls": {
     "default": {
-      "SslLocal": "./test.sfx",
-      "SslPassword": "123456"
+      "Ssl": "./test.sfx",
+      "Password": "123456"
     }
   },
   //域名转发设置
@@ -48,8 +48,13 @@
   },
   //WebSocket服务器地址
   "WebSocket": {
-    "IP": "0.0.0.0",
-    "Port": 25557
+    "UseSsl": false,
+    "Ssl": "",
+    "Password": "",
+    "Socket": {
+      "IP": "0.0.0.0",
+      "Port": 25557
+    }
   },
   //机器人链接地址
   "Robot": {
@@ -159,6 +164,13 @@
 }
 ```
 
+## 加密证书配置
+
+修改`Ssl`为证书位置  
+修改`Password`为证书密码  
+修改`UseSsl`为true，重启服务器  
+加密版本为`Tls1.3`，需要你的证书支持才行
+
 ## 登录数据库
 
 管理员数据，登录信息储存在`ColoryrServer\Login.db`中
@@ -200,3 +212,4 @@
 - `FileRam`内存数据库固化
 - `Libs`额外CLR库，可以用于Dll调用，只能在关闭服务器期间更换
 - `Notes`导出的说明信息
+

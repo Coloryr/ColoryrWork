@@ -1,9 +1,14 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using Fleck;
+using Org.BouncyCastle.Crypto.Tls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Authentication;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ColoryrServer.Core.PortServer;
 
@@ -65,8 +70,31 @@ internal static class PortWebSocket
     {
         ServerMain.LogOut("WebScoket服务器正在启动");
         FleckLog.Level = LogLevel.Error;
-        Server = new WebSocketServer("ws://" + ServerMain.Config.WebSocket.IP + ":" + ServerMain.Config.WebSocket.Port);
-        ServerMain.LogOut($"WebScoket监听{ServerMain.Config.WebSocket.IP}:{ServerMain.Config.WebSocket.Port}");
+        string url = ServerMain.Config.WebSocket.Socket.IP + ":" + ServerMain.Config.WebSocket.Socket.Port;
+        if (ServerMain.Config.WebSocket.UseSsl && File.Exists(ServerMain.Config.WebSocket.Ssl))
+        {
+            try
+            {
+                var ssl = new X509Certificate2(ServerMain.Config.WebSocket.Ssl, ServerMain.Config.WebSocket.Password);
+                Server = new WebSocketServer("wss://" + url)
+                {
+                    EnabledSslProtocols = SslProtocols.Tls13,
+                    Certificate = ssl
+                };
+                ServerMain.LogOut($"WebScoket使用SSL证书{ServerMain.Config.WebSocket.Ssl}");
+            }
+            catch (CryptographicException e)
+            {
+                ServerMain.LogError($"WebScoket使用SSL证书{ServerMain.Config.WebSocket.Ssl}错误");
+                ServerMain.LogError(e);
+            }
+        }
+        else
+        {
+            Server = new WebSocketServer("ws://" + url);
+        }
+        
+        ServerMain.LogOut($"WebScoket监听{url}");
         Server.Start(Socket =>
         {
             Socket.OnOpen = () =>

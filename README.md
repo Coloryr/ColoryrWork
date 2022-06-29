@@ -1,26 +1,25 @@
 # [ColoryrWork](https://github.com/Coloryr/ColoryrWork) 
 ![ico](./ColoryrWork.png)  
 
-2.0.0版本正在进行中  
-
-一个多功能服务器/应用框架  
+**2.0.0版本制作正在进行中**  
 
 ## ColoryrServer  
-在线动态编译.多功能.服务器框架  
+在线动态编译.多功能.应用服务器框架  
 **服务器框架内不包含任何业务代码，需要用户自行编写**
 
 ![截图](./doc/pic/work.png)
 
 - 这是一个中型服务器
-- 支持Linux和Windows下运行
-- 可以对接Mysql\Redis\MsSql\Oracle数据库
-- 自带Http\WebSocket\Socket\Mqtt支持
-- 可以添加Ssl证书
-- 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai) QQ机器人
+- 支持`Linux`下运行
+- 可以对接`Mysql\Redis\MsSql\Oracle\Sqlite`数据库
+- 自带`Http\WebSocket\Socket\Mqtt\Netty`支持
+- 可以添加`Ssl证书`
+- 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai)QQ机器人
 - 占用内存极少
 - 可以配置端口反向代理和域名反向代理
 - 业务代码修改无需重启
-- 可以自己添加DLL库，并在端口文件中调用
+- 可以自己添加DLL库，并在代码文件中调用
+- 自带`Vue项目`编译与上线
 
 [理论性能测试](./doc/test.md)
 
@@ -29,9 +28,6 @@
 [目录结构与文件信息](./doc/config.md)
 
 [业务代码编写](./doc/code.md)
-```
-注：net6正在生产环境测试中，目前暂未发现问题
-```
 
 ## ColoryrApp(在计划中)  
 动态加载App
