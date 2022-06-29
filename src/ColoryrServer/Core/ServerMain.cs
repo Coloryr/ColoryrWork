@@ -121,10 +121,10 @@ public class ServerMain
 
             DllLoad();
 
+            PortNettyManager.Start();
             CodeFileManager.Start();
             NoteFile.Start();
             APIFile.Start();
-            FileTemp.Start();
             FileRam.Start();
             HttpClientUtils.Start();
             PortMqttServer.Start();
@@ -145,7 +145,6 @@ public class ServerMain
             FileHttpStream.Start();
             PortSocketServer.Start();
             PortWebSocket.Start();
-            PortNettyManager.Start();
 
             //等待初始化完成
             Thread.Sleep(2000);

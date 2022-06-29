@@ -103,6 +103,7 @@ public class app_test
 ```C#
 using ColoryrServer.SDK;
 
+[DLLIN(true)]
 public class app_classtest
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
@@ -117,6 +118,7 @@ public class app_classtest
 ```C#
 using ColoryrServer.SDK;
 
+[DLLIN]
 public class test
 {
     public test()

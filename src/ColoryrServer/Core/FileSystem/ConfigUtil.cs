@@ -46,10 +46,6 @@ public abstract record MainConfig
     /// </summary>
     public TaskUtilConfig TaskConfig { get; set; }
     /// <summary>
-    /// ffmpeg
-    /// </summary>
-    public string MPGE { get; set; }
-    /// <summary>
     /// HttpClient数量
     /// </summary>
     public int HttpClientNumber { get; set; }

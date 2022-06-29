@@ -7,12 +7,9 @@
 1. 安装[.NET6_SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 ```
 $ dotnet --version
-6.0.100
+6.0.400-preview.22301.10
 ```
 2. 克隆并构建
-```
-注：仅支持在windows下构建，Linux下构建会无法正常运行
-```
 ```
 $ git clone https://github.com/Coloryr/ColoryrWork.git
 Cloning into 'ColoryrWork'...
@@ -42,11 +39,11 @@ $ dotnet build
 - `ASP`是服务器文件  
 - `Build`是编辑器
 - `Core`是服务器核心
-- ~~`Test`不用管~~
 
 ## 启动
-Windows下直接双击exe启动  
+Windows下直接双击`ColoryrServer.ASP.exe`启动  
 Linux下
 ```
+$ cd build_out/ASP/x64/Debug/net6.0
 $ dotnet ColoryrServer.ASP.dll
 ```

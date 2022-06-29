@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK;
 
-public partial class NewHttpHtml
+public partial class NewHttpHtml : IDisposable
 {
     public CancellationTokenSource Cancel;
     public CookieContainer Cookies { get; private set; }
@@ -28,7 +28,7 @@ public partial class NewHttpHtml
         Client = HttpClientUtils.Get();
     }
 
-    ~NewHttpHtml()
+    public void Dispose()
     {
         HttpClientUtils.Close(Client);
     }
@@ -199,7 +199,7 @@ public partial class NewHttpHtml
         return result;
     }
 }
-public partial class HttpHtml
+public partial class HttpHtml : IDisposable
 {
     public CancellationTokenSource Cancel;
     private HttpClient Client;
@@ -231,11 +231,12 @@ public partial class HttpHtml
         }
     }
 
-    ~HttpHtml()
+    public void Dispose()
     {
         Client.CancelPendingRequests();
         Client.Dispose();
     }
+
     /// <summary>
     /// 获取byte
     /// </summary>
@@ -305,7 +306,7 @@ public partial class HttpHtml
         => Client.GetAsync(url, Cancel.Token).Result;
 }
 
-public partial class HtmlAsync
+public partial class HtmlAsync : IDisposable
 {
     private HttpClient Http;
     public CancellationTokenSource Cancel;
@@ -345,8 +346,10 @@ public partial class HtmlAsync
     /// </summary>
     public HtmlAsync() : this(TimeSpan.FromSeconds(10)) { }
 
-    ~HtmlAsync()
-        => Http.Dispose();
+    public void Dispose()
+    {
+        Http.Dispose();
+    }
     /// <summary>
     /// 获取byte
     /// </summary>

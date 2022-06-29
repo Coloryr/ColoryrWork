@@ -614,14 +614,14 @@ public partial class FileLoad
     /// <param name="filename">文件名</param>
     /// <returns>文件里面的字符串</returns>
     public static string LoadString(string filename, bool isTemp = true)
-        => FileTemp.LoadString(filename, isTemp);
+        => Core.FileSystem.FileLoad.LoadString(filename, isTemp);
     /// <summary>
     /// 读一个文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件二进制</returns>
     public static byte[] LoadBytes(string filename, bool isTemp = true)
-        => FileTemp.LoadBytes(filename, isTemp);
+        => Core.FileSystem.FileLoad.LoadBytes(filename, isTemp);
     /// <summary>
     /// 开始文件流
     /// </summary>
@@ -629,8 +629,8 @@ public partial class FileLoad
     /// <param name="local">文件夹</param>
     /// <param name="name">文件名</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
-        => FileHttpStream.StartStream(http, local, name);
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local)
+        => FileHttpStream.StartStream(http, local);
 }
 public partial class ErrorDump : Exception
 {

@@ -1,167 +1,202 @@
 # ColoyrServer
 
-## 配置文件说明
+## 文件结构信息
 [返回](../README.md)
 
 ## 服务器核心配置文件
+`MainConfig.json`
 ```JSON
 {
-    //反向代理(效率极低)
-    "Rotes": {
-        "turn": {
-            //目标地址
-            "Url": "http://127.0.0.1/",
-            //添加的请求头
-            "Heads": {
-                "Rote": "test"
-            }
-        }
-    },
-    //SSL模式，启用后会使用https
-    "Ssl": false,
-    //SSL证书配置
-    "Ssls": {
-        //默认的SSL证书
-        "default": {
-            "SslLocal": "./test.sfx",
-            "SslPassword": "123456"
-        },
-        //某个域名的SSL证书
-        "www.xxx.xxx":{
-            "SslLocal": "./www.xxx.xxx.sfx",
-            "SslPassword": "123456"
-        }
-    },
-    //域名转发
-    "UrlRotes": {
-        //目标域名
-        "www.test.com": {
-            //目标地址
-            "Url": "http://localhost:81/",
-            //添加的请求头
-            "Heads": {
-                "Rote": "test"
-            }
-        }
-    },
-    //是否启用反向代理
-    "RoteEnable": false,
-    //控制台输入无效
-    "NoInput": false,
-    //Http服务器配置，可以添加监听数量
-    "Http": [
-        {
-            "IP": "127.0.0.1",
-            "Port": 25555
-        }
-    ],
-    //Socket服务器配置
-    "Socket": {
-        "IP": "0.0.0.0",
-        "Port": 25556
-    },
-    //WebSocket服务器配置
-    "WebSocket": {
-        "IP": "0.0.0.0",
-        "Port": 25557
-    },
-    //机器人链接配置
-    "Robot": {
-        "IP": "127.0.0.1",
-        "Port": 23333
-    },
-    //Mysql配置
-    "Mysql": [
-        {
-            "Enable": false,
-            "IP": "127.0.0.1",
-            "Port": 3306,
-            "User": "root",
-            "Password": "MTIzNDU2",
-            "Conn": "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
-        }
-    ],
-    //MS sql设置
-    "MSsql": [
-        {
-            "Enable": false,
-            "IP": "127.0.0.1",
-            "User": "root",
-            "Password": "MTIzNDU2",
-            "Conn": "Server={0};UID={1};PWD={2};"
-        }
-    ],
-    //Redis设置
-    "Redis": [
-        {
-            "Enable": false,
-            "IP": "127.0.0.1",
-            "Port": 6379,
-            "Conn": "{0}:{1}"
-        }
-    ],
-    //Oracle配置
-    "Oracle": [
-        {
-            "Enable": false,
-            "IP": "127.0.0.1",
-            "User": "root",
-            "Password": "MTIzNDU2",
-            "Conn": "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
-        }
-    ],
-    //编辑用户设置
-    "User": [
-        {
-            "Username": "Admin",
-            //SHA1加密的密码
-            "Password": "4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
-        }
-    ],
-    //不参与动态编译的dll
-    "NotInclude": [
-        "sni.dll"
-    ],
-    //MQTT配置
-    "MQTTConfig": {
-        "Port": 12345
-    },
-    //任务配置
-    "TaskConfig": {
-        "ThreadNumber": 50,
-        "MaxTime": 30
-    },
-    //ffmpeg路径
-    "MPGE": null,
-    //HttpClient数量
-    "HttpClientNumber": 100,
-    //请求选项
-    "Requset": {
-        //后端路径（http://xxx:xxx/{WebAPI}）
-        "WebAPI": "/WebAPI",
-        //网页路径（http://xxx:xxx/{Web}）
-        "Web": "/Web",
-        //进入缓存的文件后缀
-        "Temp": [
-        ".jpg",
-        ".png",
-        ".mp4",
-        ".jpge",
-        ".gif"
-        ],
-        //缓存时间
-        "TempTime": 1800,
-        //自动流转换
-        "Stream": true,
-        //自动转换的文件类型
-        "StreamType": [
-            ".mp4"
-        ]
-    },
-    //编辑器AES加密
-    "AES": {
-        "Key": "Key",
-        "IV": "IV"
+  //Http服务器地址
+  "Http": [
+    {
+      "IP": "127.0.0.1",
+      "Port": 80
     }
+  ],
+  //反向代理设置
+  "Routes": {
+    "turn": {
+      "Url": "http://127.0.0.1/",
+      "Heads": {}
+    }
+  },
+  //是否启用SSL
+  "Ssl": false,
+  //SSL配置
+  "Ssls": {
+    "default": {
+      "SslLocal": "./test.sfx",
+      "SslPassword": "123456"
+    }
+  },
+  //域名转发设置
+  "UrlRoutes": {
+    "www.test.com": {
+      "Url": "http://localhost:81/",
+      "Heads": {}
+    }
+  },
+  //是否启用转发
+  "RouteEnable": false,
+  //无控制台输入
+  "NoInput": false,
+  //Socket服务器地址
+  "Socket": {
+    "IP": "0.0.0.0",
+    "Port": 25556
+  },
+  //WebSocket服务器地址
+  "WebSocket": {
+    "IP": "0.0.0.0",
+    "Port": 25557
+  },
+  //机器人链接地址
+  "Robot": {
+    "Socket": {
+      "IP": "127.0.0.1",
+      "Port": 23333
+    },
+    "Packs": []
+  },
+  "Mysql": [
+    {
+      "Enable": false,
+      "IP": "127.0.0.1",
+      "Port": 3306,
+      "User": "root",
+      "Password": "MTIzNDU2",
+      "TimeOut": 1000,
+      "Conn": "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+    }
+  ],
+  "MSsql": [
+    {
+      "Enable": false,
+      "IP": "127.0.0.1",
+      "Port": 0,
+      "User": "root",
+      "Password": "MTIzNDU2",
+      "TimeOut": 1000,
+      "Conn": "Server={0};UID={1};PWD={2};"
+    }
+  ],
+  "Oracle": [
+    {
+      "Enable": false,
+      "IP": "",
+      "Port": 0,
+      "User": "",
+      "Password": "",
+      "TimeOut": 1000,
+      "Conn": "Data Source=MyDatabase.db;Mode=ReadWriteCreate"
+    }
+  ],
+  "SQLite": [
+    {
+      "Enable": false,
+      "IP": "127.0.0.1",
+      "Port": 0,
+      "User": "root",
+      "Password": "MTIzNDU2",
+      "TimeOut": 1000,
+      "Conn": "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
+    }
+  ],
+  "Redis": [
+    {
+      "Enable": false,
+      "IP": "127.0.0.1",
+      "Port": 6379,
+      "Conn": "{0}:{1}"
+    }
+  ],
+  //Mqtt服务器设置
+  "MqttConfig": {
+    "UseSsl": false,
+    "Ssl": "",
+    "Password": "",
+    "Socket": {
+      "IP": "0.0.0.0",
+      "Port": 12345
+    }
+  },
+  //Task任务设置
+  "TaskConfig": {
+    "MaxTime": 30
+  },
+  //Http客户端数量
+  "HttpClientNumber": 100,
+  "Requset": {
+    "Temp": [
+      ".jpg",
+      ".png",
+      ".mp4",
+      ".jpge",
+      ".gif"
+    ],
+    "TempTime": 1800,
+    "Stream": true,
+    "StreamType": [
+      ".mp4"
+    ]
+  },
+  //编译工具密钥设置
+  "AES": {
+    "Key": "Key",
+    "IV": "IV"
+  },
+  //代码设置
+  "CodeSetting": {
+    "NotInclude": [
+      "sni.dll"
+    ],
+    "CodeLog": true,
+    "MinifyHtml": true,
+    "MinifyJS": true,
+    "MinifyCSS": true
+  }
 }
 ```
+
+## 登录数据库
+
+管理员数据，登录信息储存在`ColoryrServer\Login.db`中
+- 表`login`储存登录Token
+- 表`user`储存账户密码
+
+## 代码储存
+
+代码储存数据库
+在文件夹`ColoryrServer\Codes`中
+- `Code.db`主要存储代码项目信息和部分代码
+- `CodeLog.db`主要储存代码编辑数据
+- `WebCode.db`储存网页代码数据
+- `WebData.db`储存网页文件数据
+- `WebLog.db`储存网页代码编辑数据
+- `Static`文件夹用于储存Vue网页项目
+
+## 编译后DLL储存
+
+在文件夹`ColoryrServer\Dll`中，储存所有C#代码编译后的Dll
+
+## 删除代码储存
+
+在文件夹`ColoryrServer\Removes`中，储存所有删除的项目信息
+
+## 静态网页文件夹
+
+在文件夹`ColoryrServer\Static`中，储存静态网页信息  
+`index.html`与`404.html`就在里面
+
+## Dll运行与编译结果数据库
+
+在`ColoryrServer\DllLog.db`中  
+- 表`error`储存运行错误
+- 表`webbuild`储存Vue编译结果
+
+## 其他说明
+
+- `FileRam`内存数据库固化
+- `Libs`额外CLR库，可以用于Dll调用，只能在关闭服务器期间更换
+- `Notes`导出的说明信息

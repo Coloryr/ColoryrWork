@@ -595,7 +595,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => GetWebSocket(uuid),
                 CodeType.Robot => GetRobot(uuid),
                 CodeType.Mqtt => GetMqtt(uuid),
-                CodeType.Task => GetMqtt(uuid),
+                CodeType.Task => GetTask(uuid),
                 _ => null
             };
 
@@ -632,7 +632,7 @@ internal static class CodeFileManager
                     DllStongeManager.RemoveMqtt(uuid);
                     break;
                 case CodeType.Task:
-                    MqttFileList.TryRemove(uuid, out var item7);
+                    TaskFileList.TryRemove(uuid, out var item7);
                     DllStongeManager.RemoveTask(uuid);
                     break;
             }

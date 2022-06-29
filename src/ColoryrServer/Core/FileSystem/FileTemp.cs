@@ -5,18 +5,9 @@ using System.Threading;
 
 namespace ColoryrServer.Core.FileSystem;
 
-internal static class FileTemp
+internal static class FileLoad
 {
     public static string Local;
-
-    public static void Start()
-    {
-        Local = ServerMain.RunLocal + "TempFile/";
-        if (!Directory.Exists(Local))
-        {
-            Directory.CreateDirectory(Local);
-        }
-    }
 
     public static string LoadString(string filename, bool IsTemp = true)
     {

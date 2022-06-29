@@ -2,7 +2,6 @@
 ![ico](./ColoryrWork.png)  
 
 2.0.0版本正在进行中  
-2.0.0B2已完成
 
 一个多功能服务器/应用框架  
 
@@ -27,9 +26,7 @@
 
 [部署&启动](./doc/run.md)
 
-[目录文件说明](./doc/dir.md)
-
-[配置文件说明](./doc/config.md)
+[目录结构与文件信息](./doc/config.md)
 
 [业务代码编写](./doc/code.md)
 ```

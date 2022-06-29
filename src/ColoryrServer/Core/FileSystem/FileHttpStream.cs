@@ -26,11 +26,6 @@ internal static class FileHttpStream
 
     public static void Start()
     {
-        Local = ServerMain.RunLocal + "Stream/";
-        if (!Directory.Exists(Local))
-        {
-            Directory.CreateDirectory(Local);
-        }
         IsRun = true;
         TickThread = new(() =>
         {
@@ -154,11 +149,5 @@ internal static class FileHttpStream
         {
             throw new ErrorDump("流处理发生错误", e);
         }
-    }
-
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
-    {
-        string file = Local + local + "/" + name;
-        return StartStream(http, file);
     }
 }

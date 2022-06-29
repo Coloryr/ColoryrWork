@@ -54,21 +54,21 @@ internal static class DllRun
             MethodInfo mi = dll.MethodInfos[function];
 
             var obj1 = Activator.CreateInstance(dll.SelfType);
-            dynamic dllres = mi.Invoke(obj1, new object[1] { arg });
-            if (dllres is Dictionary<string, object>)
-            {
-                return new HttpReturn
-                {
-                    Data = dllres,
-                    Res = ResType.Json
-                };
-            }
-            else if (dllres is string)
+            object dllres = mi.Invoke(obj1, new object[1] { arg });
+            if (dllres is string)
             {
                 return new HttpReturn
                 {
                     Data = dllres,
                     Res = ResType.String
+                };
+            }
+            else if (dllres is Dictionary<string, object>)
+            {
+                return new HttpReturn
+                {
+                    Data = dllres,
+                    Res = ResType.Json
                 };
             }
             else if (dllres is HttpResponseString)
