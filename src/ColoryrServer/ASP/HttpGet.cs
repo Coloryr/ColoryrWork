@@ -28,11 +28,11 @@ internal static class HttpGet
         }
     }
 
-    internal static async Task GetIndex(HttpContext context)
+    internal static Task GetIndex(HttpContext context)
     {
         HttpResponse Response = context.Response;
         Response.ContentType = ServerContentType.HTML;
-        await Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
+        return Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex).AsTask();
     }
 
     private static HttpDllRequest InitArg(HttpRequest request)

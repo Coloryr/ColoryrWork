@@ -110,6 +110,7 @@ internal static class ASPServer
             Web.MapDelete("/{**name}", Config.RouteEnable ? HttpPost.RoutePost : HttpPost.Post);
 
             Web.MapPost("/", Build);
+
             Web.Run();
             Web.DisposeAsync().AsTask().Wait();
             ServerMain.LogOut("正在关闭服务器");

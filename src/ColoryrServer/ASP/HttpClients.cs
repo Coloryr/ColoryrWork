@@ -1,21 +1,20 @@
-﻿namespace ColoryrServer.ASP
+﻿namespace ColoryrServer.ASP;
+
+public interface IHttpClients
 {
-    public interface IHttpClients
+    public HttpClient GetOne();
+}
+public class HttpClients : IHttpClients
+{
+    private readonly IHttpClientFactory _clientFactory;
+
+    public HttpClients(IHttpClientFactory clientFactory)
     {
-        public HttpClient GetOne();
+        _clientFactory = clientFactory;
     }
-    public class HttpClients : IHttpClients
+
+    public HttpClient GetOne()
     {
-        private readonly IHttpClientFactory _clientFactory;
-
-        public HttpClients(IHttpClientFactory clientFactory)
-        {
-            _clientFactory = clientFactory;
-        }
-
-        public HttpClient GetOne()
-        {
-            return _clientFactory.CreateClient();
-        }
+        return _clientFactory.CreateClient();
     }
 }
