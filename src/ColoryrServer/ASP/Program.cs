@@ -18,7 +18,7 @@ using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
 namespace ColoryrServer.ASP;
 
-internal static class ASPServer
+public static class ASPServer
 {
     internal static ASPConfig Config { get; set; }
     internal static IHttpClients Clients;
