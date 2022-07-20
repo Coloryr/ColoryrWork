@@ -126,7 +126,7 @@ internal class HttpPost
         };
     }
 
-    public static void Post(HttpCacheSession session, HttpRequest request)
+    public static void Post(IHttp session, HttpRequest request)
     {
         string url = Uri.UnescapeDataString(request.Url);
         Dictionary<string, string> headers = new();

@@ -2,8 +2,10 @@
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using MySqlX.XDevAPI;
 using NetCoreServer;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -70,7 +72,7 @@ internal class HttpGet
         };
     }
 
-    public static void Get(HttpCacheSession session, HttpRequest request)
+    public static void Get(IHttp session, HttpRequest request)
     {
         string url = Uri.UnescapeDataString(request.Url);
         if (url == "/")
@@ -126,20 +128,20 @@ internal class HttpGet
                     case ResType.Json:
                         session.Response.SetBody(JsonConvert.SerializeObject(httpReturn.Data));
                         break;
-                    //case ResType.Stream:
-                    //    var stream = httpReturn.Data as Stream;
-                    //    if (stream == null)
-                    //    {
-                    //        session.Response.MakeErrorResponse(500, "stream in null");
-                    //    }
-                    //    else
-                    //    {
-                    //        stream.Seek(httpReturn.Pos, SeekOrigin.Begin);
-                    //        session.Response.MakeOkResponse(206);
-                    //        Buffer buffer = new();
-                    //        session.Response.SetBody(stream);
-                    //    }
-                    //    break;
+                        //case ResType.Stream:
+                        //    var stream = httpReturn.Data as Stream;
+                        //    if (stream == null)
+                        //    {
+                        //        session.Response.MakeErrorResponse(500, "stream in null");
+                        //    }
+                        //    else
+                        //    {
+                        //        stream.Seek(httpReturn.Pos, SeekOrigin.Begin);
+                        //        session.Response.MakeOkResponse(206);
+                        //        Buffer buffer = new();
+                        //        session.Response.SetBody(stream);
+                        //    }
+                        //    break;
                 }
             }
             else

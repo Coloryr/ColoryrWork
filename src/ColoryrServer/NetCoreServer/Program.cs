@@ -5,22 +5,38 @@ using NetCoreServer;
 using ColoryrServer.NetCoreServer;
 using ColoryrServer.Core;
 using ColoryrServer.Core.Http.PostBuild;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using Ubiety.Dns.Core;
+using Org.BouncyCastle.Asn1.Ocsp;
 
-class HttpCacheSession : HttpSession
+public interface IHttp
 {
-    public HttpCacheSession(HttpServer server) : base(server) { }
+    public HttpResponse Response { get; }
+    public bool SendResponseAsync(HttpResponse response);
+}
 
-    protected override void OnReceivedRequest(HttpRequest request)
+public interface IHttpServer
+{
+    public void AddStaticContent(string path, string prefix = "/", string filter = "*.*", TimeSpan? timeout = null);
+    public bool Start();
+    public bool Restart();
+    public bool Stop();
+}
+
+public static class HttpServerFuntion
+{
+    public static void OnReceivedRequest(IHttp http, HttpRequest request)
     {
         if (request.Method == "HEAD")
-            SendResponseAsync(Response.MakeHeadResponse());
+            http.SendResponseAsync(http.Response.MakeHeadResponse());
         else if (request.Method == "GET")
         {
-            HttpGet.Get(this, request);
+            HttpGet.Get(http, request);
         }
         else if ((request.Method == "POST") || (request.Method == "PUT"))
         {
-            HttpPost.Post(this, request);
+            HttpPost.Post(http, request);
         }
         else if (request.Method == "DELETE")
         {
@@ -31,25 +47,49 @@ class HttpCacheSession : HttpSession
 
         }
         else if (request.Method == "OPTIONS")
-            SendResponseAsync(Response.MakeOptionsResponse());
+            http.SendResponseAsync(http.Response.MakeOptionsResponse());
         else if (request.Method == "TRACE")
-            SendResponseAsync(Response.MakeTraceResponse(request.Cache.Data));
+            http.SendResponseAsync(http.Response.MakeTraceResponse(request.Cache.Data));
         else
-            SendResponseAsync(Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            http.SendResponseAsync(http.Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
     }
 
-    protected override void OnReceivedRequestError(HttpRequest request, string error)
-    {
-        Console.WriteLine($"Request error: {error}");
-    }
+    public static void OnReceivedRequestError(HttpRequest request, string error)
+        => ServerMain.LogError($"Request error: {error}");
 
-    protected override void OnError(SocketError error)
-    {
-        Console.WriteLine($"HTTP session caught an error: {error}");
-    }
+    public static void OnError(SocketError error)
+        => ServerMain.LogError($"HTTP session caught an error: {error}");
 }
 
-class HttpCacheServer : HttpServer
+class HttpCacheSession : HttpSession, IHttp
+{
+    public HttpCacheSession(HttpServer server) : base(server) { }
+
+    protected override void OnReceivedRequest(HttpRequest request)
+        => HttpServerFuntion.OnReceivedRequest(this, request);
+
+    protected override void OnReceivedRequestError(HttpRequest request, string error)
+        => HttpServerFuntion.OnReceivedRequestError(request, error);
+
+    protected override void OnError(SocketError error)
+        => HttpServerFuntion.OnError(error);
+}
+
+class HttpsCacheSession : HttpsSession, IHttp
+{
+    public HttpsCacheSession(HttpsServer server) : base(server) { }
+
+    protected override void OnReceivedRequest(HttpRequest request)
+        => HttpServerFuntion.OnReceivedRequest(this, request);
+
+    protected override void OnReceivedRequestError(HttpRequest request, string error)
+        => HttpServerFuntion.OnReceivedRequestError(request, error);
+
+    protected override void OnError(SocketError error)
+        => HttpServerFuntion.OnError(error);
+}
+
+class HttpCacheServer : HttpServer, IHttpServer
 {
     public HttpCacheServer(IPAddress address, int port) : base(address, port) { }
 
@@ -57,7 +97,19 @@ class HttpCacheServer : HttpServer
 
     protected override void OnError(SocketError error)
     {
-        Console.WriteLine($"HTTP session caught an error: {error}");
+        ServerMain.LogError($"HTTP session caught an error: {error}");
+    }
+}
+
+class HttpsCacheServer : HttpsServer, IHttpServer
+{
+    public HttpsCacheServer(SslContext context, IPAddress address, int port) : base(context, address, port) { }
+
+    protected override SslSession CreateSession() { return new HttpsCacheSession(this); }
+
+    protected override void OnError(SocketError error)
+    {
+        ServerMain.LogError($"HTTP session caught an error: {error}");
     }
 }
 
@@ -66,36 +118,32 @@ class CoreServer
     public static CoreConfig Config;
     static void Main(string[] args)
     {
-        // HTTP server port
-        int port = 80;
-        if (args.Length > 0)
-            port = int.Parse(args[0]);
-        // HTTP server content path
-        string www = "./";
-        if (args.Length > 1)
-            www = args[1];
-
         ServerMain.ConfigUtil = new CoreConfigUtils();
         PostServerConfig.Init(new CoreTopAPI());
 
         ServerMain.Start();
+        IHttpServer server;
 
-        Console.WriteLine($"HTTP server port: {port}");
-        Console.WriteLine($"HTTP server static content path: {www}");
-        Console.WriteLine($"HTTP server website: http://localhost:{port}/index.html");
-
-        Console.WriteLine();
-
-        // Create a new HTTP server
-        var server = new HttpCacheServer(IPAddress.Any, port);
-        server.AddStaticContent(www, "./");
+        if (Config.UseSsl)
+        {
+            var context = new SslContext(SslProtocols.Tls13, new X509Certificate2(Config.Ssl.Local, Config.Ssl.Password));
+            server = new HttpsCacheServer(context, IPAddress.Parse(Config.Http.IP), Config.Http.Port);
+            ServerMain.LogOut($"服务器启动与https://{Config.Http.IP}:{Config.Http.Port}");
+        }
+        else
+        {
+            server = new HttpCacheServer(IPAddress.Parse(Config.Http.IP), Config.Http.Port);
+            ServerMain.LogOut($"服务器启动与http://{Config.Http.IP}:{Config.Http.Port}");
+        }
+        
+        server.AddStaticContent("./", "./");
 
         // Start the server
-        Console.Write("Server starting...");
+        ServerMain.LogOut("Server starting...");
         server.Start();
-        Console.WriteLine("Done!");
+        ServerMain.LogOut("Done!");
 
-        Console.WriteLine("Press Enter to stop the server or '!' to restart the server...");
+        ServerMain.LogOut("Press Enter to stop the server or '!' to restart the server...");
 
         // Perform text input
         for (; ; )
@@ -107,15 +155,15 @@ class CoreServer
             // Restart the server
             if (line == "!")
             {
-                Console.Write("Server restarting...");
+                ServerMain.LogOut("Server restarting...");
                 server.Restart();
-                Console.WriteLine("Done!");
+                ServerMain.LogOut("Done!");
             }
         }
 
         // Stop the server
-        Console.Write("Server stopping...");
+        ServerMain.LogOut("Server stopping...");
         server.Stop();
-        Console.WriteLine("Done!");
+        ServerMain.LogOut("Done!");
     }
 }

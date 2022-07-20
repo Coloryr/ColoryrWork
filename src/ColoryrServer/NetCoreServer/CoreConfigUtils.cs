@@ -10,18 +10,25 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.NetCoreServer;
 
+internal record SslObj
+{ 
+    public string Local { get; set; }
+    public string Password { get; set; }
+}
+
 internal record CoreConfig : MainConfig
 {
     /// <summary>
     /// Http配置
     /// </summary>
-    //public List<SocketConfig> Http { get; set; }
+    public SocketConfig Http { get; set; }
+    public bool UseSsl { get; set; }
+    public bool NoInput { get; set; }
+    public SslObj Ssl { get; set; }
     //public Dictionary<string, RouteConfigObj> Routes { get; set; }
-    //public bool UseSsl { get; set; }
     //public Dictionary<string, SslObj> Ssls { get; set; }
     //public Dictionary<string, RouteConfigObj> UrlRoutes { get; set; }
     //public bool RouteEnable { get; set; }
-    //public bool NoInput { get; set; }
 }
 
 internal class CoreConfigUtils : ConfigUtil
@@ -53,27 +60,18 @@ internal class CoreConfigUtils : ConfigUtil
             //    }
             //},
             //RouteEnable = false,
-            //UseSsl = false,
-            //Ssls = new()
-            //{
-            //    {
-            //        "default",
-            //        new()
-            //        {
-            //            Ssl = "./test.sfx",
-            //            Password = "123456"
-            //        }
-            //    }
-            //},
             //NoInput = false,
-            //Http = new()
-            //{
-            //    new()
-            //    {
-            //        IP = "127.0.0.1",
-            //        Port = 80
-            //    }
-            //},
+            UseSsl = false,
+            Ssl = new() 
+            {
+                Local = "xxx.pfx",
+                Password = "123456"
+            },
+            Http = new()
+            {
+                IP = "0.0.0.0",
+                Port = 80
+            },
             CodeSetting = new()
             {
                 NotInclude = new()
