@@ -128,14 +128,13 @@ internal class HttpPost
 
     public static void Post(IHttp session, HttpRequest request)
     {
-        string url = Uri.UnescapeDataString(request.Url);
         Dictionary<string, string> headers = new();
         for (int a = 0; a < request.Headers; a++)
         {
             var item = request.Header(a);
             headers.Add(item.Item1, item.Item2);
         }
-        if (url == "/")
+        if (request.Url == "/")
         {
             if (headers.TryGetValue(BuildKV.BuildK, out var item)
                     && item == BuildKV.BuildV)
@@ -155,6 +154,7 @@ internal class HttpPost
         else
         {
             HttpReturn httpReturn;
+            string url = Uri.UnescapeDataString(request.Url);
             int index = url.IndexOf('?');
             string name;
             if (index != -1)

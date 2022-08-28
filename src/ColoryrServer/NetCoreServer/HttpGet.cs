@@ -74,13 +74,13 @@ internal class HttpGet
 
     public static void Get(IHttp session, HttpRequest request)
     {
-        string url = Uri.UnescapeDataString(request.Url);
-        if (url == "/")
+        if (request.Url == "/")
         {
             session.Response.MakeGetResponse(WebBinManager.BaseDir.HtmlIndex, ServerContentType.HTML);
         }
         else
         {
+            string url = Uri.UnescapeDataString(request.Url);
             HttpReturn httpReturn;
             int index = url.IndexOf('?');
             string name;

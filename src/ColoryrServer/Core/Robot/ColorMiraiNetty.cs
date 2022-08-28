@@ -1648,7 +1648,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
     }
     private ConcurrentBag<PackTask> queue1;
     private ConcurrentBag<IByteBuffer> queue2;
-
+    
     private Thread thread;
     private MultithreadEventLoopGroup group;
     private IChannel client;
@@ -1659,10 +1659,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
         Robot = robot;
         queue1 = new();
         queue2 = new();
-        thread = new(Read)
-        {
-            Name = "RobotNettyThread"
-        };
+        thread = new(Read);
 
         group = new MultithreadEventLoopGroup();
     }
@@ -2158,7 +2155,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
         });
     }
 
-    internal void AddReadPack(IByteBuffer pack)
+    internal void AddReadPack(IByteBuffer pack) 
     {
         queue2.Add(pack);
     }
@@ -2220,8 +2217,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
     {
         Robot.IsConnect = false;
         Robot.RobotStateEvent.Invoke(StateType.Disconnect);
-        if (client != null)
-            client.CloseAsync().Wait();
+        client?.CloseAsync().Wait();
     }
 }
 
