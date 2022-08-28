@@ -35,5 +35,6 @@ internal static class APIFile
         list.List.Add("MqttDll4", OtherSDKResource.MqttDll4);
         list.List.Add("MqttDll5", OtherSDKResource.MqttDll5);
         list.List.Add("MqttDll6", OtherSDKResource.MqttDll6);
+        list.List.Add("MqttDll7", OtherSDKResource.MqttDll7);
     }
 }
