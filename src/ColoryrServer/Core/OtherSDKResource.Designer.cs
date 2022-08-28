@@ -166,6 +166,118 @@ namespace ColoryrServer.Core {
         ///// The .NET Foundation licenses this file to you under the MIT license.
         ///// See the LICENSE file in the project root for more information.
         ///
+        ///namespace MQTTnet.Formatter
+        ///{
+        ///    public enum MqttProtocolVersion
+        ///    {
+        ///        Unknown = 0,
+        ///
+        ///        V310 = 3,
+        ///        V311 = 4,
+        ///        V500 = 5
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll10 {
+            get {
+                return ResourceManager.GetString("MqttDll10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public enum MqttClientDisconnectType
+        ///    {
+        ///        Clean,
+        ///        NotClean,
+        ///        Takeover
+        ///    }
+        ///}
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll11 {
+            get {
+                return ResourceManager.GetString("MqttDll11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///using System;
+        ///using System.Collections;
+        ///using System.Threading;
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public sealed class InterceptingPublishEventArgs : EventArgs
+        ///    {
+        ///        public InterceptingPublishEventArgs(MqttApplicationMessage applicationMessage, CancellationToken cancellationToken, string clientId, IDic [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll12 {
+            get {
+                return ResourceManager.GetString("MqttDll12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///using System.Collections.Generic;
+        ///using MQTTnet.Packets;
+        ///using MQTTnet.Protocol;
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public sealed class PublishResponse
+        ///    {
+        ///        public MqttPubAckReasonCode ReasonCode { get; set; } = MqttPubAckReasonCode.Success;
+        ///        
+        ///        public string ReasonString { get; set; }
+        ///
+        ///  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll13 {
+            get {
+                return ResourceManager.GetString("MqttDll13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///using System;
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public sealed class ApplicationMessageNotConsumedEventArgs : EventArgs
+        ///    {
+        ///        public ApplicationMessageNotConsumedEventArgs(MqttApplicationMessage applicationMessage, string senderId)
+        ///        {
+        ///            ApplicationMessage = applicationMessage ?? throw  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll14 {
+            get {
+                return ResourceManager.GetString("MqttDll14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
         ///using System;
         ///using System.Collections.Generic;
         ///
@@ -283,11 +395,68 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似  的本地化字符串。
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///namespace MQTTnet.Protocol
+        ///{
+        ///    public enum MqttConnectReasonCode
+        ///    {
+        ///        Success = 0,
+        ///        UnspecifiedError = 128,
+        ///        MalformedPacket = 129,
+        ///        ProtocolError = 130,
+        ///        ImplementationSpecificError = 131,
+        ///        UnsupportedProtocolVersion = 132,
+        ///        ClientIdentifierNotValid = 13 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string MqttDll7 {
             get {
                 return ResourceManager.GetString("MqttDll7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///using System;
+        ///using System.Collections;
+        ///using MQTTnet.Formatter;
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public sealed class ClientConnectedEventArgs : EventArgs
+        ///    {
+        ///        public ClientConnectedEventArgs(string clientId, string userName, MqttProtocolVersion protocolVersion, string endpoint, IDictionary sessionI [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll8 {
+            get {
+                return ResourceManager.GetString("MqttDll8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
+        ///// The .NET Foundation licenses this file to you under the MIT license.
+        ///// See the LICENSE file in the project root for more information.
+        ///
+        ///using System;
+        ///using System.Collections;
+        ///
+        ///namespace MQTTnet.Server
+        ///{
+        ///    public sealed class ClientDisconnectedEventArgs : EventArgs
+        ///    {
+        ///        public ClientDisconnectedEventArgs(string clientId, MqttClientDisconnectType disconnectType, string endpoint, IDictionary sessionItems)
+        ///        {
+        ///            Clie [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string MqttDll9 {
+            get {
+                return ResourceManager.GetString("MqttDll9", resourceCulture);
             }
         }
         

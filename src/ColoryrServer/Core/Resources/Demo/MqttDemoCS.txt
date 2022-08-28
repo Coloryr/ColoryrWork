@@ -7,6 +7,10 @@ public class {name}
     {
         return false; //true表示事件已处理完毕
     }
+    public bool OnRetainedMessageChanged(DllMqttRetainedMessageChanged head)
+    {
+        return false;
+    }
     public bool OnMessageLoading(DllMqttLoadingRetainedMessages head)
     {
         return false;
@@ -20,6 +24,18 @@ public class {name}
         return false;
     }
     public bool OnUnsubscription(DllMqttUnsubscription head)
+    {
+        return false;
+    }
+    public bool OnClientConnected(DllMqttClientConnected head)
+    {
+        return false;
+    }
+    public bool OnClientDisconnected(DllMqttClientDisconnected head)
+    {
+        return false;
+    }
+    public bool OnInterceptingPublish(DllMqttInterceptingPublish head)
     {
         return false;
     }

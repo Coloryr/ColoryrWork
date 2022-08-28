@@ -16,6 +16,10 @@ internal static class CodeDemo
     public const string MQTTValidator = "OnValidator";
     public const string MQTTSubscription = "OnSubscription";
     public const string MQTTUnsubscription = "OnUnsubscription";
+    public const string MQTTClientConnected = "OnClientConnected";
+    public const string MQTTClientDisconnected = "OnClientDisconnected";
+    public const string MQTTInterceptingPublish = "OnInterceptingPublish";
+    public const string MQTTRetainedMessageChanged = "OnRetainedMessageChanged";
     public const string TaskRun = "Run";
     public const string TaskStart = "OnStart";
     public const string TaskStop = "OnStop";

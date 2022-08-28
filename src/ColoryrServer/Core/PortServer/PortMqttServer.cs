@@ -18,11 +18,7 @@ internal static class PortMqttServer
     public static async void Start()
     {
         ServerMain.LogOut("Mqtt服务器正在启动");
-        var mqttFactory = new MqttFactory();
-
         var optionsBuilder = new MqttServerOptionsBuilder();
-
-
         if (ServerMain.Config.MqttConfig.UseSsl)
         {
             try
@@ -53,30 +49,54 @@ internal static class PortMqttServer
                 IPAddress.Parse(ServerMain.Config.MqttConfig.Socket.IP));
         }
         ServerMain.LogOut($"Mqtt服务器监听{ServerMain.Config.MqttConfig.Socket.IP}:{ServerMain.Config.MqttConfig.Socket.Port}");
-        MqttServer = mqttFactory.CreateMqttServer(optionsBuilder.Build());
+        MqttServer = new MqttFactory().CreateMqttServer(optionsBuilder.Build());
+        MqttServer.InterceptingPublishAsync += MqttServer_InterceptingPublishAsync;
         MqttServer.ValidatingConnectionAsync += ConnectionValidator;
         MqttServer.InterceptingSubscriptionAsync += InterceptingSubscription;
         MqttServer.InterceptingUnsubscriptionAsync += InterceptingUnsubscription;
         MqttServer.RetainedMessageChangedAsync += RetainedMessageChangedAsync;
         MqttServer.LoadingRetainedMessageAsync += LoadingRetainedMessageAsync;
         MqttServer.StartedAsync += MqttServer_StartedAsync;
+        MqttServer.ApplicationMessageNotConsumedAsync += MqttServer_ApplicationMessageNotConsumedAsync;
         MqttServer.ClientConnectedAsync += MqttServer_ClientConnectedAsync;
+        MqttServer.ClientDisconnectedAsync += MqttServer_ClientDisconnectedAsync;
         await MqttServer.StartAsync();
         ServerMain.OnStop += Stop;
-        
     }
 
+    private static Task MqttServer_ApplicationMessageNotConsumedAsync(ApplicationMessageNotConsumedEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttMessage(arg)));
+    private static Task MqttServer_InterceptingPublishAsync(InterceptingPublishEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttInterceptingPublish(arg)));
+    private static Task MqttServer_ClientDisconnectedAsync(ClientDisconnectedEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttClientDisconnected(arg)));
     private static Task MqttServer_ClientConnectedAsync(ClientConnectedEventArgs arg)
-    => Task.Run(() =>
-        {
-            ServerMain.LogOut($"Mqtt有客户端链接：{arg.Endpoint} {arg.ClientId}");
-        });
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttClientConnected(arg)));
+    private static Task LoadingRetainedMessageAsync(LoadingRetainedMessagesEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttLoadingRetainedMessages(arg)));
+    private static Task ConnectionValidator(ValidatingConnectionEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttConnectionValidator(arg)));
+    private static Task RetainedMessageChangedAsync(RetainedMessageChangedEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttRetainedMessageChanged(arg)));
+    private static Task InterceptingSubscription(InterceptingSubscriptionEventArgs arg)
+        => Task.Run(()
+             => DllRun.MqttGo(new DllMqttSubscription(arg)));
+    public static Task InterceptingUnsubscription(InterceptingUnsubscriptionEventArgs arg)
+        => Task.Run(()
+            => DllRun.MqttGo(new DllMqttUnsubscription(arg)));
 
     private static Task MqttServer_StartedAsync(System.EventArgs arg)
-    => Task.Run(() =>
-        {
-            ServerMain.LogOut("Mqtt服务器已启动");
-        });
+    => Task.Run(() => ServerMain.LogOut("Mqtt服务器已启动"));
+    private static async void Stop()
+        => await MqttServer.StopAsync();
+
     public static async void Send(string Topic, string data, MqttQualityOfServiceLevel level)
     {
         await MqttServer.InjectApplicationMessage(
@@ -87,22 +107,4 @@ internal static class PortMqttServer
                 QualityOfServiceLevel = level
             }));
     }
-
-    private static Task LoadingRetainedMessageAsync(LoadingRetainedMessagesEventArgs data)
-    => Task.Run(()
-         => DllRun.MqttGo(new DllMqttLoadingRetainedMessages(data)));
-    private static Task ConnectionValidator(ValidatingConnectionEventArgs data)
-        => Task.Run(()
-             => DllRun.MqttGo(new DllMqttConnectionValidator(data)));
-    private static Task RetainedMessageChangedAsync(RetainedMessageChangedEventArgs data)
-        => Task.Run(()
-             => DllRun.MqttGo(new DllMqttMessage(data)));
-    private static Task InterceptingSubscription(InterceptingSubscriptionEventArgs data)
-        => Task.Run(()
-             => DllRun.MqttGo(new DllMqttSubscription(data)));
-    public static Task InterceptingUnsubscription(InterceptingUnsubscriptionEventArgs context)
-        => Task.Run(()
-            => DllRun.MqttGo(new DllMqttUnsubscription(context)));
-    private static async void Stop()
-        => await MqttServer.StopAsync();
 }

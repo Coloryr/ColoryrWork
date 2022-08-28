@@ -677,6 +677,158 @@ internal static class DllRun
         }
     }
     /// <summary>
+    /// Mqtt客户端链接
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void MqttGo(DllMqttClientConnected Head)
+    {
+        foreach (var dll in DllStongeManager.GetMqtt())
+        {
+            try
+            {
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTClientConnected))
+                {
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTClientConnected];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                Task.Run(() => TaskGo(e));
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+            }
+        }
+    }
+    /// <summary>
+    /// Mqtt客户端断开链接
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void MqttGo(DllMqttClientDisconnected Head)
+    {
+        foreach (var dll in DllStongeManager.GetMqtt())
+        {
+            try
+            {
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTClientDisconnected))
+                {
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTClientDisconnected];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                Task.Run(() => TaskGo(e));
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+            }
+        }
+    }
+    /// <summary>
+    /// Mqtt推送消息
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void MqttGo(DllMqttInterceptingPublish Head)
+    {
+        foreach (var dll in DllStongeManager.GetMqtt())
+        {
+            try
+            {
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTInterceptingPublish))
+                {
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTInterceptingPublish];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                Task.Run(() => TaskGo(e));
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+            }
+        }
+    }
+    /// <summary>
+    /// Mqtt推送消息
+    /// </summary>
+    /// <param name="Head"></param>
+    public static void MqttGo(DllMqttRetainedMessageChanged Head)
+    {
+        foreach (var dll in DllStongeManager.GetMqtt())
+        {
+            try
+            {
+                if (dll.MethodInfos.ContainsKey(CodeDemo.MQTTRetainedMessageChanged))
+                {
+                    MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTRetainedMessageChanged];
+                    var obj1 = Activator.CreateInstance(dll.SelfType);
+                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    if (res is true)
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                string error;
+                if (e.InnerException is ErrorDump Dump)
+                {
+                    error = Dump.data;
+                    ServerMain.LogError(error);
+                }
+                else
+                {
+                    error = e.ToString();
+                    ServerMain.LogError(e);
+                }
+
+                Task.Run(() => TaskGo(e));
+                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+            }
+        }
+    }
+    /// <summary>
     /// Task任务
     /// </summary>
     /// <param name="name"></param>

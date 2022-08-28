@@ -45,12 +45,23 @@ public class DllMqttConnectionValidator
 
 public class DllMqttMessage
 {
-    public RetainedMessageChangedEventArgs Context { get; init; }
+    public ApplicationMessageNotConsumedEventArgs Context { get; init; }
     /// <summary>
     /// MQTT服务器收到消息
     /// </summary>
     /// <param name="Context">数据</param>
-    public DllMqttMessage(RetainedMessageChangedEventArgs Context)
+    public DllMqttMessage(ApplicationMessageNotConsumedEventArgs Context)
+        => this.Context = Context;
+}
+
+public class DllMqttRetainedMessageChanged
+{
+    public RetainedMessageChangedEventArgs Context { get; init; }
+    /// <summary>
+    /// MQTT保留消息修改
+    /// </summary>
+    /// <param name="Context">数据</param>
+    public DllMqttRetainedMessageChanged(RetainedMessageChangedEventArgs Context)
         => this.Context = Context;
 }
 
@@ -66,6 +77,28 @@ public class DllMqttSubscription
     /// <summary>
 }
 
+public class DllMqttClientConnected
+{ 
+    public ClientConnectedEventArgs Context { get; init; }
+    /// <summary>
+    /// Mqtt客户端链接
+    /// </summary>
+    /// <param name="context"></param>
+    public DllMqttClientConnected(ClientConnectedEventArgs context)
+        => Context = context;
+}
+
+public class DllMqttClientDisconnected
+{
+    public ClientDisconnectedEventArgs Context { get; init; }
+    /// <summary>
+    /// Mqtt客户端断开链接
+    /// </summary>
+    /// <param name="context"></param>
+    public DllMqttClientDisconnected(ClientDisconnectedEventArgs context)
+        => Context = context;
+}
+
 public class DllMqttUnsubscription
 {
     public InterceptingUnsubscriptionEventArgs Context { get; init; }
@@ -74,5 +107,16 @@ public class DllMqttUnsubscription
     /// </summary>
     /// <param name="context">数据</param>
     public DllMqttUnsubscription(InterceptingUnsubscriptionEventArgs context)
+       => Context = context;
+}
+
+public class DllMqttInterceptingPublish
+{
+    public InterceptingPublishEventArgs Context { get; init; }
+    /// <summary>
+    /// Mqtt推送消息
+    /// </summary>
+    /// <param name="context">数据</param>
+    public DllMqttInterceptingPublish(InterceptingPublishEventArgs context)
        => Context = context;
 }

@@ -130,6 +130,21 @@
   <data name="MqttDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MqttDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="MqttDll10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll10.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll11.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll12.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll13" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll13.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll14" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll14.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="MqttDll2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MqttDll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -147,6 +162,12 @@
   </data>
   <data name="MqttDll7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\othersdk\mqttdll7.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll8.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MqttDll9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\mqttdll9.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MysqlDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MysqlDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
