@@ -1,0 +1,187 @@
+﻿#region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+#endregion
+
+#nullable enable
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+
+namespace Newtonsoft.Json.Linq
+{
+    //
+    // 摘要:
+    //     Represents a token that can contain other tokens.
+    public abstract class JContainer : JToken, IList<JToken>, ICollection<JToken>, IEnumerable<JToken>, IEnumerable, ITypedList, IBindingList, ICollection, IList, INotifyCollectionChanged
+    {
+        //
+        // 摘要:
+        //     Get the first child token of this token.
+        //
+        // 值:
+        //     A Newtonsoft.Json.Linq.JToken containing the first child token of the Newtonsoft.Json.Linq.JToken.
+        public override JToken? First { get; }
+        //
+        // 摘要:
+        //     Gets the count of child JSON tokens.
+        //
+        // 值:
+        //     The count of child JSON tokens.
+        public int Count { get; }
+        //
+        // 摘要:
+        //     Get the last child token of this token.
+        //
+        // 值:
+        //     A Newtonsoft.Json.Linq.JToken containing the last child token of the Newtonsoft.Json.Linq.JToken.
+        public override JToken? Last { get; }
+        //
+        // 摘要:
+        //     Gets a value indicating whether this token has child tokens.
+        //
+        // 值:
+        //     true if this token has child values; otherwise, false.
+        public override bool HasValues { get; }
+        //
+        // 摘要:
+        //     Gets the container's children tokens.
+        //
+        // 值:
+        //     The container's children tokens.
+        protected abstract IList<JToken> ChildrenTokens { get; }
+
+        //
+        // 摘要:
+        //     Occurs before an item is added to the collection.
+        public event AddingNewEventHandler AddingNew;
+        //
+        // 摘要:
+        //     Occurs when the items list of the collection has changed, or the collection is
+        //     reset.
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        //
+        // 摘要:
+        //     Occurs when the list changes or an item in the list changes.
+        public event ListChangedEventHandler ListChanged;
+
+        //
+        // 摘要:
+        //     Adds the specified content as children of this Newtonsoft.Json.Linq.JToken.
+        //
+        // 参数:
+        //   content:
+        //     The content to be added.
+        public virtual void Add(object? content);
+        //
+        // 摘要:
+        //     Adds the specified content as the first children of this Newtonsoft.Json.Linq.JToken.
+        //
+        // 参数:
+        //   content:
+        //     The content to be added.
+        public void AddFirst(object? content);
+        //
+        // 摘要:
+        //     Returns a collection of the child tokens of this token, in document order.
+        //
+        // 返回结果:
+        //     An System.Collections.Generic.IEnumerable`1 of Newtonsoft.Json.Linq.JToken containing
+        //     the child tokens of this Newtonsoft.Json.Linq.JToken, in document order.
+        public override JEnumerable<JToken> Children();
+        //
+        // 摘要:
+        //     Creates a Newtonsoft.Json.JsonWriter that can be used to add tokens to the Newtonsoft.Json.Linq.JToken.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.JsonWriter that is ready to have content written to it.
+        public JsonWriter CreateWriter();
+        //
+        // 摘要:
+        //     Returns a collection of the descendant tokens for this token in document order.
+        //
+        // 返回结果:
+        //     An System.Collections.Generic.IEnumerable`1 of Newtonsoft.Json.Linq.JToken containing
+        //     the descendant tokens of the Newtonsoft.Json.Linq.JToken.
+        public IEnumerable<JToken> Descendants();
+        //
+        // 摘要:
+        //     Returns a collection of the tokens that contain this token, and all descendant
+        //     tokens of this token, in document order.
+        //
+        // 返回结果:
+        //     An System.Collections.Generic.IEnumerable`1 of Newtonsoft.Json.Linq.JToken containing
+        //     this token, and all the descendant tokens of the Newtonsoft.Json.Linq.JToken.
+        public IEnumerable<JToken> DescendantsAndSelf();
+        //
+        // 摘要:
+        //     Merge the specified content into this Newtonsoft.Json.Linq.JToken.
+        //
+        // 参数:
+        //   content:
+        //     The content to be merged.
+        public void Merge(object? content);
+        //
+        // 摘要:
+        //     Merge the specified content into this Newtonsoft.Json.Linq.JToken using Newtonsoft.Json.Linq.JsonMergeSettings.
+        //
+        // 参数:
+        //   content:
+        //     The content to be merged.
+        //
+        //   settings:
+        //     The Newtonsoft.Json.Linq.JsonMergeSettings used to merge the content.
+        public void Merge(object? content, JsonMergeSettings? settings);
+        //
+        // 摘要:
+        //     Removes the child nodes from this token.
+        public void RemoveAll();
+        //
+        // 摘要:
+        //     Replaces the child nodes of this token with the specified content.
+        //
+        // 参数:
+        //   content:
+        //     The content.
+        public void ReplaceAll(object content);
+        //
+        // 摘要:
+        //     Returns a collection of the child values of this token, in document order.
+        //
+        // 类型参数:
+        //   T:
+        //     The type to convert the values to.
+        //
+        // 返回结果:
+        //     A System.Collections.Generic.IEnumerable`1 containing the child values of this
+        //     Newtonsoft.Json.Linq.JToken, in document order.
+        public override IEnumerable<T?> Values<T>();
+        //
+        // 摘要:
+        //     Raises the Newtonsoft.Json.Linq.JContainer.AddingNew event.
+        //
+        // 参数:
+        //   e:
+        //     The System.ComponentModel.AddingNewEventArgs instance containing the event data.
+        protected virtual void OnAddingNew(AddingNewEventArgs e);
+        //
+        // 摘要:
+        //     Raises the Newtonsoft.Json.Linq.JContainer.CollectionChanged event.
+        //
+        // 参数:
+        //   e:
+        //     The System.Collections.Specialized.NotifyCollectionChangedEventArgs instance
+        //     containing the event data.
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e);
+        //
+        // 摘要:
+        //     Raises the Newtonsoft.Json.Linq.JContainer.ListChanged event.
+        //
+        // 参数:
+        //   e:
+        //     The System.ComponentModel.ListChangedEventArgs instance containing the event
+        //     data.
+        protected virtual void OnListChanged(ListChangedEventArgs e);
+    }
+}

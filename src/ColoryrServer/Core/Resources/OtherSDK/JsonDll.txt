@@ -1,0 +1,435 @@
+﻿#region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+#endregion
+
+#nullable enable
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Newtonsoft.Json.Linq
+{
+    //
+    // 摘要:
+    //     Represents a JSON object.
+    [DefaultMember("Item")]
+    public class JObject : JContainer, IDictionary<string, JToken?>, ICollection<KeyValuePair<string, JToken?>>, IEnumerable<KeyValuePair<string, JToken?>>, IEnumerable, INotifyPropertyChanged, ICustomTypeDescriptor, INotifyPropertyChanging
+    {
+        //
+        // 摘要:
+        //     Initializes a new instance of the Newtonsoft.Json.Linq.JObject class.
+        public JObject();
+        //
+        // 摘要:
+        //     Initializes a new instance of the Newtonsoft.Json.Linq.JObject class from another
+        //     Newtonsoft.Json.Linq.JObject object.
+        //
+        // 参数:
+        //   other:
+        //     A Newtonsoft.Json.Linq.JObject object to copy from.
+        public JObject(JObject other);
+        //
+        // 摘要:
+        //     Initializes a new instance of the Newtonsoft.Json.Linq.JObject class with the
+        //     specified content.
+        //
+        // 参数:
+        //   content:
+        //     The contents of the object.
+        public JObject(params object[] content);
+        //
+        // 摘要:
+        //     Initializes a new instance of the Newtonsoft.Json.Linq.JObject class with the
+        //     specified content.
+        //
+        // 参数:
+        //   content:
+        //     The contents of the object.
+        public JObject(object content);
+
+        //
+        // 摘要:
+        //     Gets the Newtonsoft.Json.Linq.JToken with the specified key.
+        //
+        // 值:
+        //     The Newtonsoft.Json.Linq.JToken with the specified key.
+        public override JToken? this[object key] { get; set; }
+        //
+        // 摘要:
+        //     Gets or sets the Newtonsoft.Json.Linq.JToken with the specified property name.
+        public JToken? this[string propertyName] { get; set; }
+
+        //
+        // 摘要:
+        //     Gets the node type for this Newtonsoft.Json.Linq.JToken.
+        //
+        // 值:
+        //     The type.
+        public override JTokenType Type { get; }
+        //
+        // 摘要:
+        //     Gets the container's children tokens.
+        //
+        // 值:
+        //     The container's children tokens.
+        protected override IList<JToken> ChildrenTokens { get; }
+
+        //
+        // 摘要:
+        //     Occurs when a property value changes.
+        public event PropertyChangedEventHandler? PropertyChanged;
+        //
+        // 摘要:
+        //     Occurs when a property value is changing.
+        public event PropertyChangingEventHandler? PropertyChanging;
+
+        //
+        // 摘要:
+        //     Creates a Newtonsoft.Json.Linq.JObject from an object.
+        //
+        // 参数:
+        //   o:
+        //     The object that will be used to create Newtonsoft.Json.Linq.JObject.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject with the values of the specified object.
+        public static JObject FromObject(object o);
+        //
+        // 摘要:
+        //     Creates a Newtonsoft.Json.Linq.JObject from an object.
+        //
+        // 参数:
+        //   o:
+        //     The object that will be used to create Newtonsoft.Json.Linq.JObject.
+        //
+        //   jsonSerializer:
+        //     The Newtonsoft.Json.JsonSerializer that will be used to read the object.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject with the values of the specified object.
+        public static JObject FromObject(object o, JsonSerializer jsonSerializer);
+        //
+        // 摘要:
+        //     Loads a Newtonsoft.Json.Linq.JObject from a Newtonsoft.Json.JsonReader.
+        //
+        // 参数:
+        //   reader:
+        //     A Newtonsoft.Json.JsonReader that will be read for the content of the Newtonsoft.Json.Linq.JObject.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject that contains the JSON that was read from the
+        //     specified Newtonsoft.Json.JsonReader.
+        //
+        // 异常:
+        //   T:Newtonsoft.Json.JsonReaderException:
+        //     reader is not valid JSON.
+        public static JObject Load(JsonReader reader);
+        //
+        // 摘要:
+        //     Loads a Newtonsoft.Json.Linq.JObject from a Newtonsoft.Json.JsonReader.
+        //
+        // 参数:
+        //   reader:
+        //     A Newtonsoft.Json.JsonReader that will be read for the content of the Newtonsoft.Json.Linq.JObject.
+        //
+        //   settings:
+        //     The Newtonsoft.Json.Linq.JsonLoadSettings used to load the JSON. If this is null,
+        //     default load settings will be used.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject that contains the JSON that was read from the
+        //     specified Newtonsoft.Json.JsonReader.
+        //
+        // 异常:
+        //   T:Newtonsoft.Json.JsonReaderException:
+        //     reader is not valid JSON.
+        public static JObject Load(JsonReader reader, JsonLoadSettings? settings);
+        //
+        // 摘要:
+        //     Asynchronously loads a Newtonsoft.Json.Linq.JObject from a Newtonsoft.Json.JsonReader.
+        //
+        // 参数:
+        //   reader:
+        //     A Newtonsoft.Json.JsonReader that will be read for the content of the Newtonsoft.Json.Linq.JObject.
+        //
+        //   cancellationToken:
+        //     The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.
+        //
+        // 返回结果:
+        //     A System.Threading.Tasks.Task`1 that represents the asynchronous load. The System.Threading.Tasks.Task`1.Result
+        //     property returns a Newtonsoft.Json.Linq.JObject that contains the JSON that was
+        //     read from the specified Newtonsoft.Json.JsonReader.
+        public static Task<JObject> LoadAsync(JsonReader reader, CancellationToken cancellationToken = default);
+        //
+        // 摘要:
+        //     Asynchronously loads a Newtonsoft.Json.Linq.JObject from a Newtonsoft.Json.JsonReader.
+        //
+        // 参数:
+        //   reader:
+        //     A Newtonsoft.Json.JsonReader that will be read for the content of the Newtonsoft.Json.Linq.JObject.
+        //
+        //   settings:
+        //     The Newtonsoft.Json.Linq.JsonLoadSettings used to load the JSON. If this is null,
+        //     default load settings will be used.
+        //
+        //   cancellationToken:
+        //     The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.
+        //
+        // 返回结果:
+        //     A System.Threading.Tasks.Task`1 that represents the asynchronous load. The System.Threading.Tasks.Task`1.Result
+        //     property returns a Newtonsoft.Json.Linq.JObject that contains the JSON that was
+        //     read from the specified Newtonsoft.Json.JsonReader.
+        [AsyncStateMachine(typeof(<LoadAsync>d__2))]
+        public static Task<JObject> LoadAsync(JsonReader reader, JsonLoadSettings? settings, CancellationToken cancellationToken = default);
+        //
+        // 摘要:
+        //     Load a Newtonsoft.Json.Linq.JObject from a string that contains JSON.
+        //
+        // 参数:
+        //   json:
+        //     A System.String that contains JSON.
+        //
+        //   settings:
+        //     The Newtonsoft.Json.Linq.JsonLoadSettings used to load the JSON. If this is null,
+        //     default load settings will be used.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject populated from the string that contains JSON.
+        //
+        // 异常:
+        //   T:Newtonsoft.Json.JsonReaderException:
+        //     json is not valid JSON.
+        public static JObject Parse(string json, JsonLoadSettings? settings);
+        //
+        // 摘要:
+        //     Load a Newtonsoft.Json.Linq.JObject from a string that contains JSON.
+        //
+        // 参数:
+        //   json:
+        //     A System.String that contains JSON.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JObject populated from the string that contains JSON.
+        //
+        // 异常:
+        //   T:Newtonsoft.Json.JsonReaderException:
+        //     json is not valid JSON.
+        public static JObject Parse(string json);
+        //
+        // 摘要:
+        //     Adds the specified property name.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        //   value:
+        //     The value.
+        public void Add(string propertyName, JToken? value);
+        //
+        // 摘要:
+        //     Determines whether the JSON object has the specified property name.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        // 返回结果:
+        //     true if the JSON object has the specified property name; otherwise, false.
+        public bool ContainsKey(string propertyName);
+        //
+        // 摘要:
+        //     Returns an enumerator that can be used to iterate through the collection.
+        //
+        // 返回结果:
+        //     A System.Collections.Generic.IEnumerator`1 that can be used to iterate through
+        //     the collection.
+        [IteratorStateMachine(typeof(<GetEnumerator>d__63))]
+        public IEnumerator<KeyValuePair<string, JToken?>> GetEnumerator();
+        //
+        // 摘要:
+        //     Gets the Newtonsoft.Json.Linq.JToken with the specified property name. The exact
+        //     property name will be searched for first and if no matching property is found
+        //     then the System.StringComparison will be used to match a property.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        //   comparison:
+        //     One of the enumeration values that specifies how the strings will be compared.
+        //
+        // 返回结果:
+        //     The Newtonsoft.Json.Linq.JToken with the specified property name.
+        public JToken? GetValue(string? propertyName, StringComparison comparison);
+        //
+        // 摘要:
+        //     Gets the Newtonsoft.Json.Linq.JToken with the specified property name.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        // 返回结果:
+        //     The Newtonsoft.Json.Linq.JToken with the specified property name.
+        public JToken? GetValue(string? propertyName);
+        //
+        // 摘要:
+        //     Gets an System.Collections.Generic.IEnumerable`1 of Newtonsoft.Json.Linq.JProperty
+        //     of this object's properties.
+        //
+        // 返回结果:
+        //     An System.Collections.Generic.IEnumerable`1 of Newtonsoft.Json.Linq.JProperty
+        //     of this object's properties.
+        public IEnumerable<JProperty> Properties();
+        //
+        // 摘要:
+        //     Gets the Newtonsoft.Json.Linq.JProperty with the specified name. The exact name
+        //     will be searched for first and if no matching property is found then the System.StringComparison
+        //     will be used to match a property.
+        //
+        // 参数:
+        //   name:
+        //     The property name.
+        //
+        //   comparison:
+        //     One of the enumeration values that specifies how the strings will be compared.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JProperty matched with the specified name or null.
+        public JProperty? Property(string name, StringComparison comparison);
+        //
+        // 摘要:
+        //     Gets a Newtonsoft.Json.Linq.JProperty with the specified name.
+        //
+        // 参数:
+        //   name:
+        //     The property name.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JProperty with the specified name or null.
+        public JProperty? Property(string name);
+        //
+        // 摘要:
+        //     Gets a Newtonsoft.Json.Linq.JEnumerable`1 of Newtonsoft.Json.Linq.JToken of this
+        //     object's property values.
+        //
+        // 返回结果:
+        //     A Newtonsoft.Json.Linq.JEnumerable`1 of Newtonsoft.Json.Linq.JToken of this object's
+        //     property values.
+        public JEnumerable<JToken> PropertyValues();
+        //
+        // 摘要:
+        //     Removes the property with the specified name.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        // 返回结果:
+        //     true if item was successfully removed; otherwise, false.
+        public bool Remove(string propertyName);
+        //
+        // 摘要:
+        //     Tries to get the Newtonsoft.Json.Linq.JToken with the specified property name.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        //   value:
+        //     The value.
+        //
+        // 返回结果:
+        //     true if a value was successfully retrieved; otherwise, false.
+        public bool TryGetValue(string propertyName, [NotNullWhen(true)] out JToken? value);
+        //
+        // 摘要:
+        //     Tries to get the Newtonsoft.Json.Linq.JToken with the specified property name.
+        //     The exact property name will be searched for first and if no matching property
+        //     is found then the System.StringComparison will be used to match a property.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        //
+        //   value:
+        //     The value.
+        //
+        //   comparison:
+        //     One of the enumeration values that specifies how the strings will be compared.
+        //
+        // 返回结果:
+        //     true if a value was successfully retrieved; otherwise, false.
+        public bool TryGetValue(string propertyName, StringComparison comparison, [NotNullWhen(true)] out JToken? value);
+        //
+        // 摘要:
+        //     Writes this token to a Newtonsoft.Json.JsonWriter.
+        //
+        // 参数:
+        //   writer:
+        //     A Newtonsoft.Json.JsonWriter into which this method will write.
+        //
+        //   converters:
+        //     A collection of Newtonsoft.Json.JsonConverter which will be used when writing
+        //     the token.
+        public override void WriteTo(JsonWriter writer, params JsonConverter[] converters);
+        //
+        // 摘要:
+        //     Writes this token to a Newtonsoft.Json.JsonWriter asynchronously.
+        //
+        // 参数:
+        //   writer:
+        //     A Newtonsoft.Json.JsonWriter into which this method will write.
+        //
+        //   cancellationToken:
+        //     The token to monitor for cancellation requests.
+        //
+        //   converters:
+        //     A collection of Newtonsoft.Json.JsonConverter which will be used when writing
+        //     the token.
+        //
+        // 返回结果:
+        //     A System.Threading.Tasks.Task that represents the asynchronous write operation.
+        public override Task WriteToAsync(JsonWriter writer, CancellationToken cancellationToken, params JsonConverter[] converters);
+        //
+        // 摘要:
+        //     Returns the System.Dynamic.DynamicMetaObject responsible for binding operations
+        //     performed on this object.
+        //
+        // 参数:
+        //   parameter:
+        //     The expression tree representation of the runtime value.
+        //
+        // 返回结果:
+        //     The System.Dynamic.DynamicMetaObject to bind this object.
+        protected override DynamicMetaObject GetMetaObject(Expression parameter);
+        //
+        // 摘要:
+        //     Raises the Newtonsoft.Json.Linq.JObject.PropertyChanged event with the provided
+        //     arguments.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        protected virtual void OnPropertyChanged(string propertyName);
+        //
+        // 摘要:
+        //     Raises the Newtonsoft.Json.Linq.JObject.PropertyChanging event with the provided
+        //     arguments.
+        //
+        // 参数:
+        //   propertyName:
+        //     Name of the property.
+        protected virtual void OnPropertyChanging(string propertyName);
+    }
+}

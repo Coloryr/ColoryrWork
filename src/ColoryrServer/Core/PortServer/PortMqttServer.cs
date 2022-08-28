@@ -3,6 +3,7 @@ using ColoryrServer.SDK;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
+using System;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Cryptography;
@@ -97,14 +98,17 @@ internal static class PortMqttServer
     private static async void Stop()
         => await MqttServer.StopAsync();
 
-    public static async void Send(string Topic, string data, MqttQualityOfServiceLevel level)
+    public static Task Send(string topic, string data, string id, MqttQualityOfServiceLevel level)
     {
-        await MqttServer.InjectApplicationMessage(
+        return MqttServer.InjectApplicationMessage(
             new InjectedMqttApplicationMessage(new()
             {
-                Topic = Topic,
+                Topic = topic,
                 Payload = Encoding.UTF8.GetBytes(data),
                 QualityOfServiceLevel = level
-            }));
+            })
+            {
+                SenderClientId = id
+            });
     }
 }

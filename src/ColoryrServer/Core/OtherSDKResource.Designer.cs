@@ -115,6 +115,135 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
+        ///   查找类似 #region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+        ///// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+        ///#endregion
+        ///
+        ///#nullable enable
+        ///
+        ///using System;
+        ///using System.Collections;
+        ///using System.Collections.Generic;
+        ///using System.ComponentModel;
+        ///using System.Diagnostics.CodeAnalysis;
+        ///using System.Dynamic;
+        ///using System.Linq.Expressions;
+        ///using System.Reflection;
+        ///using System.Runtime.CompilerServices;
+        ///using System.Threa [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string JsonDll {
+            get {
+                return ResourceManager.GetString("JsonDll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+        ///// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+        ///#endregion
+        ///
+        ///#nullable enable
+        ///
+        ///using System;
+        ///using System.Collections;
+        ///using System.Collections.Generic;
+        ///using System.Dynamic;
+        ///using System.Linq.Expressions;
+        ///using System.Reflection;
+        ///using System.Runtime.CompilerServices;
+        ///using System.Threading;
+        ///using System.Threading.Tasks;
+        ///
+        ///namespace Newtonsoft.Json.Linq [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string JsonDll1 {
+            get {
+                return ResourceManager.GetString("JsonDll1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+        ///// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+        ///#endregion
+        ///
+        ///#nullable enable
+        ///
+        ///using System.Collections;
+        ///using System.Collections.Generic;
+        ///using System.Collections.Specialized;
+        ///using System.ComponentModel;
+        ///
+        ///namespace Newtonsoft.Json.Linq
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     Represents a token that can contain other tokens.
+        ///    public abstract class JContainer [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string JsonDll2 {
+            get {
+                return ResourceManager.GetString("JsonDll2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+        ///// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+        ///#endregion
+        ///
+        ///#nullable enable
+        ///
+        ///using System.Collections;
+        ///using System.Collections.Generic;
+        ///using System.Reflection;
+        ///using System.Runtime.CompilerServices;
+        ///using System.Threading;
+        ///using System.Threading.Tasks;
+        ///
+        ///namespace Newtonsoft.Json.Linq
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     Represents a JSON array.
+        ///    [Def [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string JsonDll3 {
+            get {
+                return ResourceManager.GetString("JsonDll3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #region 程序集 Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed
+        ///// C:\Users\40206\.nuget\packages\newtonsoft.json\13.0.2-beta1\lib\net6.0\Newtonsoft.Json.dll
+        ///#endregion
+        ///
+        ///#nullable enable
+        ///
+        ///using System;
+        ///using System.Diagnostics;
+        ///using System.Xml;
+        ///using System.Xml.Linq;
+        ///
+        ///namespace Newtonsoft.Json
+        ///{
+        ///    //
+        ///    // 摘要:
+        ///    //     Provides methods for converting between .NET types and JSON types.
+        ///    public static class JsonConvert
+        ///    {
+        ///        //
+        ///        // 摘要: [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string JsonDll4 {
+            get {
+                return ResourceManager.GetString("JsonDll4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 // Licensed to the .NET Foundation under one or more agreements.
         ///// The .NET Foundation licenses this file to you under the MIT license.
         ///// See the LICENSE file in the project root for more information.

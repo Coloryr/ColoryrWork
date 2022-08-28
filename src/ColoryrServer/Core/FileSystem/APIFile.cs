@@ -11,15 +11,15 @@ internal static class APIFile
         list.List.Add("ColoryrSDK", SDKResource.ColoryrSDK);
         list.List.Add("DatabaseSDK", SDKResource.DatabaseSDK);
         list.List.Add("HtmlSDK", SDKResource.HtmlSDK);
-        list.List.Add("HttpSDK", SDKResource.HttpSDK);
-        list.List.Add("SocketSDK", SDKResource.SocketSDK);
-        list.List.Add("RobotSDK", SDKResource.RobotSDK);
-        list.List.Add("WebSocketSDK", SDKResource.WebSocketSDK);
-        list.List.Add("TaskSDK", SDKResource.TaskSDK);
+        list.List.Add("MqttSDK", SDKResource.MqttSDK);
         list.List.Add("NotesSDK", SDKResource.NotesSDK);
         list.List.Add("RobotPacks", SDKResource.RobotPacks);
-        list.List.Add("MqttSDK", SDKResource.MqttSDK);
+        list.List.Add("RobotSDK", SDKResource.RobotSDK);
+        list.List.Add("SocketSDK", SDKResource.SocketSDK);
+        list.List.Add("TaskSDK", SDKResource.TaskSDK);
+        list.List.Add("WebApiSDK", SDKResource.WebApiSDK);
         list.List.Add("WebHtmlSDK", SDKResource.WebHtmlSDK);
+        list.List.Add("WebSocketSDK", SDKResource.WebSocketSDK);
 
         list.List.Add("MysqlDll", OtherSDKResource.MysqlDll);
         list.List.Add("SqlClientDll", OtherSDKResource.SqlClientDll);
@@ -43,5 +43,10 @@ internal static class APIFile
         list.List.Add("MqttDll12", OtherSDKResource.MqttDll12);
         list.List.Add("MqttDll13", OtherSDKResource.MqttDll13);
         list.List.Add("MqttDll14", OtherSDKResource.MqttDll14);
+        list.List.Add("JsonDll", OtherSDKResource.JsonDll);
+        list.List.Add("JsonDll1", OtherSDKResource.JsonDll1);
+        list.List.Add("JsonDll2", OtherSDKResource.JsonDll2);
+        list.List.Add("JsonDll3", OtherSDKResource.JsonDll3);
+        list.List.Add("JsonDll4", OtherSDKResource.JsonDll4);
     }
 }

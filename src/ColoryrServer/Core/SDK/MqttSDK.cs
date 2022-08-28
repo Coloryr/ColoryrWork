@@ -1,6 +1,8 @@
-﻿using ColoryrServer.Core.PortServer;
+﻿using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.PortServer;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
+using System;
 
 namespace ColoryrServer.SDK;
 
@@ -11,8 +13,22 @@ public static class MqttSDK
     /// </summary>
     /// <param name="topic">标题</param>
     /// <param name="data">数据</param>
-    public static void Send(string topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
-        => PortMqttServer.Send(topic, data, level);
+    public static void Send(string topic, string data, string id = "ColoryrServer", 
+        MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        => PortMqttServer.Send(topic, data, id, level).Wait();
+
+    public static void SendAsync(string topic, string data, string id = "ColoryrServer",
+        MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+    {
+        try
+        {
+            PortMqttServer.Send(topic, data, id, level);
+        }
+        catch (Exception e)
+        {
+            DllRunLog.PutError("ColoryrServer", e.ToString());
+        }
+    }
 }
 
 public class DllMqttLoadingRetainedMessages

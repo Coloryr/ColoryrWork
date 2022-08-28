@@ -124,6 +124,21 @@
   <data name="HtmlDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\HtmlDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="JsonDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\jsondll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JsonDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\jsondll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JsonDll2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\jsondll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JsonDll3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\jsondll3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JsonDll4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\othersdk\jsondll4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="MqttDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MqttDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
