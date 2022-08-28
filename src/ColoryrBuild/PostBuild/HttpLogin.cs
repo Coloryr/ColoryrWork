@@ -22,7 +22,7 @@ public partial class HttpBuild : HttpUtilsBase
             var item2 = obj["Message"].ToString();
             if (item1 == "False" && item2 == "233")
             {
-                _ = new InfoWindow("自动登录", "自动登录失效");
+                _ = new InfoWindow("登录失效", "登录失效");
                 App.Login();
                 return false;
             }

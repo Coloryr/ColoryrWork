@@ -25,7 +25,7 @@ internal static class PostUser
     public static ReMessage Add(BuildOBJ obj)
     {
         string user = obj.Code;
-        string password = obj.Text;
+        string password = obj.Text.ToLower();
         var res = LoginSave.AddUser(user.ToLower(), password);
         if (!res)
         {

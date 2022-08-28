@@ -14,9 +14,17 @@ public static class PostBuild
 {
     public static object StartBuild(BuildOBJ json)
     {
+        if (json == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = "参数错误"
+            };
+        }
         if (json.Mode == PostBuildType.Login)
         {
-            if (json.Code == null)
+            if (json.Code == null || json.User == null)
             {
                 return new ReMessage
                 {
@@ -43,9 +51,17 @@ public static class PostBuild
         }
         else if (json.Mode == PostBuildType.Check)
         {
+            if (json.User == null || json.Token == null)
+            {
+                return new ReMessage
+                {
+                    Build = false,
+                    Message = "自动登录"
+                };
+            }
             return new ReMessage
             {
-                Build = LoginSave.CheckLogin(json.User.ToLower(), json.UUID.ToLower()),
+                Build = LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()),
                 Message = "自动登录"
             };
         }
@@ -129,7 +145,11 @@ public static class PostBuild
         }
         else
         {
-            return HttpReturnSave.Res404;
+            return new ReMessage
+            {
+                Build = false,
+                Message = "233"
+            };
         }
     }
 }

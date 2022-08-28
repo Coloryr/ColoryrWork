@@ -96,6 +96,8 @@ internal static class LoginSave
             return false;
         sql.Execute("DELETE FROM user WHERE user = @user",
             new { user });
+        sql.Execute("DELETE FROM login WHERE user = @user",
+            new { user });
         return true;
     }
 

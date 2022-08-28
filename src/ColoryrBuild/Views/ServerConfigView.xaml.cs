@@ -396,6 +396,8 @@ public partial class ServerConfigView : UserControl
             _ = new InfoWindow("删除用户", res.Message);
             return;
         }
+
+        UserList.Items.Remove(item);
     }
 
     private void DeleteRobotClick(object sender, RoutedEventArgs e)

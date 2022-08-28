@@ -318,7 +318,7 @@ public partial class HttpBuild : HttpUtilsBase
             return null;
         if (!CheckLogin(data))
         {
-            await GetAllUser();
+            return await GetAllUser();
         }
         return JsonConvert.DeserializeObject<UserList>(data);
     }
@@ -343,7 +343,7 @@ public partial class HttpBuild : HttpUtilsBase
             return null;
         if (!CheckLogin(data))
         {
-            await AddUser(user, password);
+            return await AddUser(user, password);
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }
@@ -365,7 +365,7 @@ public partial class HttpBuild : HttpUtilsBase
             return null;
         if (!CheckLogin(data))
         {
-            await RemoveUser(user);
+            return await RemoveUser(user);
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }
