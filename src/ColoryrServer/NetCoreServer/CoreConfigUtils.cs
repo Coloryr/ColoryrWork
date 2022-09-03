@@ -105,8 +105,7 @@ internal class CoreConfigUtils : ConfigUtil
                 {
                     IP = "127.0.0.1",
                     Port = 23333
-                },
-                Packs = new()
+                }
             },
             Mysql = new()
             {

@@ -1,4 +1,4 @@
-using ColoryrServer.Core.WebSocket;
+using ColoryrServer.Core.PortServer;
 using Fleck;
 
 namespace ColoryrServer.SDK;
@@ -11,11 +11,11 @@ public static class WebSocketUtils
     /// <param name="info">接口</param>
     /// <param name="data">数据</param>
     public static void Send(IWebSocketConnectionInfo info, string data)
-        => ServerWebSocket.Send(info.ClientPort, data);
+        => PortWebSocket.Send(info.ClientPort, data);
     public static void Send(IWebSocketConnectionInfo info, byte[] data)
-        => ServerWebSocket.Send(info.ClientPort, data);
+        => PortWebSocket.Send(info.ClientPort, data);
     public static void Close(IWebSocketConnectionInfo info)
-        => ServerWebSocket.Close(info.ClientPort);
+        => PortWebSocket.Close(info.ClientPort);
 }
 
 public class WebSocketMessage

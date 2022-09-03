@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN]
+[SocketIN]
 public class {name}
 {
     public bool OnTcpMessage(TcpSocketRequest head)

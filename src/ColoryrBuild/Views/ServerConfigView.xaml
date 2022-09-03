@@ -304,37 +304,6 @@
             </TabItem>
             <TabItem Header="机器人设置" Style="{StaticResource TabItem}">
                 <StackPanel>
-                    <GroupBox
-                        Margin="2"
-                        VerticalAlignment="Top"
-                        Header="事件订阅设置">
-                        <Grid>
-                            <ListView
-                                Name="RobotEventList"
-                                Height="120"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource ListViewStyle1}">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn
-                                            Width="100"
-                                            DisplayMemberBinding="{Binding ID}"
-                                            Header="事件ID" />
-                                        <GridViewColumn
-                                            Width="300"
-                                            DisplayMemberBinding="{Binding Name}"
-                                            Header="事件名字" />
-                                    </GridView>
-                                </ListView.View>
-                                <ListView.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Click="AddRobotClick" Header="添加" />
-                                        <MenuItem Click="DeleteRobotClick" Header="删除" />
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-                            </ListView>
-                        </Grid>
-                    </GroupBox>
                     <Grid>
                         <Label
                             Width="50"

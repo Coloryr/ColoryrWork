@@ -44,6 +44,9 @@ public static class RobotUtils
                 var pack9 = data as StrangerMessagePostSendEventPack;
                 DllRun.RobotGo(new RobotSend(RobotSend.MessageType.stranger, pack9.qq, pack9.id, 0, pack9.res, pack9.error, pack9.message, Robot));
                 break;
+            default:
+                DllRun.RobotGo(new RobotEvent(type, data as PackBase, Robot));
+                break;
         }
     }
 
@@ -64,7 +67,7 @@ public static class RobotUtils
             IP = ServerMain.Config.Robot.Socket.IP,
             Port = ServerMain.Config.Robot.Socket.Port,
             Name = "ColoryrServer",
-            Pack = new() { 21, 28, 47, 49, 50, 51, 116, 123 },
+            Pack = new() {  },
             RunQQ = 0,
             Time = 10000,
             Check = true,
@@ -72,13 +75,6 @@ public static class RobotUtils
             LogAction = Log,
             StateAction = State
         };
-
-        foreach (var item in ServerMain.Config.Robot.Packs)
-        {
-            byte temp = (byte)item;
-            if (!config.Pack.Contains(temp))
-                config.Pack.Add(temp);
-        }
 
         Robot = new();
         Robot.Set(config);

@@ -113,10 +113,6 @@ public record RebotConfigObj
     /// 连接端口
     /// </summary>
     public SocketConfig Socket { get; set; }
-    /// <summary>
-    /// 订阅的包
-    /// </summary>
-    public List<int> Packs { get; set; }
 }
 
 public record AESConfig

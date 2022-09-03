@@ -1,7 +1,7 @@
 # [ColoryrWork](https://github.com/Coloryr/ColoryrWork) 
 ![ico](./ColoryrWork.png)  
 
-**2.0.0版本制作正在进行中**  
+一个应用型服务框架
 
 ## ColoryrServer  
 在线动态编译.多功能.应用服务器框架  
@@ -15,7 +15,6 @@
 - 自带`Http\WebSocket\Socket\Mqtt\Netty`支持
 - 可以添加`Ssl证书`
 - 可以对接[ColorMirai](https://github.com/Coloryr/ColorMirai)QQ机器人
-- 占用内存极少
 - 可以配置端口反向代理和域名反向代理
 - 业务代码修改无需重启
 - 可以自己添加DLL库，并在代码文件中调用

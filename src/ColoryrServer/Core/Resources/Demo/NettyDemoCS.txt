@@ -7,7 +7,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels.Sockets;
 using System.Security.Cryptography.X509Certificates;
 
-[DLLIN]
+[SocketIN(true)]
 public class {name} : INetty
 {
     private IChannel bootstrapChannel;
@@ -31,7 +31,7 @@ public class {name} : INetty
                 pipeline.AddLast(new LoggingHandler("CONN"));
                 pipeline.AddLast(new DiscardServerHandler());
             }));
-
+        //TODO port
         bootstrapChannel = bootstrap.BindAsync(port).Result;
     }
 

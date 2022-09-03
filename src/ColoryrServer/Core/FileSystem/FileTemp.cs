@@ -39,6 +39,10 @@ internal static class FileLoad
                 Stream.Read(outputdata, 0, outputdata.Length);
                 return outputdata;
             }
+            catch (FileNotFoundException e2)
+            {
+                throw new ErrorDump("读取文件找不到", e2);
+            }
             catch (Exception e1)
             {
                 e = e1;

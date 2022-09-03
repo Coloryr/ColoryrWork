@@ -1,8 +1,8 @@
 using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
-using ColoryrServer.Core.WebSocket;
 using DotNetty.Transport.Channels;
 using Fleck;
 using Newtonsoft.Json;
@@ -179,7 +179,7 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv, 
+    public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
@@ -219,12 +219,12 @@ public partial class EnCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv, 
+    public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rDel = Aes.Create();
@@ -270,12 +270,12 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES128(byte[] data, string key, string iv, 
+    public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES128(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES128(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES128(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();
@@ -309,12 +309,12 @@ public partial class DeCode
     /// <param name="iv">盐</param>
     /// <param name="mode">填充模式</param>
     /// <returns>解密后的数据</returns>
-    public static byte[] AES256(byte[] data, string key, string iv, 
+    public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         return AES256(data, Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(iv), mode);
     }
-    public static byte[] AES256(byte[] data, byte[] key, byte[] iv, 
+    public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
         using var rijalg = Aes.Create();
@@ -557,7 +557,7 @@ public partial class Tools
     /// <param name="id">客户端ID</param>
     /// <returns>是否在线</returns>
     public static bool WebSocketIsOnline(string id)
-        => ServerWebSocket.IsOnline(id);
+        => PortWebSocket.IsOnline(id);
     /// <summary>
     /// 获取在线的机器人
     /// </summary>
@@ -597,14 +597,14 @@ public partial class Tools
     /// <param name="uuid">客户端UUID</param>
     /// <returns>WebSocket客户端</returns>
     public static IWebSocketConnection GetWebSocket(Guid uuid)
-        => ServerWebSocket.Get(uuid);
+        => PortWebSocket.Get(uuid);
     /// <summary>
     /// 获取一个WebSocket客户端
     /// </summary>
     /// <param name="port">端口</param>
     /// <returns>WebSocket客户端</returns>
     public static IWebSocketConnection GetWebSocket(int port)
-        => ServerWebSocket.Get(port);
+        => PortWebSocket.Get(port);
 }
 public partial class FileLoad
 {
@@ -614,23 +614,24 @@ public partial class FileLoad
     /// <param name="filename">文件名</param>
     /// <returns>文件里面的字符串</returns>
     public static string LoadString(string filename, bool isTemp = true)
-        => FileTemp.LoadString(filename, isTemp);
+        => Core.FileSystem.FileLoad.LoadString(filename, isTemp);
     /// <summary>
     /// 读一个文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件二进制</returns>
     public static byte[] LoadBytes(string filename, bool isTemp = true)
-        => FileTemp.LoadBytes(filename, isTemp);
+        => Core.FileSystem.FileLoad.LoadBytes(filename, isTemp);
     /// <summary>
     /// 开始文件流
     /// </summary>
     /// <param name="http">请求数据</param>
     /// <param name="local">文件夹</param>
-    /// <param name="name">文件名</param>
+    /// <param name="contentType">返回体类型</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local, string name)
-        => FileHttpStream.StartStream(http, local, name);
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local, 
+        string contentType = ServerContentType.TXT)
+        => FileHttpStream.StartStream(http, local, contentType);
 }
 public partial class ErrorDump : Exception
 {

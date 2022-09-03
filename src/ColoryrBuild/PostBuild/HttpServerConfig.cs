@@ -265,7 +265,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="port">端口</param>
     /// <param name="packs">订阅的包</param>
     /// <returns></returns>
-    public async Task<ReMessage> SetRobotConfig(string ip, int port, List<int> packs)
+    public async Task<ReMessage> SetRobotConfig(string ip, int port)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -273,14 +273,13 @@ public partial class HttpBuild : HttpUtilsBase
             Token = App.Config.Token,
             Mode = PostBuildType.ConfigSetRobot,
             Code = ip,
-            Version = port,
-            Text = JsonConvert.SerializeObject(packs)
+            Version = port
         });
         if (data == null)
             return null;
         if (!CheckLogin(data))
         {
-            return await SetRobotConfig(ip, port, packs);
+            return await SetRobotConfig(ip, port);
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }

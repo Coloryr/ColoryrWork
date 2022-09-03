@@ -19,10 +19,10 @@ internal static class LoadRobot
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var assembly = new DllAssembly(CodeType.Robot, uuid);
+        var assembly = new RobotDllAssembly(CodeType.Robot, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<RobotIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ
@@ -32,10 +32,12 @@ internal static class LoadRobot
             };
 
         assembly.SelfType = list.First();
+        var arg = assembly.SelfType.GetCustomAttribute<RobotIN>(true);
+        assembly.SetPack(arg.Event);
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend && item.IsPublic)
+            if ((item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend) && item.IsPublic)
                 assembly.MethodInfos.Add(item.Name, item);
         }
 

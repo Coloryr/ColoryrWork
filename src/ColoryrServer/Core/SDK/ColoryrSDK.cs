@@ -627,10 +627,11 @@ public partial class FileLoad
     /// </summary>
     /// <param name="http">请求数据</param>
     /// <param name="local">文件夹</param>
-    /// <param name="name">文件名</param>
+    /// <param name="contentType">返回体类型</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local)
-        => FileHttpStream.StartStream(http, local);
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local, 
+        string contentType = ServerContentType.TXT)
+        => FileHttpStream.StartStream(http, local, contentType);
 }
 public partial class ErrorDump : Exception
 {

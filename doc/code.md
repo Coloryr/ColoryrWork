@@ -1,5 +1,7 @@
 # ColoryrServer
-## 业务代码编写
+
+业务代码编写
+
 [返回](../README.md)
 
 **默认的账户密码均为`Admin`**
@@ -19,6 +21,8 @@
 [Task代码编写](./code/task.md)
 
 [网页代码编写](./code/web.md)
+
+[势力代码编写](./code/demo.md)
 
 ## 软路由
 

@@ -264,6 +264,133 @@ public partial class MSsql
     }
 }
 
+public partial class Sqlite
+{
+    private string Database;
+    private int ID;
+    /// <summary>
+    /// Sqlite数据库
+    /// </summary>
+    /// <param name="database">数据库名</param>
+    /// <param name="id">数据库ID</param>
+    public Sqlite(string database = "", int id = 0)
+    {
+        ID = id;
+        Database = database;
+        if (!SqliteCon.Contains(id))
+            throw new ErrorDump($"没有Sqlite数据库{id}");
+    }
+
+    /// <summary>
+    /// 执行查询
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>返回的数据</returns>
+    public IEnumerable<dynamic> Query(string sql, object arg)
+    {
+        var conn = SqliteCon.GetConnection(ID);
+        conn.ChangeDatabase(Database);
+        return conn.Query(sql, arg);
+    }
+    /// <summary>
+    /// 执行查询
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>返回的数据</returns>
+    public IEnumerable<T> Query<T>(string sql, object arg)
+    {
+        var conn = SqliteCon.GetConnection(ID);
+        conn.ChangeDatabase(Database);
+        return conn.Query<T>(sql, arg);
+    }
+
+    /// <summary>
+    /// 执行语句
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>返回的数据</returns>
+    public int Execute(string sql, object arg)
+    {
+        var conn = SqliteCon.GetConnection(ID);
+        conn.ChangeDatabase(Database);
+        return conn.Execute(sql, arg);
+    }
+
+    /// <summary>
+    /// 旧版执行语句
+    /// </summary>
+    public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
+    {
+        try
+        {
+            var conn = new MySqlCommand(sql, Get());
+            if (arg != null)
+                foreach (var item in arg)
+                {
+                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                }
+            conn.Connection.Open();
+            conn.Connection.ChangeDatabase(Database);
+            MySqlDataReader reader = conn.ExecuteReader();
+            var readlist = new List<List<dynamic>>();
+            while (reader.Read())
+            {
+                var item = new List<dynamic>();
+
+                for (int b = 0; b < reader.FieldCount; b++)
+                    item.Add(reader[b]);
+                readlist.Add(item);
+            }
+            reader.Close();
+            conn.Connection.Close();
+            return readlist;
+        }
+        catch (MySqlException e)
+        {
+            throw new ErrorDump("执行sql语句出错", e);
+        }
+    }
+
+    /// <summary>
+    /// 执行sql语句
+    /// </summary>
+    /// <param name="sql">sql语句</param>
+    /// <param name="arg">参数</param>
+    /// <returns>Mysql命令语句</returns>
+    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
+    {
+        try
+        {
+            var conn = new MySqlCommand(sql, Get());
+            if (arg != null)
+                foreach (var item in arg)
+                {
+                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
+                }
+            conn.Connection.Open();
+            conn.Connection.ChangeDatabase(Database);
+            conn.ExecuteNonQuery();
+            conn.Connection.Close();
+            return conn;
+        }
+        catch (MySqlException e)
+        {
+            throw new ErrorDump("执行sql语句出错", e);
+        }
+    }
+
+    /// <summary>
+    /// 获取一个数据库链接
+    /// </summary>
+    /// <returns>链接</returns>
+    public MySqlConnection Get()
+    {
+        return MysqlCon.GetConnection(ID);
+    }
+}
 public partial class Oracle
 {
     private string Database;

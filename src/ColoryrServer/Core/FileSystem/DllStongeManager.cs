@@ -19,9 +19,9 @@ public static class DllStongeManager
 {
     private static readonly ConcurrentDictionary<string, DllAssembly> MapDll = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapClass = new();
-    private static readonly ConcurrentDictionary<string, DllAssembly> MapSocket = new();
+    private static readonly ConcurrentDictionary<string, SocketDllAssembly> MapSocket = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapWebSocket = new();
-    private static readonly ConcurrentDictionary<string, DllAssembly> MapRobot = new();
+    private static readonly ConcurrentDictionary<string, RobotDllAssembly> MapRobot = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapMqtt = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapTask = new();
 
@@ -174,7 +174,7 @@ public static class DllStongeManager
             return null;
     }
 
-    public static void AddSocket(string uuid, DllAssembly save)
+    public static void AddSocket(string uuid, SocketDllAssembly save)
     {
         PortNettyManager.StopItem(uuid);
         if (MapSocket.ContainsKey(uuid))
@@ -194,7 +194,8 @@ public static class DllStongeManager
             MapSocket.TryAdd(uuid, save);
         }
 
-        PortNettyManager.AddItem(save);
+        if (save.Netty)
+            PortNettyManager.AddItem(save);
     }
     public static void RemoveSocket(string uuid)
     {
@@ -206,9 +207,9 @@ public static class DllStongeManager
         }
         RemoveAll(LocalSocket + uuid);
     }
-    public static List<DllAssembly> GetSocket()
+    public static List<SocketDllAssembly> GetSocket()
     {
-        return new List<DllAssembly>(MapSocket.Values);
+        return new List<SocketDllAssembly>(MapSocket.Values);
     }
 
     public static void AddWebSocket(string uuid, DllAssembly save)
@@ -245,7 +246,7 @@ public static class DllStongeManager
         return new List<DllAssembly>(MapWebSocket.Values);
     }
 
-    public static void AddRobot(string uuid, DllAssembly save)
+    public static void AddRobot(string uuid, RobotDllAssembly save)
     {
         if (MapRobot.ContainsKey(uuid))
         {
@@ -274,9 +275,9 @@ public static class DllStongeManager
         }
         RemoveAll(LocalRobot + uuid);
     }
-    public static List<DllAssembly> GetRobot()
+    public static List<RobotDllAssembly> GetRobot()
     {
-        return new List<DllAssembly>(MapRobot.Values);
+        return new List<RobotDllAssembly>(MapRobot.Values);
     }
 
     public static void AddMqtt(string uuid, DllAssembly save)

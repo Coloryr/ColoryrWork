@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System;
 
 namespace ColoryrServer.ASP;
 
@@ -22,7 +23,7 @@ public static class HttpClientUtils
             do
             {
                 bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                await dest.WriteAsync(buffer, 0, bytesCopied, cancellationToken).ConfigureAwait(false);
+                await dest.WriteAsync(buffer.AsMemory(0, bytesCopied), cancellationToken).ConfigureAwait(false);
                 totalBytes += bytesCopied;
             } while (bytesCopied > 0);
         }

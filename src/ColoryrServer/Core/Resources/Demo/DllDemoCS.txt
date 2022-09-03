@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_{name}
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]

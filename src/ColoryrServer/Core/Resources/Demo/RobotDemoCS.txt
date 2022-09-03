@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN]
+[RobotIN(new int[] {})] //在这里添加更多订阅的事件
 public class {name}
 {
     public bool OnMessage(RobotMessage head)
@@ -11,6 +11,7 @@ public class {name}
     {
         return false;
     }
+    //这里是更多事件的回调
     public bool OnRobotEvent(RobotEvent head)
     {
         return false;

@@ -9,7 +9,7 @@ using DotNetty.Transport.Channels.Sockets;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
-[DLLIN]
+[DllIN]
 public class NettyDemoCS : INetty
 {
     private IChannel bootstrapChannel;
