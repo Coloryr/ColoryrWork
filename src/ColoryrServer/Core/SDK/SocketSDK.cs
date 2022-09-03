@@ -36,7 +36,7 @@ public partial class TcpSocketRequest
     /// <param name="Data">字符串</param>
     public void Send(string Data)
         => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
-    public void Send(IPEndPoint Port, string data)
+    public static void Send(IPEndPoint Port, string data)
         => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(data));
     /// <summary>
     /// 向Socket设备发送数据
@@ -44,7 +44,7 @@ public partial class TcpSocketRequest
     /// <param name="data">数据</param>
     public void Send(byte[] data)
         => PortSocketServer.TcpSendData(Port, data);
-    public void Send(IPEndPoint port, byte[] data)
+    public static void Send(IPEndPoint port, byte[] data)
        => PortSocketServer.TcpSendData(port, data);
 }
 public partial class UdpSocketRequest
@@ -78,7 +78,7 @@ public partial class UdpSocketRequest
     /// <param name="data">字符串</param>
     public void Send(string data)
         => PortSocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(data));
-    public void Send(IPEndPoint port, string Data)
+    public static void Send(IPEndPoint port, string Data)
         => PortSocketServer.UdpSendData(port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
     /// 向Socket设备发送数据
@@ -86,7 +86,7 @@ public partial class UdpSocketRequest
     /// <param name="data">数据</param>
     public void Send(byte[] data)
        => PortSocketServer.UdpSendData(Port, data);
-    public void Send(IPEndPoint port, byte[] data)
+    public static void Send(IPEndPoint port, byte[] data)
        => PortSocketServer.UdpSendData(port, data);
 }
 

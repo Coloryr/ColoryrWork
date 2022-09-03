@@ -23,7 +23,7 @@ internal static class LoadDll
         var assembly = new DllAssembly(CodeType.Dll, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First().GetTypes()
-                       .Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .Where(x => x.GetCustomAttribute<DllIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ
@@ -33,7 +33,7 @@ internal static class LoadDll
             };
 
         assembly.SelfType = list.First();
-        var attr = assembly.SelfType.GetCustomAttribute<DLLIN>(true);
+        var attr = assembly.SelfType.GetCustomAttribute<DllIN>(true);
         assembly.Debug = attr.Debug;
 
         foreach (var item in assembly.SelfType.GetMethods())

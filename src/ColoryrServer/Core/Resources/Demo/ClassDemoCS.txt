@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN]
+[ClassIN]
 public class {name}
 {
     public {name}()
@@ -8,7 +8,7 @@ public class {name}
              
     }
 
-    public string getString(string data)
+    public string GetString(string data)
     {
         return data + "test";
     }

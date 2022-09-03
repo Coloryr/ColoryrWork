@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 
 namespace ColoryrServer.SDK;
 
@@ -18,11 +19,55 @@ public class NotesSDK : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class DLLIN : Attribute
+public class DllIN : Attribute
 {
     public bool Debug;
-    public DLLIN(bool debug = false)
+    public DllIN(bool debug = false)
     {
         Debug = debug;
     }
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class ClassIN : Attribute
+{
+
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class MqttIN : Attribute
+{
+
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class RobotIN : Attribute
+{
+    public List<int> Event = new();
+    public RobotIN(int[] list)
+    {
+        Event.AddRange(list);
+    }
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class SocketIN : Attribute
+{
+    public bool Netty;
+    public SocketIN(bool netty = false)
+    {
+        Netty = netty;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class TaskIN : Attribute
+{
+
+}
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class WebSocketIN : Attribute
+{
+
 }

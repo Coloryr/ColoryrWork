@@ -1,7 +1,7 @@
 using System;
 using ColoryrServer.SDK;
 
-[DLLIN]
+[TaskIN]
 public class {name}
 {
     public TaskRes Run(object[] args)

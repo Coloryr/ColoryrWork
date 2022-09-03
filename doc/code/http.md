@@ -1,7 +1,8 @@
 # ColoryrServer
 
-## 接口代码编写
-[返回](code.md)
+接口代码编写
+
+[返回](../code.md)
 
 默认的接口代码  
 ```C#
@@ -20,19 +21,6 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 
 该代码中包含一个[接口类](#接口类)和一个[接口函数](#接口函数)
 
-## 接口函数
-一个标准的接口函数  
-在[接口类](#接口类)中，所有的`public`函数都为接口函数
-```C#
-[NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
-public dynamic Main(HttpDllRequest http)
-{  
-    return "true";
-}
-```
-接口函数输入的参数**必须**是[ColoryrServer.SDK.HttpDllRequest](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L8)  
-并且**必须**带有[ColoryrServer.SDK.NotesSDK](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L6)的属性
-
 ## 接口类
 **必须**带有[ColoryrServer.SDK.DLLIN](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L21)的属性  
 `DLLIN`中可以设置报错是否输出到网页中去
@@ -50,6 +38,19 @@ http://{服务器基地址}/{UUID}
 ```
 http://127.0.0.1/WebApi/test
 ```
+
+## 接口函数
+一个标准的接口函数  
+在[接口类](#接口类)中，所有的`public`函数都为接口函数
+```C#
+[NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+public dynamic Main(HttpDllRequest http)
+{  
+    return "true";
+}
+```
+接口函数输入的参数**必须**是[ColoryrServer.SDK.HttpDllRequest](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L8)  
+并且**必须**带有[ColoryrServer.SDK.NotesSDK](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L6)的属性
 
 ## 子接口
 一个接口类里面可以有多个子接口  
@@ -95,51 +96,14 @@ ok
 
 ### 接口请求参数
 接口函数传入的对象为[ColoryrServer.SDK.HttpDllRequest](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L8)  
-```C#
-public class HttpDllRequest
-{
-    /// <summary>
-    /// 请求参数
-    /// </summary>
-    public Dictionary<string, dynamic> Parameter { get; init; }
-    /// <summary>
-    /// 请求头
-    /// </summary>
-    public NameValueCollection RowRequest { get; init; }
-    /// <summary>
-    /// Cookie
-    /// </summary>
-    public Dictionary<string, List<string>> Cookie { get; init; }
-    /// <summary>
-    /// 请求体类型
-    /// </summary>
-    public MyContentType ContentType { get; init; }
-    /// <summary>
-    /// 请求体流
-    /// </summary>
-    public Stream Stream { get; init; }
-    /// <summary>
-    /// 请求方法
-    /// </summary>
-    public string Method { get; init; }
 
-    /// <summary>
-    /// 获取请求数据
-    /// </summary>
-    /// <param name="arg">参数名</param>
-    /// <returns>返回</returns>
-    public dynamic Get(string arg)
-        => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
-}
-```
 ### 接口返回类型
 接口可以返回的类型可以是
 - string
-- Dictionary<string, object>
-- [ColoryrServer.SDK.HttpResponseString](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L68)
-- [ColoryrServer.SDK.HttpResponseDictionary](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L90)
-- [ColoryrServer.SDK.HttpResponseStream](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L123)
-- [ColoryrServer.SDK.HttpResponseBytes](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L139)
+- [ColoryrServer.SDK.HttpResponseString](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L98)
+- [ColoryrServer.SDK.HttpResponseDictionary](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L111)
+- [ColoryrServer.SDK.HttpResponseStream](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L144)
+- [ColoryrServer.SDK.HttpResponseBytes](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L160)
 
-其他返回类型均会报错
+返回其他类型会尝试进行JSON序列化
 

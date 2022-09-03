@@ -63,14 +63,6 @@ internal static class DllRun
                     Res = ResType.String
                 };
             }
-            else if (dllres is Dictionary<string, object>)
-            {
-                return new HttpReturn
-                {
-                    Data = dllres,
-                    Res = ResType.Json
-                };
-            }
             else if (dllres is HttpResponseString)
             {
                 var dr = dllres as HttpResponseString;
@@ -196,18 +188,18 @@ internal static class DllRun
     /// <summary>
     /// TCP数据
     /// </summary>
-    /// <param name="Head"></param>
-    public static void SocketGo(TcpSocketRequest Head)
+    /// <param name="head"></param>
+    public static void SocketGo(TcpSocketRequest head)
     {
         foreach (var dll in DllStongeManager.GetSocket())
         {
             try
             {
-                if (dll.MethodInfos.ContainsKey("Netty"))
+                if (dll.Netty)
                     continue;
                 MethodInfo mi = dll.MethodInfos[CodeDemo.SocketTcp];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var res = mi.Invoke(obj1, new object[1] { Head });
+                var res = mi.Invoke(obj1, new object[1] { head });
                 if (res is true)
                     return;
             }
@@ -233,18 +225,18 @@ internal static class DllRun
     /// <summary>
     /// UDP数据
     /// </summary>
-    /// <param name="Head"></param>
-    public static void SocketGo(UdpSocketRequest Head)
+    /// <param name="head"></param>
+    public static void SocketGo(UdpSocketRequest head)
     {
         foreach (var dll in DllStongeManager.GetSocket())
         {
             try
             {
-                if (dll.MethodInfos.ContainsKey("Netty"))
+                if (dll.Netty)
                     continue;
                 MethodInfo mi = dll.MethodInfos[CodeDemo.SocketUdp];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var res = mi.Invoke(obj1, new object[1] { Head });
+                var res = mi.Invoke(obj1, new object[1] { head });
                 if (res is true)
                     return;
             }
@@ -270,8 +262,8 @@ internal static class DllRun
     /// <summary>
     /// WebSocket数据
     /// </summary>
-    /// <param name="Head"></param>
-    public static void WebSocketGo(WebSocketMessage Head)
+    /// <param name="head"></param>
+    public static void WebSocketGo(WebSocketMessage head)
     {
         foreach (var dll in DllStongeManager.GetWebSocket())
         {
@@ -279,7 +271,7 @@ internal static class DllRun
             {
                 MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketMessage];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var res = mi.Invoke(obj1, new object[1] { Head });
+                var res = mi.Invoke(obj1, new object[1] { head });
                 if (res is true)
                     return;
             }
@@ -305,8 +297,8 @@ internal static class DllRun
     /// <summary>
     /// WebSocket链接
     /// </summary>
-    /// <param name="Head"></param>
-    public static void WebSocketGo(WebSocketOpen Head)
+    /// <param name="head"></param>
+    public static void WebSocketGo(WebSocketOpen head)
     {
         foreach (var dll in DllStongeManager.GetWebSocket())
         {
@@ -314,7 +306,7 @@ internal static class DllRun
             {
                 MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketOpen];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var res = mi.Invoke(obj1, new object[1] { Head });
+                var res = mi.Invoke(obj1, new object[1] { head });
                 if (res is true)
                     return;
             }
@@ -340,8 +332,8 @@ internal static class DllRun
     /// <summary>
     /// WebSocket断开
     /// </summary>
-    /// <param name="Head"></param>
-    public static void WebSocketGo(WebSocketClose Head)
+    /// <param name="head"></param>
+    public static void WebSocketGo(WebSocketClose head)
     {
         foreach (var dll in DllStongeManager.GetWebSocket())
         {
@@ -349,7 +341,7 @@ internal static class DllRun
             {
                 MethodInfo mi = dll.MethodInfos[CodeDemo.WebSocketClose];
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var res = mi.Invoke(obj1, new object[1] { Head });
+                var res = mi.Invoke(obj1, new object[1] { head });
                 if (res is true)
                     return;
             }
@@ -375,8 +367,8 @@ internal static class DllRun
     /// <summary>
     /// 消息请求
     /// </summary>
-    /// <param name="Head"></param>
-    public static void RobotGo(RobotMessage Head)
+    /// <param name="head"></param>
+    public static void RobotGo(RobotMessage head)
     {
         foreach (var dll in DllStongeManager.GetRobot())
         {
@@ -386,7 +378,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.RobotMessage];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -413,18 +405,18 @@ internal static class DllRun
     /// <summary>
     /// 机器人事件
     /// </summary>
-    /// <param name="Head"></param>
-    public static void RobotGo(RobotEvent Head)
+    /// <param name="head"></param>
+    public static void RobotGo(RobotEvent head)
     {
         foreach (var dll in DllStongeManager.GetRobot())
         {
             try
             {
-                if (dll.MethodInfos.ContainsKey(CodeDemo.RobotEvent))
+                if (dll.MethodInfos.ContainsKey(CodeDemo.RobotEvent) && dll.Check(head.Type))
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.RobotEvent];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -451,8 +443,8 @@ internal static class DllRun
     /// <summary>
     /// 机器人发送消息后
     /// </summary>
-    /// <param name="Head"></param>
-    public static void RobotGo(RobotSend Head)
+    /// <param name="head"></param>
+    public static void RobotGo(RobotSend head)
     {
         foreach (var dll in DllStongeManager.GetRobot())
         {
@@ -462,7 +454,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.RobotSend];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -489,8 +481,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt加载消息
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttLoadingRetainedMessages Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttLoadingRetainedMessages head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -500,7 +492,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTMessageLoading];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -527,8 +519,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt验证
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttConnectionValidator Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttConnectionValidator head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -538,7 +530,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTValidator];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -565,8 +557,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt取消订阅
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttUnsubscription Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttUnsubscription head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -576,7 +568,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTUnsubscription];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -603,8 +595,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt消息
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttMessage Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttMessage head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -614,7 +606,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTMessage];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -641,8 +633,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt订阅
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttSubscription Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttSubscription head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -652,7 +644,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTSubscription];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -679,8 +671,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt客户端链接
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttClientConnected Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttClientConnected head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -690,7 +682,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTClientConnected];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -717,8 +709,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt客户端断开链接
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttClientDisconnected Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttClientDisconnected head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -728,7 +720,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTClientDisconnected];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -755,8 +747,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt推送消息
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttInterceptingPublish Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttInterceptingPublish head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -766,7 +758,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTInterceptingPublish];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }
@@ -793,8 +785,8 @@ internal static class DllRun
     /// <summary>
     /// Mqtt推送消息
     /// </summary>
-    /// <param name="Head"></param>
-    public static void MqttGo(DllMqttRetainedMessageChanged Head)
+    /// <param name="head"></param>
+    public static void MqttGo(DllMqttRetainedMessageChanged head)
     {
         foreach (var dll in DllStongeManager.GetMqtt())
         {
@@ -804,7 +796,7 @@ internal static class DllRun
                 {
                     MethodInfo mi = dll.MethodInfos[CodeDemo.MQTTRetainedMessageChanged];
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var res = mi.Invoke(obj1, new object[1] { Head });
+                    var res = mi.Invoke(obj1, new object[1] { head });
                     if (res is true)
                         return;
                 }

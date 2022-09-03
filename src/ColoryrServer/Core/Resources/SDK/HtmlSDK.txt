@@ -7,18 +7,19 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace ColoryrServer.SDK;
 
-public partial class NewHttpHtml : IDisposable
+public partial class StaticDllHttpClient : IDisposable
 {
-    public CancellationTokenSource Cancel;
+    private readonly ExHttpClient Client;
+    private readonly Dictionary<string, string> Head;
+
+    public CancellationTokenSource Cancel { get; private set; }
     public CookieContainer Cookies { get; private set; }
 
-    private ExHttpClient Client;
-    private Dictionary<string, string> Head;
-
-    public NewHttpHtml(CookieContainer cookie = null,
+    public StaticDllHttpClient(CookieContainer cookie = null,
                 CancellationTokenSource cancel = null,
                 Dictionary<string, string> head = null)
     {
@@ -199,16 +200,17 @@ public partial class NewHttpHtml : IDisposable
         return result;
     }
 }
-public partial class HttpHtml : IDisposable
+public partial class DllHttpClient : IDisposable
 {
-    public CancellationTokenSource Cancel;
-    private HttpClient Client;
+    protected HttpClient Client;
 
-    public WebProxy proxy { get; init; }
+    public CancellationTokenSource Cancel { get; protected set; }
+    public TimeSpan Time { get; set; } = TimeSpan.FromSeconds(10);
 
-    public HttpHtml(CookieContainer cookie = null,
+    public DllHttpClient(CookieContainer cookie = null,
                 CancellationTokenSource cancel = null,
-                Dictionary<string, string> head = null)
+                Dictionary<string, string> head = null,
+                WebProxy proxy = null)
     {
         Cancel = cancel ?? new();
         cookie ??= new();
@@ -219,7 +221,7 @@ public partial class HttpHtml : IDisposable
         };
         Client = new HttpClient(HttpClientHandler)
         {
-            Timeout = TimeSpan.FromSeconds(5)
+            Timeout = Time
         };
         Client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
         if (head != null)
@@ -304,75 +306,30 @@ public partial class HttpHtml : IDisposable
     /// <returns>返回结构</returns>
     public HttpResponseMessage GetData(string url)
         => Client.GetAsync(url, Cancel.Token).Result;
-}
 
-public partial class HtmlAsync : IDisposable
-{
-    private HttpClient Http;
-    public CancellationTokenSource Cancel;
-    public CookieContainer Cookie;
-    /// <summary>
-    /// http爬虫异步
-    /// </summary>
-    /// <param name="timeOut">请求超时时间</param>
-    /// <param name="cookie">Cookie</param>
-    /// <param name="cancel">取消请求</param>
-    /// <param name="head">请求头</param>
-    public HtmlAsync(TimeSpan timeOut, CookieContainer cookie = null,
-        CancellationTokenSource cancel = null,
-        Dictionary<string, string> head = null)
-    {
-        Cookie = cookie ?? new();
-        Cancel = cancel ?? new();
-        var Handler = new HttpClientHandler()
-        {
-            CookieContainer = cookie
-        };
-        Http = new(Handler)
-        {
-            Timeout = timeOut
-        };
-        Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77");
-        if (head != null)
-        {
-            foreach (var Item in head)
-            {
-                Http.DefaultRequestHeaders.Add(Item.Key, Item.Value);
-            }
-        }
-    }
-    /// <summary>
-    /// http爬虫异步
-    /// </summary>
-    public HtmlAsync() : this(TimeSpan.FromSeconds(10)) { }
-
-    public void Dispose()
-    {
-        Http.Dispose();
-    }
     /// <summary>
     /// 获取byte
     /// </summary>
     /// <param name="url">网址</param>
     /// <returns>byte</returns>
-    public Task<byte[]> GetByte(string url)
-    => Http.GetByteArrayAsync(url, Cancel.Token);
+    public Task<byte[]> GetByteAsync(string url)
+        => Client.GetByteArrayAsync(url, Cancel.Token);
     /// <summary>
     /// 获取字符串
     /// </summary>
     /// <param name="url">网址</param>
     /// <returns>字符串</returns>
-    public Task<string> GetString(string url)
-    => Http.GetStringAsync(url, Cancel.Token);
+    public Task<string> GetStringAsync(string url)
+        => Client.GetStringAsync(url, Cancel.Token);
     /// <summary>
     /// 发送表单获取字符串
     /// </summary>
     /// <param name="url">网址</param>
     /// <param name="arg">参数</param>
     /// <returns>字符串</returns>
-    public async Task<string> PostString(string url, Dictionary<string, string> arg)
+    public async Task<string> PostStringAsync(string url, Dictionary<string, string> arg)
     {
-        var temp = await Http.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
+        var temp = await Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
         return await temp.Content.ReadAsStringAsync();
     }
     /// <summary>
@@ -380,32 +337,32 @@ public partial class HtmlAsync : IDisposable
     /// </summary>
     /// <param name="url">网址</param>
     /// <returns>解析后的html</returns>
-    public async Task<HtmlDoc> GetWebHtml(string url)
-        => new HtmlDoc(await GetString(url));
+    public async Task<HtmlDoc> GetWebHtmlAsync(string url)
+        => new HtmlDoc(await GetStringAsync(url));
     /// <summary>
     /// 发送表单获取解析后的html
     /// </summary>
     /// <param name="url">网址</param>
     /// <param name="arg">数据</param>
     /// <returns></returns>
-    public async Task<HtmlDoc> PostWebHtml(string url, Dictionary<string, string> arg)
-        => new HtmlDoc(await PostString(url, arg));
+    public async Task<HtmlDoc> PostWebHtmlAsync(string url, Dictionary<string, string> arg)
+        => new HtmlDoc(await PostStringAsync(url, arg));
     /// <summary>
     /// 进行一次http请求
     /// </summary>
     /// <param name="httpRequest">请求结构</param>
     /// <returns>返回结构</returns>
-    public async Task<HttpResponseMessage> DoString(HttpRequestMessage httpRequest)
-        => await Http.SendAsync(httpRequest, Cancel.Token);
+    public async Task<HttpResponseMessage> DoStringAsync(HttpRequestMessage httpRequest)
+        => await Client.SendAsync(httpRequest, Cancel.Token);
     /// <summary>
     /// 发送数据
     /// </summary>
     /// <param name="url">网址</param>
     /// <param name="data">数据</param>
     /// <returns>返回的字符串</returns>
-    public async Task<string> PutString(string url, byte[] data)
+    public async Task<string> PutStringAsync(string url, byte[] data)
     {
-        var temp = await Http.PutAsync(url, new ByteArrayContent(data), Cancel.Token);
+        var temp = await Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token);
         return await temp.Content.ReadAsStringAsync();
     }
     /// <summary>
@@ -414,16 +371,17 @@ public partial class HtmlAsync : IDisposable
     /// <param name="url">网址</param>
     /// <param name="arg">数据</param>
     /// <returns>返回结构</returns>
-    public async Task<HttpResponseMessage> PostData(string url, Dictionary<string, string> arg)
-        => await Http.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
+    public async Task<HttpResponseMessage> PostDataAsync(string url, Dictionary<string, string> arg)
+        => await Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
     /// <summary>
     /// Get获取数据
     /// </summary>
     /// <param name="url">网址</param>
     /// <returns>返回结构</returns>
-    public async Task<HttpResponseMessage> GetData(string url)
-        => await Http.GetAsync(url, Cancel.Token);
+    public async Task<HttpResponseMessage> GetDataAsync(string url)
+        => await Client.GetAsync(url, Cancel.Token);
 }
+
 public partial class HtmlDoc
 {
     public HtmlDocument html = new();

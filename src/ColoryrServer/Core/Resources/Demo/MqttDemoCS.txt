@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN]
+[MqttIN]
 public class {name}
 {
     public bool OnMessage(DllMqttMessage head)

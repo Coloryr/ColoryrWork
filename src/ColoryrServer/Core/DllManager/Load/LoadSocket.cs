@@ -5,6 +5,7 @@ using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 
 namespace ColoryrServer.Core.DllManager.DllLoad;
@@ -20,10 +21,10 @@ internal static class LoadSocket
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        var assembly = new DllAssembly(CodeType.Socket, uuid);
+        var assembly = new SocketDllAssembly(CodeType.Socket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<SocketIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ
@@ -33,8 +34,8 @@ internal static class LoadSocket
             };
 
         assembly.SelfType = list.First();
-
-        if (!PortNettyManager.Check(assembly.SelfType))
+        var arg = assembly.SelfType.GetCustomAttribute<SocketIN>(true);
+        if (!arg.Netty)
         {
             foreach (var item in assembly.SelfType.GetMethods())
             {
@@ -49,10 +50,7 @@ internal static class LoadSocket
                     Res = $"Socket[{uuid}]没有方法"
                 };
         }
-        else
-        {
-            assembly.MethodInfos.Add("Netty", null);
-        }
+        assembly.Netty = arg.Netty;
 
         DllStongeManager.AddSocket(uuid, assembly);
 

@@ -17,7 +17,8 @@ public static class WebBinManager
 
     public static HttpResponseStream GetStream(HttpDllRequest request, string arg)
     {
-        return FileHttpStream.StartStream(request, $"{WebBinStatic}/{arg}");
+        return FileHttpStream.StartStream(request, $"{WebBinStatic}/{arg}", 
+            ServerContentType.EndType(arg));
     }
 
     public static void Start()

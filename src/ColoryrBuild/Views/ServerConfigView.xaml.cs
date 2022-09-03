@@ -39,8 +39,6 @@ public partial class ServerConfigView : UserControl
         private SocketConfig _websocket { get; set; }
         private SocketConfig _robot { get; set; }
 
-        public List<int> Packs { get; set; }
-
         public SocketConfig Socket
         {
             get { return _socket; }
@@ -113,16 +111,6 @@ public partial class ServerConfigView : UserControl
             IP = res.IP,
             Port = res.Port
         };
-        Obj.Packs = res.Packs;
-        RobotEventList.Items.Clear();
-        foreach (var item in Obj.Packs)
-        {
-            RobotEventList.Items.Add(new EventObj()
-            {
-                ID = item,
-                Name = RobotConfigSet.PackType[item]
-            });
-        }
     }
 
     private async void GetSocketConfig()
@@ -338,21 +326,6 @@ public partial class ServerConfigView : UserControl
         HttpUrlRouteList.Items.Remove(item);
     }
 
-    private void AddRobotClick(object sender, RoutedEventArgs e)
-    {
-        int index;
-        var res = new RobotWindow(Obj.Packs).Set(out index);
-        if (!res)
-            return;
-
-        Obj.Packs.Add(index);
-        RobotEventList.Items.Add(new EventObj()
-        {
-            ID = index,
-            Name = RobotConfigSet.PackType[index]
-        });
-    }
-
     private async void AddUserClick(object sender, RoutedEventArgs e)
     {
         string user, password;
@@ -398,17 +371,6 @@ public partial class ServerConfigView : UserControl
         }
 
         UserList.Items.Remove(item);
-    }
-
-    private void DeleteRobotClick(object sender, RoutedEventArgs e)
-    {
-        var item = RobotEventList.SelectedItem as EventObj;
-        if (item == null)
-            return;
-
-        Obj.Packs.Remove(item.ID);
-        RobotEventList.SelectedItem = null;
-        RobotEventList.Items.Remove(item);
     }
 
     private async void ButtonClick2(object sender, RoutedEventArgs e)
@@ -544,7 +506,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.SetRobotConfig(ip, port, Obj.Packs);
+        var res1 = await App.HttpUtils.SetRobotConfig(ip, port);
         if (res1 == null)
         {
             _ = new InfoWindow("修改Robot配置", "修改服务器Robot配置错误");

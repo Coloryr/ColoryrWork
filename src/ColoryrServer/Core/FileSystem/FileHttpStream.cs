@@ -80,7 +80,7 @@ internal static class FileHttpStream
         }
     }
 
-    public static HttpResponseStream StartStream(HttpDllRequest http, string file)
+    public static HttpResponseStream StartStream(HttpDllRequest http, string file, string contentType)
     {
         try
         {
@@ -104,13 +104,10 @@ internal static class FileHttpStream
                     etag = list[0];
                 }
             }
-            if (!File.Exists(file))
-            {
-                return null;
-            }
+
             if (!Have(etag))
             {
-                stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+                stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 EtagTemp.TryAdd(etag, new()
                 {
                     stream = stream,
@@ -120,7 +117,7 @@ internal static class FileHttpStream
             else
             {
                 EtagTemp[etag].stream.Dispose();
-                stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+                stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 EtagTemp[etag].stream = stream;
                 EtagTemp[etag].time = ResetTime;
             }
@@ -139,11 +136,16 @@ internal static class FileHttpStream
             var res = new HttpResponseStream()
             {
                 Data = stream,
-                Pos = pos
+                Pos = pos,
+                ContentType = contentType
             };
             res.AddHead("Content-Range", $"bytes {pos}-{stream.Length - 1}/{stream.Length}");
             res.AddHead("Etag", $"{etag}");
             return res;
+        }
+        catch (FileNotFoundException e1)
+        {
+            throw new ErrorDump("读取文件找不到", e1);
         }
         catch (Exception e)
         {

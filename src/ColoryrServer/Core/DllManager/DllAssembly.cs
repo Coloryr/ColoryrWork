@@ -46,3 +46,25 @@ public class DllAssembly : AssemblyLoadContext
         return list.First();
     }
 }
+
+public class RobotDllAssembly : DllAssembly
+{
+    private List<int> Events;
+    public RobotDllAssembly(CodeType type, string name) : base(type, name) { }
+
+    public void SetPack(List<int> events)
+    {
+        Events = events;
+    }
+
+    public bool Check(int id) 
+    {
+        return Events.Contains(id);
+    }
+}
+
+public class SocketDllAssembly : DllAssembly
+{
+    public bool Netty;
+    public SocketDllAssembly(CodeType type, string name) : base(type, name) { }
+}

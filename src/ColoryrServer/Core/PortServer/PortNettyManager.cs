@@ -30,7 +30,7 @@ internal static class PortNettyManager
         Task.WaitAll(BossGroup.ShutdownGracefullyAsync(), WorkerGroup.ShutdownGracefullyAsync());
     }
 
-    public static void AddItem(DllAssembly dll)
+    public static void AddItem(SocketDllAssembly dll)
     {
         StopItem(dll.Name);
         if (Check(dll.SelfType))

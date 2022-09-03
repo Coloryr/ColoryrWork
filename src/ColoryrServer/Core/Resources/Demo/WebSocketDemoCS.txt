@@ -1,6 +1,6 @@
 using ColoryrServer.SDK;
 
-[DLLIN]
+[WebSocketIN]
 public class {name}
 {
     public bool OnMessage(WebSocketMessage head)

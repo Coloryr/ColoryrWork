@@ -21,13 +21,13 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="DiffPlex" Version="1.7.1" />
-    <PackageReference Include="DotNetty.Buffers" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Codecs" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Common" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Handlers" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Transport" Version="0.7.4" />
-    <PackageReference Include="DotNetty.Transport.Libuv" Version="0.7.4" />
+    <PackageReference Include="DotNetty.Buffers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Common" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Handlers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Transport" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Transport.Libuv" Version="0.7.5" />
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.45" />
     <PackageReference Include="HttpMultipartParser" Version="7.0.0" />
@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
     <PackageReference Include="MQTTnet" Version="4.1.0.247" />
     <PackageReference Include="MySql.Data" Version="8.0.30" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.70" />
     <PackageReference Include="RestSharp" Version="108.0.1" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
@@ -113,7 +113,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="OLD\" />
     <Folder Include="Resources\Demo\Vue\" />
   </ItemGroup>
 

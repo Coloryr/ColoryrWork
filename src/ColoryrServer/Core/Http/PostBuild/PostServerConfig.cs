@@ -133,8 +133,7 @@ public static class PostServerConfig
         return new()
         {
             IP = ServerMain.Config.Robot.Socket.IP,
-            Port = ServerMain.Config.Robot.Socket.Port,
-            Packs = ServerMain.Config.Robot.Packs
+            Port = ServerMain.Config.Robot.Socket.Port
         };
     }
     public static ReMessage SetRobotConfig(BuildOBJ json)
@@ -158,10 +157,8 @@ public static class PostServerConfig
             };
         }
 
-        List<int> list = JsonConvert.DeserializeObject<List<int>>(json.Text);
         ServerMain.Config.Robot.Socket.IP = ip;
         ServerMain.Config.Robot.Socket.Port = port;
-        ServerMain.Config.Robot.Packs = list;
         ServerMain.ConfigUtil.Save();
 
         return new()

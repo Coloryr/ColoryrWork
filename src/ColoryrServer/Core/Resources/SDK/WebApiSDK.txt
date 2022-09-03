@@ -28,6 +28,14 @@ public class HttpDllRequest
     /// </summary>
     public Stream Stream { get; init; }
     /// <summary>
+    /// 请求体数据
+    /// </summary>
+    public string Data { get; init; }
+    /// <summary>
+    /// 请求体数据
+    /// </summary>
+    public byte[] Data1 { get; init; }
+    /// <summary>
     /// 请求方法
     /// </summary>
     public string Method { get; init; }

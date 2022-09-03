@@ -22,7 +22,7 @@ internal static class LoadMqtt
         var assembly = new DllAssembly(CodeType.Mqtt, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<MqttIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ

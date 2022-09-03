@@ -32,7 +32,7 @@ namespace ColoryrServer.Core;
 
 public class ServerMain
 {
-    public const string Version = "2.1.0";
+    public const string Version = "2.2.0";
     /// <summary>
     /// 配置文件
     /// </summary>
@@ -162,21 +162,17 @@ public class ServerMain
     {
         //给编译用的，防DLL找不到
         var test2 = new HtmlDocument();
-        dynamic test = new HttpResponseMessage();
+        using HttpResponseMessage test = new();
         var test1 = test.IsSuccessStatusCode;
-        test.Dispose();
         Parallel.ForEach(new List<string>(), (i, b) => { });
-        Image<Rgba32> bitmap = new(1, 1);
+        using Image<Rgba32> bitmap = new(1, 1);
         SystemFonts.Families.GetEnumerator();
         bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
-        bitmap.Dispose();
-        Stream zip = Stream.Null;
-        Stream zip1 = Stream.Null;
         ZipEntry entry = new("1");
         NameValueCollection nameValue = new();
         Regex re = new("");
-        Aes aes = Aes.Create();
-        aes.Dispose();
+        using Aes aes = Aes.Create();
+        WebProxy proxy = new();
     }
 
     public static void Stop()

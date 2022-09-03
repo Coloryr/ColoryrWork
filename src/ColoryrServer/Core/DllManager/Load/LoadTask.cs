@@ -22,7 +22,7 @@ internal static class LoadTask
         var assembly = new DllAssembly(CodeType.Task, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<TaskIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ

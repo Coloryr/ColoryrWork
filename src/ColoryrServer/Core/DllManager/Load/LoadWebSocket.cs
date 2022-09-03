@@ -22,7 +22,7 @@ internal static class LoadWebSocket
         var assembly = new DllAssembly(CodeType.WebSocket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
-                       .GetTypes().Where(x => x.GetCustomAttribute<DLLIN>(true) != null);
+                       .GetTypes().Where(x => x.GetCustomAttribute<WebSocketIN>(true) != null);
 
         if (!list.Any())
             return new GenReOBJ
