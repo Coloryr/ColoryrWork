@@ -1,7 +1,10 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
-using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit;
+using Microsoft.CodeAnalysis.Classification;
+using RoslynPad.Editor;
+using RoslynPad.Roslyn;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,12 +41,16 @@ public partial class CodeCSEditView : UserControl, IEditView
     {
         Obj = obj;
         Type = type;
-
         InitializeComponent();
 
-        var foldingManager = FoldingManager.Install(TextEditor.TextArea);
-        var foldingStrategy = new XmlFoldingStrategy();
-        foldingStrategy.UpdateFoldings(foldingManager, TextEditor.Document);
+        TextEditor.CreatingDocument += (o, args) =>
+        {
+            
+        };
+
+        var documentId = TextEditor.Initialize(App.Host, new ClassificationHighlightColors(),
+            Local, string.Empty);
+
         TextEditor.Options.ShowSpaces = true;
         TextEditor.Options.ShowTabs = true;
 

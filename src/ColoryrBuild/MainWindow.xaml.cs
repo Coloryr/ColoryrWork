@@ -3,6 +3,8 @@ using ColoryrBuild.Views.CodeList;
 using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,6 +38,7 @@ namespace ColoryrBuild
             LoginDone = FLoginDone;
         }
 
+
         private async void GetApi()
         {
             string dir = App.RunLocal + "CodeTEMP/SDK/";
@@ -47,11 +50,13 @@ namespace ColoryrBuild
             {
                 File.Delete(item);
             }
+
             var list = await App.HttpUtils.GetApi();
             if (list.List != null)
                 foreach (var item in list.List)
                 {
                     File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                    //CodeCompile.Test(item.Value, dir, item.Key);
                 }
             dir = App.RunLocal + "CodeTEMP/Common/";
             if (!Directory.Exists(dir))
@@ -62,6 +67,7 @@ namespace ColoryrBuild
                 foreach (var item in list.Other)
                 {
                     File.WriteAllText(dir + item.Key + ".cs", item.Value);
+                    //CodeCompile.Test(item.Value, dir, item.Key);
                 }
         }
 

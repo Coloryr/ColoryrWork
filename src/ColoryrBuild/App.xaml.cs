@@ -4,9 +4,11 @@ using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
+using RoslynPad.Roslyn;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +33,7 @@ public partial class App : Application
     public static ConfigObj Config { get; private set; }
     public static MainWindow MainWindow_;
     public static Login LoginWindow_;
+    public static IRoslynHost Host { get; private set; }
 
     private record CodeInfo
     {
@@ -58,6 +61,22 @@ public partial class App : Application
         }, RunLocal + "Config.json");
         Logs = new Logs(RunLocal);
         HttpUtils = new();
+
+        var list = AppDomain.CurrentDomain.GetAssemblies();
+        var list1 = new List<Assembly>();
+        foreach (var item in list)
+        {
+            if (item.IsDynamic)
+                continue;
+            list1.Add(item);
+        }
+
+        Host = new CodeCompile(additionalAssemblies: new[]
+        {
+            Assembly.Load("RoslynPad.Roslyn.Windows"),
+            Assembly.Load("RoslynPad.Editor.Windows")
+        }, RoslynHostReferences.NamespaceDefault.With(assemblyReferences: list1));
+
         DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
