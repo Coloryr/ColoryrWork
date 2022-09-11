@@ -17,6 +17,14 @@ using System.Text;
 namespace ColoryrServer.SDK;
 
 /// <summary>
+/// Kcp接口
+/// </summary>
+public abstract class IKcp
+{
+    public abstract void Start();
+    public abstract void Stop();
+}
+/// <summary>
 /// Netty接口
 /// </summary>
 public abstract class INetty

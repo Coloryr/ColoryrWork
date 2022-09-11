@@ -7,6 +7,8 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels.Sockets;
 using System.Security.Cryptography.X509Certificates;
 
+//ColoryrServer_Debug
+
 [SocketIN(true)]
 public class {name} : INetty
 {

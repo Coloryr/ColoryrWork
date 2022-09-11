@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.Emit;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Loader;
 
 namespace ColoryrServer.Core.DllManager.Gen;
@@ -25,7 +26,7 @@ internal static class GenCode
     /// <param name="name">文件名</param>
     /// <param name="codes">代码树</param>
     /// <returns></returns>
-    public static GenReOBJ StartGen(string name, List<SyntaxTree> codes, bool isClass = false)
+    public static GenReOBJ StartGen(string name, List<SyntaxTree> codes, OptimizationLevel level, bool isClass = false)
     {
         CSharpCompilation compilation;
         if (isClass)
@@ -41,7 +42,7 @@ internal static class GenCode
             name,
             syntaxTrees: codes,
             references: list,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optimizationLevel: level));
         }
         else
         {
@@ -49,7 +50,7 @@ internal static class GenCode
                 name,
                 syntaxTrees: codes,
                 references: References,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optimizationLevel: level));
         }
         var ms = new MemoryStream();
         var msPdb = new MemoryStream();

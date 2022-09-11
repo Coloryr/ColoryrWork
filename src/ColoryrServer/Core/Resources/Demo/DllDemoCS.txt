@@ -1,5 +1,7 @@
 using ColoryrServer.SDK;
 
+//ColoryrServer_Debug
+
 [DllIN(true)]//true则报错输出至网页
 public class App_{name}
 {

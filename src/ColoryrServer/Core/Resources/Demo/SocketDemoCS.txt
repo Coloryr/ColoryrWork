@@ -1,5 +1,7 @@
 using ColoryrServer.SDK;
 
+//ColoryrServer_Debug
+
 [SocketIN]
 public class {name}
 {

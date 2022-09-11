@@ -2,6 +2,7 @@
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.IO;
@@ -18,10 +19,11 @@ internal static class GenMqtt
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         var build = GenCode.StartGen(obj.UUID, new()
         {
             CSharpSyntaxTree.ParseText(obj.Code)
-        });
+        }, release ? OptimizationLevel.Release : OptimizationLevel.Debug);
         obj.UpdateTime = DateTime.Now.ToString();
         CodeFileManager.StorageRobot(obj, user);
         if (!build.Isok)

@@ -1,5 +1,7 @@
 using ColoryrServer.SDK;
 
+//ColoryrServer_Debug
+
 [RobotIN(new int[] {})] //在这里添加更多订阅的事件
 public class {name}
 {

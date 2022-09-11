@@ -21,11 +21,12 @@ internal static class GenDll
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         string name = EnCode.SHA1(obj.UUID);
         var build = GenCode.StartGen(name, new List<SyntaxTree>
         {
             CSharpSyntaxTree.ParseText(obj.Code)
-        });
+        }, release ? OptimizationLevel.Release : OptimizationLevel.Debug);
         obj.UpdateTime = DateTime.Now.ToString();
         CodeFileManager.StorageDll(obj, user);
         if (!build.Isok)

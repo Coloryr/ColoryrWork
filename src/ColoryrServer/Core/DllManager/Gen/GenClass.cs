@@ -5,6 +5,7 @@ using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,16 @@ internal class GenClass
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj)
     {
+        bool release = false;
         var build = GenCode.StartGen(obj.UUID,
             CodeFileManager.GetClassCode(obj.UUID).Select(a =>
-            CSharpSyntaxTree.ParseText(a.code, path: a.name, encoding: Encoding.UTF8)).ToList(), true);
+            {
+                if (!release)
+                    release = a.code.Contains(@"//ColoryrServer_Release");
+                return CSharpSyntaxTree.ParseText(a.code, path: a.name, encoding: Encoding.UTF8);
+            }).ToList(),
+            release ? OptimizationLevel.Release : OptimizationLevel.Debug,
+            true);
         obj.UpdateTime = DateTime.Now.ToString();
         if (!build.Isok)
         {

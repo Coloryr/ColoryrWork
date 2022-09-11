@@ -1,6 +1,8 @@
 using System;
 using ColoryrServer.SDK;
 
+//ColoryrServer_Debug
+
 [TaskIN]
 public class {name}
 {
