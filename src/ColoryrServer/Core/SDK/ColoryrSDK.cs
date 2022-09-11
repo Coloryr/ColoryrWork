@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core;
+﻿using ColoryrSDK;
+using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
@@ -629,7 +630,7 @@ public partial class FileLoad
     /// <param name="local">文件夹</param>
     /// <param name="contentType">返回体类型</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local, 
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local,
         string contentType = ServerContentType.TXT)
         => FileHttpStream.StartStream(http, local, contentType);
 }

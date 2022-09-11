@@ -25,7 +25,7 @@ internal static class GenTask
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageTask(obj,user);
+        CodeFileManager.StorageTask(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Task[{obj.UUID}]" + build.Res;

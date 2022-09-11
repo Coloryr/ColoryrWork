@@ -13,6 +13,7 @@ namespace ColoryrServer.Core.DllManager;
 /// </summary>
 internal static class DllRun
 {
+    public delegate dynamic DllIN(HttpDllRequest arg);
     /// <summary>
     /// 错误返回
     /// </summary>
@@ -53,8 +54,19 @@ internal static class DllRun
 
             MethodInfo mi = dll.MethodInfos[function];
 
-            var obj1 = Activator.CreateInstance(dll.SelfType);
-            object dllres = mi.Invoke(obj1, new object[1] { arg });
+            object dllres;
+            if (mi.IsStatic)
+            {
+                DllIN temp = Delegate.CreateDelegate(typeof(DllIN), mi) as DllIN;
+                dllres = temp(arg);
+            }
+            else
+            {
+                var obj1 = Activator.CreateInstance(dll.SelfType);
+                DllIN temp = Delegate.CreateDelegate(typeof(DllIN), obj1, mi) as DllIN;
+                dllres = temp(arg);
+            }
+
             if (dllres is string)
             {
                 return new HttpReturn
@@ -891,7 +903,7 @@ internal static class DllRun
         }
     }
 
-    public static void TaskGoOnStart() 
+    public static void TaskGoOnStart()
     {
         foreach (var item in DllStongeManager.GetTask())
         {

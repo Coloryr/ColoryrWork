@@ -4,8 +4,6 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.FileSystem;
 
@@ -49,7 +47,7 @@ internal static class LoginSave
         var list = sql.Query("SELECT id FROM user");
         if (!list.Any())
         {
-            sql.Execute("INSERT INTO user (user,password) VALUES(@user,@password)", 
+            sql.Execute("INSERT INTO user (user,password) VALUES(@user,@password)",
                 new { user = "admin", password = EnCode.SHA1("Admin").ToLower() });
         }
     }
@@ -77,7 +75,7 @@ internal static class LoginSave
     public static bool AddUser(string user, string password)
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<UserObj>("SELECT id FROM user WHERE user=@user", 
+        var list = sql.Query<UserObj>("SELECT id FROM user WHERE user=@user",
             new { user });
         if (list.Any())
             return false;
@@ -87,7 +85,7 @@ internal static class LoginSave
         return true;
     }
 
-    public static bool Remove(string user) 
+    public static bool Remove(string user)
     {
         using var sql = new SqliteConnection(connStr);
         var list = sql.Query<UserObj>("SELECT id FROM user WHERE user=@user",
@@ -101,7 +99,7 @@ internal static class LoginSave
         return true;
     }
 
-    public static bool CheckPassword(string user, string password) 
+    public static bool CheckPassword(string user, string password)
     {
         using var sql = new SqliteConnection(connStr);
         var list = sql.Query<UserObj>("SELECT password FROM user WHERE user=@user", new { user });
@@ -111,14 +109,14 @@ internal static class LoginSave
         return item.password == password;
     }
 
-    public static List<UserObj> GetAllUser() 
+    public static List<UserObj> GetAllUser()
     {
         using var sql = new SqliteConnection(connStr);
         var list = sql.Query<UserObj>("SELECT user,time FROM user");
         return list.ToList();
     }
 
-    public static void UpdateToken(string user, string uuid) 
+    public static void UpdateToken(string user, string uuid)
     {
         using var sql = new SqliteConnection(connStr);
         var list = sql.Query("SELECT id FROM login WHERE user=@user", new { user });

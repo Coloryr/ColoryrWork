@@ -23,7 +23,7 @@ internal class GenRobot
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageRobot(obj,user);
+        CodeFileManager.StorageRobot(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Robot[{obj.UUID}]" + build.Res;

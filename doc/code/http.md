@@ -52,6 +52,8 @@ public dynamic Main(HttpDllRequest http)
 接口函数输入的参数**必须**是[ColoryrServer.SDK.HttpDllRequest](../../src/ColoryrServer/Core/SDK/WebApiSDK.cs#L8)  
 并且**必须**带有[ColoryrServer.SDK.NotesSDK](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L6)的属性
 
+接口函数可以是`static`函数，使用`static`可以提高接口性能
+
 ## 子接口
 一个接口类里面可以有多个子接口  
 子接口的请求地址为

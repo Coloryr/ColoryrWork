@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.Core.DataBase;
 using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.FileSystem.Web;
@@ -32,7 +31,7 @@ namespace ColoryrServer.Core;
 
 public class ServerMain
 {
-    public const string Version = "2.2.0";
+    public const string Version = "2.3.0";
     /// <summary>
     /// 配置文件
     /// </summary>

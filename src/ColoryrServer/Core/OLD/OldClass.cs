@@ -1,13 +1,9 @@
-﻿using StackExchange.Redis;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace ColoryrServer.SDK;
 
@@ -21,7 +17,7 @@ public partial class NewHttpHtml : StaticDllHttpClient
 
 public partial class HttpHtml : DllHttpClient
 {
-    public HttpHtml(CookieContainer cookie = null, 
+    public HttpHtml(CookieContainer cookie = null,
                 CancellationTokenSource cancel = null,
                 Dictionary<string, string> head = null) : base(cookie, cancel, head)
     { }

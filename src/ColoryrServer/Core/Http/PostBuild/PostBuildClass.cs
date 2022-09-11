@@ -24,7 +24,7 @@ internal static class PostBuildClass
                 CreateTime = time
                 .Replace(CodeDemo.Name, json.UUID)
             };
-            CodeFileManager.StorageClass(obj, json.UUID, 
+            CodeFileManager.StorageClass(obj, json.UUID,
                 DemoResource.Class.Replace(CodeDemo.Name, json.UUID), json.User);
             res = new ReMessage
             {
@@ -162,7 +162,7 @@ internal static class PostBuildClass
             };
         }
 
-        CodeFileManager.StorageClass(obj, json.Temp, 
+        CodeFileManager.StorageClass(obj, json.Temp,
             DemoResource.Class.Replace(CodeDemo.Name, json.Temp), json.User);
 
         return new ReMessage

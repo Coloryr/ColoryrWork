@@ -343,7 +343,7 @@ internal static class CodeFileManager
         }
     }
 
-    public static void RemoveClassCode(string uuid, string name,string user)
+    public static void RemoveClassCode(string uuid, string name, string user)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
         var arg = new { uuid, name };
@@ -583,7 +583,7 @@ internal static class CodeFileManager
         return null;
     }
 
-    public static void RemoveFile(CodeType type, string uuid,string user)
+    public static void RemoveFile(CodeType type, string uuid, string user)
     {
         try
         {

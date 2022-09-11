@@ -11,9 +11,9 @@ public enum PostBuildType
     AddClassFile, RemoveClassFile, BuildClass,
     ConfigGetHttpList, ConfigGetSocket, ConfigGetRobot, ConfigGetUser,
     ConfigAddHttp, ConfigAddHttpRoute, ConfigAddHttpUrlRoute,
-    ConfigRemoveHttp, ConfigRemoveHttpRoute,  ConfigRemoveHttpUrlRoute,
+    ConfigRemoveHttp, ConfigRemoveHttpRoute, ConfigRemoveHttpUrlRoute,
     ConfigAddUser, ConfigRemoveUser,
-    ConfigSetSocket,  ConfigSetRobot, 
+    ConfigSetSocket, ConfigSetRobot,
     SetServerEnable,
     Check, Login, GetApi, ServerReboot
 }

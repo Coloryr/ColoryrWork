@@ -23,7 +23,7 @@ internal static class GenWebSocket
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageWebSocket(obj,user);
+        CodeFileManager.StorageWebSocket(obj, user);
         if (!build.Isok)
         {
             build.Res = $"WebSocket[{obj.UUID}]" + build.Res;

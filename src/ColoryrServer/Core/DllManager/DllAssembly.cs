@@ -47,6 +47,12 @@ public class DllAssembly : AssemblyLoadContext
     }
 }
 
+public class HttpDllAssembly : DllAssembly
+{
+    public bool Static;
+    public HttpDllAssembly(CodeType type, string name) : base(type, name) { }
+}
+
 public class RobotDllAssembly : DllAssembly
 {
     private List<int> Events;
@@ -57,7 +63,7 @@ public class RobotDllAssembly : DllAssembly
         Events = events;
     }
 
-    public bool Check(int id) 
+    public bool Check(int id)
     {
         return Events.Contains(id);
     }

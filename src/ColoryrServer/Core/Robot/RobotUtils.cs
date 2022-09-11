@@ -1,8 +1,10 @@
-﻿using ColoryrServer.Core.DllManager;
+﻿using ColoryrSDK;
+using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using System.Collections.Generic;
 
 namespace ColoryrServer.Core.Robot;
+
 public static class RobotUtils
 {
     public static RobotSDK Robot { get; private set; }
@@ -11,41 +13,180 @@ public static class RobotUtils
         switch (type)
         {
             case 21:
-                var pack4 = data as FriendMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.friend, pack4.qq, 0, pack4.id, pack4.res, pack4.error, pack4.message, Robot));
-                break;
+                {
+                    var pack = data as FriendMessagePostSendEventPack;
+                    DllRun.RobotGo(new RobotSend
+                    {
+                        Type = MessageSourceKind.FRIEND,
+                        QQ = pack.qq,
+                        Id = 0,
+                        Fid = pack.id,
+                        Res = pack.res,
+                        Error = pack.error,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                    break;
+                }
             case 28:
-                var pack5 = data as GroupMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.group, pack5.qq, pack5.id, 0, pack5.res, pack5.error, pack5.message, Robot));
-                break;
+                {
+                    var pack = data as GroupMessagePostSendEventPack;
+                    DllRun.RobotGo(new RobotSend
+                    {
+                        Type = MessageSourceKind.GROUP,
+                        QQ = pack.qq,
+                        Id = pack.id,
+                        Fid = 0,
+                        Res = pack.res,
+                        Error = pack.error,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                    break;
+                }
             case 47:
-                var pack3 = data as TempMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.private_, pack3.qq, pack3.id, pack3.fid, pack3.res, pack3.error, pack3.message, Robot));
-                break;
+                {
+                    var pack = data as TempMessagePostSendEventPack;
+                    DllRun.RobotGo(new RobotSend
+                    {
+                        Type = MessageSourceKind.TEMP,
+                        QQ = pack.qq,
+                        Id = pack.id,
+                        Fid = pack.fid,
+                        Res = pack.res,
+                        Error = pack.error,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                    break;
+                }
             case 49:
-                var pack = data as GroupMessageEventPack;
-                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.group, pack.qq, pack.id, pack.fid, pack.name, pack.message, Robot));
-                break;
+                {
+                    var pack = data as GroupMessageEventPack;
+                    DllRun.RobotGo(new RobotMessage
+                    {
+                        Type = MessageSourceKind.GROUP,
+                        QQ = pack.qq,
+                        Id = pack.id,
+                        Fid = pack.fid,
+                        Name = pack.name,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        },
+                        Permission = pack.permission
+                    });
+                    break;
+                }
             case 50:
-                var pack1 = data as TempMessageEventPack;
-                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.private_, pack1.qq, pack1.id, pack1.fid, pack1.name, pack1.message, Robot));
-                break;
+                {
+                    var pack = data as TempMessageEventPack;
+                    DllRun.RobotGo(new RobotMessage
+                    {
+                        Type = MessageSourceKind.TEMP,
+                        QQ = pack.qq,
+                        Id = pack.id,
+                        Fid = pack.fid,
+                        Name = pack.name,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        },
+                        Permission = pack.permission
+                    });
+                    break;
+                }
             case 51:
-                var pack2 = data as FriendMessageEventPack;
-                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.friend, pack2.qq, 0, pack2.id, pack2.name, pack2.message, Robot));
-                break;
+                {
+                    var pack = data as FriendMessageEventPack;
+                    DllRun.RobotGo(new RobotMessage
+                    {
+                        Type = MessageSourceKind.FRIEND,
+                        QQ = pack.qq,
+                        Id = 0,
+                        Fid = pack.id,
+                        Name = pack.name,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                    break;
+                }
             case 60:
                 break;
             case 116:
-                var pack8 = data as StrangerMessageEventPack;
-                DllRun.RobotGo(new RobotMessage(RobotMessage.MessageType.stranger, pack8.qq, 0, pack8.id, pack8.name, pack8.message, Robot));
-                break;
+                {
+                    var pack = data as StrangerMessageEventPack;
+                    DllRun.RobotGo(new RobotMessage
+                    {
+                        Type = MessageSourceKind.STRANGER,
+                        QQ = pack.qq,
+                        Id = 0,
+                        Fid = pack.id,
+                        Name = pack.name,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                    break;
+                }
             case 123:
-                var pack9 = data as StrangerMessagePostSendEventPack;
-                DllRun.RobotGo(new RobotSend(RobotSend.MessageType.stranger, pack9.qq, pack9.id, 0, pack9.res, pack9.error, pack9.message, Robot));
+                {
+                    var pack = data as StrangerMessagePostSendEventPack;
+                    DllRun.RobotGo(new RobotSend
+                    {
+                        Type = MessageSourceKind.STRANGER,
+                        QQ = pack.qq,
+                        Id = pack.id,
+                        Fid = 0,
+                        Res = pack.res,
+                        Error = pack.error,
+                        Message = pack.message,
+                        Robot = Robot,
+                        MessageId = new MessageKey
+                        {
+                            Ids1 = pack.ids1,
+                            Ids2 = pack.ids2
+                        }
+                    });
+                }
                 break;
             default:
-                DllRun.RobotGo(new RobotEvent(type, data as PackBase, Robot));
+                DllRun.RobotGo(new RobotEvent
+                {
+                    Type = type,
+                    Pack = data as PackBase,
+                    Robot = Robot
+                });
                 break;
         }
     }
@@ -67,7 +208,7 @@ public static class RobotUtils
             IP = ServerMain.Config.Robot.Socket.IP,
             Port = ServerMain.Config.Robot.Socket.Port,
             Name = "ColoryrServer",
-            Pack = new() {  },
+            Pack = new() { },
             RunQQ = 0,
             Time = 10000,
             Check = true,
@@ -92,12 +233,5 @@ public static class RobotUtils
         ServerMain.LogOut("机器人正在断开");
         Robot.Stop();
         ServerMain.LogOut("机器人已断开");
-    }
-    internal static void ReCall(string id)
-    {
-        Robot.AddSend(new ReCallMessagePack
-        {
-            id = int.Parse(id)
-        }, 71);
     }
 }

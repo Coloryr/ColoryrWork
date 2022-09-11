@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace ColoryrServer.Core.Robot;
+namespace ColoryrSDK;
 
 internal static class PackDecode
 {
@@ -34,6 +34,15 @@ internal static class PackDecode
         for (int i = 0; i < a; i++)
         {
             list.Add(buff.ReadString());
+        }
+        return list;
+    }
+    public static int[] ReadIntList(this IByteBuffer buff)
+    {
+        var list = new int[buff.ReadInt()];
+        for (int a = 0; a < list.Length; a++)
+        {
+            list[a] = buff.ReadInt();
         }
         return list;
     }
@@ -429,6 +438,8 @@ internal static class PackDecode
             qq = buff.ReadLong(),
             id = buff.ReadLong(),
             res = buff.ReadBoolean(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             message = buff.ReadStringList(),
             error = buff.ReadString()
         };
@@ -507,6 +518,8 @@ internal static class PackDecode
             qq = buff.ReadLong(),
             id = buff.ReadLong(),
             res = buff.ReadBoolean(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             message = buff.ReadStringList(),
             error = buff.ReadString()
         };
@@ -737,6 +750,8 @@ internal static class PackDecode
             qq = buff.ReadLong(),
             id = buff.ReadLong(),
             res = buff.ReadBoolean(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             message = buff.ReadStringList(),
             error = buff.ReadString()
         };
@@ -759,6 +774,9 @@ internal static class PackDecode
             id = buff.ReadLong(),
             fid = buff.ReadLong(),
             name = buff.ReadString(),
+            time = buff.ReadInt(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             permission = (MemberPermission)buff.ReadInt(),
             message = buff.ReadStringList()
         };
@@ -772,6 +790,8 @@ internal static class PackDecode
             id = buff.ReadLong(),
             fid = buff.ReadLong(),
             name = buff.ReadString(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             permission = (MemberPermission)buff.ReadInt(),
             message = buff.ReadStringList(),
             time = buff.ReadInt()
@@ -785,6 +805,8 @@ internal static class PackDecode
             qq = buff.ReadLong(),
             id = buff.ReadLong(),
             name = buff.ReadString(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             message = buff.ReadStringList(),
             time = buff.ReadInt()
         };
@@ -917,6 +939,8 @@ internal static class PackDecode
             qq = buff.ReadLong(),
             id = buff.ReadLong(),
             name = buff.ReadString(),
+            ids1 = buff.ReadIntList(),
+            ids2 = buff.ReadIntList(),
             message = buff.ReadStringList(),
             time = buff.ReadInt()
         };
@@ -986,6 +1010,15 @@ internal static class PackEncode
     {
         buff.WriteInt(data.Length);
         buff.WriteBytes(data, 0, data.Length);
+        return buff;
+    }
+    public static IByteBuffer WriteIntList(this IByteBuffer buff, int[] data)
+    {
+        buff.WriteInt(data.Length);
+        foreach (var item in data)
+        {
+            buff.WriteInt(item);
+        }
         return buff;
     }
 
@@ -1199,16 +1232,16 @@ internal static class PackEncode
         IByteBuffer buff = Unpooled.Buffer();
         buff.WriteByte(71)
             .WriteLong(pack.qq)
-            .WriteInt(pack.id);
+            .WriteIntList(pack.ids1)
+            .WriteIntList(pack.ids2)
+            .WriteInt((int)pack.kind);
 
         return buff;
     }
     public static IByteBuffer ToPack(this SendGroupSoundPack pack)
     {
-        if (pack.data == null)
-            pack.data = Array.Empty<byte>();
-        if (pack.ids == null)
-            pack.ids = new();
+        pack.data ??= Array.Empty<byte>();
+        pack.ids ??= new();
         IByteBuffer buff = Unpooled.Buffer();
         buff.WriteByte(74)
             .WriteLong(pack.qq)
@@ -1333,7 +1366,8 @@ internal static class PackEncode
         buff.WriteByte(94)
             .WriteLong(pack.qq)
             .WriteLong(pack.id)
-            .WriteInt(pack.mid);
+            .WriteIntList(pack.ids1)
+            .WriteIntList(pack.ids2);
 
         return buff;
     }
@@ -1648,7 +1682,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
     }
     private ConcurrentBag<PackTask> queue1;
     private ConcurrentBag<IByteBuffer> queue2;
-    
+
     private Thread thread;
     private MultithreadEventLoopGroup group;
     private IChannel client;
@@ -2155,7 +2189,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
         });
     }
 
-    internal void AddReadPack(IByteBuffer pack) 
+    internal void AddReadPack(IByteBuffer pack)
     {
         queue2.Add(pack);
     }

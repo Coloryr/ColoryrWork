@@ -23,7 +23,7 @@ internal static class GenSocket
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageSocket(obj,user);
+        CodeFileManager.StorageSocket(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Socket[{obj.UUID}]" + build.Res;

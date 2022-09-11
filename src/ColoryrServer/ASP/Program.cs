@@ -62,7 +62,7 @@ public static class ASPServer
                 ServerMain.LogOut("正在加载SSL证书");
                 builder.WebHost.UseKestrel(options =>
                         options.ConfigureHttpsDefaults(i =>
-                              i.ServerCertificateSelector = ASPServer.Ssl));
+                              i.ServerCertificateSelector = Ssl));
                 foreach (var item in Config.Ssls)
                 {
                     if (File.Exists(item.Value.Ssl))
@@ -100,6 +100,7 @@ public static class ASPServer
             builder.Services.AddTransient<IHttpClients, HttpClients>();
 
             Web = builder.Build();
+            Web.UseHttpsRedirection();
             Clients = Web.Services.GetRequiredService<IHttpClients>();
 
             Web.MapGet("/", Config.RouteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);

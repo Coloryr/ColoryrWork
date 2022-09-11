@@ -49,12 +49,12 @@ public record RobotObj
 }
 
 public record UserList
-{ 
+{
     public List<UserObj> List { get; set; }
 }
 
 public record UserObj
-{ 
+{
     public string User { get; set; }
     public string Password { get; set; }
     public string Time { get; set; }

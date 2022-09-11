@@ -42,7 +42,7 @@ public static class DllRunLog
         });
     }
 
-    public static void PutBuildLog(string name, string text) 
+    public static void PutBuildLog(string name, string text)
     {
         Task.Run(() =>
         {

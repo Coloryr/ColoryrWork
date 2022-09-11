@@ -42,7 +42,7 @@ internal static class PostUser
         };
     }
 
-    public static ReMessage Remove(BuildOBJ obj) 
+    public static ReMessage Remove(BuildOBJ obj)
     {
         string user = obj.Code;
         var res = LoginSave.Remove(user.ToLower());

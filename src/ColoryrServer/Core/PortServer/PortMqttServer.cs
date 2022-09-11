@@ -3,7 +3,6 @@ using ColoryrServer.SDK;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using System;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Cryptography;

@@ -23,7 +23,7 @@ internal static class GenMqtt
             CSharpSyntaxTree.ParseText(obj.Code)
         });
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageRobot(obj,user);
+        CodeFileManager.StorageRobot(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Mqtt[{obj.UUID}]" + build.Res;
