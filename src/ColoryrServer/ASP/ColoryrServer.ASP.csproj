@@ -8,8 +8,8 @@
     <ApplicationIcon>ColoryrWork.ico</ApplicationIcon>
     <DebugType>embedded</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Platforms>x64</Platforms>
-    <OutputType>Library</OutputType>
+    <Platforms>AnyCPU</Platforms>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
