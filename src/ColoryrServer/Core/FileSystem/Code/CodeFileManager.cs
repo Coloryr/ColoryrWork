@@ -263,8 +263,7 @@ internal static class CodeFileManager
             var list1 = codeSQL.Query<ClassCodeObj>("SELECT code FROM classcode WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
             if (list1.Any())
             {
-                if (old == null)
-                    old = obj.ToQCode();
+                old ??= obj.ToQCode();
                 var obj2 = list1.First();
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {

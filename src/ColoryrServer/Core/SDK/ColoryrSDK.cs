@@ -621,16 +621,17 @@ public partial class FileLoad
     /// 从文件加载字符串
     /// </summary>
     /// <param name="filename">文件名</param>
+    /// <param name="encoding">读取编码</param>
     /// <returns>文件里面的字符串</returns>
-    public static string LoadString(string filename, bool isTemp = true)
-        => Core.FileSystem.FileLoad.LoadString(filename, isTemp);
+    public static string LoadString(string filename, Encoding encoding = null)
+        => Core.FileSystem.FileLoad.LoadString(filename, encoding);
     /// <summary>
     /// 读一个文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件二进制</returns>
-    public static byte[] LoadBytes(string filename, bool isTemp = true)
-        => Core.FileSystem.FileLoad.LoadBytes(filename, isTemp);
+    public static byte[] LoadBytes(string filename)
+        => Core.FileSystem.FileLoad.LoadBytes(filename);
     /// <summary>
     /// 开始文件流
     /// </summary>

@@ -1,3 +1,4 @@
+using ColoryrSDK;
 using ColoryrServer.Core;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.PortServer;
@@ -15,6 +16,14 @@ using System.Text;
 
 namespace ColoryrServer.SDK;
 
+/// <summary>
+/// Kcp接口
+/// </summary>
+public abstract class IKcp
+{
+    public abstract void Start();
+    public abstract void Stop();
+}
 /// <summary>
 /// Netty接口
 /// </summary>
@@ -612,16 +621,17 @@ public partial class FileLoad
     /// 从文件加载字符串
     /// </summary>
     /// <param name="filename">文件名</param>
+    /// <param name="encoding">读取编码</param>
     /// <returns>文件里面的字符串</returns>
-    public static string LoadString(string filename, bool isTemp = true)
-        => Core.FileSystem.FileLoad.LoadString(filename, isTemp);
+    public static string LoadString(string filename, Encoding encoding = null)
+        => Core.FileSystem.FileLoad.LoadString(filename, encoding);
     /// <summary>
     /// 读一个文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件二进制</returns>
-    public static byte[] LoadBytes(string filename, bool isTemp = true)
-        => Core.FileSystem.FileLoad.LoadBytes(filename, isTemp);
+    public static byte[] LoadBytes(string filename)
+        => Core.FileSystem.FileLoad.LoadBytes(filename);
     /// <summary>
     /// 开始文件流
     /// </summary>
@@ -629,7 +639,7 @@ public partial class FileLoad
     /// <param name="local">文件夹</param>
     /// <param name="contentType">返回体类型</param>
     /// <returns>流</returns>
-    public static HttpResponseStream StartStream(HttpDllRequest http, string local, 
+    public static HttpResponseStream StartStream(HttpDllRequest http, string local,
         string contentType = ServerContentType.TXT)
         => FileHttpStream.StartStream(http, local, contentType);
 }

@@ -217,8 +217,17 @@ internal class ServiceThread : IService
     {
         IsRun = false;
         OnStop();
-        Thread.Join(TimeSpan.FromSeconds(30));
-        Worker.Join(TimeSpan.FromSeconds(30));
+        try
+        {
+            Thread.Join(TimeSpan.FromSeconds(30));
+            Worker.Join(TimeSpan.FromSeconds(30));
+        }
+        catch
+        {
+            Thread.Interrupt();
+            Worker.Interrupt();
+            ServerMain.LogOut($"Service[{Name}]清理超时");
+        }
     }
 
     public void Pause()

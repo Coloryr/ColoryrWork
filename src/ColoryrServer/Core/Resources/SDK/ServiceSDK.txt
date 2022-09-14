@@ -1,5 +1,6 @@
 using ColoryrServer.Core.DllManager.Service;
 using ColoryrWork.Lib.Build.Object;
+using System;
 
 namespace ColoryrServer.SDK;
 
@@ -41,9 +42,17 @@ public static class ServiceSDK
     /// <summary>
     /// 设置服务参数
     /// </summary>
-    /// <param name="arg"></param>
+    /// <param name="name">服务名字</param>
+    /// <param name="arg">参数</param>
     public static void SetArg(string name, object[] arg)
         => ServiceManager.SetArg(name, arg);
+    /// <summary>
+    /// 获取服务错误信息
+    /// </summary>
+    /// <param name="name">服务名字</param>
+    /// <returns>错误信息</returns>
+    public static Exception GetError(string name)
+        => ServiceManager.GetError(name);
 }
 /// <summary>
 /// 构建代码前/修改代码前
@@ -66,6 +75,10 @@ public record PerBuildArg
     /// 修改后的代码
     /// </summary>
     public string EditCode;
+    /// <summary>
+    /// 文件名
+    /// </summary>
+    public string File;
 }
 /// <summary>
 /// 构建后
@@ -96,6 +109,6 @@ public enum ServiceState
 }
 
 public enum ServiceNextState
-{ 
+{
     Continue, Pause, Stop, WaitArg
 }

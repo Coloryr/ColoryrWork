@@ -17,7 +17,6 @@ internal class StreamTemp
 internal static class FileHttpStream
 {
     private static readonly ConcurrentDictionary<string, StreamTemp> EtagTemp = new();
-    public static string Local;
 
     private static bool IsRun;
     private static Thread TickThread;

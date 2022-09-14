@@ -1,22 +1,20 @@
 ﻿using ColoryrServer.SDK;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace ColoryrServer.Core.FileSystem;
 
 internal static class FileLoad
 {
-    public static string Local;
-
-    public static string LoadString(string filename, bool IsTemp = true)
+    public static string LoadString(string filename, Encoding encoding = null)
     {
         try
         {
-            if (IsTemp)
-                return File.ReadAllText(Local + filename);
-            else
-                return File.ReadAllText(filename);
+            encoding ??= Encoding.UTF8;
+            var data  = LoadBytes(filename);
+            return encoding.GetString(data);
         }
         catch (Exception e)
         {
@@ -24,7 +22,7 @@ internal static class FileLoad
         }
     }
 
-    public static byte[] LoadBytes(string filename, bool IsTemp = true)
+    public static byte[] LoadBytes(string filename)
     {
         int times = 10;
         Exception e;
@@ -32,8 +30,7 @@ internal static class FileLoad
         {
             try
             {
-                string name = IsTemp ? Local + filename : filename;
-                using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using FileStream Stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 Thread.Sleep(20);
                 var outputdata = new byte[Stream.Length];
                 Stream.Read(outputdata, 0, outputdata.Length);

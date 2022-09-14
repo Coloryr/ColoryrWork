@@ -125,13 +125,15 @@ public class StaticDir
         if (File.Exists(e.FullPath))
         {
             if (e.Name.ToLower() is "404.html")
-                Html404 = FileLoad.LoadBytes(e.FullPath, false);
+                Html404 = FileLoad.LoadBytes(e.FullPath);
             else if (e.Name.ToLower() is "favicon.ico")
-                HtmlIcon = FileLoad.LoadBytes(e.FullPath, false);
+                HtmlIcon = FileLoad.LoadBytes(e.FullPath);
             else if (e.Name.ToLower() is "index.html")
-                HtmlIndex = FileLoad.LoadBytes(e.FullPath, false);
+                HtmlIndex = FileLoad.LoadBytes(e.FullPath);
+            else if (e.Name.ToLower() is "fixmode.html")
+                HtmlFixMode = FileLoad.LoadBytes(e.FullPath);
             else if (FileTempMap.TryGetValue(e.Name, out var v))
-                v.Data = FileLoad.LoadBytes(e.FullPath, false);
+                v.Data = FileLoad.LoadBytes(e.FullPath);
             ServerMain.LogOut($"重读文件:{e.FullPath}");
         }
     }
@@ -203,7 +205,7 @@ public class StaticDir
             {
                 var file = new StaticTempFile()
                 {
-                    Data = FileLoad.LoadBytes(Dir + name, false)
+                    Data = FileLoad.LoadBytes(Dir + name)
                 };
                 file.Reset();
                 FileTempMap.TryAdd(name, file);
