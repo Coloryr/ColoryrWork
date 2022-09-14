@@ -128,7 +128,7 @@ public static class PostDo
                 PostBuildType.CodeWebSocket => CodeFileManager.GetWebSocket(json.UUID),
                 PostBuildType.CodeRobot => CodeFileManager.GetRobot(json.UUID),
                 PostBuildType.CodeMqtt => CodeFileManager.GetMqtt(json.UUID),
-                PostBuildType.CodeTask => CodeFileManager.GetTask(json.UUID),
+                PostBuildType.CodeTask => CodeFileManager.GetService(json.UUID),
                 PostBuildType.CodeWeb => PostBuildWeb.GetCode(json),
                 PostBuildType.GetApi => APIFile.list,
                 PostBuildType.RemoveDll => PostBuildDll.Remove(json),

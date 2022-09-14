@@ -8,7 +8,7 @@ namespace ColoryrBuild.Windows;
 /// </summary>
 public partial class Chose1Window : Window
 {
-    private int Type;
+    private int Type = 1;
     private bool Res;
     public Chose1Window()
     {
@@ -36,8 +36,7 @@ public partial class Chose1Window : Window
 
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        var item = sender as RadioButton;
-        if (item != null)
+        if (sender is RadioButton item)
         {
             if (item.Name == "Type1")
             {

@@ -17,6 +17,42 @@ internal static class ServiceManager
         }
     }
 
+    public static void Load(ServiceDllAssembly item) 
+    {
+        if (item.ServiceType == ServiceType.Normal)
+        {
+            ServerMain.LogOut($"Service[{item.Name}]正在初始化");
+            var service = new ServiceThread(item.Name, null);
+            if (Services.TryAdd(item.Name, service))
+            {
+                if (item.AutoStart)
+                {
+                    service.OnStart();
+                }
+            }
+            else
+            {
+                service.Close();
+            }
+        }
+        else if (item.ServiceType == ServiceType.OnlyOpen)
+        {
+            ServerMain.LogOut($"Service[{item.Name}]正在初始化");
+            var service = new ServiceOnly(item.Name);
+            if (Services.TryAdd(item.Name, service))
+            {
+                if (item.AutoStart)
+                {
+                    service.OnStart();
+                }
+            }
+            else
+            {
+                service.Close();
+            }
+        }
+    }
+
     private static void Stop()
     {
         foreach (var item in Services.Values)
@@ -31,26 +67,7 @@ internal static class ServiceManager
 
         foreach (var item in DllStongeManager.GetService())
         {
-            if (item.ServiceType == ServiceType.Normal)
-            {
-                ServerMain.LogOut($"Service[{item.Name}]正在初始化");
-                var service = new ServiceThread(item.Name, null);
-                Services.TryAdd(item.Name, service);
-                if (item.AutoStart)
-                {
-                    service.OnStart();
-                }
-            }
-            else if (item.ServiceType == ServiceType.OnlyOpen)
-            {
-                ServerMain.LogOut($"Service[{item.Name}]正在初始化");
-                var service = new ServiceOnly(item.Name);
-                Services.TryAdd(item.Name, service);
-                if (item.AutoStart)
-                {
-                    service.OnStart();
-                }
-            }
+            Load(item);
         }
     }
 

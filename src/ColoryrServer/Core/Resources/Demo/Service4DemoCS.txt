@@ -3,7 +3,7 @@ using ColoryrServer.SDK;
 
 //ColoryrServer_Debug
 
-[ServiceIN(type: ServiceType.Builder)] //true表示跟随服务器启动
+[ServiceIN(type: ServiceType.Builder)]
 public class {name}
 {
     public bool OnPerBuild(PerBuildArg arg)

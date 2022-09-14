@@ -14,6 +14,21 @@
             Stroke="#FF5ABED6"
             StrokeThickness="2" />
         <TabControl Margin="2" TabStripPlacement="Left">
+            <TabItem Header="服务器日志" Style="{StaticResource TabItem}">
+                <Grid>
+                    <TextBox
+                        x:Name="ServerLog"
+                        IsReadOnly="True"
+                        VerticalScrollBarVisibility="Visible" />
+                    <Button
+                        Width="60"
+                        Margin="0,10,20,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="Button_Click_1"
+                        Content="清空" />
+                </Grid>
+            </TabItem>
             <TabItem Header="Http配置" Style="{StaticResource TabItem}">
                 <ScrollViewer>
                     <StackPanel>
@@ -381,21 +396,6 @@
                             Content="重构代码" />
                     </StackPanel>
                 </StackPanel>
-            </TabItem>
-            <TabItem Header="服务器日志" Style="{StaticResource TabItem}">
-                <Grid>
-                    <TextBox
-                        x:Name="ServerLog"
-                        IsReadOnly="True"
-                        VerticalScrollBarVisibility="Visible" />
-                    <Button
-                        Width="60"
-                        Margin="0,10,20,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Click="Button_Click_1"
-                        Content="清空" />
-                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

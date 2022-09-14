@@ -30,7 +30,7 @@ internal static class CodeFileManager
     public static readonly ConcurrentDictionary<string, CSFileCode> WebSocketFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> RobotFileList = new();
     public static readonly ConcurrentDictionary<string, CSFileCode> MqttFileList = new();
-    public static readonly ConcurrentDictionary<string, CSFileCode> TaskFileList = new();
+    public static readonly ConcurrentDictionary<string, CSFileCode> ServiceFileList = new();
 
     private static void Stop()
     {
@@ -40,7 +40,7 @@ internal static class CodeFileManager
         WebSocketFileList.Clear();
         RobotFileList.Clear();
         MqttFileList.Clear();
-        TaskFileList.Clear();
+        ServiceFileList.Clear();
     }
 
     public static void Start()
@@ -109,8 +109,8 @@ internal static class CodeFileManager
   `updatetime` text
 );");
 
-        //task
-        codeSQL.Execute(@"create table if not exists task (
+        //service
+        codeSQL.Execute(@"create table if not exists service (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `uuid` text,
   `text` text,
@@ -193,7 +193,7 @@ internal static class CodeFileManager
   `user` text,
   `time` text
 );");
-            codeLogSQL.Execute(@"create table if not exists task (
+            codeLogSQL.Execute(@"create table if not exists service (
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
   `uuid` text,
   `text` text,
@@ -295,7 +295,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => "websocket",
                 CodeType.Robot => "robot",
                 CodeType.Mqtt => "mqtt",
-                CodeType.Service => "task",
+                CodeType.Service => "service",
                 _ => throw new ErrorDump("code type error")
             };
 
@@ -416,7 +416,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => "websocket",
                 CodeType.Robot => "robot",
                 CodeType.Mqtt => "mqtt",
-                CodeType.Service => "task",
+                CodeType.Service => "service",
                 _ => throw new ErrorDump("code type error")
             };
 
@@ -517,13 +517,13 @@ internal static class CodeFileManager
             MqttFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
-    public static void StorageTask(CSFileCode obj, string user)
+    public static void StorageService(CSFileCode obj, string user)
     {
         Task.Run(() => SaveCode(obj, user));
-        if (TaskFileList.ContainsKey(obj.UUID))
-            TaskFileList[obj.UUID] = obj;
+        if (ServiceFileList.ContainsKey(obj.UUID))
+            ServiceFileList[obj.UUID] = obj;
         else
-            TaskFileList.TryAdd(obj.UUID, obj);
+            ServiceFileList.TryAdd(obj.UUID, obj);
         UpdataMAP();
     }
     public static CSFileCode GetDll(string uuid)
@@ -574,9 +574,9 @@ internal static class CodeFileManager
         }
         return null;
     }
-    public static CSFileCode GetTask(string uuid)
+    public static CSFileCode GetService(string uuid)
     {
-        if (TaskFileList.TryGetValue(uuid, out var save))
+        if (ServiceFileList.TryGetValue(uuid, out var save))
         {
             return save;
         }
@@ -595,7 +595,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => GetWebSocket(uuid),
                 CodeType.Robot => GetRobot(uuid),
                 CodeType.Mqtt => GetMqtt(uuid),
-                CodeType.Service => GetTask(uuid),
+                CodeType.Service => GetService(uuid),
                 _ => null
             };
 
@@ -632,7 +632,7 @@ internal static class CodeFileManager
                     DllStongeManager.RemoveMqtt(uuid);
                     break;
                 case CodeType.Service:
-                    TaskFileList.TryRemove(uuid, out var item7);
+                    ServiceFileList.TryRemove(uuid, out var item7);
                     DllStongeManager.RemoveService(uuid);
                     break;
             }
@@ -711,12 +711,12 @@ Type:{obj.Type}
                 MqttFileList.TryAdd(item.uuid, obj);
             }
 
-            list = codeSQL.Query<QCodeObj>("SELECT uuid,text,version,code,createtime,updatetime FROM task");
+            list = codeSQL.Query<QCodeObj>("SELECT uuid,text,version,code,createtime,updatetime FROM service");
             foreach (var item in list)
             {
                 var obj = item.ToCode();
                 obj.Type = CodeType.Service;
-                TaskFileList.TryAdd(item.uuid, obj);
+                ServiceFileList.TryAdd(item.uuid, obj);
             }
         }
         catch (Exception e)
@@ -740,7 +740,7 @@ Type:{obj.Type}
                     WebSocketList = new(WebSocketFileList.Values),
                     RobotList = new(RobotFileList.Values),
                     MqttList = new(MqttFileList.Values),
-                    TaskList = new(TaskFileList.Values)
+                    ServiceList = new(ServiceFileList.Values)
                 };
                 File.WriteAllText(DllMap, JsonConvert.SerializeObject(MAP, Formatting.Indented));
             }

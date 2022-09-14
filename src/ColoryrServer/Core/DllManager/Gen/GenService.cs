@@ -27,7 +27,7 @@ internal static class GenService
             CSharpSyntaxTree.ParseText(obj.Code)
         }, release ? OptimizationLevel.Release : OptimizationLevel.Debug);
         obj.UpdateTime = DateTime.Now.ToString();
-        CodeFileManager.StorageTask(obj, user);
+        CodeFileManager.StorageService(obj, user);
         if (!build.Isok)
         {
             build.Res = $"Service[{obj.UUID}]" + build.Res;

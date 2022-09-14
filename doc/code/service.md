@@ -41,9 +41,11 @@ public class test
 类**必须**带有[ColoryrServer.SDK.DLLIN](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L69)的属性
 且`type`=`ServiceType.Normal`
 
-- `Run`表示任务内容
+- `Run`表示任务内容回调
 - `OnStart`表示Service启动的回调
 - `OnStop`表示Service关闭的回调
+
+**任务内容回调会有一个至少50ms的调用间隔**
 
 服务启动时会调用`OnStart`，之后会循环调用`Run`，关闭服务时会调用`OnStop`
 

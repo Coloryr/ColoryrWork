@@ -11,5 +11,5 @@ internal record CodeFileMAP
     public List<CSFileObj> WebSocketList { get; set; }
     public List<CSFileObj> RobotList { get; set; }
     public List<CSFileObj> MqttList { get; set; }
-    public List<CSFileObj> TaskList { get; set; }
+    public List<CSFileObj> ServiceList { get; set; }
 }

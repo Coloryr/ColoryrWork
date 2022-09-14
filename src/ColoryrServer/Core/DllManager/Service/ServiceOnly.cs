@@ -13,7 +13,7 @@ internal class ServiceOnly : IService
 
     public string Name { get; private init; }
     public ServiceState State { get; private set; } = ServiceState.Init;
-    public Exception LastError => null;
+    public Exception LastError { get; private set; }
 
     public ServiceOnly(string name)
     {
@@ -27,38 +27,64 @@ internal class ServiceOnly : IService
 
     public void Close()
     {
-
+        OnStop();
     }
 
     public void OnStart()
     {
-        ServerMain.LogOut($"Service[{Name}]正在启动");
-        State = ServiceState.Start;
-        MethodInfo mi = Assembly.MethodInfos[CodeDemo.ServiceStart];
-        if (mi.IsStatic)
+        if (State == ServiceState.Init)
         {
-            (Delegate.CreateDelegate(typeof(ServiceSt), mi) as ServiceSt)();
-        }
-        else
-        {
-            var obj1 = Activator.CreateInstance(Assembly.SelfType);
-            (Delegate.CreateDelegate(typeof(ServiceSt), obj1, mi) as ServiceSt)();
+            ServerMain.LogOut($"Service[{Name}]正在启动");
+            State = ServiceState.Start;
+            try
+            {
+                MethodInfo mi = Assembly.MethodInfos[CodeDemo.ServiceStart];
+                if (mi.IsStatic)
+                {
+                    (Delegate.CreateDelegate(typeof(ServiceSt), mi) as ServiceSt)();
+                }
+                else
+                {
+                    var obj1 = Activator.CreateInstance(Assembly.SelfType);
+                    (Delegate.CreateDelegate(typeof(ServiceSt), obj1, mi) as ServiceSt)();
+                }
+                ServerMain.LogOut($"Service[{Name}]已启动");
+            }
+            catch (Exception e)
+            {
+                LastError = e;
+                State = ServiceState.Error;
+                ServerMain.LogOut($"Service[{Name}]启动错误");
+            }
         }
     }
 
     public void OnStop()
     {
-        ServerMain.LogOut($"Service[{Name}]正在停止");
-        State = ServiceState.Stop;
-        MethodInfo mi = Assembly.MethodInfos[CodeDemo.ServiceStop];
-        if (mi.IsStatic)
+        if (State != ServiceState.Init)
         {
-            (Delegate.CreateDelegate(typeof(ServiceSt), mi) as ServiceSt)();
-        }
-        else
-        {
-            var obj1 = Activator.CreateInstance(Assembly.SelfType);
-            (Delegate.CreateDelegate(typeof(ServiceSt), obj1, mi) as ServiceSt)();
+            ServerMain.LogOut($"Service[{Name}]正在停止");
+            State = ServiceState.Stop;
+            try
+            {
+                MethodInfo mi = Assembly.MethodInfos[CodeDemo.ServiceStop];
+                if (mi.IsStatic)
+                {
+                    (Delegate.CreateDelegate(typeof(ServiceSt), mi) as ServiceSt)();
+                }
+                else
+                {
+                    var obj1 = Activator.CreateInstance(Assembly.SelfType);
+                    (Delegate.CreateDelegate(typeof(ServiceSt), obj1, mi) as ServiceSt)();
+                }
+                ServerMain.LogOut($"Service[{Name}]已停止");
+            }
+            catch (Exception e)
+            {
+                LastError = e;
+                State = ServiceState.Error;
+                ServerMain.LogOut($"Service[{Name}]停止错误");
+            }
         }
     }
 

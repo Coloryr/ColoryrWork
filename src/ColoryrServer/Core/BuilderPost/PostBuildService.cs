@@ -15,7 +15,7 @@ internal static class PostBuildService
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        if (CodeFileManager.GetTask(json.UUID) != null)
+        if (CodeFileManager.GetService(json.UUID) != null)
             return new ReMessage
             {
                 Build = false,
@@ -23,10 +23,10 @@ internal static class PostBuildService
             };
         ServiceType? type = json.Code switch
         {
-            "0" => ServiceType.Normal,
-            "1" => ServiceType.OnlyOpen,
+            "1" => ServiceType.Normal,
             "2" => ServiceType.ErrorDump,
-            "3" => ServiceType.Builder,
+            "3" => ServiceType.OnlyOpen,
+            "4" => ServiceType.Builder,
             _ => null
         };
         if (type == null)
@@ -52,7 +52,7 @@ internal static class PostBuildService
             }
         };
         obj.Code = obj.Code.Replace(CodeDemo.Name, json.UUID);
-        CodeFileManager.StorageTask(obj, json.User);
+        CodeFileManager.StorageService(obj, json.User);
         GenService.StartGen(obj, json.User);
         ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]完成");
 
@@ -66,7 +66,7 @@ internal static class PostBuildService
     public static CSFileList GetList()
     {
         var list = new CSFileList();
-        foreach (var item in CodeFileManager.TaskFileList)
+        foreach (var item in CodeFileManager.ServiceFileList)
         {
             list.List.Add(item.Key, item.Value);
         }
@@ -86,7 +86,7 @@ internal static class PostBuildService
 
     public static ReMessage Updata(BuildOBJ json)
     {
-        var obj = CodeFileManager.GetTask(json.UUID);
+        var obj = CodeFileManager.GetService(json.UUID);
         if (obj == null)
         {
             return new ReMessage

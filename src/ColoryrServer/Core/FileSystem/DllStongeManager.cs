@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.DllManager.Service;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.PortServer;
@@ -326,6 +327,7 @@ public static class DllStongeManager
                 old.SelfType = null;
                 old.MethodInfos.Clear();
                 DllUseSave.Update(save);
+                ServiceManager.Load(save);
             });
         }
         else

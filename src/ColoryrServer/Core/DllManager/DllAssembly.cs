@@ -85,7 +85,7 @@ public class ServiceDllAssembly : DllAssembly
 
     new public void Unload()
     {
-        ServiceManager.Stop(Name);
+        ServiceManager.Remove(Name);
         base.Unload();
     }
 }

@@ -53,12 +53,12 @@ public partial class LoginWindow : Window
             InfoWindow.Show("登录错误", "请输入登录信息");
             Addr.IsEnabled = User.IsEnabled = Pass.IsEnabled = ButtonLogin.IsEnabled = true;
             IsLogin = false;
+            return;
         }
         App.Config.SaveToken = Token.IsChecked == true;
-        var res = await App.StartLogin(BuildUtils.GetSHA1(pass));
-        if (res)
+        if (await App.StartLogin(BuildUtils.GetSHA1(pass)))
         {
-            _ = App.HttpUtils.InitLog();
+            await App.HttpUtils.InitLog();
             if (LoginTask.Status == TaskStatus.Running)
             {
                 cancel.Cancel(false);
