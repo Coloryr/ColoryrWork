@@ -31,7 +31,7 @@ internal record CoreConfig : MainConfig
     //public bool RouteEnable { get; set; }
 }
 
-internal class CoreConfigUtils : ConfigUtil
+internal class CoreConfigUtils : ConfigUtils
 {
     public override void Start()
     {

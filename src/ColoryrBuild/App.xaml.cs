@@ -20,7 +20,7 @@ namespace ColoryrBuild;
 /// </summary>
 public partial class App : Application
 {
-    public const string Version = "2.0.0";
+    public const string Version = "2.2.0";
     /// <summary>
     /// 运行路径
     /// </summary>
@@ -192,5 +192,11 @@ public partial class App : Application
     {
         MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
         e.SetObserved();
+    }
+
+    internal static void LoginOut()
+    {
+        Config.Token = null;
+        Login();
     }
 }

@@ -295,7 +295,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => "websocket",
                 CodeType.Robot => "robot",
                 CodeType.Mqtt => "mqtt",
-                CodeType.Task => "task",
+                CodeType.Service => "task",
                 _ => throw new ErrorDump("code type error")
             };
 
@@ -416,7 +416,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => "websocket",
                 CodeType.Robot => "robot",
                 CodeType.Mqtt => "mqtt",
-                CodeType.Task => "task",
+                CodeType.Service => "task",
                 _ => throw new ErrorDump("code type error")
             };
 
@@ -595,7 +595,7 @@ internal static class CodeFileManager
                 CodeType.WebSocket => GetWebSocket(uuid),
                 CodeType.Robot => GetRobot(uuid),
                 CodeType.Mqtt => GetMqtt(uuid),
-                CodeType.Task => GetTask(uuid),
+                CodeType.Service => GetTask(uuid),
                 _ => null
             };
 
@@ -631,9 +631,9 @@ internal static class CodeFileManager
                     MqttFileList.TryRemove(uuid, out var item6);
                     DllStongeManager.RemoveMqtt(uuid);
                     break;
-                case CodeType.Task:
+                case CodeType.Service:
                     TaskFileList.TryRemove(uuid, out var item7);
-                    DllStongeManager.RemoveTask(uuid);
+                    DllStongeManager.RemoveService(uuid);
                     break;
             }
 
@@ -715,7 +715,7 @@ Type:{obj.Type}
             foreach (var item in list)
             {
                 var obj = item.ToCode();
-                obj.Type = CodeType.Task;
+                obj.Type = CodeType.Service;
                 TaskFileList.TryAdd(item.uuid, obj);
             }
         }

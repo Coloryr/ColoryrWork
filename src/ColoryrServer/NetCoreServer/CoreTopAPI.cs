@@ -1,14 +1,14 @@
-﻿using ColoryrServer.Core.Http.PostBuild;
-using ColoryrServer.Core;
+﻿using ColoryrServer.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ColoryrWork.Lib.Build.Object;
+using ColoryrServer.Core.BuilderPost;
 
 namespace ColoryrServer.NetCoreServer;
-    internal class CoreTopAPI : ITopAPI
+internal class CoreTopAPI : ITopAPI
 {
     public ReMessage SetServerEnable(BuildOBJ json)
     {

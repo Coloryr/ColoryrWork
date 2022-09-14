@@ -26,11 +26,14 @@ internal static class LoadDll
                        .Where(x => x.GetCustomAttribute<DllIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Dll[{uuid}]类名错误"
+                Res = $"Dll[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
         var attr = assembly.SelfType.GetCustomAttribute<DllIN>(true);
@@ -45,18 +48,24 @@ internal static class LoadDll
         }
 
         if (assembly.MethodInfos.Count == 0)
+        {
+            ServerMain.LogOut($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
                 Res = $"Dll[{uuid}]没有方法"
             };
+        }
 
         if (!assembly.MethodInfos.ContainsKey(CodeDemo.DllMain))
+        {
+            ServerMain.LogOut($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
                 Res = $"Dll[{uuid}]没有主方法"
             };
+        }
 
         try
         {
@@ -66,6 +75,7 @@ internal static class LoadDll
                 var listA = item.GetCustomAttribute<NotesSDK>(true);
                 if (listA == null)
                 {
+                    ServerMain.LogOut($"加载Dll[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -81,6 +91,7 @@ internal static class LoadDll
         }
         catch
         {
+            ServerMain.LogOut($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -89,6 +100,8 @@ internal static class LoadDll
         }
 
         DllStongeManager.AddDll(uuid, assembly);
+
+        ServerMain.LogOut($"加载Dll[{uuid}]完成");
 
         return null;
     }
@@ -100,7 +113,7 @@ internal static class LoadDll
     public static void LoadFile(string item, string local)
     {
         using var FileStream = new FileStream(local, FileMode.Open, FileAccess.Read);
-        ServerMain.LogOut("加载DLL：" + item);
+        ServerMain.LogOut($"加载Dll[{item}]");
 
         var pdb = local.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

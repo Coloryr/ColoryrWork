@@ -72,7 +72,7 @@ internal static class PortSocketServer
                             ServerMain.LogOut("Socket|Udp:" + temp + " 已连接");
                             Task.Run(() =>
                             {
-                                DllRun.SocketGo(new UdpSocketRequest(temp, buffer, length));
+                                DllRun.SocketGo(new SocketUdpRequest(temp, buffer, length));
                             });
                         }
                     }
@@ -145,7 +145,7 @@ internal static class PortSocketServer
                     client.Receive(data);
                     Task.Run(() =>
                     {
-                        DllRun.SocketGo(new TcpSocketRequest(port, data, client.Available));
+                        DllRun.SocketGo(new SocketTcpRequest(port, data, client.Available));
                     });
                 }
                 Thread.Sleep(100);

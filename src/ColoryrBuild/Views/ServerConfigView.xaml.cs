@@ -1,10 +1,13 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace ColoryrBuild.Views;
 
@@ -13,6 +16,8 @@ namespace ColoryrBuild.Views;
 /// </summary>
 public partial class ServerConfigView : UserControl
 {
+    public static Action Stop;
+    private bool IsRun = false;
     private record EventObj
     {
         public int ID { get; set; }
@@ -67,12 +72,49 @@ public partial class ServerConfigView : UserControl
         }
     }
     private SelfObj Obj;
+    private Thread thread;
     public ServerConfigView()
     {
         Obj = new();
         InitializeComponent();
         DataContext = Obj;
         MainWindow.CallRefresh += Refresh;
+        IsRun = true;
+        thread = new(Run);
+        thread.Start();
+        Stop = () =>
+        {
+            IsRun = false;
+        };
+    }
+
+    private async void Run()
+    {
+        while (IsRun)
+        {
+            try
+            {
+                if (App.IsLogin)
+                {
+                    var res = await App.HttpUtils.GetLog();
+                    if (res != null && res.Build)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            ServerLog.AppendText(res.Message);
+                        });
+                    }
+                }
+                Thread.Sleep(5000);
+            }
+            catch (Exception e)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    _ = new InfoWindow("运行错误", e.ToString());
+                });
+            }
+        }
     }
 
     private void Refresh()
@@ -476,19 +518,53 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.SetServerEnable(check, "Route");
         if (res == null)
         {
+            EnableRoute.IsChecked = !check;
             _ = new InfoWindow("路由设置", "服务器错误");
-            return;
         }
         else if (!res.Build)
         {
+            EnableRoute.IsChecked = !check;
             _ = new InfoWindow("路由设置", res.Message);
-            return;
         }
     }
 
     private void ButtonClick4(object sender, RoutedEventArgs e)
     {
         GetUserConfig();
+    }
+
+    private async void FixMode_Click(object sender, RoutedEventArgs e)
+    {
+        bool check = (bool)FixMode.IsChecked;
+        var res = await App.HttpUtils.SetServerEnable(check, "FixMode");
+        if (res == null)
+        {
+            FixMode.IsChecked = !check;
+            _ = new InfoWindow("维护模式设置", "服务器错误");
+        }
+        else if (!res.Build)
+        {
+            FixMode.IsChecked = !check;
+            _ = new InfoWindow("维护模式设置", res.Message);
+        }
+    }
+
+    private async void Button_Click(object sender, RoutedEventArgs e)
+    {
+        var res = await App.HttpUtils.Rebuild();
+        if (res == null)
+        {
+            _ = new InfoWindow("重新编译", "服务器错误");
+        }
+        else if (!res.Build)
+        {
+            _ = new InfoWindow("重新编译", res.Message);
+        }
+    }
+
+    private void Button_Click_1(object sender, RoutedEventArgs e)
+    {
+        ServerLog.Text = "";
     }
 
     private async void RobotButtonClick(object sender, RoutedEventArgs e)

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ServerDebug", "ColoryrServer\ServerDebug\ColoryrServer.ServerDebug.csproj", "{5296B852-9BF5-4827-9C0D-606A036649AF}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest", "ColoryrTest\ColoryrTest.csproj", "{27355409-7CF0-4042-8F84-1E026DD497F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest.Run", "ColoryrTest.Run\ColoryrTest.Run.csproj", "{9050391D-E477-4752-B7B4-5AD919694299}"
@@ -28,6 +30,7 @@ Global
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2920FB6-F206-4BAD-89A4-E479762508D0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,6 +38,11 @@ Global
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5296B852-9BF5-4827-9C0D-606A036649AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5296B852-9BF5-4827-9C0D-606A036649AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5296B852-9BF5-4827-9C0D-606A036649AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5296B852-9BF5-4827-9C0D-606A036649AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27355409-7CF0-4042-8F84-1E026DD497F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27355409-7CF0-4042-8F84-1E026DD497F3}.Release|Any CPU.ActiveCfg = Release|Any CPU

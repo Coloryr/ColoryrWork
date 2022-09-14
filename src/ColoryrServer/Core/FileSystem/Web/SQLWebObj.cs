@@ -2,7 +2,7 @@
 
 namespace ColoryrServer.Core.FileSystem.Web;
 
-public class QWebObj
+public record QWebObj
 {
     public string uuid { get; set; }
     public string text { get; set; }
@@ -27,7 +27,7 @@ public class QWebObj
     }
 }
 
-public class FWebObj
+public record FWebObj
 {
     public string uuid { get; set; }
     public string name { get; set; }
@@ -35,7 +35,7 @@ public class FWebObj
     public string time { get; set; }
 }
 
-public class CWebObj
+public record CWebObj
 {
     public string uuid { get; set; }
     public string name { get; set; }

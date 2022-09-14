@@ -30,7 +30,7 @@
                         Header="创建时间" />
                     <GridViewColumn
                         Width="180"
-                        DisplayMemberBinding="{Binding UpdataTime}"
+                        DisplayMemberBinding="{Binding UpdateTime}"
                         Header="修改时间" />
                 </GridView>
             </ListView.View>

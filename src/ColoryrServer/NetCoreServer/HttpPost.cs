@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager.PostBuild;
 using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.BuilderPost;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
@@ -136,14 +136,9 @@ internal class HttpPost
         }
         if (request.Url == "/")
         {
-            if (headers.TryGetValue(BuildKV.BuildK, out var item)
-                    && item == BuildKV.BuildV)
+            if (headers.TryGetValue(BuildKV.BuildK, out var item))
             {
-                var receivedData = DeCode.AES256(request.BodyBytes, ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-                var str = Encoding.UTF8.GetString(receivedData);
-                JObject obj = JObject.Parse(Function.GetSrings(str, "{"));
-                var Json = obj.ToObject<BuildOBJ>();
-                var obj1 = PostBuild.StartBuild(Json);
+                var obj1 = PostDo.StartBuild(request.BodyBytes, item);
                 session.Response.MakeGetResponse(JsonConvert.SerializeObject(obj1));
             }
             else

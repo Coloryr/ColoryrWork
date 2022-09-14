@@ -33,6 +33,9 @@
     <Page Update="Views\CodeWebEditView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Windows\Chose1Window.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 
   <Import Project="..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />

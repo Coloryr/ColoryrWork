@@ -24,7 +24,7 @@ internal record ASPConfig : MainConfig
     public bool NoInput { get; set; }
 }
 
-public class ASPConfigUtils : ConfigUtil
+public class ASPConfigUtils : ConfigUtils
 {
     public override void Start()
     {

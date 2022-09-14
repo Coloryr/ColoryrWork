@@ -63,7 +63,9 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
-        ///[DLLIN]
+        /////ColoryrServer_Debug
+        ///
+        ///[ClassIN]
         ///public class {name}
         ///{
         ///    public {name}()
@@ -71,7 +73,7 @@ namespace ColoryrServer.Core {
         ///             
         ///    }
         ///
-        ///    public string getString(string data)
+        ///    public string GetString(string data)
         ///    {
         ///        return data + &quot;test&quot;;
         ///    }
@@ -86,8 +88,10 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
-        ///[DLLIN(true)]//true则报错输出至网页
-        ///public class app_{name}
+        /////ColoryrServer_Debug
+        ///
+        ///[DllIN(true)]//true则报错输出至网页
+        ///public class App_{name}
         ///{
         ///    [NotesSDK(&quot;一个接口&quot;, new string[1]{ &quot;输入&quot; }, new string[1]{ &quot;输出&quot; })]
         ///    public dynamic Main(HttpDllRequest http)
@@ -105,26 +109,28 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
-        ///[DLLIN]
+        /////ColoryrServer_Debug
+        ///
+        ///[MqttIN]
         ///public class {name}
         ///{
-        ///    public bool OnMessage(MqttMessage head)
+        ///    public bool OnMessage(DllMqttMessage head)
         ///    {
-        ///        return true; //true表示事件已处理完毕
+        ///        return false; //true表示事件已处理完毕
         ///    }
-        ///    public bool OnValidator(MqttConnectionValidator head)
+        ///    public bool OnRetainedMessageChanged(DllMqttRetainedMessageChanged head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
-        ///    public bool OnSubscription(MqttSubscription head)
+        ///    public bool OnMessageLoading(DllMqttLoadingRetainedMessages head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
-        ///    public bool OnUnsubscription(MqttUnsubscription head)
+        ///    public bool OnValidator(DllMqttConnectionValidator head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
-        ///} 的本地化字符串。
+        ///   [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Mqtt {
             get {
@@ -142,13 +148,13 @@ namespace ColoryrServer.Core {
         ///using DotNetty.Transport.Channels.Sockets;
         ///using System.Security.Cryptography.X509Certificates;
         ///
-        ///[DLLIN]
+        /////ColoryrServer_Debug
+        ///
+        ///[SocketIN(true)] //true表示为Netty类型
         ///public class {name} : INetty
         ///{
         ///    private IChannel bootstrapChannel;
-        ///    public async void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup workerGroup)
-        ///    {
-        ///        X509Certificate2 tlsCertific [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    public override void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup wor [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Netty {
             get {
@@ -159,20 +165,23 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
-        ///[DLLIN]
+        /////ColoryrServer_Debug
+        ///
+        ///[RobotIN(new int[] {})] //在这里添加更多订阅的事件
         ///public class {name}
         ///{
         ///    public bool OnMessage(RobotMessage head)
         ///    {
-        ///        return true; //true表示事件已处理完毕
+        ///        return false; //true表示事件已处理完毕
         ///    }
         ///    public bool OnMessagSend(RobotSend head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
+        ///    //这里是更多事件的回调
         ///    public bool OnRobotEvent(RobotEvent head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
         ///} 的本地化字符串。
         /// </summary>
@@ -183,18 +192,134 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
+        ///   查找类似 using System;
+        ///using ColoryrServer.SDK;
         ///
-        ///[DLLIN]
+        /////ColoryrServer_Debug
+        ///
+        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
         ///public class {name}
         ///{
-        ///    public bool OnTcpMessage(TcpSocketRequest head)
+        ///    public ServiceNextState Run(object[] args, CancellationToken token)
         ///    {
-        ///        return true; //true表示事件已处理完毕
+        ///        return ServiceNextState.Stop;
         ///    }
-        ///    public bool OnUdpMessage(UdpSocketRequest head)
+        ///
+        ///    public void OnStart()
         ///    {
-        ///        return true;
+        ///        
+        ///    }
+        ///
+        ///    public void OnStop()
+        ///    {
+        ///        
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string Service1 {
+            get {
+                return ResourceManager.GetString("Service1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using System;
+        ///using ColoryrServer.SDK;
+        ///
+        /////ColoryrServer_Debug
+        ///
+        ///[ServiceIN(type: ServiceType.ErrorDump)]
+        ///public class {name}
+        ///{
+        ///    public bool OnError(Exception e)
+        ///    {
+        ///        return false;
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string Service2 {
+            get {
+                return ResourceManager.GetString("Service2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using System;
+        ///using ColoryrServer.SDK;
+        ///
+        /////ColoryrServer_Debug
+        ///
+        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
+        ///public class {name}
+        ///{
+        ///    public ServiceNextState Run(object[] args, CancellationToken token)
+        ///    {
+        ///        return ServiceNextState.Stop;
+        ///    }
+        ///
+        ///    public void OnStart()
+        ///    {
+        ///        
+        ///    }
+        ///
+        ///    public void OnStop()
+        ///    {
+        ///        
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string Service3 {
+            get {
+                return ResourceManager.GetString("Service3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using System;
+        ///using ColoryrServer.SDK;
+        ///
+        /////ColoryrServer_Debug
+        ///
+        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
+        ///public class {name}
+        ///{
+        ///    public ServiceNextState Run(object[] args, CancellationToken token)
+        ///    {
+        ///        return ServiceNextState.Stop;
+        ///    }
+        ///
+        ///    public void OnStart()
+        ///    {
+        ///        
+        ///    }
+        ///
+        ///    public void OnStop()
+        ///    {
+        ///        
+        ///    }
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string Service4 {
+            get {
+                return ResourceManager.GetString("Service4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.SDK;
+        ///
+        /////ColoryrServer_Debug
+        ///
+        ///[SocketIN]
+        ///public class {name}
+        ///{
+        ///    public bool OnTcpMessage(SocketTcpRequest head)
+        ///    {
+        ///        return false; //true表示事件已处理完毕
+        ///    }
+        ///    public bool OnUdpMessage(SocketUdpRequest head)
+        ///    {
+        ///        return false;
         ///    }
         ///} 的本地化字符串。
         /// </summary>
@@ -207,41 +332,22 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.SDK;
         ///
-        ///[DLLIN]
-        ///public class {name}
-        ///{
-        ///    public TaskRes Run(object[] args)
-        ///    {
-        ///        return new() 
-        ///        {
-        ///            Res = true
-        ///        };
-        ///    }
-        ///} 的本地化字符串。
-        /// </summary>
-        internal static string Task {
-            get {
-                return ResourceManager.GetString("Task", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
+        /////ColoryrServer_Debug
         ///
-        ///[DLLIN]
+        ///[WebSocketIN]
         ///public class {name}
         ///{
         ///    public bool OnMessage(WebSocketMessage head)
         ///    {
-        ///        return true; //true表示事件已处理完毕
+        ///        return false; //true表示事件已处理完毕
         ///    }
         ///    public bool OnOpen(WebSocketOpen head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
         ///    public bool OnClose(WebSocketClose head)
         ///    {
-        ///        return true;
+        ///        return false;
         ///    }
         ///} 的本地化字符串。
         /// </summary>

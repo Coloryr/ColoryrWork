@@ -2,7 +2,7 @@
 
 public enum PostBuildType
 {
-    AddDll, AddClass, AddSocket, AddWebSocket, AddRobot, AddMqtt, AddTask, AddWeb,
+    AddDll, AddClass, AddSocket, AddWebSocket, AddRobot, AddMqtt, AddService, AddWeb,
     GetDll, GetClass, GetSocket, GetWebSocket, GetRobot, GetMqtt, GetTask, GetWeb,
     CodeDll, CodeClass, CodeSocket, CodeWebSocket, CodeRobot, CodeMqtt, CodeTask, CodeWeb,
     RemoveDll, RemoveClass, RemoveSocket, RemoveWebSocket, RemoveRobot, RemoveMqtt, RemoveTask, RemoveWeb,
@@ -14,7 +14,7 @@ public enum PostBuildType
     ConfigRemoveHttp, ConfigRemoveHttpRoute, ConfigRemoveHttpUrlRoute,
     ConfigAddUser, ConfigRemoveUser,
     ConfigSetSocket, ConfigSetRobot,
-    SetServerEnable,
+    SetServerEnable, Rebuild, InitLog, GetLog,
     Check, Login, GetApi, ServerReboot
 }
 public record BuildOBJ

@@ -63,9 +63,9 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找类似 using ColoryrServer.Core;
         ///using ColoryrServer.Core.FileSystem;
+        ///using ColoryrServer.Core.PortServer;
         ///using ColoryrServer.Core.Robot;
         ///using ColoryrServer.Core.Utils;
-        ///using ColoryrServer.Core.WebSocket;
         ///using DotNetty.Transport.Channels;
         ///using Fleck;
         ///using Newtonsoft.Json;
@@ -83,7 +83,7 @@ namespace ColoryrServer.Core {
         ////// &lt;/summary&gt;
         ///public abstract class INetty
         ///{
-        ///    p [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string ColoryrSDK {
             get {
@@ -129,18 +129,16 @@ namespace ColoryrServer.Core {
         ///using System.Net.Http;
         ///using System.Threading;
         ///using System.Threading.Tasks;
+        ///using static System.Net.WebRequestMethods;
         ///
         ///namespace ColoryrServer.SDK;
         ///
-        ///public partial class NewHttpHtml : IDisposable
+        ///public partial class StaticDllHttpClient : IDisposable
         ///{
-        ///    public CancellationTokenSource Cancel;
-        ///    public CookieContainer Cookies { get; private set; }
+        ///    private readonly ExHttpClient Client;
+        ///    private readonly Dictionary&lt;string, string&gt; Head;
         ///
-        ///    private ExHttpClient Client;
-        ///    private Dictionary&lt;string, string&gt; Head;
-        ///
-        ///    public NewHt [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    public CancellationTokenSource Cancel { get; p [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string HtmlSDK {
             get {
@@ -149,9 +147,11 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.PortServer;
+        ///   查找类似 using ColoryrServer.Core.FileSystem;
+        ///using ColoryrServer.Core.PortServer;
         ///using MQTTnet.Protocol;
         ///using MQTTnet.Server;
+        ///using System;
         ///
         ///namespace ColoryrServer.SDK;
         ///
@@ -162,11 +162,9 @@ namespace ColoryrServer.Core {
         ///    /// &lt;/summary&gt;
         ///    /// &lt;param name=&quot;topic&quot;&gt;标题&lt;/param&gt;
         ///    /// &lt;param name=&quot;data&quot;&gt;数据&lt;/param&gt;
-        ///    public static void Send(string topic, string data, MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
-        ///        =&gt; PortMqttServer.Send(topic, data, level);
-        ///}
-        ///
-        ///public class DllMqttLoadingRetainedMessag [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    public static void Send(string topic, string data, string id = &quot;ColoryrServer&quot;, 
+        ///        MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
+        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string MqttSDK {
             get {
@@ -262,7 +260,35 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.IoT;
+        ///   查找类似 using ColoryrServer.Core.TaskUtils;
+        ///
+        ///namespace ColoryrServer.SDK;
+        ///
+        ///public static class ServiceSDK
+        ///{
+        ///    /// &lt;summary&gt;
+        ///    /// 是否存在服务
+        ///    /// &lt;/summary&gt;
+        ///    /// &lt;param name=&quot;name&quot;&gt;服务名字&lt;/param&gt;
+        ///    /// &lt;returns&gt;是否存在&lt;/returns&gt;
+        ///    public static bool Have(string name)
+        ///        =&gt; ServiceManager.Have(name);
+        ///    /// &lt;summary&gt;
+        ///    /// 添加一个服务
+        ///    /// &lt;/summary&gt;
+        ///    /// &lt;param name=&quot;arg&quot;&gt;服务参数&lt;/param&gt;
+        ///    public static void Start(ServiceUserArg arg)
+        ///        =&gt; ServiceManager.Start(arg);
+        ///    /// &lt;sum [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        public static string ServiceSDK {
+            get {
+                return ResourceManager.GetString("ServiceSDK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 using ColoryrServer.Core.PortServer;
         ///using System.Collections.Generic;
         ///using System.Net;
         ///using System.Text;
@@ -271,49 +297,25 @@ namespace ColoryrServer.Core {
         ///
         ///public partial class TcpSocketRequest
         ///{
+        ///    /// &lt;summary&gt;
+        ///    /// 端口
+        ///    /// &lt;/summary&gt;
         ///    public IPEndPoint Port { get; init; }
+        ///    /// &lt;summary&gt;
+        ///    /// 数据
+        ///    /// &lt;/summary&gt;
         ///    public byte[] Data { get; init; }
         ///    /// &lt;summary&gt;
-        ///    /// 构造方法
+        ///    /// 长度
         ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;port&quot;&gt;Socket端口&lt;/param&gt;
-        ///    /// &lt;param name=&quot;data&quot;&gt;Socket发送的数据&lt;/param&gt;
-        ///    public TcpSocketRequest(IPEndPoint port, byte[] data)
-        ///    {
-        ///        Port = port;
-        ///        Data =  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    public int Length { get; set; }
+        ///    /// &lt;summary&gt;
+        ///    /// 构造方法
+        ///    /// &lt;/summary&gt;        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string SocketSDK {
             get {
                 return ResourceManager.GetString("SocketSDK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 using ColoryrServer.Core.TaskUtils;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public class TaskSDK
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 是否存在任务
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;name&quot;&gt;任务名字&lt;/param&gt;
-        ///    /// &lt;returns&gt;是否存在&lt;/returns&gt;
-        ///    public static bool HaveTask(string name)
-        ///        =&gt; TaskManager.HaveTask(name);
-        ///    /// &lt;summary&gt;
-        ///    /// 添加一个任务
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;arg&quot;&gt;任务参数&lt;/param&gt;
-        ///    public static void StartTask(TaskUserArg arg)
-        ///        =&gt; TaskManager.StartTask(arg);
-        ///    /// &lt;summar [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        public static string TaskSDK {
-            get {
-                return ResourceManager.GetString("TaskSDK", resourceCulture);
             }
         }
         
@@ -376,9 +378,8 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.FileSystem.Html;
+        ///   查找类似 using ColoryrServer.Core.FileSystem.Web;
         ///using ColoryrServer.Core.Http;
-        ///using DotNetty.Codecs.Http;
         ///
         ///namespace ColoryrServer.SDK;
         ///
@@ -395,7 +396,8 @@ namespace ColoryrServer.Core {
         ///        var route = HttpInvokeRoute.Get(uuid);
         ///        return route.Invoke(null, name).Data as byte[];
         ///    }
-        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    /// &lt;summary&gt;
+        ///    /// 获取静 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string WebHtmlSDK {
             get {
@@ -404,7 +406,7 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.WebSocket;
+        ///   查找类似 using ColoryrServer.Core.PortServer;
         ///using Fleck;
         ///
         ///namespace ColoryrServer.SDK;
@@ -417,9 +419,10 @@ namespace ColoryrServer.Core {
         ///    /// &lt;param name=&quot;info&quot;&gt;接口&lt;/param&gt;
         ///    /// &lt;param name=&quot;data&quot;&gt;数据&lt;/param&gt;
         ///    public static void Send(IWebSocketConnectionInfo info, string data)
-        ///        =&gt; ServerWebSocket.Send(info.ClientPort, data);
+        ///        =&gt; PortWebSocket.Send(info.ClientPort, data);
         ///    public static void Send(IWebSocketConnectionInfo info, byte[] data)
-        ///        =&gt; ServerWebSocket.Send(info.ClientPort, data) [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        =&gt; PortWebSocket.Send(info.ClientPort, data);
+        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         public static string WebSocketSDK {
             get {

@@ -25,28 +25,27 @@ internal static class LoadWebSocket
                        .GetTypes().Where(x => x.GetCustomAttribute<WebSocketIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载WebSocket[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"WebSocket[{uuid}]类名错误"
+                Res = $"WebSocket[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is CodeDemo.WebSocketMessage or CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose)
+            if (item.IsPublic && (item.Name is CodeDemo.WebSocketMessage or 
+                CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose))
                 assembly.MethodInfos.Add(item.Name, item);
         }
 
-        if (assembly.MethodInfos.Count == 0)
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"WebSocket[{uuid}]没有主方法"
-            };
-
         DllStongeManager.AddWebSocket(uuid, assembly);
+
+        ServerMain.LogOut($"加载WebSocket[{uuid}]完成");
 
         return null;
     }

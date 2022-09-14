@@ -60,10 +60,21 @@ public class SocketIN : Attribute
     }
 }
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class TaskIN : Attribute
-{
+public enum ServiceType
+{ 
+    Normal, ErrorDump, OnlyOpen, Builder
+}
 
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class ServiceIN : Attribute
+{
+    public bool AutoStart;
+    public ServiceType ServiceType;
+    public ServiceIN(bool start = false, ServiceType type = ServiceType.Normal)
+    {
+        AutoStart = start;
+        ServiceType = type;
+    }
 }
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]

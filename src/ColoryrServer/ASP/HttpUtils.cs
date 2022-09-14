@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.FileSystem.Web;
+﻿using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using System.Collections.Specialized;
@@ -10,9 +11,18 @@ public static class HttpUtils
 {
     public static RouteObj? GetUUID(string name, out string funtion)
     {
-        var args = name.Split('/');
-        string temp = "";
         funtion = "";
+        if (ServerMain.Config.FixMode)
+        {
+            return HttpReturnSave.Fix;
+        }
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            funtion = "";
+            return null;
+        }
+        string temp = "";
+        var args = name.Split('/');
         for (int a = 0; a < args.Length; a++)
         {
             temp += args[a];

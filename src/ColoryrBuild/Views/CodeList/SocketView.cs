@@ -42,7 +42,7 @@ internal class SocketView : CodeListView
         var list = await App.HttpUtils.AddObj(Type, data, res.ToString());
         if (list == null)
         {
-            App.LogShow("添加", "服务器返回错误");
+            App.LogShow("创建", "服务器返回错误");
             return;
         }
         App.LogShow("创建", list.Message);

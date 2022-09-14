@@ -57,8 +57,8 @@ public static class DllUseSave
             case CodeType.Class:
                 LoadClass.Reload(name.Name);
                 break;
-            case CodeType.Task:
-                LoadTask.Reload(name.Name);
+            case CodeType.Service:
+                LoadService.Reload(name.Name);
                 break;
             case CodeType.Robot:
                 LoadRobot.Reload(name.Name);

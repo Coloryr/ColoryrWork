@@ -23,7 +23,7 @@ public static class DllStongeManager
     private static readonly ConcurrentDictionary<string, DllAssembly> MapWebSocket = new();
     private static readonly ConcurrentDictionary<string, RobotDllAssembly> MapRobot = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapMqtt = new();
-    private static readonly ConcurrentDictionary<string, DllAssembly> MapTask = new();
+    private static readonly ConcurrentDictionary<string, ServiceDllAssembly> MapService = new();
 
     public static readonly string LocalDll = ServerMain.RunLocal + "Dll/Dll/";
     public static readonly string LocalClass = ServerMain.RunLocal + "Dll/Class/";
@@ -31,7 +31,7 @@ public static class DllStongeManager
     public static readonly string LocalWebSocket = ServerMain.RunLocal + "Dll/WebSocket/";
     public static readonly string LocalRobot = ServerMain.RunLocal + "Dll/Robot/";
     public static readonly string LocalMqtt = ServerMain.RunLocal + "Dll/Mqtt/";
-    public static readonly string LocalTask = ServerMain.RunLocal + "Dll/Task/";
+    public static readonly string LocalService = ServerMain.RunLocal + "Dll/Service/";
 
     private static void Stop()
     {
@@ -59,7 +59,7 @@ public static class DllStongeManager
         {
             item.Unload();
         }
-        foreach (var item in MapTask.Values)
+        foreach (var item in MapService.Values)
         {
             item.Unload();
         }
@@ -69,7 +69,7 @@ public static class DllStongeManager
         MapWebSocket.Clear();
         MapRobot.Clear();
         MapMqtt.Clear();
-        MapTask.Clear();
+        MapService.Clear();
     }
 
     private static void RemoveAll(string dir)
@@ -314,12 +314,12 @@ public static class DllStongeManager
         return new List<DllAssembly>(MapMqtt.Values);
     }
 
-    public static void AddTask(string uuid, DllAssembly save)
+    public static void AddService(string uuid, ServiceDllAssembly save)
     {
-        if (MapTask.ContainsKey(uuid))
+        if (MapService.ContainsKey(uuid))
         {
-            var old = MapTask[uuid];
-            MapTask[uuid] = save;
+            var old = MapService[uuid];
+            MapService[uuid] = save;
             Task.Run(() =>
             {
                 old.Unload();
@@ -330,12 +330,12 @@ public static class DllStongeManager
         }
         else
         {
-            MapTask.TryAdd(uuid, save);
+            MapService.TryAdd(uuid, save);
         }
     }
-    public static void RemoveTask(string uuid)
+    public static void RemoveService(string uuid)
     {
-        if (MapTask.TryRemove(uuid, out var item))
+        if (MapService.TryRemove(uuid, out var item))
         {
             item.Unload();
             item.SelfType = null;
@@ -343,13 +343,13 @@ public static class DllStongeManager
         }
         RemoveAll(LocalRobot + uuid);
     }
-    public static DllAssembly GetTask(string uuid)
+    public static ServiceDllAssembly GetService(string uuid)
     {
-        return MapTask.TryGetValue(uuid, out var dll) ? dll : null;
+        return MapService.TryGetValue(uuid, out var dll) ? dll : null;
     }
-    public static List<DllAssembly> GetTask()
+    public static List<ServiceDllAssembly> GetService()
     {
-        return new List<DllAssembly>(MapTask.Values);
+        return new List<ServiceDllAssembly>(MapService.Values);
     }
     public static void Start()
     {
@@ -378,9 +378,9 @@ public static class DllStongeManager
         {
             Directory.CreateDirectory(LocalMqtt);
         }
-        if (!Directory.Exists(LocalTask))
+        if (!Directory.Exists(LocalService))
         {
-            Directory.CreateDirectory(LocalTask);
+            Directory.CreateDirectory(LocalService);
         }
         if (!Directory.Exists(LocalMqtt))
         {
@@ -476,14 +476,14 @@ public static class DllStongeManager
                 ServerMain.LogError(e);
             }
         }
-        dirs = Function.GetPathFileName(LocalTask);
+        dirs = Function.GetPathFileName(LocalService);
         foreach (var item in dirs)
         {
             try
             {
                 if (item.FullName.Contains(".pdb"))
                     continue;
-                LoadTask.LoadFile(item);
+                LoadService.LoadFile(item);
             }
             catch (Exception e)
             {

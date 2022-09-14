@@ -3,15 +3,12 @@ using ColoryrServer.SDK;
 
 //ColoryrServer_Debug
 
-[TaskIN]
+[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
 public class {name}
 {
-    public TaskRes Run(object[] args)
+    public ServiceNextState Run(object[] args, CancellationToken token)
     {
-        return new() 
-        {
-            Res = true
-        };
+        return ServiceNextState.Stop;
     }
 
     public void OnStart()
@@ -22,10 +19,5 @@ public class {name}
     public void OnStop()
     {
         
-    }
-    
-    public bool OnError(Exception e)
-    {
-        return false;
     }
 }

@@ -1,18 +1,11 @@
 using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager.PostBuild;
-using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Web;
-using ColoryrServer.Core.Http.PostBuild;
+using ColoryrServer.Core.BuilderPost;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
-using ColoryrWork.Lib.Build.Object;
-using ColoryrWork.Lib.Server;
 using Microsoft.AspNetCore.Connections;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
@@ -34,7 +27,7 @@ public static class ASPServer
 
     public static void Main()
     {
-        ServerMain.ConfigUtil = new ASPConfigUtils();
+        ServerMain.ConfigUtils = new ASPConfigUtils();
         PostServerConfig.Init(new ASPTopAPI());
         while (IsReboot)
         {
@@ -178,15 +171,9 @@ public static class ASPServer
     {
         HttpRequest Request = context.Request;
         HttpResponse Response = context.Response;
-        if (Request.Headers[BuildKV.BuildK] == BuildKV.BuildV)
+        if (Request.Headers.ContainsKey(BuildKV.BuildK))
         {
-            MemoryStream stream = new();
-            await Request.Body.CopyToAsync(stream);
-            var receivedData = DeCode.AES256(stream.ToArray(), ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-            var str = Encoding.UTF8.GetString(receivedData);
-            JObject obj = JObject.Parse(Function.GetSrings(str, "{"));
-            var Json = obj.ToObject<BuildOBJ>();
-            var obj1 = PostBuild.StartBuild(Json);
+            var obj1 = await PostDo.StartBuild(Request.Body, Request.Headers[BuildKV.BuildK]);
             await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
         }
         else

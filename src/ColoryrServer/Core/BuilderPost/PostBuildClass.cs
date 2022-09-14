@@ -1,13 +1,15 @@
-﻿using ColoryrServer.Core.DllManager.Gen;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ColoryrServer.Core.DllManager.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
 internal static class PostBuildClass
 {
@@ -106,6 +108,17 @@ internal static class PostBuildClass
         code.code = FileEdit.StartEdit(code.code, list);
         obj.Text = json.Text;
 
+        var arg = new PerBuildArg
+        {
+            CodeObj = obj,
+            CodeType = CodeType.Class,
+            EditCode = code.code,
+            User = json.User,
+            File = json.Temp
+        };
+
+        DllRun.ServiceOnBuild(arg);
+
         obj.Next();
         CodeFileManager.StorageClass(obj, json.Temp, code.code, json.User);
 
@@ -132,6 +145,17 @@ internal static class PostBuildClass
         var buildRes = GenClass.StartGen(obj);
         SW.Stop();
         obj.Up();
+
+        var arg = new PostBuildArg
+        {
+            CodeObj = obj,
+            CodeType = CodeType.Class,
+            User = json.User,
+            BuildRes = buildRes.Isok
+        };
+
+        DllRun.ServiceOnBuild(arg);
+
         return new ReMessage
         {
             Build = buildRes.Isok,

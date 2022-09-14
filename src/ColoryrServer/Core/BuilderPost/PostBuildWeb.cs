@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Vue;
 using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace ColoryrServer.Core.DllManager.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
 internal static class PostBuildWeb
 {

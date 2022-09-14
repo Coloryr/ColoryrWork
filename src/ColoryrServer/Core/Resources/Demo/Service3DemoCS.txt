@@ -1,0 +1,18 @@
+using System;
+using ColoryrServer.SDK;
+
+//ColoryrServer_Debug
+
+[ServiceIN(false, ServiceType.OnlyOpen)] //true表示跟随服务器启动
+public class {name}
+{
+    public void OnStart()
+    {
+        
+    }
+
+    public void OnStop()
+    {
+        
+    }
+}

@@ -26,11 +26,14 @@ internal static class LoadClass
                        .GetTypes().Where(x => x.GetCustomAttribute<ClassIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载Class[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Class[{uuid}]类名错误"
+                Res = $"Class[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
         var listM = assembly.SelfType.GetMethods();
@@ -50,6 +53,8 @@ internal static class LoadClass
         NoteFile.StorageClass(uuid, obj);
         DllStongeManager.AddClass(uuid, assembly);
 
+        ServerMain.LogOut($"加载Class[{uuid}]完成");
+
         return null;
     }
 
@@ -61,7 +66,7 @@ internal static class LoadClass
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载Class：" + uuid);
+        ServerMain.LogOut($"加载Class[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

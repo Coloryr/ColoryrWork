@@ -1,13 +1,14 @@
-﻿using ColoryrServer.Core.DataBase;
+﻿using ColoryrServer.Core.BuilderPost;
+using ColoryrServer.Core.DataBase;
 using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.DllManager.Service;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Html;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
-using ColoryrServer.Core.TaskUtils;
 using ColoryrWork.Lib.Build;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
@@ -43,7 +44,7 @@ public class ServerMain
     /// <summary>
     /// 配置文件操作
     /// </summary>
-    public static ConfigUtil ConfigUtil { get; set; }
+    public static ConfigUtils ConfigUtils { get; set; }
 
     /// <summary>
     /// 服务器停止时的回调
@@ -67,6 +68,7 @@ public class ServerMain
         string a = "[错误]" + e.ToString();
         Task.Run(() =>
         {
+            PostDo.AddLog(a);
             Logs.LogWrite(a);
             Console.WriteLine(a);
         });
@@ -80,6 +82,7 @@ public class ServerMain
         a = "[错误]" + a;
         Task.Run(() =>
         {
+            PostDo.AddLog(a);
             Logs.LogWrite(a);
             Console.WriteLine(a);
         });
@@ -93,6 +96,7 @@ public class ServerMain
         a = "[信息]" + a;
         Task.Run(() =>
         {
+            PostDo.AddLog(a);
             Logs.LogWrite(a);
             Console.WriteLine(a);
         });
@@ -116,10 +120,11 @@ public class ServerMain
             //创建日志文件
             Logs = new Logs(RunLocal);
             //配置文件
-            ConfigUtil.Start();
+            ConfigUtils.Start();
 
             DllLoad();
 
+            PostDo.Start();
             PortNettyManager.Start();
             CodeFileManager.Start();
             NoteFile.Start();
@@ -138,8 +143,8 @@ public class ServerMain
             SqliteCon.Start();
             RamDataBase.Start();
             GenCode.Start();
-            TaskManager.Start();
             DllStongeManager.Start();
+            ServiceManager.Start();
             WebFileManager.Start();
             FileHttpStream.Start();
             PortSocketServer.Start();
@@ -147,8 +152,6 @@ public class ServerMain
 
             //等待初始化完成
             Thread.Sleep(2000);
-
-            DllRun.TaskGoOnStart();
         }
         catch (Exception e)
         {
@@ -176,7 +179,6 @@ public class ServerMain
 
     public static void Stop()
     {
-        DllRun.TaskGoOnStop();
         OnStop.Invoke();
     }
 }

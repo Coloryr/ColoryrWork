@@ -19,6 +19,7 @@ internal class GenRobot
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        ServerMain.LogOut($"开始编译Robot[{obj.UUID}]");
         bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         var build = GenCode.StartGen(obj.UUID, new()
         {
@@ -29,6 +30,7 @@ internal class GenRobot
         if (!build.Isok)
         {
             build.Res = $"Robot[{obj.UUID}]" + build.Res;
+            ServerMain.LogOut($"编译Robot[{obj.UUID}]错误");
             return build;
         }
 
@@ -65,6 +67,8 @@ internal class GenRobot
             build.MS.Dispose();
             GC.Collect();
         });
+
+        ServerMain.LogOut($"编译Robot[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

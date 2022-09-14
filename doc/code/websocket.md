@@ -1,6 +1,7 @@
 # ColoryrServer
 
-## WebSocket代码编写
+WebSocket代码编写
+
 [返回](code.md)
 
 默认的WebSocket代码   

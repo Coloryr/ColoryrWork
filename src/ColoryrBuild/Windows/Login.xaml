@@ -53,6 +53,7 @@
             Content="保存令牌"
             Style="{DynamicResource Check}" />
         <Button
+            Name="ButtonLogin"
             Width="55"
             Margin="175,86,0,0"
             HorizontalAlignment="Left"

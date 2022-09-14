@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ColoryrServer.SDK;
 
-public partial class TcpSocketRequest
+public partial class SocketTcpRequest
 {
     /// <summary>
     /// 端口
@@ -24,7 +24,7 @@ public partial class TcpSocketRequest
     /// </summary>
     /// <param name="port">Socket端口</param>
     /// <param name="data">Socket发送的数据</param>
-    public TcpSocketRequest(IPEndPoint port, byte[] data, int length)
+    public SocketTcpRequest(IPEndPoint port, byte[] data, int length)
     {
         Port = port;
         Data = data;
@@ -47,7 +47,7 @@ public partial class TcpSocketRequest
     public static void Send(IPEndPoint port, byte[] data)
        => PortSocketServer.TcpSendData(port, data);
 }
-public partial class UdpSocketRequest
+public partial class SocketUdpRequest
 {
     /// <summary>
     /// 端口
@@ -66,7 +66,7 @@ public partial class UdpSocketRequest
     /// </summary>
     /// <param name="port">Socket端口</param>
     /// <param name="data">Socket发送的数据</param>
-    public UdpSocketRequest(IPEndPoint port, byte[] data, int length)
+    public SocketUdpRequest(IPEndPoint port, byte[] data, int length)
     {
         Port = port;
         Data = data;

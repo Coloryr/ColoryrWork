@@ -133,11 +133,20 @@
   <data name="Robot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\RobotDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
+  <data name="Service1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Service1DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="Service2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Service2DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="Service3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Service3DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="Service4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Service4DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
   <data name="Socket" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\SocketDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
-  </data>
-  <data name="Task" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\TaskDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="WebSocket" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\WebSocketDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>

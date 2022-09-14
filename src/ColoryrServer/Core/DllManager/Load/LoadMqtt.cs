@@ -25,29 +25,28 @@ internal static class LoadMqtt
                        .GetTypes().Where(x => x.GetCustomAttribute<MqttIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载Mqtt[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Mqtt[{uuid}]类名错误"
+                Res = $"Mqtt[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.Name is CodeDemo.MQTTMessage or CodeDemo.MQTTMessageLoading or
-                CodeDemo.MQTTValidator or CodeDemo.MQTTSubscription && item.IsPublic)
+            if (item.IsPublic && (item.Name is CodeDemo.MQTTMessage or 
+                CodeDemo.MQTTMessageLoading or CodeDemo.MQTTValidator or 
+                CodeDemo.MQTTSubscription))
                 assembly.MethodInfos.Add(item.Name, item);
         }
 
-        if (assembly.MethodInfos.Count == 0)
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Mqtt[{uuid}]没有方法"
-            };
-
         DllStongeManager.AddMqtt(uuid, assembly);
+
+        ServerMain.LogOut($"加载Mqtt[{uuid}]完成");
 
         return null;
     }
@@ -60,7 +59,7 @@ internal static class LoadMqtt
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载Mqtt：" + uuid);
+        ServerMain.LogOut($"加载Mqtt[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

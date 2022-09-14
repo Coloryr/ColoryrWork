@@ -25,11 +25,14 @@ internal static class LoadSocket
                        .GetTypes().Where(x => x.GetCustomAttribute<SocketIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载Socket[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Socket[{uuid}]类名错误"
+                Res = $"Socket[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
         var arg = assembly.SelfType.GetCustomAttribute<SocketIN>(true);
@@ -37,20 +40,15 @@ internal static class LoadSocket
         {
             foreach (var item in assembly.SelfType.GetMethods())
             {
-                if (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp && item.IsPublic)
+                if (item.IsPublic && (item.Name is CodeDemo.SocketTcp or CodeDemo.SocketUdp))
                     assembly.MethodInfos.Add(item.Name, item);
             }
-
-            if (assembly.MethodInfos.Count == 0)
-                return new GenReOBJ
-                {
-                    Isok = false,
-                    Res = $"Socket[{uuid}]没有方法"
-                };
         }
         assembly.Netty = arg.Netty;
 
         DllStongeManager.AddSocket(uuid, assembly);
+
+        ServerMain.LogOut($"加载Socket[{uuid}]完成");
 
         return null;
     }
@@ -63,7 +61,7 @@ internal static class LoadSocket
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载Socket：" + uuid);
+        ServerMain.LogOut($"加载Socket[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.DllManager.Gen;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrWork.Lib.Build.Object;
@@ -7,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ColoryrServer.Core.DllManager.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
 internal class PostBuildRobot
 {

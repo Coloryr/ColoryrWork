@@ -17,6 +17,7 @@ public class StaticDir
     public byte[] HtmlIcon { get; private set; }
     public byte[] Html404 { get; private set; }
     public byte[] HtmlIndex { get; private set; }
+    public byte[] HtmlFixMode { get; private set; }
 
     public StaticDir(string dir)
     {
@@ -54,6 +55,8 @@ public class StaticDir
                 HtmlIcon = File.ReadAllBytes(item.FullName);
             else if (item.Name.ToLower() is "index.html")
                 HtmlIndex = File.ReadAllBytes(item.FullName);
+            else if (item.Name.ToLower() is "fixmode.html")
+                HtmlFixMode = File.ReadAllBytes(item.FullName);
         }
     }
 

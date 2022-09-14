@@ -1,6 +1,7 @@
 # ColoryrServer
 
-## Socket代码编写
+Socket代码编写
+
 [返回](code.md)
 
 Socket代码有两种类型，传统Socket数据包处理和自定义Netty处理

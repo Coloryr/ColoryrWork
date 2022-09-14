@@ -1,0 +1,18 @@
+using System;
+using ColoryrServer.SDK;
+
+//ColoryrServer_Debug
+
+[ServiceIN(type: ServiceType.Builder)] //true表示跟随服务器启动
+public class {name}
+{
+    public bool OnPerBuild(PerBuildArg arg)
+    {
+        return false; //true表示处理结束
+    }
+
+    public bool OnPostBuild(PostBuildArg arg)
+    {
+        return false;
+    }
+}

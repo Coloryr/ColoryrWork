@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build.Object;
 
-namespace ColoryrServer.Core.Http.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
 internal static class PostUser
 {

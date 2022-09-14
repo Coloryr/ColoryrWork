@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 
 //ColoryrServer_Debug
 
-[SocketIN(true)]
+[SocketIN(true)] //true表示为Netty类型
 public class {name} : INetty
 {
     private IChannel bootstrapChannel;

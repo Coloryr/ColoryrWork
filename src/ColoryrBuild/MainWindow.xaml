@@ -26,9 +26,18 @@
             Margin="2"
             SelectionChanged="Tabs_SelectionChanged">
             <TabItem Header="服务器设定" Style="{DynamicResource TabItem}">
-                <views:ServerConfigView />
+                <Grid>
+                    <views:ServerConfigView />
+                    <Button
+                        Width="80"
+                        Margin="0,350,30,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="Button_Click"
+                        Content="登出" />
+                </Grid>
             </TabItem>
-            <TabItem Header="日志" Style="{DynamicResource TabItem}">
+            <TabItem Header="工具日志" Style="{DynamicResource TabItem}">
                 <views:LogView />
             </TabItem>
             <TabItem Header="代码选择" Style="{DynamicResource TabItem}">
@@ -51,8 +60,8 @@
                     <TabItem Header="Mqtt" Style="{DynamicResource TabItem}">
                         <local:MqttView />
                     </TabItem>
-                    <TabItem Header="Task" Style="{DynamicResource TabItem}">
-                        <local:TaskView />
+                    <TabItem Header="Service" Style="{DynamicResource TabItem}">
+                        <local:ServiceView />
                     </TabItem>
                     <TabItem Header="网页" Style="{DynamicResource TabItem}">
                         <local:WebView />

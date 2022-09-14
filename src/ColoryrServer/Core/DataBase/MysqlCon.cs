@@ -112,8 +112,11 @@ internal static class MysqlCon
     /// <returns>是否连接成功</returns>
     internal static void Start()
     {
-        ServerMain.LogOut($"正在连接Mysql数据库");
+        ServerMain.OnStop += Stop;
         Config = ServerMain.Config.Mysql;
+        if (Config.Count < 0)
+            return;
+        ServerMain.LogOut($"正在连接Mysql数据库");
         for (int a = 0; a < Config.Count; a++)
         {
             var config = Config[a];
@@ -133,7 +136,6 @@ internal static class MysqlCon
                 ServerMain.LogError($"Mysql数据库{a}连接失败");
             }
         }
-        ServerMain.OnStop += Stop;
     }
 
     /// <summary>

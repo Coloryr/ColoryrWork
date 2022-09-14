@@ -1,6 +1,7 @@
 # ColoryrServer
 
-## Mqtt代码编写
+Mqtt代码编写
+
 [返回](code.md)
 
 默认的Mqtt代码  
@@ -8,12 +9,18 @@
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN]
+//ColoryrServer_Debug
+
+[MqttIN]
 public class test
 {
     public bool OnMessage(DllMqttMessage head)
     {
         return false; //true表示事件已处理完毕
+    }
+    public bool OnRetainedMessageChanged(DllMqttRetainedMessageChanged head)
+    {
+        return false;
     }
     public bool OnMessageLoading(DllMqttLoadingRetainedMessages head)
     {
@@ -28,6 +35,18 @@ public class test
         return false;
     }
     public bool OnUnsubscription(DllMqttUnsubscription head)
+    {
+        return false;
+    }
+    public bool OnClientConnected(DllMqttClientConnected head)
+    {
+        return false;
+    }
+    public bool OnClientDisconnected(DllMqttClientDisconnected head)
+    {
+        return false;
+    }
+    public bool OnInterceptingPublish(DllMqttInterceptingPublish head)
     {
         return false;
     }

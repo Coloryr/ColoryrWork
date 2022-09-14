@@ -20,10 +20,12 @@ internal static class CodeDemo
     public const string MQTTClientDisconnected = "OnClientDisconnected";
     public const string MQTTInterceptingPublish = "OnInterceptingPublish";
     public const string MQTTRetainedMessageChanged = "OnRetainedMessageChanged";
-    public const string TaskRun = "Run";
-    public const string TaskStart = "OnStart";
-    public const string TaskStop = "OnStop";
-    public const string TaskError = "OnError";
+    public const string ServiceRun = "Run";
+    public const string ServiceStart = "OnStart";
+    public const string ServiceStop = "OnStop";
+    public const string ServiceError = "OnError";
+    public const string ServicePerBuild = "OnPerBuild";
+    public const string ServicePostBuild = "OnPostBuild";
 
     public const string Name = "{name}";
 }

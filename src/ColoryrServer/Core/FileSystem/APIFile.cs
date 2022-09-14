@@ -16,7 +16,7 @@ internal static class APIFile
         list.List.Add("RobotPacks", SDKResource.RobotPacks);
         list.List.Add("RobotSDK", SDKResource.RobotSDK);
         list.List.Add("SocketSDK", SDKResource.SocketSDK);
-        list.List.Add("TaskSDK", SDKResource.TaskSDK);
+        list.List.Add("ServiceSDK", SDKResource.ServiceSDK);
         list.List.Add("WebApiSDK", SDKResource.WebApiSDK);
         list.List.Add("WebHtmlSDK", SDKResource.WebHtmlSDK);
         list.List.Add("WebSocketSDK", SDKResource.WebSocketSDK);

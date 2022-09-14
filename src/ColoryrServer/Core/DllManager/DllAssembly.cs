@@ -1,4 +1,6 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.DllManager.Service;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
@@ -73,4 +75,17 @@ public class SocketDllAssembly : DllAssembly
 {
     public bool Netty;
     public SocketDllAssembly(CodeType type, string name) : base(type, name) { }
+}
+
+public class ServiceDllAssembly : DllAssembly
+{
+    public bool AutoStart;
+    public ServiceType ServiceType;
+    public ServiceDllAssembly(CodeType type, string name) : base(type, name) { }
+
+    new public void Unload() 
+    {
+        ServiceManager.Stop(Name);
+        base.Unload();
+    }
 }

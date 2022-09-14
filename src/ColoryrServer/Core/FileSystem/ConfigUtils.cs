@@ -61,6 +61,10 @@ public abstract record MainConfig
     /// 代码设置选项
     /// </summary>
     public CodeConfigObj CodeSetting { get; set; }
+    /// <summary>
+    /// 维护模式
+    /// </summary>
+    public bool FixMode { get; set; }
 }
 
 public record SslConfigObj
@@ -90,7 +94,7 @@ public record CodeConfigObj
     /// </summary>
     public List<string> NotInclude { get; set; }
     /// <summary>
-    /// 代码增量储存
+    /// 代码修改信息储存
     /// </summary>
     public bool CodeLog { get; set; }
     /// <summary>
@@ -202,7 +206,7 @@ public record RedisConfig
     /// </summary>
     public string Conn { get; set; }
 }
-public abstract class ConfigUtil
+public abstract class ConfigUtils
 {
     public static string FilePath = ServerMain.RunLocal + @"MainConfig.json";
     /// <summary>

@@ -23,7 +23,7 @@ public record HttpReturn
 
 public static class HttpReturnSave
 {
-    public static HttpReturn ResReload = new()
+    public static HttpReturn ResReload { get; } = new()
     {
         Res = ResType.Json,
         ContentType = "application/json; charset=UTF-8",
@@ -33,7 +33,7 @@ public static class HttpReturnSave
             text = "服务器正在重载"
         }
     };
-    public static HttpReturn ResError = new()
+    public static HttpReturn ResError { get; } = new()
     {
         Res = ResType.Json,
         ReCode = 500,
@@ -44,15 +44,23 @@ public static class HttpReturnSave
             text = "服务器内部错误"
         }
     };
-    public static HttpReturn Res404 = new()
+    public static HttpReturn Res404 { get; } = new()
     {
         Data = WebBinManager.BaseDir.Html404,
         ContentType = ServerContentType.HTML,
         Res = ResType.Byte,
         ReCode = 404
     };
+    public static HttpReturn ResFixMode { get; } = new()
+    {
+        Data = WebBinManager.BaseDir.HtmlFixMode,
+        ContentType = ServerContentType.HTML,
+        Res = ResType.Byte,
+        ReCode = 200
+    };
 
-    public static LockRoute Reload = new();
+    public static LockRoute Reload { get; } = new();
+    public static FixRoute Fix { get; } = new();
     public class LockRoute : RouteObj
     {
         public LockRoute()
@@ -63,6 +71,19 @@ public static class HttpReturnSave
         public override HttpReturn Invoke(HttpDllRequest arg, string function)
         {
             return ResReload;
+        }
+    }
+
+    public class FixRoute : RouteObj
+    {
+        public FixRoute()
+        {
+            IsDll = false;
+            IsReload = false;
+        }
+        override public HttpReturn Invoke(HttpDllRequest arg, string function)
+        {
+            return ResFixMode;
         }
     }
 }

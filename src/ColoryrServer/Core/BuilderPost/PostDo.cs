@@ -1,32 +1,79 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.DllManager.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
-using ColoryrServer.Core.Http.PostBuild;
+using ColoryrServer.SDK;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
+using ColoryrWork.Lib.Server;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.DllManager.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
-public static class PostBuild
+public static class PostDo
 {
-    public static object StartBuild(BuildOBJ json)
+    public static bool IsRebuild { get; private set; } = false;
+    private readonly static Dictionary<string, string> Client = new();
+    private readonly static Dictionary<string, int> Timer = new();
+    private readonly static Thread TaskThread = new(Run) 
     {
+        Name = "LogThread"   
+    };
+    private static bool IsRun;
+    public static void Start() 
+    {
+        IsRun = true;
+        TaskThread.Start();
+        ServerMain.OnStop += Stop;
+    }
+
+    public static void Stop() 
+    {
+        IsRun = false;
+        Client.Clear();
+        Timer.Clear();
+    }
+
+    public static async Task<object> StartBuild(Stream input, string value)
+    {
+        using MemoryStream stream = new();
+        await input.CopyToAsync(stream);
+        return StartBuild(stream.ToArray(), value);
+    }
+
+    public static object StartBuild(byte[] input, string value)
+    {
+        if (value != BuildKV.BuildV)
+        {
+            return PostRes.Old;
+        }
+        var receivedData = DeCode.AES256(input,
+            ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
+        var str = Encoding.UTF8.GetString(receivedData);
+        JObject obj;
+        try
+        {
+            obj = JObject.Parse(Function.GetSrings(str, "{"));
+        }
+        catch
+        {
+            return PostRes.ArgError;
+        }
+        var json = obj.ToObject<BuildOBJ>();
         if (json == null)
         {
-            return new ReMessage
-            {
-                Build = false,
-                Message = "参数错误"
-            };
+            return PostRes.ArgError;
         }
-        if (json.Mode == PostBuildType.Login)
+        else if (json.Mode == PostBuildType.Login)
         {
             if (json.Code == null || json.User == null)
             {
-                return new ReMessage
-                {
-                    Build = false,
-                    Message = "账户或密码错误"
-                };
+                return PostRes.UserError;
             }
             else if (LoginSave.CheckPassword(json.User.ToLower(), json.Code.ToLower()))
             {
@@ -39,30 +86,24 @@ public static class PostBuild
                 };
             }
             else
-                return new ReMessage
-                {
-                    Build = false,
-                    Message = "账户或密码错误"
-                };
+                return PostRes.UserError;
         }
         else if (json.Mode == PostBuildType.Check)
         {
             if (json.User == null || json.Token == null)
             {
-                return new ReMessage
-                {
-                    Build = false,
-                    Message = "自动登录"
-                };
+                return PostRes.AutoError;
             }
             return new ReMessage
             {
-                Build = LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()),
-                Message = "自动登录"
+                Build = LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower())
             };
         }
-        else if (LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
+        else if (!LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
         {
+            return PostRes.LoginOut;
+        } 
+        else
             return json.Mode switch
             {
                 PostBuildType.AddDll => PostBuildDll.Add(json),
@@ -71,7 +112,7 @@ public static class PostBuild
                 PostBuildType.AddWebSocket => PostBuildWebSocket.Add(json),
                 PostBuildType.AddRobot => PostBuildRobot.Add(json),
                 PostBuildType.AddMqtt => PostBuildMqtt.Add(json),
-                PostBuildType.AddTask => PostBuildTask.Add(json),
+                PostBuildType.AddService => PostBuildService.Add(json),
                 PostBuildType.AddWeb => PostBuildWeb.Add(json),
                 PostBuildType.GetDll => PostBuildDll.GetList(),
                 PostBuildType.GetClass => PostBuildClass.GetList(),
@@ -79,7 +120,7 @@ public static class PostBuild
                 PostBuildType.GetWebSocket => PostBuildWebSocket.GetList(),
                 PostBuildType.GetRobot => PostBuildRobot.GetList(),
                 PostBuildType.GetMqtt => PostBuildMqtt.GetList(),
-                PostBuildType.GetTask => PostBuildTask.GetList(),
+                PostBuildType.GetTask => PostBuildService.GetList(),
                 PostBuildType.GetWeb => PostBuildWeb.GetList(),
                 PostBuildType.CodeDll => CodeFileManager.GetDll(json.UUID),
                 PostBuildType.CodeClass => PostBuildClass.GetCode(json),
@@ -96,7 +137,7 @@ public static class PostBuild
                 PostBuildType.RemoveWebSocket => PostBuildWebSocket.Remove(json),
                 PostBuildType.RemoveRobot => PostBuildRobot.Remove(json),
                 PostBuildType.RemoveMqtt => PostBuildMqtt.Remove(json),
-                PostBuildType.RemoveTask => PostBuildTask.Remove(json),
+                PostBuildType.RemoveTask => PostBuildService.Remove(json),
                 PostBuildType.RemoveWeb => PostBuildWeb.Remove(json),
                 PostBuildType.UpdataDll => PostBuildDll.Updata(json),
                 PostBuildType.UpdataClass => PostBuildClass.Updata(json),
@@ -104,7 +145,7 @@ public static class PostBuild
                 PostBuildType.UpdataRobot => PostBuildRobot.Updata(json),
                 PostBuildType.UpdataWebSocket => PostBuildWebSocket.Updata(json),
                 PostBuildType.UpdataMqtt => PostBuildMqtt.Updata(json),
-                PostBuildType.UpdataTask => PostBuildTask.Updata(json),
+                PostBuildType.UpdataTask => PostBuildService.Updata(json),
                 PostBuildType.UpdataWeb => PostBuildWeb.Updata(json),
                 PostBuildType.WebBuild => PostBuildWeb.Build(json),
                 PostBuildType.WebBuildRes => PostBuildWeb.BuildRes(json),
@@ -132,20 +173,138 @@ public static class PostBuild
                 PostBuildType.ConfigGetUser => PostUser.GetAll(),
                 PostBuildType.ConfigAddUser => PostUser.Add(json),
                 PostBuildType.ConfigRemoveUser => PostUser.Remove(json),
-                _ => new ReMessage
-                {
-                    Build = false,
-                    Message = "null"
-                }
+                PostBuildType.Rebuild => Rebuild(),
+                PostBuildType.InitLog => AddClient(json.Token),
+                PostBuildType.GetLog => GetLog(json.Token),
+                _ => PostRes.Error
             };
-        }
-        else
+    }
+
+    public static ReMessage Rebuild() 
+    {
+        if (IsRebuild)
+            return PostRes.RebuildGoing;
+        IsRebuild = true;
+        Task.Run(() =>
         {
-            return new ReMessage
+            ServerMain.Config.FixMode = true;
+            foreach (var item in CodeFileManager.ClassFileList)
             {
-                Build = false,
-                Message = "233"
-            };
+                GenClass.StartGen(item.Value);
+                Thread.Sleep(100);
+            }
+            foreach (var item in CodeFileManager.DllFileList)
+            {
+                GenDll.StartGen(item.Value, "ColoryrServer");
+                Thread.Sleep(100);
+            }
+        });
+
+        return PostRes.RebuildStart;
+    }
+
+    public static ReMessage AddClient(string uuid)
+    {
+        lock (Timer)
+        {
+            if (Timer.ContainsKey(uuid))
+            {
+                Timer[uuid] = 0;
+            }
+            else
+            {
+                Timer.Add(uuid, 0);
+            }
+        }
+        lock (Client)
+        {
+            if (!Client.ContainsKey(uuid))
+            {
+                Client.Add(uuid, "");
+            }
+        }
+
+        return PostRes.AddClient; 
+    }
+
+    public static ReMessage GetLog(string uuid) 
+    {
+        lock(Timer)
+        {
+            if (Timer.ContainsKey(uuid))
+            {
+                Timer[uuid] = 0;
+            }
+        }
+
+        lock (Client)
+        {
+            if (Client.ContainsKey(uuid))
+            {
+                string text = Client[uuid];
+                Client[uuid] = "";
+                return new ReMessage
+                {
+                    Build = true,
+                    Message = text
+                };
+            }
+        }
+
+        return PostRes.ListError;
+    }
+
+    public static void AddLog(string log) 
+    {
+        lock (Client)
+        {
+            foreach (var item in Client)
+            {
+                Client[item.Key] += log + Environment.NewLine;
+            }
+        }
+    }
+
+    private static void Run() 
+    {
+        List<string> remove = new();
+        while (IsRun)
+        {
+            try
+            {
+                lock (Timer)
+                {
+                    remove.Clear();
+                    foreach (var item in Timer)
+                    {
+                        int time = item.Value+ 1;
+                        if (time > 600)
+                        {
+                            remove.Add(item.Key);
+                        }
+                        else 
+                        {
+                            Timer[item.Key] = time;
+                        }
+                    }
+                    if (remove.Count > 0)
+                    {
+                        lock (Client)
+                        {
+                            remove.ForEach((a) =>
+                            {
+                                Timer.Remove(a);
+                                Client.Remove(a);
+                            });
+                        }
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+            catch (Exception e)
+            {
+                ServerMain.LogError(e);
+            }
         }
     }
 }

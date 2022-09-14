@@ -1,5 +1,6 @@
 ﻿using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
+using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -365,6 +366,69 @@ public partial class HttpBuild : HttpUtilsBase
         if (!CheckLogin(data))
         {
             return await RemoveUser(user);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+
+    /// <summary>
+    /// 重构代码
+    /// </summary>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> Rebuild() 
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.Rebuild,
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            return await Rebuild();
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+
+    /// <summary>
+    /// 初始化服务器日志
+    /// </summary>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> InitLog()
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.InitLog,
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            return await InitLog();
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+
+    /// <summary>
+    /// 获取服务器日志
+    /// </summary>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> GetLog()
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.GetLog,
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            return await GetLog();
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }

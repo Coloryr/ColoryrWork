@@ -2,32 +2,31 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ColoryrBuild.Views
+namespace ColoryrBuild.Views;
+
+/// <summary>
+/// LogView.xaml 的交互逻辑
+/// </summary>
+public partial class LogView : UserControl
 {
-    /// <summary>
-    /// LogView.xaml 的交互逻辑
-    /// </summary>
-    public partial class LogView : UserControl
+    public static Action<string> AddLog;
+    public LogView()
     {
-        public static Action<string> AddLog;
-        public LogView()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            AddLog = FAddLog;
-        }
+        AddLog = FAddLog;
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Text.Text = "";
-        }
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        Text.Text = "";
+    }
 
-        public void FAddLog(string text)
+    public void FAddLog(string text)
+    {
+        Dispatcher.Invoke(() =>
         {
-            Dispatcher.Invoke(() =>
-            {
-                Text.AppendText(text + Environment.NewLine);
-            });
-        }
+            Text.AppendText(text + Environment.NewLine);
+        });
     }
 }

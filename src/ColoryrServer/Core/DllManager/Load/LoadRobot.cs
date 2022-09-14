@@ -25,11 +25,14 @@ internal static class LoadRobot
                        .GetTypes().Where(x => x.GetCustomAttribute<RobotIN>(true) != null);
 
         if (!list.Any())
+        {
+            ServerMain.LogOut($"加载Robot[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
-                Res = $"Robot[{uuid}]类名错误"
+                Res = $"Robot[{uuid}]类错误"
             };
+        }
 
         assembly.SelfType = list.First();
         var arg = assembly.SelfType.GetCustomAttribute<RobotIN>(true);
@@ -37,18 +40,14 @@ internal static class LoadRobot
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if ((item.Name is CodeDemo.RobotMessage or CodeDemo.RobotEvent or CodeDemo.RobotSend) && item.IsPublic)
+            if (item.IsPublic && (item.Name is CodeDemo.RobotMessage or 
+                CodeDemo.RobotEvent or CodeDemo.RobotSend))
                 assembly.MethodInfos.Add(item.Name, item);
         }
 
-        if (assembly.MethodInfos.Count == 0)
-            return new GenReOBJ
-            {
-                Isok = false,
-                Res = $"Robot[{uuid}]没有方法"
-            };
-
         DllStongeManager.AddRobot(uuid, assembly);
+
+        ServerMain.LogOut($"加载Mqtt[{uuid}]完成");
 
         return null;
     }
@@ -61,7 +60,7 @@ internal static class LoadRobot
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut("加载Robot：" + uuid);
+        ServerMain.LogOut($"加载Robot[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

@@ -21,9 +21,9 @@ public partial class HttpBuild : HttpUtilsBase
         {
             var item1 = obj["Build"].ToString();
             var item2 = obj["Message"].ToString();
-            if (item1 == "False" && item2 == "233")
+            if (item1 == "False")
             {
-                _ = new InfoWindow("登录失效", "登录失效");
+                _ = new InfoWindow("验证错误", item2);
                 App.Login();
                 return false;
             }

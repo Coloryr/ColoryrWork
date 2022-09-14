@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.DllManager.Gen;
+﻿using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Code;
 using ColoryrServer.Core.Http;
@@ -9,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ColoryrServer.Core.DllManager.PostBuild;
+namespace ColoryrServer.Core.BuilderPost;
 
 internal static class PostBuildDll
 {
@@ -105,11 +106,32 @@ internal static class PostBuildDll
         obj.Code = FileEdit.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 
+        var arg = new PerBuildArg
+        {
+            CodeObj = obj,
+            CodeType = CodeType.Dll,
+            EditCode = obj.Code,
+            User = json.User
+        };
+
+        DllRun.ServiceOnBuild(arg);
+
         var sw = new Stopwatch();
         sw.Start();
         var build = GenDll.StartGen(obj, json.User);
         sw.Stop();
         obj.Up();
+
+        var arg1 = new PostBuildArg
+        {
+            CodeObj = obj,
+            CodeType = CodeType.Dll,
+            User = json.User,
+            BuildRes = build.Isok
+        };
+
+        DllRun.ServiceOnBuild(arg1);
+
         return new ReMessage
         {
             Build = build.Isok,

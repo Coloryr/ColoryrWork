@@ -5,7 +5,7 @@ namespace ColoryrWork.Lib.Build.Object;
 
 public enum CodeType
 {
-    Dll, Class, Socket, WebSocket, Robot, Mqtt, Task, Web
+    Dll, Class, Socket, WebSocket, Robot, Mqtt, Service, Web
 }
 public class CSFileObj
 {

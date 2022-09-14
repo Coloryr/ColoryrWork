@@ -47,12 +47,7 @@ internal class WebView : CodeListView
         var list = await App.HttpUtils.AddWeb(data, res);
         if (list == null)
         {
-            new InfoWindow("添加", "服务器返回错误");
-            return;
-        }
-        else if (!list.Build)
-        {
-            new InfoWindow("添加失败", list.Message);
+            new InfoWindow("创建", "服务器返回错误");
             return;
         }
         App.LogShow("创建", list.Message);

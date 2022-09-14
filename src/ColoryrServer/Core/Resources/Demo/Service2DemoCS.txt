@@ -1,0 +1,13 @@
+using System;
+using ColoryrServer.SDK;
+
+//ColoryrServer_Debug
+
+[ServiceIN(type: ServiceType.ErrorDump)]
+public class {name}
+{
+    public bool OnError(Exception e)
+    {
+        return false; //true表示处理结束
+    }
+}

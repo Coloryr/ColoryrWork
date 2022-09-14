@@ -22,7 +22,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Robot => PostBuildType.GetRobot,
             CodeType.WebSocket => PostBuildType.GetWebSocket,
             CodeType.Mqtt => PostBuildType.GetMqtt,
-            CodeType.Task => PostBuildType.GetTask,
+            CodeType.Service => PostBuildType.GetTask,
             CodeType.Web => PostBuildType.GetWeb,
             CodeType.Dll => PostBuildType.GetDll,
             _ => throw new NotImplementedException(),
@@ -85,7 +85,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Robot => PostBuildType.AddRobot,
             CodeType.WebSocket => PostBuildType.AddWebSocket,
             CodeType.Mqtt => PostBuildType.AddMqtt,
-            CodeType.Task => PostBuildType.AddTask,
+            CodeType.Service => PostBuildType.AddService,
             CodeType.Web => PostBuildType.AddWeb,
             _ => PostBuildType.AddDll,
         };
@@ -120,7 +120,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Robot => PostBuildType.RemoveRobot,
             CodeType.WebSocket => PostBuildType.RemoveWebSocket,
             CodeType.Mqtt => PostBuildType.RemoveMqtt,
-            CodeType.Task => PostBuildType.RemoveTask,
+            CodeType.Service => PostBuildType.RemoveTask,
             CodeType.Web => PostBuildType.RemoveWeb,
             _ => PostBuildType.RemoveDll,
         };
@@ -154,7 +154,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Robot => PostBuildType.CodeRobot,
             CodeType.WebSocket => PostBuildType.CodeWebSocket,
             CodeType.Mqtt => PostBuildType.CodeMqtt,
-            CodeType.Task => PostBuildType.CodeTask,
+            CodeType.Service => PostBuildType.CodeTask,
             _ => PostBuildType.CodeDll,
         };
         var data = await DoPost(new BuildOBJ
@@ -188,7 +188,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Robot => PostBuildType.UpdataRobot,
             CodeType.WebSocket => PostBuildType.UpdataWebSocket,
             CodeType.Mqtt => PostBuildType.UpdataMqtt,
-            CodeType.Task => PostBuildType.UpdataTask,
+            CodeType.Service => PostBuildType.UpdataTask,
             _ => PostBuildType.UpdataDll,
         };
         var data = await DoPost(new BuildOBJ

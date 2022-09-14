@@ -32,6 +32,7 @@ internal static class GenDll
         if (!build.Isok)
         {
             build.Res = $"Dll[{obj.UUID}]" + build.Res;
+            ServerMain.LogOut($"编译Dll[{obj.UUID}]错误");
             return build;
         }
 
@@ -68,6 +69,8 @@ internal static class GenDll
             build.MS.Dispose();
             GC.Collect();
         });
+
+        ServerMain.LogOut($"编译Dll[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

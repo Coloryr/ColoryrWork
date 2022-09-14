@@ -22,6 +22,7 @@ internal class GenClass
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj)
     {
+        ServerMain.LogOut($"开始编译Class[{obj.UUID}]");
         bool release = false;
         var build = GenCode.StartGen(obj.UUID,
             CodeFileManager.GetClassCode(obj.UUID).Select(a =>
@@ -36,6 +37,7 @@ internal class GenClass
         if (!build.Isok)
         {
             build.Res = $"Class[{obj.UUID}]" + build.Res;
+            ServerMain.LogOut($"编译Class[{obj.UUID}]错误");
             return build;
         }
 
@@ -76,6 +78,8 @@ internal class GenClass
 
             GC.Collect();
         });
+
+        ServerMain.LogOut($"编译Class[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

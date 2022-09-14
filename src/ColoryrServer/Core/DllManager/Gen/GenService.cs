@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.DllManager.Gen;
 
-internal static class GenTask
+internal static class GenService
 {
     /// <summary>
-    /// 编译Task
+    /// 编译Service
     /// </summary>
     /// <param name="obj">构建信息</param>
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        ServerMain.LogOut($"开始编译Service[{obj.UUID}]");
         bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         var build = GenCode.StartGen(obj.UUID, new List<SyntaxTree>
         {
@@ -29,14 +30,15 @@ internal static class GenTask
         CodeFileManager.StorageTask(obj, user);
         if (!build.Isok)
         {
-            build.Res = $"Task[{obj.UUID}]" + build.Res;
+            build.Res = $"Service[{obj.UUID}]" + build.Res;
+            ServerMain.LogOut($"编译Service[{obj.UUID}]错误");
             return build;
         }
 
         build.MS.Seek(0, SeekOrigin.Begin);
         build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-        var res = LoadTask.Load(obj.UUID, build.MS, build.MSPdb);
+        var res = LoadService.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
 
@@ -46,14 +48,14 @@ internal static class GenTask
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                DllStongeManager.LocalTask + obj.UUID + ".dll", FileMode.OpenOrCreate))
+                DllStongeManager.LocalService + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                DllStongeManager.LocalTask + obj.UUID + ".pdb", FileMode.OpenOrCreate))
+                DllStongeManager.LocalService + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();
@@ -70,7 +72,7 @@ internal static class GenTask
         return new GenReOBJ
         {
             Isok = true,
-            Res = $"Task[{obj.UUID}]编译完成\n{build.Res}",
+            Res = $"Service[{obj.UUID}]编译完成\n{build.Res}",
             Time = obj.UpdateTime
         };
     }

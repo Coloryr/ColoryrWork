@@ -19,6 +19,7 @@ internal static class GenSocket
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        ServerMain.LogOut($"开始编译Socket[{obj.UUID}]");
         bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         var build = GenCode.StartGen(obj.UUID, new()
         {
@@ -29,6 +30,7 @@ internal static class GenSocket
         if (!build.Isok)
         {
             build.Res = $"Socket[{obj.UUID}]" + build.Res;
+            ServerMain.LogOut($"编译Socket[{obj.UUID}]错误");
             return build;
         }
 
@@ -39,7 +41,7 @@ internal static class GenSocket
         if (res != null)
             return res;
 
-        Task.Factory.StartNew(() =>
+        Task.Run(() =>
         {
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
@@ -63,8 +65,11 @@ internal static class GenSocket
 
             build.MS.Close();
             build.MS.Dispose();
+
             GC.Collect();
         });
+
+        ServerMain.LogOut($"编译Socket[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

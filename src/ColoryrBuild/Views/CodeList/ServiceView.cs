@@ -5,11 +5,11 @@ using System.Windows;
 
 namespace ColoryrBuild.Views.CodeList;
 
-internal class TaskView : CodeListView
+internal class ServiceView : CodeListView
 {
-    private const CodeType Type = CodeType.Task;
+    private const CodeType Type = CodeType.Service;
     public static Action Refresh;
-    public TaskView()
+    public ServiceView()
     {
         MainWindow.CallRefresh += FRefresh;
         RefreshAction = Refresh = FRefresh;
@@ -37,10 +37,15 @@ internal class TaskView : CodeListView
         var data = new InputWindow("UUID设置").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-        var list = await App.HttpUtils.AddObj(Type, data);
+
+        var res = new Chose1Window().Set(out int type);
+        if (!res)
+            return;
+
+        var list = await App.HttpUtils.AddObj(Type, data, type.ToString());
         if (list == null)
         {
-            App.LogShow("添加", "服务器返回错误");
+            App.LogShow("创建", "服务器返回错误");
             return;
         }
         App.LogShow("创建", list.Message);

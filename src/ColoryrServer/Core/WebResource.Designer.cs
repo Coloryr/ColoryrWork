@@ -79,15 +79,46 @@ namespace ColoryrServer.Core {
         ///
         ///&lt;body&gt;
         ///    &lt;div class=&quot;center&quot;&gt;
+        ///        服务器维护中
+        ///    &lt;/div&gt;
+        ///&lt;/body&gt;
+        ///
+        ///&lt;/html&gt; 的本地化字符串。
+        /// </summary>
+        internal static string FixHtml {
+            get {
+                return ResourceManager.GetString("FixHtml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
+        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        .center {
+        ///            padding: 10px;
+        ///            margin: 20px auto;
+        ///            font-size: 40px;
+        ///            text-align: center;
+        ///        }
+        ///    &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;center&quot;&gt;
         ///        404 NotFound
         ///    &lt;/div&gt;
         ///&lt;/body&gt;
         ///
         ///&lt;/html&gt; 的本地化字符串。
         /// </summary>
-        internal static string _404Html {
+        internal static string Html404 {
             get {
-                return ResourceManager.GetString("404Html", resourceCulture);
+                return ResourceManager.GetString("Html404", resourceCulture);
             }
         }
         

@@ -5,11 +5,11 @@ using ColoryrServer.SDK;
 [SocketIN]
 public class {name}
 {
-    public bool OnTcpMessage(TcpSocketRequest head)
+    public bool OnTcpMessage(SocketTcpRequest head)
     {
         return false; //true表示事件已处理完毕
     }
-    public bool OnUdpMessage(UdpSocketRequest head)
+    public bool OnUdpMessage(SocketUdpRequest head)
     {
         return false;
     }

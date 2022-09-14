@@ -111,8 +111,11 @@ internal static class OracleCon
     /// <returns>是否连接成功</returns>
     public static void Start()
     {
-        ServerMain.LogOut($"正在连接Oracle数据库");
+        ServerMain.OnStop += Stop;
         Config = ServerMain.Config.Oracle;
+        if (Config.Count < 0)
+            return;
+        ServerMain.LogOut($"正在连接Oracle数据库");
         for (int a = 0; a < Config.Count; a++)
         {
             var config = Config[a];
@@ -132,7 +135,6 @@ internal static class OracleCon
                 ServerMain.LogError($"Oracle数据库{a}连接失败");
             }
         }
-        ServerMain.OnStop += Stop;
     }
 
     /// <summary>
