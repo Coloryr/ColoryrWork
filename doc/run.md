@@ -1,6 +1,7 @@
 # ColoryrServer
 
-## 部署&启动
+部署&启动
+
 [返回](../README.md)
 
 ## 部署

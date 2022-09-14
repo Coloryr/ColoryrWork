@@ -11,7 +11,7 @@
 
 ![截图](./doc/pic/work.png)
 
-- 这是一个中型服务器
+- 这是一个中型服务器框架
 - 支持`Linux`下运行
 - 可以对接`Mysql\Redis\MsSql\Oracle\Sqlite`数据库
 - 自带`Http\WebSocket\Socket\Mqtt\Netty`支持
