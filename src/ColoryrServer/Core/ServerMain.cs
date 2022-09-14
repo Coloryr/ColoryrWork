@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.BuilderPost;
 using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.DllManager.Service;
 using ColoryrServer.Core.FileSystem;
@@ -65,7 +64,8 @@ public class ServerMain
     /// <param name="e">Exception</param>
     public static void LogError(Exception e)
     {
-        string a = "[错误]" + e.ToString();
+        var time = DateTime.Now;
+        string a = $"[{time}][错误]{e}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);
@@ -79,7 +79,8 @@ public class ServerMain
     /// <param name="a">信息</param>
     public static void LogError(string a)
     {
-        a = "[错误]" + a;
+        var time = DateTime.Now;
+        a = $"[{time}][错误]{a}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);
@@ -93,7 +94,8 @@ public class ServerMain
     /// <param name="a">信息</param>
     public static void LogOut(string a)
     {
-        a = "[信息]" + a;
+        var time = DateTime.Now;
+        a = $"[{time}][信息]{a}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);

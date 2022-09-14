@@ -5,7 +5,6 @@ using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,6 +43,8 @@ internal class GenClass
         build.MS.Seek(0, SeekOrigin.Begin);
         build.MSPdb.Seek(0, SeekOrigin.Begin);
 
+        ServerMain.LogOut($"编译Class[{obj.UUID}]完成");
+
         var res = LoadClass.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
@@ -78,8 +79,6 @@ internal class GenClass
 
             GC.Collect();
         });
-
-        ServerMain.LogOut($"编译Class[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

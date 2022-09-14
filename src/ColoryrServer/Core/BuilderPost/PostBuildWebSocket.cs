@@ -14,35 +14,31 @@ internal class PostBuildWebSocket
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
-        if (CodeFileManager.GetWebSocket(json.UUID) == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            CSFileCode obj = new()
-            {
-                UUID = json.UUID,
-                Type = CodeType.WebSocket,
-                CreateTime = time,
-                Code = DemoResource.WebSocket
-                .Replace(CodeDemo.Name, json.UUID)
-            };
-            CodeFileManager.StorageWebSocket(obj, json.User);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"WebSocket[{json.UUID}]已创建"
-            };
-            GenWebSocket.StartGen(obj, json.User);
-            ServerMain.LogOut($"[{json.User}]创建WebSocket[{json.UUID}]");
-        }
-        else
-            res = new ReMessage
+        if (CodeFileManager.GetWebSocket(json.UUID) != null)
+            return new ReMessage
             {
                 Build = false,
                 Message = $"WebSocket[{json.UUID}]已存在"
             };
+        ServerMain.LogOut($"[{json.User}]创建WebSocket[{json.UUID}]");
+        var time = string.Format("{0:s}", DateTime.Now);
+        CSFileCode obj = new()
+        {
+            UUID = json.UUID,
+            Type = CodeType.WebSocket,
+            CreateTime = time,
+            Code = DemoResource.WebSocket
+            .Replace(CodeDemo.Name, json.UUID)
+        };
+        CodeFileManager.StorageWebSocket(obj, json.User);
+        GenWebSocket.StartGen(obj, json.User);
+        ServerMain.LogOut($"[{json.User}]创建WebSocket[{json.UUID}]完成");
 
-        return res;
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"WebSocket[{json.UUID}]已创建"
+        };
     }
 
     public static CSFileList GetList()

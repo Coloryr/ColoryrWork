@@ -19,6 +19,7 @@ internal static class LoadSocket
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载Socket[{uuid}]");
         var assembly = new SocketDllAssembly(CodeType.Socket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()

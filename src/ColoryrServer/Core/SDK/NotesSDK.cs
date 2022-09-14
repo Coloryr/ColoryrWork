@@ -61,7 +61,7 @@ public class SocketIN : Attribute
 }
 
 public enum ServiceType
-{ 
+{
     Normal, ErrorDump, OnlyOpen, Builder
 }
 

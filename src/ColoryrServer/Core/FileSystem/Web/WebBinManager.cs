@@ -34,13 +34,13 @@ public static class WebBinManager
 
         if (!File.Exists(WebBinStatic + "404.html"))
         {
-            File.WriteAllText(WebBinStatic + "404.html", WebResource.Html404, 
+            File.WriteAllText(WebBinStatic + "404.html", WebResource.Html404,
                 Encoding.UTF8);
         }
 
         if (!File.Exists(WebBinStatic + "fixmode.html"))
         {
-            File.WriteAllText(WebBinStatic + "fixmode.html", WebResource.FixHtml, 
+            File.WriteAllText(WebBinStatic + "fixmode.html", WebResource.FixHtml,
                 Encoding.UTF8);
         }
 

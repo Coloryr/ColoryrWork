@@ -8,6 +8,7 @@
     Title="标题"
     Width="260"
     Height="116"
+    Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>

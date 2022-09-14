@@ -71,7 +71,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
         catch (Exception e)
         {
-            _ = new InfoWindow("初始化错误", e.ToString());
+            InfoWindow.Show("初始化错误", e.ToString());
         }
     }
 
@@ -192,7 +192,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
         catch (Exception e)
         {
-            _ = new InfoWindow("代码备份失败", e.ToString());
+            InfoWindow.Show("代码备份失败", e.ToString());
         }
         Directory.Delete(newLocal, true);
 
@@ -261,7 +261,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             else
             {
                 AddLog("文件更新完成");
-                App.MainWindow_.RefreshCode(Type);
+                App.WindowMain.RefreshCode(Type);
                 WebObj.Up();
             }
             Dispatcher.Invoke(() => MainWindow.SwitchTo(this));
@@ -318,12 +318,12 @@ public partial class CodeWebEditView : UserControl, IEditView
         var data = await App.HttpUtils.BuildWeb(WebObj);
         if (data == null)
         {
-            new InfoWindow("Vue编译", "服务器返回错误");
+            InfoWindow.Show("Vue编译", "服务器返回错误");
             return;
         }
         if (!data.Build)
         {
-            new InfoWindow("Vue编译", data.Message);
+            InfoWindow.Show("Vue编译", data.Message);
             return;
         }
         else

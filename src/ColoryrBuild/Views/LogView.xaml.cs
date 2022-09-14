@@ -29,4 +29,9 @@ public partial class LogView : UserControl
             Text.AppendText(text + Environment.NewLine);
         });
     }
+
+    private void Button1_Click(object sender, RoutedEventArgs e)
+    {
+        App.LoginOut();
+    }
 }

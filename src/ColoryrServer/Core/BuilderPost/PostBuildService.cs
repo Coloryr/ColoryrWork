@@ -15,58 +15,52 @@ internal static class PostBuildService
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
-        if (CodeFileManager.GetTask(json.UUID) == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            ServiceType? type = json.Code switch
-            {
-                "0" => ServiceType.Normal,
-                "1" => ServiceType.OnlyOpen,
-                "2" => ServiceType.ErrorDump,
-                "3" => ServiceType.Builder,
-                _ => null
-            };
-            if (type == null)
-            {
-                return new ReMessage
-                {
-                    Build = false,
-                    Message = $"创建Service[{json.UUID}]错误的类型"
-                };
-            }
-            CSFileCode obj = new()
-            {
-                UUID = json.UUID,
-                Type = CodeType.Service,
-                CreateTime = time,
-                Code = type! switch
-                {
-                    ServiceType.Normal => DemoResource.Service1,
-                    ServiceType.ErrorDump => DemoResource.Service2,
-                    ServiceType.OnlyOpen => DemoResource.Service3,
-                    ServiceType.Builder => DemoResource.Service4,
-                    _ => ""
-                }
-            };
-            obj.Code = obj.Code.Replace(CodeDemo.Name, json.UUID);
-            CodeFileManager.StorageTask(obj, json.User);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"Service[{json.UUID}]已创建"
-            };
-            GenService.StartGen(obj, json.User);
-            ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]");
-        }
-        else
-            res = new ReMessage
+        if (CodeFileManager.GetTask(json.UUID) != null)
+            return new ReMessage
             {
                 Build = false,
                 Message = $"Service[{json.UUID}]已存在"
             };
+        ServiceType? type = json.Code switch
+        {
+            "0" => ServiceType.Normal,
+            "1" => ServiceType.OnlyOpen,
+            "2" => ServiceType.ErrorDump,
+            "3" => ServiceType.Builder,
+            _ => null
+        };
+        if (type == null)
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"创建Service[{json.UUID}]错误的类型"
+            };
+        ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]");
+        var time = string.Format("{0:s}", DateTime.Now);
+        CSFileCode obj = new()
+        {
+            UUID = json.UUID,
+            Type = CodeType.Service,
+            CreateTime = time,
+            Code = type! switch
+            {
+                ServiceType.Normal => DemoResource.Service1,
+                ServiceType.ErrorDump => DemoResource.Service2,
+                ServiceType.OnlyOpen => DemoResource.Service3,
+                ServiceType.Builder => DemoResource.Service4,
+                _ => ""
+            }
+        };
+        obj.Code = obj.Code.Replace(CodeDemo.Name, json.UUID);
+        CodeFileManager.StorageTask(obj, json.User);
+        GenService.StartGen(obj, json.User);
+        ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]完成");
 
-        return res;
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Service[{json.UUID}]已创建"
+        };
     }
 
     public static CSFileList GetList()

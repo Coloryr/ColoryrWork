@@ -66,7 +66,7 @@ public partial class CodeCSEditView : UserControl, IEditView
         }
         catch (Exception e)
         {
-            _ = new InfoWindow("初始化错误", e.ToString());
+            InfoWindow.Show("初始化错误", e.ToString());
         }
     }
 
@@ -122,7 +122,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             }
             catch (Exception e)
             {
-                _ = new InfoWindow("代码备份失败", e.ToString());
+                InfoWindow.Show("代码备份失败", e.ToString());
             }
             Directory.Delete(newLocal, true);
             FileName = null;
@@ -153,7 +153,7 @@ public partial class CodeCSEditView : UserControl, IEditView
                 }
                 catch (Exception e)
                 {
-                    _ = new InfoWindow("备份失败", e.ToString());
+                    InfoWindow.Show("备份失败", e.ToString());
                 }
             }
             CodeSave.Save(Local + "main.cs", CsObj.Code);
@@ -258,7 +258,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             }
 
             CsObj.Next();
-            App.MainWindow_.RefreshCode(Type);
+            App.WindowMain.RefreshCode(Type);
             if (!IsWrite)
             {
                 IsWrite = true;
@@ -340,7 +340,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             $"用时:{data.UseTime}\n" +
             $"编译时间:{data.Time}");
         CsObj.Next();
-        App.MainWindow_.RefreshCode(Type);
+        App.WindowMain.RefreshCode(Type);
         IsWrite = true;
         CodeSave.Save(Local + "main.cs", CsObj.Code);
         IsWrite = false;
@@ -365,7 +365,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             return;
         if (data.Contains('\\') || data.Contains('/'))
         {
-            _ = new InfoWindow("名字非法", "不支持子路径");
+            InfoWindow.Show("名字非法", "不支持子路径");
             return;
         }
         Logs.Text = "";

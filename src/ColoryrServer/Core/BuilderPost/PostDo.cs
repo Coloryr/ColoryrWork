@@ -20,19 +20,19 @@ public static class PostDo
     public static bool IsRebuild { get; private set; } = false;
     private readonly static Dictionary<string, string> Client = new();
     private readonly static Dictionary<string, int> Timer = new();
-    private readonly static Thread TaskThread = new(Run) 
+    private readonly static Thread TaskThread = new(Run)
     {
-        Name = "LogThread"   
+        Name = "LogThread"
     };
     private static bool IsRun;
-    public static void Start() 
+    public static void Start()
     {
         IsRun = true;
         TaskThread.Start();
         ServerMain.OnStop += Stop;
     }
 
-    public static void Stop() 
+    public static void Stop()
     {
         IsRun = false;
         Client.Clear();
@@ -102,7 +102,7 @@ public static class PostDo
         else if (!LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
         {
             return PostRes.LoginOut;
-        } 
+        }
         else
             return json.Mode switch
             {
@@ -180,7 +180,7 @@ public static class PostDo
             };
     }
 
-    public static ReMessage Rebuild() 
+    public static ReMessage Rebuild()
     {
         if (IsRebuild)
             return PostRes.RebuildGoing;
@@ -224,12 +224,12 @@ public static class PostDo
             }
         }
 
-        return PostRes.AddClient; 
+        return PostRes.AddClient;
     }
 
-    public static ReMessage GetLog(string uuid) 
+    public static ReMessage GetLog(string uuid)
     {
-        lock(Timer)
+        lock (Timer)
         {
             if (Timer.ContainsKey(uuid))
             {
@@ -254,7 +254,7 @@ public static class PostDo
         return PostRes.ListError;
     }
 
-    public static void AddLog(string log) 
+    public static void AddLog(string log)
     {
         lock (Client)
         {
@@ -265,7 +265,7 @@ public static class PostDo
         }
     }
 
-    private static void Run() 
+    private static void Run()
     {
         List<string> remove = new();
         while (IsRun)
@@ -277,12 +277,12 @@ public static class PostDo
                     remove.Clear();
                     foreach (var item in Timer)
                     {
-                        int time = item.Value+ 1;
+                        int time = item.Value + 1;
                         if (time > 600)
                         {
                             remove.Add(item.Key);
                         }
-                        else 
+                        else
                         {
                             Timer[item.Key] = time;
                         }

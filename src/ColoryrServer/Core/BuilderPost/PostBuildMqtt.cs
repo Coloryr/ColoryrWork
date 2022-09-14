@@ -14,35 +14,31 @@ internal static class PostBuildMqtt
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
-        if (CodeFileManager.GetMqtt(json.UUID) == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            CSFileCode obj = new()
-            {
-                UUID = json.UUID,
-                Type = CodeType.Mqtt,
-                CreateTime = time,
-                Code = DemoResource.Mqtt
-                .Replace(CodeDemo.Name, json.UUID)
-            };
-            CodeFileManager.StorageMqtt(obj, json.User);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"Mqtt[{json.UUID}]已创建"
-            };
-            GenMqtt.StartGen(obj, json.User);
-            ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]");
-        }
-        else
-            res = new ReMessage
+        if (CodeFileManager.GetMqtt(json.UUID) != null)
+            return new ReMessage
             {
                 Build = false,
                 Message = $"Mqtt[{json.UUID}]已存在"
             };
+        ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]");
+        var time = string.Format("{0:s}", DateTime.Now);
+        CSFileCode obj = new()
+        {
+            UUID = json.UUID,
+            Type = CodeType.Mqtt,
+            CreateTime = time,
+            Code = DemoResource.Mqtt
+            .Replace(CodeDemo.Name, json.UUID)
+        };
+        CodeFileManager.StorageMqtt(obj, json.User);
+        GenMqtt.StartGen(obj, json.User);
+        ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]完成");
 
-        return res;
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Mqtt[{json.UUID}]已创建"
+        };
     }
 
     public static CSFileList GetList()

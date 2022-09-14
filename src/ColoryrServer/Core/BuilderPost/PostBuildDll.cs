@@ -16,7 +16,6 @@ internal static class PostBuildDll
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
         string uuid = json.UUID.Replace('\\', '/');
         if (uuid.EndsWith("/"))
         {
@@ -38,6 +37,7 @@ internal static class PostBuildDll
                 Message = $"Dll[{uuid}]路由冲突"
             };
         }
+        ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]");
         var time = string.Format("{0:s}", DateTime.Now);
 
         CSFileCode obj = new()
@@ -49,16 +49,14 @@ internal static class PostBuildDll
             .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
         };
         CodeFileManager.StorageDll(obj, json.User);
-        res = new ReMessage
+        GenDll.StartGen(obj, json.User);
+        ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]完成");
+
+        return new ReMessage
         {
             Build = true,
             Message = $"Dll[{uuid}]已创建"
         };
-        GenDll.StartGen(obj, json.User);
-        ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]");
-
-
-        return res;
     }
 
     public static CSFileList GetList()

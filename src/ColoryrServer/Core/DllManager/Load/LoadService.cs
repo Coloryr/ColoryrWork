@@ -19,6 +19,7 @@ internal static class LoadService
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载Service[{uuid}]");
         var assembly = new ServiceDllAssembly(CodeType.Service, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()

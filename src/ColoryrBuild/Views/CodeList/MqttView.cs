@@ -37,16 +37,20 @@ public class MqttView : CodeListView
         var data = new InputWindow("UUID设置").Set();
         if (string.IsNullOrWhiteSpace(data))
             return;
-        var list = await App.HttpUtils.AddObj(Type, data);
-        if (list == null)
+        var res = await App.HttpUtils.AddObj(Type, data);
+        if (res == null)
         {
             App.LogShow("创建", "服务器返回错误");
             return;
         }
-        App.LogShow("创建", list.Message);
-        if (list.Build)
+        App.LogShow("创建", res.Message);
+        if (res.Build)
         {
             FRefresh();
+        }
+        else
+        {
+            InfoWindow.Show("创建", res.Message);
         }
     }
 
@@ -63,19 +67,22 @@ public class MqttView : CodeListView
         if (List1.SelectedItem == null)
             return;
         var item = List1.SelectedItem as CSFileObj;
-        var res = new ChoseWindow("删除确认", "是否要删除").Set();
-        if (res)
+        if (new ChoseWindow("删除确认", "是否要删除").Set())
         {
-            var data = await App.HttpUtils.RemoveObj(Type, item);
-            if (data == null)
+            var res = await App.HttpUtils.RemoveObj(Type, item);
+            if (res == null)
             {
                 App.LogShow("删除", "服务器返回错误");
                 return;
             }
-            App.LogShow("删除", data.Message);
-            if (data.Build)
+            App.LogShow("删除", res.Message);
+            if (res.Build)
             {
                 Refresh();
+            }
+            else
+            {
+                InfoWindow.Show("删除", res.Message);
             }
         }
     }

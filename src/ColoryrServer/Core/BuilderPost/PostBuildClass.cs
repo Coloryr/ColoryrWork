@@ -15,35 +15,31 @@ internal static class PostBuildClass
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
-        if (CodeFileManager.GetClass(json.UUID) == null)
-        {
-            var time = string.Format("{0:s}", DateTime.Now);
-            var obj = new CSFileCode()
-            {
-                UUID = json.UUID,
-                Type = CodeType.Class,
-                CreateTime = time
-                .Replace(CodeDemo.Name, json.UUID)
-            };
-            CodeFileManager.StorageClass(obj, json.UUID,
-                DemoResource.Class.Replace(CodeDemo.Name, json.UUID), json.User);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"Class[{json.UUID}]已创建"
-            };
-            GenClass.StartGen(obj);
-            ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]");
-        }
-        else
-            res = new ReMessage
+        if (CodeFileManager.GetClass(json.UUID) != null)
+            return new ReMessage
             {
                 Build = false,
                 Message = $"Class[{json.UUID}]已存在"
             };
+        ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]");
+        var time = string.Format("{0:s}", DateTime.Now);
+        var obj = new CSFileCode()
+        {
+            UUID = json.UUID,
+            Type = CodeType.Class,
+            CreateTime = time
+            .Replace(CodeDemo.Name, json.UUID)
+        };
+        CodeFileManager.StorageClass(obj, json.UUID,
+            DemoResource.Class.Replace(CodeDemo.Name, json.UUID), json.User);
+        GenClass.StartGen(obj);
+        ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]完成");
 
-        return res;
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Class[{json.UUID}]已创建"
+        };
     }
 
     public static CSFileList GetList()

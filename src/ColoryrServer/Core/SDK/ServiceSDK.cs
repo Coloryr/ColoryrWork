@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager.Service;
 using ColoryrWork.Lib.Build.Object;
 using System;
-using System.Xml.Linq;
 
 namespace ColoryrServer.SDK;
 
@@ -110,6 +109,6 @@ public enum ServiceState
 }
 
 public enum ServiceNextState
-{ 
+{
     Continue, Pause, Stop, WaitArg
 }

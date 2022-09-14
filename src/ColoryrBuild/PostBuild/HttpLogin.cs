@@ -14,21 +14,21 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="data">服务器数据</param>
     /// <returns>是否有效</returns>
-    public bool CheckLogin(string data)
+    public static bool CheckLogin(string data)
     {
         var obj = JObject.Parse(data);
         if (obj.ContainsKey("Build") && obj.ContainsKey("Message"))
         {
             var item1 = obj["Build"].ToString();
             var item2 = obj["Message"].ToString();
-            if (item1 == "False")
+            if (item1 == "False" && item2 == "登录失效")
             {
-                _ = new InfoWindow("验证错误", item2);
+                InfoWindow.Show("验证错误", item2);
                 App.Login();
                 return false;
             }
         }
-        
+
         return true;
     }
     /// <summary>
@@ -52,7 +52,7 @@ public partial class HttpBuild : HttpUtilsBase
         }
         else
         {
-            _ = new InfoWindow("自动登录错误", $"自动登录错误:{res?.Message}");
+            InfoWindow.Show("自动登录错误", $"自动登录错误:{res?.Message}");
         }
         return false;
     }
@@ -80,7 +80,7 @@ public partial class HttpBuild : HttpUtilsBase
         }
         else
         {
-            _ = new InfoWindow("登录错误", $"登录错误:{res.Message}");
+            InfoWindow.Show("登录错误", $"登录错误:{res.Message}");
         }
         return false;
     }

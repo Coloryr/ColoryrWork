@@ -17,33 +17,35 @@ internal static class PostBuildWeb
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        ReMessage res;
-        if (WebFileManager.GetHtml(json.UUID) == null)
+        if (WebFileManager.GetHtml(json.UUID) != null)
+            new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]已存在"
+            };
+        var time = string.Format("{0:s}", DateTime.Now);
+        var isVue = json.Code.ToLower() == "true";
+        string uuid = json.UUID.Replace('\\', '/');
+        if (uuid.EndsWith('/'))
         {
-            var time = string.Format("{0:s}", DateTime.Now);
-            var isVue = json.Code.ToLower() == "true";
-            string uuid = json.UUID.Replace('\\', '/');
-            if (uuid.EndsWith('/'))
+            uuid = uuid[..^1];
+        }
+        if (HttpInvokeRoute.CheckBase(uuid))
+            return new ReMessage
             {
-                uuid = uuid[..^1];
-            }
-            if (HttpInvokeRoute.CheckBase(uuid))
+                Build = false,
+                Message = $"Web[{uuid}]路由冲突"
+            };
+        ServerMain.LogOut($"[{json.User}]创建Web[{json.UUID}]");
+        WebObj obj;
+        if (isVue)
+        {
+            obj = new()
             {
-                return new ReMessage
-                {
-                    Build = false,
-                    Message = $"Web[{uuid}]路由冲突"
-                };
-            }
-            WebObj obj;
-            if (isVue)
-            {
-                obj = new()
-                {
-                    UUID = uuid,
-                    CreateTime = time,
-                    Text = "",
-                    Codes = new()
+                UUID = uuid,
+                CreateTime = time,
+                Text = "",
+                Codes = new()
                     {
                         { "index.html", Encoding.UTF8.GetString(DemoVueResource.index) },
                         { "package.json", Encoding.UTF8.GetString(DemoVueResource.package) },
@@ -56,45 +58,37 @@ internal static class PostBuildWeb
                         { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
                         { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) }
                     },
-                    Files = new()
+                Files = new()
                     {
                         { "src/logo.png", DemoVueResource.logo }
                     },
-                    IsVue = true
-                };
-            }
-            else
+                IsVue = true
+            };
+        }
+        else
+        {
+            obj = new()
             {
-                obj = new()
-                {
-                    UUID = uuid,
-                    CreateTime = time,
-                    Text = "",
-                    Codes = new()
+                UUID = uuid,
+                CreateTime = time,
+                Text = "",
+                Codes = new()
                     {
                         { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
                         { "js.js", DemoWebResource.IndexDemoJS }
                     },
-                    Files = new()
-                };
-            }
-
-            WebFileManager.New(obj);
-            res = new ReMessage
-            {
-                Build = true,
-                Message = $"Web[{json.UUID}]已创建"
+                Files = new()
             };
-            ServerMain.LogOut($"[{json.User}]创建Web[{json.UUID}]");
         }
-        else
-            res = new ReMessage
-            {
-                Build = false,
-                Message = $"Web[{json.UUID}]已存在"
-            };
 
-        return res;
+        WebFileManager.New(obj);
+        ServerMain.LogOut($"[{json.User}]创建Web[{json.UUID}]完成");
+
+        return new ReMessage
+        {
+            Build = true,
+            Message = $"Web[{json.UUID}]已创建"
+        };
     }
 
     public static CSFileList GetList()

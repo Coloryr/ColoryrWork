@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using System;
 using System.Reflection;
@@ -39,7 +38,7 @@ internal class ServiceThread : IService
         {
             State = ServiceState.Error;
         }
-        Thread = new(()=>
+        Thread = new(() =>
         {
             while (IsRun)
             {
@@ -190,7 +189,7 @@ internal class ServiceThread : IService
         State = ServiceState.Init;
     }
 
-    public void Close() 
+    public void Close()
     {
         IsRun = false;
         OnStop();
@@ -198,7 +197,7 @@ internal class ServiceThread : IService
         Worker.Join(TimeSpan.FromSeconds(30));
     }
 
-    public void Pause() 
+    public void Pause()
     {
         State = ServiceState.Pause;
     }

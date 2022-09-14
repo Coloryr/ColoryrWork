@@ -19,6 +19,7 @@ internal static class LoadWebSocket
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载WebSocket[{uuid}]");
         var assembly = new DllAssembly(CodeType.WebSocket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -38,7 +39,7 @@ internal static class LoadWebSocket
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.IsPublic && (item.Name is CodeDemo.WebSocketMessage or 
+            if (item.IsPublic && (item.Name is CodeDemo.WebSocketMessage or
                 CodeDemo.WebSocketOpen or CodeDemo.WebSocketClose))
                 assembly.MethodInfos.Add(item.Name, item);
         }

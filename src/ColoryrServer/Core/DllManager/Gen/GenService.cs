@@ -38,6 +38,8 @@ internal static class GenService
         build.MS.Seek(0, SeekOrigin.Begin);
         build.MSPdb.Seek(0, SeekOrigin.Begin);
 
+        ServerMain.LogOut($"编译Service[{obj.UUID}]完成");
+
         var res = LoadService.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;

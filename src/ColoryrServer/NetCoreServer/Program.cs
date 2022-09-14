@@ -1,14 +1,11 @@
-﻿using System.Net.Sockets;
-using System.Net;
-using System.Security.AccessControl;
-using NetCoreServer;
+﻿using ColoryrServer.Core;
+using ColoryrServer.Core.BuilderPost;
 using ColoryrServer.NetCoreServer;
-using ColoryrServer.Core;
+using NetCoreServer;
+using System.Net;
+using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using Ubiety.Dns.Core;
-using Org.BouncyCastle.Asn1.Ocsp;
-using ColoryrServer.Core.BuilderPost;
 
 public interface IHttp
 {
@@ -135,7 +132,7 @@ class CoreServer
             server = new HttpCacheServer(IPAddress.Parse(Config.Http.IP), Config.Http.Port);
             ServerMain.LogOut($"服务器启动与http://{Config.Http.IP}:{Config.Http.Port}");
         }
-        
+
         server.AddStaticContent("./", "./");
 
         // Start the server

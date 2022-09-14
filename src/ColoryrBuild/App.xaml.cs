@@ -29,8 +29,9 @@ public partial class App : Application
     public static HttpBuild HttpUtils;
     public static bool IsLogin { get; private set; }
     public static ConfigObj Config { get; private set; }
-    public static MainWindow MainWindow_;
-    public static Login LoginWindow_;
+
+    public static MainWindow WindowMain;
+    public static LoginWindow WindowLogin;
 
     private record CodeInfo
     {
@@ -51,7 +52,7 @@ public partial class App : Application
         {
             Name = "",
             Token = "",
-            Http = "https://",
+            Http = "http://127.0.0.1",
             AES = false,
             Key = "Key",
             IV = "IV"
@@ -77,17 +78,16 @@ public partial class App : Application
     public static void Login()
     {
         IsLogin = false;
-        if (LoginWindow_ == null)
-            LoginWindow_ = new Login();
+        WindowLogin ??= new();
 
-        LoginWindow_.ShowDialog();
+        WindowLogin.ShowDialog();
     }
 
     public static DiffPaneModel StartContrast(CSFileCode obj, string old)
-        => MainWindow_.Start(obj, old);
+        => WindowMain.Start(obj, old);
 
     public static DiffPaneModel StartContrast(CodeType type, string uuid, string new_, string old)
-        => MainWindow_.Start(type, uuid, new_, old);
+        => WindowMain.Start(type, uuid, new_, old);
 
     public static void LogShow(string v1, string v2)
     {
@@ -100,7 +100,7 @@ public partial class App : Application
 
     private void NotifyIcon_Click(object sender, EventArgs e)
     {
-        MainWindow_?.Activate();
+        WindowMain?.Activate();
     }
 
     public static async Task<bool> StartLogin(string Pass)

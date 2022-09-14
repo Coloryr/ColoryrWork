@@ -1,8 +1,6 @@
 ﻿using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
@@ -306,7 +304,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取所有用户信息
     /// </summary>
     /// <returns>返回</returns>
-    public async Task<UserList> GetAllUser() 
+    public async Task<UserList> GetAllUser()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -352,7 +350,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="user">用户名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> RemoveUser(string user) 
+    public async Task<ReMessage> RemoveUser(string user)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -374,7 +372,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 重构代码
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<ReMessage> Rebuild() 
+    public async Task<ReMessage> Rebuild()
     {
         var data = await DoPost(new BuildOBJ
         {

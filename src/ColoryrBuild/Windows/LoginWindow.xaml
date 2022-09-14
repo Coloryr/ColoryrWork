@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="ColoryrBuild.Windows.Login"
+    x:Class="ColoryrBuild.Windows.LoginWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,6 +12,7 @@
     Closing="Window_Closing"
     Icon="/ColoryrWork.png"
     ResizeMode="NoResize"
+    Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>

@@ -11,15 +11,23 @@
     <Grid>
         <TextBox
             Name="Text"
-            Margin="3,3,3,3"
+            Margin="3,30,3,3"
             IsReadOnly="True"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Visible" />
         <Button
-            Width="40"
+            Width="80"
             Height="20"
-            Margin="0,10,30,0"
-            HorizontalAlignment="Right"
+            Margin="10,5,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Click="Button1_Click"
+            Content="登出" />
+        <Button
+            Width="80"
+            Height="20"
+            Margin="95,5,0,0"
+            HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click"
             Content="清理" />

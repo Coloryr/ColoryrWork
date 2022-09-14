@@ -19,6 +19,7 @@ internal static class LoadRobot
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载Mqtt[{uuid}]");
         var assembly = new RobotDllAssembly(CodeType.Robot, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -40,7 +41,7 @@ internal static class LoadRobot
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.IsPublic && (item.Name is CodeDemo.RobotMessage or 
+            if (item.IsPublic && (item.Name is CodeDemo.RobotMessage or
                 CodeDemo.RobotEvent or CodeDemo.RobotSend))
                 assembly.MethodInfos.Add(item.Name, item);
         }

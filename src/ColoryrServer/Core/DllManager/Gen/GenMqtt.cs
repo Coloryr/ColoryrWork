@@ -37,6 +37,8 @@ internal static class GenMqtt
         build.MS.Seek(0, SeekOrigin.Begin);
         build.MSPdb.Seek(0, SeekOrigin.Begin);
 
+        ServerMain.LogOut($"编译Mqtt[{obj.UUID}]完成");
+
         var res = LoadMqtt.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
             return res;
@@ -67,8 +69,6 @@ internal static class GenMqtt
             build.MS.Dispose();
             GC.Collect();
         });
-
-        ServerMain.LogOut($"编译Mqtt[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

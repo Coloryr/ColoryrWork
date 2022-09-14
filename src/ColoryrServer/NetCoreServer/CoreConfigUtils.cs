@@ -2,16 +2,11 @@
 using ColoryrServer.Core.FileSystem;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.NetCoreServer;
 
 internal record SslObj
-{ 
+{
     public string Local { get; set; }
     public string Password { get; set; }
 }
@@ -62,7 +57,7 @@ internal class CoreConfigUtils : ConfigUtils
             //RouteEnable = false,
             //NoInput = false,
             UseSsl = false,
-            Ssl = new() 
+            Ssl = new()
             {
                 Local = "xxx.pfx",
                 Password = "123456"

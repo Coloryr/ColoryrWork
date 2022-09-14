@@ -20,6 +20,7 @@ internal static class LoadDll
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载Dll[{uuid}]");
         var assembly = new DllAssembly(CodeType.Dll, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First().GetTypes()

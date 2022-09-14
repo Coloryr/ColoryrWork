@@ -15,7 +15,7 @@ internal class ServiceOnly : IService
     public ServiceState State { get; private set; } = ServiceState.Init;
     public Exception LastError => null;
 
-    public ServiceOnly(string name) 
+    public ServiceOnly(string name)
     {
         Name = name;
         Assembly = DllStongeManager.GetService(name);
@@ -27,7 +27,7 @@ internal class ServiceOnly : IService
 
     public void Close()
     {
-        
+
     }
 
     public void OnStart()
@@ -64,11 +64,11 @@ internal class ServiceOnly : IService
 
     public void Pause()
     {
-        
+
     }
 
     public void SetArg(object[] arg)
     {
-        
+
     }
 }

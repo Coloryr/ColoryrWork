@@ -89,7 +89,7 @@ internal static class CodeSave
         }
         catch (Exception e)
         {
-            _ = new InfoWindow("加载代码错误", e.ToString());
+            InfoWindow.Show("加载代码错误", e.ToString());
         }
         finally
         {

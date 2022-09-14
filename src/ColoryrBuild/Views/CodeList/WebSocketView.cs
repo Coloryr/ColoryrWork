@@ -48,6 +48,10 @@ public class WebSocketView : CodeListView
         {
             FRefresh();
         }
+        else
+        {
+            InfoWindow.Show("创建", list.Message);
+        }
     }
 
     public override void ChangeClick(object sender, RoutedEventArgs e)
@@ -63,19 +67,22 @@ public class WebSocketView : CodeListView
         if (List1.SelectedItem == null)
             return;
         var item = List1.SelectedItem as CSFileObj;
-        var res = new ChoseWindow("删除确认", "是否要删除").Set();
-        if (res)
+        if (new ChoseWindow("删除确认", "是否要删除").Set())
         {
-            var data = await App.HttpUtils.RemoveObj(Type, item);
-            if (data == null)
+            var res = await App.HttpUtils.RemoveObj(Type, item);
+            if (res == null)
             {
                 App.LogShow("删除", "服务器返回错误");
                 return;
             }
-            App.LogShow("删除", data.Message);
-            if (data.Build)
+            App.LogShow("删除", res.Message);
+            if (res.Build)
             {
                 Refresh();
+            }
+            else
+            {
+                InfoWindow.Show("删除", res.Message);
             }
         }
     }

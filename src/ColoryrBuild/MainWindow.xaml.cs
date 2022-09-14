@@ -29,7 +29,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        App.MainWindow_ = this;
+        App.WindowMain = this;
         SwitchTo = FSwitchTo;
         AddCodeEdit = FAddCodeEdit;
         CloseCodeEdit = FCloseCodeEdit;
@@ -178,10 +178,5 @@ public partial class MainWindow : Window
     {
         App.LogShow("启动", "初始化");
         App.Login();
-    }
-
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        App.LoginOut();
     }
 }

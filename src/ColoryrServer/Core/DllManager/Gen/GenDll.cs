@@ -21,6 +21,7 @@ internal static class GenDll
     /// <returns>编译结果</returns>
     public static GenReOBJ StartGen(CSFileCode obj, string user)
     {
+        ServerMain.LogOut($"开始编译Dll[{obj.UUID}]");
         bool release = obj.Code.Contains(@"//ColoryrServer_Release");
         string name = EnCode.SHA1(obj.UUID);
         var build = GenCode.StartGen(name, new List<SyntaxTree>
@@ -38,6 +39,8 @@ internal static class GenDll
 
         build.MS.Seek(0, SeekOrigin.Begin);
         build.MSPdb.Seek(0, SeekOrigin.Begin);
+
+        ServerMain.LogOut($"编译Dll[{obj.UUID}]完成");
 
         var res = LoadDll.Load(obj.UUID, build.MS, build.MSPdb);
         if (res != null)
@@ -69,8 +72,6 @@ internal static class GenDll
             build.MS.Dispose();
             GC.Collect();
         });
-
-        ServerMain.LogOut($"编译Dll[{obj.UUID}]完成");
 
         return new GenReOBJ
         {

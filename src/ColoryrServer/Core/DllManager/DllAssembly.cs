@@ -83,7 +83,7 @@ public class ServiceDllAssembly : DllAssembly
     public ServiceType ServiceType;
     public ServiceDllAssembly(CodeType type, string name) : base(type, name) { }
 
-    new public void Unload() 
+    new public void Unload()
     {
         ServiceManager.Stop(Name);
         base.Unload();

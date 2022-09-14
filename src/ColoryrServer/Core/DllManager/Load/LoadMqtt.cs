@@ -19,6 +19,7 @@ internal static class LoadMqtt
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
+        ServerMain.LogOut($"加载Mqtt[{uuid}]");
         var assembly = new DllAssembly(CodeType.Mqtt, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -38,8 +39,8 @@ internal static class LoadMqtt
 
         foreach (var item in assembly.SelfType.GetMethods())
         {
-            if (item.IsPublic && (item.Name is CodeDemo.MQTTMessage or 
-                CodeDemo.MQTTMessageLoading or CodeDemo.MQTTValidator or 
+            if (item.IsPublic && (item.Name is CodeDemo.MQTTMessage or
+                CodeDemo.MQTTMessageLoading or CodeDemo.MQTTValidator or
                 CodeDemo.MQTTSubscription))
                 assembly.MethodInfos.Add(item.Name, item);
         }

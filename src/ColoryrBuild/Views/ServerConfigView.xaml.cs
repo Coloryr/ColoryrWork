@@ -1,13 +1,11 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace ColoryrBuild.Views;
 
@@ -111,7 +109,7 @@ public partial class ServerConfigView : UserControl
             {
                 Dispatcher.Invoke(() =>
                 {
-                    _ = new InfoWindow("运行错误", e.ToString());
+                    InfoWindow.Show("运行错误", e.ToString());
                 });
             }
         }
@@ -125,12 +123,12 @@ public partial class ServerConfigView : UserControl
         GetUserConfig();
     }
 
-    private async void GetUserConfig() 
+    private async void GetUserConfig()
     {
         var res = await App.HttpUtils.GetAllUser();
         if (res == null)
         {
-            _ = new InfoWindow("获取配置", "获取服务器Socket配置错误");
+            InfoWindow.Show("获取配置", "获取服务器Socket配置错误");
             return;
         }
         UserList.Items.Clear();
@@ -145,7 +143,7 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.GetRobotConfig();
         if (res == null)
         {
-            _ = new InfoWindow("获取配置", "获取服务器Socket配置错误");
+            InfoWindow.Show("获取配置", "获取服务器Socket配置错误");
             return;
         }
         Obj.Robot = new()
@@ -160,7 +158,7 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.GetSocketConfig();
         if (res == null)
         {
-            _ = new InfoWindow("获取配置", "获取服务器Socket配置错误");
+            InfoWindow.Show("获取配置", "获取服务器Socket配置错误");
             return;
         }
         Obj.Socket = res.Socket;
@@ -173,7 +171,7 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.GetHttpConfigList();
         if (res == null)
         {
-            _ = new InfoWindow("获取配置", "获取服务器Http配置错误");
+            InfoWindow.Show("获取配置", "获取服务器Http配置错误");
             return;
         }
         HttpList.Items.Clear();
@@ -213,12 +211,12 @@ public partial class ServerConfigView : UserControl
         var res1 = await App.HttpUtils.AddHttpConfig(ip, port);
         if (res1 == null)
         {
-            _ = new InfoWindow("添加配置", "添加服务器Http配置错误");
+            InfoWindow.Show("添加配置", "添加服务器Http配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("添加配置", res1.Message);
+            InfoWindow.Show("添加配置", res1.Message);
             return;
         }
 
@@ -238,12 +236,12 @@ public partial class ServerConfigView : UserControl
         var res1 = await App.HttpUtils.AddHttpConfig(item.IP, item.Port);
         if (res1 == null)
         {
-            _ = new InfoWindow("删除配置", "删除服务器Http配置错误");
+            InfoWindow.Show("删除配置", "删除服务器Http配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("删除配置", res1.Message);
+            InfoWindow.Show("删除配置", res1.Message);
             return;
         }
 
@@ -260,24 +258,24 @@ public partial class ServerConfigView : UserControl
             return;
         if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(obj.Url))
         {
-            _ = new InfoWindow("添加反代", "请输入合适的值");
+            InfoWindow.Show("添加反代", "请输入合适的值");
             return;
         }
 
         var res1 = await App.HttpUtils.AddHttpRoute(key, obj);
         if (res1 == null)
         {
-            _ = new InfoWindow("添加反代", "服务器返回错误");
+            InfoWindow.Show("添加反代", "服务器返回错误");
             return;
         }
         if (res1 == null)
         {
-            _ = new InfoWindow("添加配置", "添加服务器反代配置错误");
+            InfoWindow.Show("添加配置", "添加服务器反代配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("添加配置", res1.Message);
+            InfoWindow.Show("添加配置", res1.Message);
             return;
         }
 
@@ -297,12 +295,12 @@ public partial class ServerConfigView : UserControl
         var res1 = await App.HttpUtils.RemoveHttpRoute(item.Key);
         if (res1 == null)
         {
-            _ = new InfoWindow("删除配置", "删除服务器反代配置错误");
+            InfoWindow.Show("删除配置", "删除服务器反代配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("删除配置", res1.Message);
+            InfoWindow.Show("删除配置", res1.Message);
             return;
         }
 
@@ -319,23 +317,23 @@ public partial class ServerConfigView : UserControl
             return;
         if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(obj.Url))
         {
-            _ = new InfoWindow("添加反代", "请输入合适的值");
+            InfoWindow.Show("添加反代", "请输入合适的值");
             return;
         }
         var res1 = await App.HttpUtils.AddHttpUrlRoute(key, obj);
         if (res1 == null)
         {
-            _ = new InfoWindow("添加反代", "服务器返回错误");
+            InfoWindow.Show("添加反代", "服务器返回错误");
             return;
         }
         if (res1 == null)
         {
-            _ = new InfoWindow("添加配置", "添加服务器Url反代配置错误");
+            InfoWindow.Show("添加配置", "添加服务器Url反代配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("添加配置", res1.Message);
+            InfoWindow.Show("添加配置", res1.Message);
             return;
         }
 
@@ -355,12 +353,12 @@ public partial class ServerConfigView : UserControl
         var res1 = await App.HttpUtils.RemoveHttpUrlRoute(item.Key);
         if (res1 == null)
         {
-            _ = new InfoWindow("删除配置", "删除服务器Url反代配置错误");
+            InfoWindow.Show("删除配置", "删除服务器Url反代配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("删除配置", res1.Message);
+            InfoWindow.Show("删除配置", res1.Message);
             return;
         }
 
@@ -376,19 +374,19 @@ public partial class ServerConfigView : UserControl
             return;
         if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
         {
-            _ = new InfoWindow("添加用户", "请输入用户信息");
+            InfoWindow.Show("添加用户", "请输入用户信息");
             return;
         }
 
         var res1 = await App.HttpUtils.AddUser(user, password);
         if (res1 == null)
         {
-            _ = new InfoWindow("添加用户", "添加用户错误");
+            InfoWindow.Show("添加用户", "添加用户错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("添加用户", res1.Message);
+            InfoWindow.Show("添加用户", res1.Message);
             return;
         }
         GetUserConfig();
@@ -403,12 +401,12 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.RemoveUser(item.User);
         if (res == null)
         {
-            _ = new InfoWindow("删除用户", "删除用户错误");
+            InfoWindow.Show("删除用户", "删除用户错误");
             return;
         }
         else if (!res.Build)
         {
-            _ = new InfoWindow("删除用户", res.Message);
+            InfoWindow.Show("删除用户", res.Message);
             return;
         }
 
@@ -429,24 +427,24 @@ public partial class ServerConfigView : UserControl
         int port = Obj.Socket.Port;
         if (IPAddress.TryParse(ip, out _) == false)
         {
-            _ = new InfoWindow("Socket设定", "参数非法");
+            InfoWindow.Show("Socket设定", "参数非法");
             return;
         }
         if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
         {
-            _ = new InfoWindow("Socket设定", "参数非法");
+            InfoWindow.Show("Socket设定", "参数非法");
             return;
         }
 
         var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
-            _ = new InfoWindow("修改Socket配置", "修改服务器Socket配置错误");
+            InfoWindow.Show("修改Socket配置", "修改服务器Socket配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("修改Socket配置", res1.Message);
+            InfoWindow.Show("修改Socket配置", res1.Message);
             return;
         }
     }
@@ -457,24 +455,24 @@ public partial class ServerConfigView : UserControl
         int port = Obj.Mqtt.Port;
         if (IPAddress.TryParse(ip, out _) == false)
         {
-            _ = new InfoWindow("Mqtt设定", "参数非法");
+            InfoWindow.Show("Mqtt设定", "参数非法");
             return;
         }
         if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
         {
-            _ = new InfoWindow("Mqtt设定", "参数非法");
+            InfoWindow.Show("Mqtt设定", "参数非法");
             return;
         }
 
         var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
-            _ = new InfoWindow("修改Mqtt配置", "修改服务器Mqtt配置错误");
+            InfoWindow.Show("修改Mqtt配置", "修改服务器Mqtt配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("修改Mqtt配置", res1.Message);
+            InfoWindow.Show("修改Mqtt配置", res1.Message);
             return;
         }
     }
@@ -485,24 +483,24 @@ public partial class ServerConfigView : UserControl
         int port = Obj.WebSocket.Port;
         if (IPAddress.TryParse(ip, out _) == false)
         {
-            _ = new InfoWindow("WebSocket设定", "参数非法");
+            InfoWindow.Show("WebSocket设定", "参数非法");
             return;
         }
         if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
         {
-            _ = new InfoWindow("WebSocket设定", "参数非法");
+            InfoWindow.Show("WebSocket设定", "参数非法");
             return;
         }
 
         var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
         if (res1 == null)
         {
-            _ = new InfoWindow("修改WebSocket配置", "修改服务器WebSocket配置错误");
+            InfoWindow.Show("修改WebSocket配置", "修改服务器WebSocket配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("修改WebSocket配置", res1.Message);
+            InfoWindow.Show("修改WebSocket配置", res1.Message);
             return;
         }
     }
@@ -519,12 +517,12 @@ public partial class ServerConfigView : UserControl
         if (res == null)
         {
             EnableRoute.IsChecked = !check;
-            _ = new InfoWindow("路由设置", "服务器错误");
+            InfoWindow.Show("路由设置", "服务器错误");
         }
         else if (!res.Build)
         {
             EnableRoute.IsChecked = !check;
-            _ = new InfoWindow("路由设置", res.Message);
+            InfoWindow.Show("路由设置", res.Message);
         }
     }
 
@@ -540,12 +538,12 @@ public partial class ServerConfigView : UserControl
         if (res == null)
         {
             FixMode.IsChecked = !check;
-            _ = new InfoWindow("维护模式设置", "服务器错误");
+            InfoWindow.Show("维护模式设置", "服务器错误");
         }
         else if (!res.Build)
         {
             FixMode.IsChecked = !check;
-            _ = new InfoWindow("维护模式设置", res.Message);
+            InfoWindow.Show("维护模式设置", res.Message);
         }
     }
 
@@ -554,11 +552,11 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.Rebuild();
         if (res == null)
         {
-            _ = new InfoWindow("重新编译", "服务器错误");
+            InfoWindow.Show("重新编译", "服务器错误");
         }
         else if (!res.Build)
         {
-            _ = new InfoWindow("重新编译", res.Message);
+            InfoWindow.Show("重新编译", res.Message);
         }
     }
 
@@ -573,24 +571,24 @@ public partial class ServerConfigView : UserControl
         int port = Obj.Robot.Port;
         if (IPAddress.TryParse(ip, out _) == false)
         {
-            _ = new InfoWindow("Robot设定", "参数非法");
+            InfoWindow.Show("Robot设定", "参数非法");
             return;
         }
         if (string.IsNullOrWhiteSpace(ip) || port > 0xFFFF || port < 0)
         {
-            _ = new InfoWindow("Robot设定", "参数非法");
+            InfoWindow.Show("Robot设定", "参数非法");
             return;
         }
 
         var res1 = await App.HttpUtils.SetRobotConfig(ip, port);
         if (res1 == null)
         {
-            _ = new InfoWindow("修改Robot配置", "修改服务器Robot配置错误");
+            InfoWindow.Show("修改Robot配置", "修改服务器Robot配置错误");
             return;
         }
         else if (!res1.Build)
         {
-            _ = new InfoWindow("修改Robot配置", res1.Message);
+            InfoWindow.Show("修改Robot配置", res1.Message);
             return;
         }
     }

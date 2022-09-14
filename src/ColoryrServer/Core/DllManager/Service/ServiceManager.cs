@@ -2,7 +2,6 @@
 using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
-using System.Xml.Linq;
 
 namespace ColoryrServer.Core.DllManager.Service;
 
@@ -98,7 +97,7 @@ internal static class ServiceManager
         }
     }
 
-    public static void Reload(string name) 
+    public static void Reload(string name)
     {
         if (Services.ContainsKey(name))
         {

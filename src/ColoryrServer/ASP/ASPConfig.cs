@@ -95,7 +95,7 @@ public class ASPConfigUtils : ConfigUtils
                 Ssl = "",
                 Password = "",
                 UseSsl = false,
-                Socket = new() 
+                Socket = new()
                 {
                     IP = "0.0.0.0",
                     Port = 25557
