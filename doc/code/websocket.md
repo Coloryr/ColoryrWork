@@ -9,7 +9,7 @@ WebSocket代码编写
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN]
+[WebSocketIN]
 public class test
 {
     public bool OnMessage(WebSocketMessage head)

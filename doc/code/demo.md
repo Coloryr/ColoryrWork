@@ -8,7 +8,7 @@
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     public record Obj1
@@ -34,7 +34,7 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
@@ -53,7 +53,7 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
@@ -69,7 +69,7 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 using ColoryrServer.SDK;
 using System.Linq;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
@@ -87,7 +87,7 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
@@ -105,7 +105,7 @@ public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN]
+[ClassIN]
 public class test
 {
     public string GetString(string data)
@@ -118,7 +118,7 @@ public class test
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN(true)]//true则报错输出至网页
+[DllIN(true)]//true则报错输出至网页
 public class app_FD578CDE687FD183ED8E321C7A1ACEC25BDAF9CF
 {
     [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]

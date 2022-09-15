@@ -18,7 +18,7 @@ public interface ITopAPI
 
 public static class PostServerConfig
 {
-    public static ITopAPI top;
+    private static ITopAPI top;
     public static void Init(ITopAPI api)
     {
         top = api;

@@ -55,10 +55,14 @@ public class test
 
 类**必须**带有[ColoryrServer.SDK.DLLIN](../../src/ColoryrServer/Core/SDK/NotesSDK.cs#L21)的属性 
 
-- `OnMessage`表示收到消息
-- `OnMessageLoading`表示消息正在加载
-- `OnValidator`表示有客户端正在验证链接
-- `OnSubscription`表示有客户端正在订阅频道
-- `OnUnsubscription`表示有客户端正在取消订阅频道
+- `OnMessage`收到消息
+- `OnRetainedMessageChanged`保留消息修改
+- `OnMessageLoading`消息正在加载
+- `OnValidator`有客户端正在验证链接
+- `OnSubscription`有客户端正在订阅频道
+- `OnUnsubscription`有客户端正在取消订阅频道
+- `OnClientConnected`有客户端链接
+- `OnClientDisconnected`有客户端断开链接
+- `OnInterceptingPublish`有消息发送
 
 返回如果为true，则这个事件不会传到下个Dll中去

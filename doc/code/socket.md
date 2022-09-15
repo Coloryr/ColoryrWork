@@ -10,7 +10,7 @@ Socket代码有两种类型，传统Socket数据包处理和自定义Netty处理
 ```C#
 using ColoryrServer.SDK;
 
-[DLLIN]
+[SocketIN(false)]
 public class test
 {
     public bool OnTcpMessage(TcpSocketRequest head)
@@ -43,7 +43,7 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels.Sockets;
 using System.Security.Cryptography.X509Certificates;
 
-[DLLIN]
+[SocketIN(true)]
 public class test1 : INetty
 {
     private IChannel bootstrapChannel;
