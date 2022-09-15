@@ -8,9 +8,11 @@ using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Html;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.AspNetCore.Components.RenderTree;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -124,8 +126,6 @@ public class ServerMain
             //配置文件
             ConfigUtils.Start();
 
-            DllLoad();
-
             PostDo.Start();
             PortNettyManager.Start();
             CodeFileManager.Start();
@@ -144,11 +144,16 @@ public class ServerMain
             MysqlCon.Start();
             SqliteCon.Start();
             RamDataBase.Start();
+
+            DllLoad();
+
             GenCode.Start();
-            DllStongeManager.Start();
-            ServiceManager.Start();
+
             WebFileManager.Start();
             FileHttpStream.Start();
+
+            DllStongeManager.Start();
+            ServiceManager.Start();
             PortSocketServer.Start();
             PortWebSocket.Start();
 
@@ -165,6 +170,12 @@ public class ServerMain
     public static void DllLoad()
     {
         //给编译用的，防DLL找不到
+        var save = new RamData("ColoryrServer_Init");
+        save.Set("123", 1234);
+        save.Get("123");
+        save.Close();
+        dynamic test3 = 1234;
+        test3 = "1234";
         var test2 = new HtmlDocument();
         using HttpResponseMessage test = new();
         var test1 = test.IsSuccessStatusCode;

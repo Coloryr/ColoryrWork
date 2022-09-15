@@ -87,7 +87,8 @@ internal static class RamDataBase
         if (!RamCache[name].Data.ContainsKey(key))
             RamCache[name].Data.TryAdd(key, value);
         RamCache[name].Data[key] = value;
-        QueueSave.Add(name);
+        if (RamCache[name].IsSave)
+            QueueSave.Add(name);
     }
     /// <summary>
     /// 检测缓存名是否存在，不存在创建
@@ -108,7 +109,8 @@ internal static class RamDataBase
         {
             RamCache[name].IsSave = save;
         }
-        QueueSave.Add(name);
+        if (save)
+            QueueSave.Add(name);
         return name;
     }
     /// <summary>
@@ -121,7 +123,8 @@ internal static class RamDataBase
             return;
         RamCache.TryRemove(name, out var temp);
         temp.Data.Clear();
-        QueueRemove.Add(name);
+        if (temp.IsSave)
+            QueueRemove.Add(name);
     }
 
     /// <summary>
