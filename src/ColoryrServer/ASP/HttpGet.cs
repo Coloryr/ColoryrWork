@@ -5,7 +5,6 @@ using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
-using Ubiety.Dns.Core;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
