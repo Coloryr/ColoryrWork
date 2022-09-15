@@ -17,7 +17,7 @@ internal static class ServiceManager
         }
     }
 
-    public static void Load(ServiceDllAssembly item) 
+    public static void Load(ServiceDllAssembly item)
     {
         if (item.ServiceType == ServiceType.Normal)
         {

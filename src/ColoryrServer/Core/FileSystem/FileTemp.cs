@@ -13,7 +13,7 @@ internal static class FileLoad
         try
         {
             encoding ??= Encoding.UTF8;
-            var data  = LoadBytes(filename);
+            var data = LoadBytes(filename);
             return encoding.GetString(data);
         }
         catch (Exception e)
