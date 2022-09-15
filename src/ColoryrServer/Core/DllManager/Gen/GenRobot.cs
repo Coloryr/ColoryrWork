@@ -30,7 +30,7 @@ internal class GenRobot
         if (!build.Isok)
         {
             build.Res = $"Robot[{obj.UUID}]" + build.Res;
-            ServerMain.LogOut($"编译Robot[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译Robot[{obj.UUID}]错误");
             return build;
         }
 

@@ -10,6 +10,8 @@ public static class RobotUtils
     public static RobotSDK Robot { get; private set; }
     private static void Message(byte type, object data)
     {
+        if (ServerMain.Config.FixMode)
+            return;
         switch (type)
         {
             case 21:
@@ -193,12 +195,21 @@ public static class RobotUtils
 
     private static void Log(LogType type, string data)
     {
-        ServerMain.LogOut($"机器人:{type} {data}");
+        switch (type)
+        {
+            case LogType.Log:
+                ServerMain.LogOut($"[ColorMirai]{data}");
+                break;
+            case LogType.Error:
+                ServerMain.LogWarn($"[ColorMirai]{data}");
+                break;
+        }
+
     }
 
     private static void State(StateType type)
     {
-        ServerMain.LogOut($"机器人:{type}");
+        ServerMain.LogOut($"机器人链接状态切换至{type}");
     }
 
     public static void Start()

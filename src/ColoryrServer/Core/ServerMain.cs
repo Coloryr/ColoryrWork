@@ -66,7 +66,18 @@ public class ServerMain
     public static void LogError(Exception e)
     {
         var time = DateTime.Now;
-        string a = $"[{time}][错误]{e}";
+        string a = $"[{time}][Error]{e}";
+        Task.Run(() =>
+        {
+            PostDo.AddLog(a);
+            Logs.LogWrite(a);
+            Console.WriteLine(a);
+        });
+    }
+    public static void LogError(string item, Exception e)
+    {
+        var time = DateTime.Now;
+        string a = $"[{time}][Error]{item}{Environment.NewLine}[{time}][Error]{e}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);
@@ -81,7 +92,7 @@ public class ServerMain
     public static void LogError(string a)
     {
         var time = DateTime.Now;
-        a = $"[{time}][错误]{a}";
+        a = $"[{time}][Error]{a}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);
@@ -96,7 +107,22 @@ public class ServerMain
     public static void LogOut(string a)
     {
         var time = DateTime.Now;
-        a = $"[{time}][信息]{a}";
+        a = $"[{time}][Info]{a}";
+        Task.Run(() =>
+        {
+            PostDo.AddLog(a);
+            Logs.LogWrite(a);
+            Console.WriteLine(a);
+        });
+    }
+    /// <summary>
+    /// 写警告到日志中
+    /// </summary>
+    /// <param name="a">信息</param>
+    public static void LogWarn(string a)
+    {
+        var time = DateTime.Now;
+        a = $"[{time}][Warn]{a}";
         Task.Run(() =>
         {
             PostDo.AddLog(a);

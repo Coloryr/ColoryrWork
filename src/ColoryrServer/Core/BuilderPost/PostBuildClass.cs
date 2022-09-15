@@ -21,7 +21,7 @@ internal static class PostBuildClass
                 Build = false,
                 Message = $"Class[{json.UUID}]已存在"
             };
-        ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Class[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         var obj = new CSFileCode()
         {

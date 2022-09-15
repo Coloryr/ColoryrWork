@@ -84,8 +84,7 @@ internal static class PortWebSocket
             }
             catch (CryptographicException e)
             {
-                ServerMain.LogError($"WebScoket使用SSL证书{ServerMain.Config.WebSocket.Ssl}错误");
-                ServerMain.LogError(e);
+                ServerMain.LogError($"WebScoket使用SSL证书{ServerMain.Config.WebSocket.Ssl}错误", e);
             }
         }
         else
@@ -103,6 +102,8 @@ internal static class PortWebSocket
                     Port = Socket.ConnectionInfo.ClientPort,
                     UUID = Socket.ConnectionInfo.Id
                 }, Socket);
+                if (ServerMain.Config.FixMode)
+                    return;
                 DllRun.WebSocketGo(new WebSocketOpen(Socket));
             };
             Socket.OnClose = () =>
@@ -112,11 +113,15 @@ internal static class PortWebSocket
                 {
                     var item1 = item.First();
                     Clients.Remove(item1.Key);
+                    if (ServerMain.Config.FixMode)
+                        return;
                     DllRun.WebSocketGo(new WebSocketClose(Socket));
                 }
             };
             Socket.OnMessage = message =>
             {
+                if (ServerMain.Config.FixMode)
+                    return;
                 DllRun.WebSocketGo(new WebSocketMessage(Socket, message));
             };
         });

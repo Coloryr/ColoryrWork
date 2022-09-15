@@ -30,7 +30,7 @@ internal static class GenSocket
         if (!build.Isok)
         {
             build.Res = $"Socket[{obj.UUID}]" + build.Res;
-            ServerMain.LogOut($"编译Socket[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译Socket[{obj.UUID}]错误");
             return build;
         }
 

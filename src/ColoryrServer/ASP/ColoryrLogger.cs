@@ -23,12 +23,20 @@ internal class ColoryrLogger : ILogger, IDisposable
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
                         Exception? exception, Func<TState, Exception, string> formatter)
     {
-        if (eventId.Id == 100 || eventId.Id == 101)
-            return;
-        if (logLevel is LogLevel.Warning or LogLevel.Error)
+        //if (eventId.Id == 100 || eventId.Id == 101)
+        //    return;
+        if (logLevel is LogLevel.Warning)
+        {
+            ServerMain.LogWarn($"{logLevel}-{eventId.Id} {state} {exception} {exception?.StackTrace}");
+        }
+        else if (logLevel is LogLevel.Error)
+        {
             ServerMain.LogError($"{logLevel}-{eventId.Id} {state} {exception} {exception?.StackTrace}");
+        }
         else
+        {
             ServerMain.LogOut($"{logLevel}-{eventId.Id} {state} {exception}");
+        }
     }
 }
 

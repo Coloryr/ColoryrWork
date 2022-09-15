@@ -19,7 +19,7 @@ internal static class LoadService
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        ServerMain.LogOut($"加载Service[{uuid}]");
+        ServerMain.LogOut($"正在加载Service[{uuid}]");
         var assembly = new ServiceDllAssembly(CodeType.Service, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -27,7 +27,7 @@ internal static class LoadService
 
         if (!list.Any())
         {
-            ServerMain.LogOut($"加载Service[{uuid}]错误");
+            ServerMain.LogWarn($"加载Service[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -55,7 +55,7 @@ internal static class LoadService
             case ServiceType.ErrorDump:
                 if (!assembly.MethodInfos.ContainsKey(CodeDemo.ServiceError))
                 {
-                    ServerMain.LogOut($"加载Service[{uuid}]错误");
+                    ServerMain.LogWarn($"加载Service[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -67,7 +67,7 @@ internal static class LoadService
                 if (!assembly.MethodInfos.ContainsKey(CodeDemo.ServicePerBuild)
                     || !assembly.MethodInfos.ContainsKey(CodeDemo.ServicePostBuild))
                 {
-                    ServerMain.LogOut($"加载Service[{uuid}]错误");
+                    ServerMain.LogWarn($"加载Service[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -80,7 +80,7 @@ internal static class LoadService
                     || !assembly.MethodInfos.ContainsKey(CodeDemo.ServiceStart)
                     || !assembly.MethodInfos.ContainsKey(CodeDemo.ServiceStop))
                 {
-                    ServerMain.LogOut($"加载Service[{uuid}]错误");
+                    ServerMain.LogWarn($"加载Service[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -92,7 +92,7 @@ internal static class LoadService
                 if (!assembly.MethodInfos.ContainsKey(CodeDemo.ServiceStart)
                     || !assembly.MethodInfos.ContainsKey(CodeDemo.ServiceStop))
                 {
-                    ServerMain.LogOut($"加载Service[{uuid}]错误");
+                    ServerMain.LogWarn($"加载Service[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -117,7 +117,6 @@ internal static class LoadService
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut($"加载Service[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

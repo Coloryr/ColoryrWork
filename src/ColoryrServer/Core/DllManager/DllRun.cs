@@ -232,16 +232,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Socket]{dll.Name}", error);
+                ServerMain.LogError("[Socket]{dll.Name}运行错误", e);
             }
         }
     }
@@ -280,16 +279,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Socket]{dll.Name}", error);
+                ServerMain.LogError("[Socket]{dll.Name}运行错误", e);
             }
         }
     }
@@ -329,16 +327,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
     }
@@ -378,16 +375,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
     }
@@ -427,16 +423,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
     }
@@ -476,16 +471,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
     }
@@ -525,16 +519,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
     }
@@ -574,16 +567,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
     }
@@ -623,16 +615,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -672,16 +663,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -721,16 +711,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -770,16 +759,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -819,16 +807,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -868,16 +855,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -917,16 +903,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -966,16 +951,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -1015,16 +999,15 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 Task.Run(() => ServiceOnError(e));
                 DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
     }
@@ -1065,15 +1048,14 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 DllRunLog.PutError($"[Service]{dll.Name}", error);
+                ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }
     }
@@ -1114,15 +1096,14 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 DllRunLog.PutError($"[Service]{dll.Name}", error);
+                ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }
     }
@@ -1162,15 +1143,14 @@ internal static partial class DllRun
                 if (e.InnerException is ErrorDump Dump)
                 {
                     error = Dump.data;
-                    ServerMain.LogError(error);
                 }
                 else
                 {
                     error = e.ToString();
-                    ServerMain.LogError(e);
                 }
 
                 DllRunLog.PutError($"[Service]{dll.Name}", error);
+                ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }
     }

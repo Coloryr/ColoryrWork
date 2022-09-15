@@ -125,12 +125,12 @@ class CoreServer
         {
             var context = new SslContext(SslProtocols.Tls13, new X509Certificate2(Config.Ssl.Local, Config.Ssl.Password));
             server = new HttpsCacheServer(context, IPAddress.Parse(Config.Http.IP), Config.Http.Port);
-            ServerMain.LogOut($"服务器启动与https://{Config.Http.IP}:{Config.Http.Port}");
+            ServerMain.LogOut($"服务器启动于https://{Config.Http.IP}:{Config.Http.Port}");
         }
         else
         {
             server = new HttpCacheServer(IPAddress.Parse(Config.Http.IP), Config.Http.Port);
-            ServerMain.LogOut($"服务器启动与http://{Config.Http.IP}:{Config.Http.Port}");
+            ServerMain.LogOut($"服务器启动于http://{Config.Http.IP}:{Config.Http.Port}");
         }
 
         server.AddStaticContent("./", "./");

@@ -47,7 +47,7 @@ internal static class MSCon
                 case 208:
                     return true;
                 default:
-                    ServerMain.LogError(ex);
+                    ServerMain.LogError("MS数据库连接错误", ex);
                     return false;
             }
         }
@@ -82,7 +82,7 @@ internal static class MSCon
             }
             else
             {
-                ServerMain.LogError($"Ms数据库{id}连接失败");
+                ServerMain.LogWarn($"Ms数据库{id}连接失败");
             }
             Connecting.TryRemove(id, out var v);
             return State[id];
@@ -133,7 +133,7 @@ internal static class MSCon
             }
             else
             {
-                ServerMain.LogError($"Ms数据库{a}连接失败");
+                ServerMain.LogWarn($"Ms数据库{a}连接失败");
             }
         }
     }

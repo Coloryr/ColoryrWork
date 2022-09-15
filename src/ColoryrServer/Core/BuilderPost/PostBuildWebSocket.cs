@@ -20,7 +20,7 @@ internal class PostBuildWebSocket
                 Build = false,
                 Message = $"WebSocket[{json.UUID}]已存在"
             };
-        ServerMain.LogOut($"[{json.User}]创建WebSocket[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建WebSocket[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         CSFileCode obj = new()
         {

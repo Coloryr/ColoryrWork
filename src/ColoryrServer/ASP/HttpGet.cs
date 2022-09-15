@@ -1,9 +1,11 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using Ubiety.Dns.Core;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
@@ -11,26 +13,35 @@ namespace ColoryrServer.ASP;
 
 internal static class HttpGet
 {
-    private static string[] data1 = Array.Empty<string>();
-    internal static async Task RoteGetIndex(HttpContext context)
+    private readonly static string[] data1 = Array.Empty<string>();
+    internal static Task RoteGetIndex(HttpContext context)
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
-
+        if (ServerMain.Config.FixMode)
+        {
+            response.ContentType = ServerContentType.HTML;
+            return response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode).AsTask();
+        }
         if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
         {
-            await HttpRoute.RouteDo(request, data1, rote1, response);
+            return HttpRoute.RouteDo(request, data1, rote1, response);
         }
         else
         {
             response.ContentType = ServerContentType.HTML;
-            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
+            return response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex).AsTask();
         }
     }
 
     internal static Task GetIndex(HttpContext context)
     {
         HttpResponse Response = context.Response;
+        if (ServerMain.Config.FixMode)
+        {
+            Response.ContentType = ServerContentType.HTML;
+            return Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode).AsTask();
+        }
         Response.ContentType = ServerContentType.HTML;
         return Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex).AsTask();
     }
@@ -66,6 +77,12 @@ internal static class HttpGet
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
+        if (ServerMain.Config.FixMode)
+        {
+            response.ContentType = ServerContentType.HTML;
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
+            return;
+        }
         HttpReturn httpReturn;
         var name = context.GetRouteValue("name") as string;
         var route = HttpUtils.GetUUID(name, out string funtion);
@@ -130,8 +147,13 @@ internal static class HttpGet
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
-        var name = context.GetRouteValue("name") as string;
-        if (name == null)
+        if (ServerMain.Config.FixMode)
+        {
+            response.ContentType = ServerContentType.HTML;
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
+            return;
+        }
+        if (context.GetRouteValue("name") is not string name)
             return;
         var arg = name.Split('/');
         try
@@ -151,7 +173,6 @@ internal static class HttpGet
         }
         catch (Exception e)
         {
-
             DllRunLog.PutError("Server Route", e.ToString());
             var httpReturn = HttpReturnSave.ResError;
             response.ContentType = httpReturn.ContentType;

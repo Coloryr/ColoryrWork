@@ -20,7 +20,7 @@ internal static class PostBuildMqtt
                 Build = false,
                 Message = $"Mqtt[{json.UUID}]已存在"
             };
-        ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Mqtt[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         CSFileCode obj = new()
         {

@@ -41,7 +41,7 @@ internal static class SqliteCon
         }
         catch (SqliteException ex)
         {
-            ServerMain.LogError(ex);
+            ServerMain.LogError("Sqlite数据库连接错误", ex);
             return false;
         }
     }
@@ -91,7 +91,7 @@ internal static class SqliteCon
             }
             else
             {
-                ServerMain.LogError($"SQLite数据库{id}连接失败");
+                ServerMain.LogWarn($"SQLite数据库{id}连接失败");
             }
             Connecting.TryRemove(id, out var v);
             return State[id];
@@ -126,7 +126,7 @@ internal static class SqliteCon
             }
             else
             {
-                ServerMain.LogError($"SQLite数据库{a}连接失败");
+                ServerMain.LogWarn($"SQLite数据库{a}连接失败");
             }
         }
     }

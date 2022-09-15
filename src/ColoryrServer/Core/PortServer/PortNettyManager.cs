@@ -47,7 +47,7 @@ internal static class PortNettyManager
                 string error = e.ToString();
                 Task.Run(() => DllRun.ServiceOnError(e));
                 DllRunLog.PutError($"[Socket]{dll.Name}", error);
-                ServerMain.LogOut($"Netty[{dll.Name}]启动错误:{e}");
+                ServerMain.LogError($"Netty[{dll.Name}]启动错误", e);
             }
         }
     }

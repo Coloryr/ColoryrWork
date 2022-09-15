@@ -83,13 +83,13 @@ namespace ColoryrServer.NoASP
                     }
                     catch (Exception e)
                     {
-                        ServerMain.LogError(e);
+                        ServerMain.LogError("数据解析发生错误", e);
                         return new HttpReturn
                         {
                             Data = StreamUtils.JsonOBJ(new GetMeesage
                             {
                                 Res = 123,
-                                Text = "Json解析发生错误",
+                                Text = "数据解析发生错误",
                                 Data = e
                             })
                         };

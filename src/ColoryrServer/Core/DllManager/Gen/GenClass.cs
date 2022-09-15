@@ -36,7 +36,7 @@ internal class GenClass
         if (!build.Isok)
         {
             build.Res = $"Class[{obj.UUID}]" + build.Res;
-            ServerMain.LogOut($"编译Class[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译Class[{obj.UUID}]错误");
             return build;
         }
 

@@ -19,7 +19,7 @@ internal static class LoadSocket
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        ServerMain.LogOut($"加载Socket[{uuid}]");
+        ServerMain.LogOut($"正在加载Socket[{uuid}]");
         var assembly = new SocketDllAssembly(CodeType.Socket, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -27,7 +27,7 @@ internal static class LoadSocket
 
         if (!list.Any())
         {
-            ServerMain.LogOut($"加载Socket[{uuid}]错误");
+            ServerMain.LogWarn($"加载Socket[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -62,7 +62,6 @@ internal static class LoadSocket
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut($"加载Socket[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

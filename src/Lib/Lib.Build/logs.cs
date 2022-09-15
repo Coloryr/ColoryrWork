@@ -26,8 +26,7 @@ public class Logs
                 var date = DateTime.Now;
                 string year = date.ToShortDateString().ToString();
                 string time = date.ToLongTimeString().ToString();
-                string write = "[" + year + "]" + "[" + time + "]" + a;
-                File.AppendAllText(RunLocal + log, write + Environment.NewLine, Encoding.UTF8);
+                File.AppendAllText(RunLocal + log, a + Environment.NewLine, Encoding.UTF8);
             }
             catch
             { }

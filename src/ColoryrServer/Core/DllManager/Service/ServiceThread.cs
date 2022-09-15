@@ -83,7 +83,7 @@ internal class ServiceThread : IService
                 {
                     Task.Run(() => DllRun.ServiceOnError(e));
                     DllRunLog.PutError($"[Service]{Name}", e.ToString());
-                    ServerMain.LogError(e);
+                    ServerMain.LogError("[Service]{Name}运行错误", e);
                 }
                 Thread.Sleep(50);
             }
@@ -131,9 +131,10 @@ internal class ServiceThread : IService
                     {
                         error = e.ToString();
                     }
-                    ServerMain.LogError(error);
+
                     Task.Run(() => DllRun.ServiceOnError(e));
                     DllRunLog.PutError($"[Service]{Name}", error);
+                    ServerMain.LogError($"[Service]{Name}运行出错", e);
                 }
                 Semaphore2.Release();
             }
@@ -170,7 +171,7 @@ internal class ServiceThread : IService
             {
                 LastError = e;
                 State = ServiceState.Error;
-                ServerMain.LogOut($"Service[{Name}]启动错误");
+                ServerMain.LogError($"Service[{Name}]启动错误", e);
             }
         }
     }
@@ -207,7 +208,7 @@ internal class ServiceThread : IService
             {
                 LastError = e;
                 State = ServiceState.Error;
-                ServerMain.LogOut($"Service[{Name}]停止错误");
+                ServerMain.LogError($"Service[{Name}]停止错误", e);
             }
         }
         State = ServiceState.Init;
@@ -226,7 +227,7 @@ internal class ServiceThread : IService
         {
             Thread.Interrupt();
             Worker.Interrupt();
-            ServerMain.LogOut($"Service[{Name}]清理超时");
+            ServerMain.LogWarn($"Service[{Name}]清理超时");
         }
     }
 

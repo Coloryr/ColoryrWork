@@ -70,12 +70,12 @@ public static class ASPServer
                         }
                         catch (Exception e)
                         {
-                            ServerMain.LogError(e);
+                            ServerMain.LogError("SSL证书[{item.Value.Ssl}]加载错误", e);
                         }
                     }
                     else
                     {
-                        ServerMain.LogError($"SSL证书找不到:{item.Value.Ssl}");
+                        ServerMain.LogWarn($"SSL证书找不到[{item.Value.Ssl}]");
                     }
                 }
             }
@@ -156,7 +156,7 @@ public static class ASPServer
     public static void Reboot()
     {
         IsReboot = true;
-        ServerMain.LogOut("重启服务器");
+        ServerMain.LogOut("正在重启服务器");
         Web.StopAsync().Wait();
     }
 

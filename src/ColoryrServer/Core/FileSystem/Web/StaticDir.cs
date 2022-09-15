@@ -79,7 +79,7 @@ public class StaticDir
             if (FileTempMap.TryRemove(e.OldName, out var v))
             {
                 FileTempMap.TryAdd(e.Name, v);
-                ServerMain.LogOut($"重命名文件:{e.FullPath}");
+                ServerMain.LogOut($"重命名文件[{e.FullPath}]");
             }
         }
         else if (NextDir.ContainsKey(e.OldName))
@@ -88,7 +88,7 @@ public class StaticDir
             {
                 v1.DirRename(e.FullPath);
                 NextDir.TryAdd(e.Name, v1);
-                ServerMain.LogOut($"重命名路径:{e.FullPath}");
+                ServerMain.LogOut($"重命名路径[{e.FullPath}]");
             }
         }
     }
@@ -98,14 +98,14 @@ public class StaticDir
         if (e.Name.Contains('.'))
         {
             FileTempMap.TryRemove(e.Name, out var v);
-            ServerMain.LogOut($"删除文件:{e.FullPath}");
+            ServerMain.LogOut($"删除文件[{e.FullPath}]");
         }
         else if (NextDir.ContainsKey(e.Name))
         {
             if (NextDir.TryRemove(e.Name, out var v1))
             {
                 v1.Stop();
-                ServerMain.LogOut($"删除路径:{e.FullPath}");
+                ServerMain.LogOut($"删除路径[{e.FullPath}]");
             }
         }
     }
@@ -116,7 +116,7 @@ public class StaticDir
         {
             var dir = new StaticDir(e.FullPath);
             NextDir.TryAdd(e.Name, dir);
-            ServerMain.LogOut($"创建路径:{e.FullPath}");
+            ServerMain.LogOut($"创建路径[{e.FullPath}]");
         }
     }
 
@@ -134,7 +134,7 @@ public class StaticDir
                 HtmlFixMode = FileLoad.LoadBytes(e.FullPath);
             else if (FileTempMap.TryGetValue(e.Name, out var v))
                 v.Data = FileLoad.LoadBytes(e.FullPath);
-            ServerMain.LogOut($"重读文件:{e.FullPath}");
+            ServerMain.LogOut($"重读文件[{e.FullPath}]");
         }
     }
 

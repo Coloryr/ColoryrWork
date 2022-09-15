@@ -36,7 +36,7 @@ internal static class PostBuildWeb
                 Build = false,
                 Message = $"Web[{uuid}]路由冲突"
             };
-        ServerMain.LogOut($"[{json.User}]创建Web[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Web[{json.UUID}]");
         WebObj obj;
         if (isVue)
         {

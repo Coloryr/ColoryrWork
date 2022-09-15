@@ -69,9 +69,11 @@ internal static class PortSocketServer
                         {
                             UdpClients.Remove(temp);
                             UdpClients.Add(temp, point);
-                            ServerMain.LogOut("Socket|Udp:" + temp + " 已连接");
+                            ServerMain.LogOut($"Socket|Udp:{temp}已连接");
                             Task.Run(() =>
                             {
+                                if (ServerMain.Config.FixMode)
+                                    return;
                                 DllRun.SocketGo(new SocketUdpRequest(temp, buffer, length));
                             });
                         }
@@ -93,8 +95,7 @@ internal static class PortSocketServer
         }
         catch (Exception e)
         {
-            ServerMain.LogOut("Socket服务器启动失败");
-            ServerMain.LogError(e);
+            ServerMain.LogError("Socket服务器启动失败", e);
         }
     }
 
@@ -145,6 +146,8 @@ internal static class PortSocketServer
                     client.Receive(data);
                     Task.Run(() =>
                     {
+                        if (ServerMain.Config.FixMode)
+                            return;
                         DllRun.SocketGo(new SocketTcpRequest(port, data, client.Available));
                     });
                 }
@@ -170,7 +173,7 @@ internal static class PortSocketServer
                     TcpClients.Remove(port);
                 }
                 TcpClients.Add(port, client);
-                ServerMain.LogOut("Socket|Tcp:" + port + " 已连接");
+                ServerMain.LogOut($"Socket|Tcp:{port}已连接");
             }
         }
         finally
@@ -186,7 +189,7 @@ internal static class PortSocketServer
             if (port != null)
             {
                 TcpClients.Remove(port);
-                ServerMain.LogOut("Socket|Tcp:" + port + " 已断开");
+                ServerMain.LogOut($"Socket|Tcp:{port}已断开");
             }
         }
         finally

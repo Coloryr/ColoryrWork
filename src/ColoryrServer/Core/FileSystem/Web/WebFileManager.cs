@@ -204,12 +204,11 @@ public static class WebFileManager
                 Add(obj);
                 Storage(obj);
 
-                ServerMain.LogOut($"加载Web：{item.uuid}");
+                ServerMain.LogOut($"加载Web[{item.uuid}]");
             }
             catch (Exception e)
             {
-                ServerMain.LogOut($"加载Web：{item.uuid}错误");
-                ServerMain.LogError(e);
+                ServerMain.LogError($"加载Web[{item.uuid}]错误", e);
             }
         }
     }
@@ -222,6 +221,8 @@ public static class WebFileManager
     }
     public static void DeleteAll(WebObj obj)
     {
+        ServerMain.LogOut($"删除Web[{obj.UUID}]");
+
         HttpInvokeRoute.Remove(obj.UUID);
         string time = string.Format("{0:s}", DateTime.Now).Replace(":", ".");
         string dir = WebRemoveLocal + $"{obj.UUID}-{time}" + "/";
@@ -253,8 +254,6 @@ UpdateTime:{obj.UpdateTime}");
         fileSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
         codeSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
         dataSQL.Execute("DELETE FROM web WHERE uuid=@uuid", arg);
-
-        ServerMain.LogOut($"Web[{obj.UUID}]删除");
     }
     public static void AddItem(WebObj obj, string name, bool isCode, string code = null, byte[] data = null)
     {
@@ -268,7 +267,6 @@ UpdateTime:{obj.UpdateTime}");
             HtmlCodeList[obj.UUID].Files.Add(name, data);
             StorageFile(obj, name, data);
         }
-
 
         obj.Up();
         Storage(obj);

@@ -31,7 +31,7 @@ internal static class GenService
         if (!build.Isok)
         {
             build.Res = $"Service[{obj.UUID}]" + build.Res;
-            ServerMain.LogOut($"编译Service[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译Service[{obj.UUID}]错误");
             return build;
         }
 

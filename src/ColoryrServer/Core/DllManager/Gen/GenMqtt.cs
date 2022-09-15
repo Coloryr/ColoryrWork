@@ -29,7 +29,7 @@ internal static class GenMqtt
         CodeFileManager.StorageRobot(obj, user);
         if (!build.Isok)
         {
-            ServerMain.LogOut($"编译Mqtt[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译Mqtt[{obj.UUID}]错误");
             build.Res = $"Mqtt[{obj.UUID}]" + build.Res;
             return build;
         }

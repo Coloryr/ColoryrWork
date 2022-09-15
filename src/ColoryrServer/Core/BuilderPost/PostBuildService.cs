@@ -35,7 +35,7 @@ internal static class PostBuildService
                 Build = false,
                 Message = $"创建Service[{json.UUID}]错误的类型"
             };
-        ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Service[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         CSFileCode obj = new()
         {

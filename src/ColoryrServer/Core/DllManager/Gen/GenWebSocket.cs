@@ -30,7 +30,7 @@ internal static class GenWebSocket
         if (!build.Isok)
         {
             build.Res = $"WebSocket[{obj.UUID}]" + build.Res;
-            ServerMain.LogOut($"编译WebSocket[{obj.UUID}]错误");
+            ServerMain.LogWarn($"编译WebSocket[{obj.UUID}]错误");
             return build;
         }
 

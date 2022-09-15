@@ -20,7 +20,7 @@ internal static class LoadDll
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        ServerMain.LogOut($"加载Dll[{uuid}]");
+        ServerMain.LogOut($"正在加载Dll[{uuid}]");
         var assembly = new DllAssembly(CodeType.Dll, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First().GetTypes()
@@ -28,7 +28,7 @@ internal static class LoadDll
 
         if (!list.Any())
         {
-            ServerMain.LogOut($"加载Dll[{uuid}]错误");
+            ServerMain.LogWarn($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -50,7 +50,7 @@ internal static class LoadDll
 
         if (assembly.MethodInfos.Count == 0)
         {
-            ServerMain.LogOut($"加载Dll[{uuid}]错误");
+            ServerMain.LogWarn($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -60,7 +60,7 @@ internal static class LoadDll
 
         if (!assembly.MethodInfos.ContainsKey(CodeDemo.DllMain))
         {
-            ServerMain.LogOut($"加载Dll[{uuid}]错误");
+            ServerMain.LogWarn($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -76,7 +76,7 @@ internal static class LoadDll
                 var listA = item.GetCustomAttribute<NotesSDK>(true);
                 if (listA == null)
                 {
-                    ServerMain.LogOut($"加载Dll[{uuid}]错误");
+                    ServerMain.LogWarn($"加载Dll[{uuid}]错误");
                     return new GenReOBJ
                     {
                         Isok = false,
@@ -92,7 +92,7 @@ internal static class LoadDll
         }
         catch
         {
-            ServerMain.LogOut($"加载Dll[{uuid}]错误");
+            ServerMain.LogWarn($"加载Dll[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -114,7 +114,6 @@ internal static class LoadDll
     public static void LoadFile(string item, string local)
     {
         using var FileStream = new FileStream(local, FileMode.Open, FileAccess.Read);
-        ServerMain.LogOut($"加载Dll[{item}]");
 
         var pdb = local.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

@@ -39,7 +39,7 @@ internal static class RedisCon
         }
         catch (Exception ex)
         {
-            ServerMain.LogError(ex);
+            ServerMain.LogError("Redis数据库连接错误", ex);
             return false;
         }
     }
@@ -173,7 +173,7 @@ internal static class RedisCon
             }
             else
             {
-                ServerMain.LogError($"Redis数据库{a}连接失败");
+                ServerMain.LogWarn($"Redis数据库{a}连接失败");
             }
         }
     }

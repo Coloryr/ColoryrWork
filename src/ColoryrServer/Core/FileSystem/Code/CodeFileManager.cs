@@ -600,7 +600,18 @@ internal static class CodeFileManager
 
             if (obj == null)
             {
-                ServerMain.LogOut("无法删除:" + uuid);
+                string name = type switch
+                {
+                    CodeType.Dll => "Dll",
+                    CodeType.Class => "Class",
+                    CodeType.Socket => "Socket",
+                    CodeType.WebSocket => "WebSocket",
+                    CodeType.Robot => "Robot",
+                    CodeType.Mqtt => "Mqtt",
+                    CodeType.Service => "Service",
+                    _ => null
+                };
+                ServerMain.LogWarn($"无法删除{name}[{uuid}]");
                 return;
             }
 

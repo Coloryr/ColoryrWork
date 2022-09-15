@@ -20,7 +20,7 @@ internal class PostBuildRobot
                 Build = false,
                 Message = $"Robot[{json.UUID}]已存在"
             };
-        ServerMain.LogOut($"[{json.User}]创建Robot[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Robot[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         CSFileCode obj = new()
         {

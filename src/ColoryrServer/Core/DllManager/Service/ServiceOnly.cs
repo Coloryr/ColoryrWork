@@ -54,7 +54,7 @@ internal class ServiceOnly : IService
             {
                 LastError = e;
                 State = ServiceState.Error;
-                ServerMain.LogOut($"Service[{Name}]启动错误");
+                ServerMain.LogError($"Service[{Name}]启动错误", e);
             }
         }
     }
@@ -83,7 +83,7 @@ internal class ServiceOnly : IService
             {
                 LastError = e;
                 State = ServiceState.Error;
-                ServerMain.LogOut($"Service[{Name}]停止错误");
+                ServerMain.LogError($"Service[{Name}]停止错误");
             }
         }
     }

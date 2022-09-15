@@ -72,12 +72,12 @@ internal static class HttpRoute
             Response.StatusCode = (int)res.StatusCode;
             if (res.Content == null)
             {
-                ServerMain.LogError("Content is null");
+                ServerMain.LogWarn("Content is null");
                 return;
             }
             if (res.Content.Headers == null)
             {
-                ServerMain.LogError("Headers is null");
+                ServerMain.LogWarn("Headers is null");
                 return;
             }
             if (res.Content.Headers.ContentType != null)

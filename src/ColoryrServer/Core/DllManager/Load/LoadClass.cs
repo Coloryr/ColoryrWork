@@ -20,7 +20,7 @@ internal static class LoadClass
     /// <returns>验证信息</returns>
     public static GenReOBJ Load(string uuid, Stream ms, Stream pdb = null)
     {
-        ServerMain.LogOut($"加载Class[{uuid}]");
+        ServerMain.LogOut($"正在加载Class[{uuid}]");
         var assembly = new DllAssembly(CodeType.Class, uuid);
         assembly.LoadFromStream(ms, pdb);
         var list = assembly.Assemblies.First()
@@ -28,7 +28,7 @@ internal static class LoadClass
 
         if (!list.Any())
         {
-            ServerMain.LogOut($"加载Class[{uuid}]错误");
+            ServerMain.LogWarn($"加载Class[{uuid}]错误");
             return new GenReOBJ
             {
                 Isok = false,
@@ -67,7 +67,6 @@ internal static class LoadClass
     {
         using var FileStream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read);
         string uuid = info.Name.Replace(".dll", "");
-        ServerMain.LogOut($"加载Class[{uuid}]");
 
         var pdb = info.FullName.Replace(".dll", ".pdb");
         if (File.Exists(pdb))

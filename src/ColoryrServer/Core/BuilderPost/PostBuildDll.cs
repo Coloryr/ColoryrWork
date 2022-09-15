@@ -37,7 +37,7 @@ internal static class PostBuildDll
                 Message = $"Dll[{uuid}]路由冲突"
             };
         }
-        ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Dll[{uuid}]");
         var time = string.Format("{0:s}", DateTime.Now);
 
         CSFileCode obj = new()

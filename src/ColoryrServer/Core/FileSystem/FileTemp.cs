@@ -46,7 +46,7 @@ internal static class FileLoad
                 if (times > 0)
                 {
                     times--;
-                    ServerMain.LogError($"文件:{filename} 被占用 剩余重试测试:{times}");
+                    ServerMain.LogWarn($"文件:{filename} 被占用 剩余重试测试:{times}");
                     Thread.Sleep(100);
                 }
             }

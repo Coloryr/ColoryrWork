@@ -20,7 +20,7 @@ internal static class PostBuildSocket
                 Build = false,
                 Message = $"Socket[{json.UUID}]已存在"
             };
-        ServerMain.LogOut($"[{json.User}]创建Socket[{json.UUID}]");
+        ServerMain.LogOut($"[{json.User}]正在创建Socket[{json.UUID}]");
         var time = string.Format("{0:s}", DateTime.Now);
         string code = json.Code.ToLower() == "true" ? DemoResource.Netty : DemoResource.Socket;
         CSFileCode obj = new()

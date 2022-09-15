@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core;
+using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -54,7 +55,7 @@ internal static class HttpPost
                 }
                 catch (Exception e)
                 {
-                    ServerMain.LogError(e);
+                    ServerMain.LogError("Post处理出错", e);
                     return null;
                 }
             }
@@ -95,6 +96,12 @@ internal static class HttpPost
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
+        if (ServerMain.Config.FixMode)
+        {
+            response.ContentType = ServerContentType.HTML;
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
+            return;
+        }
         HttpReturn httpReturn;
         var name = context.GetRouteValue("name") as string;
         var route = HttpUtils.GetUUID(name, out string funtion);
@@ -171,6 +178,12 @@ internal static class HttpPost
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
+        if (ServerMain.Config.FixMode)
+        {
+            response.ContentType = ServerContentType.HTML;
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
+            return;
+        }
         var name = context.GetRouteValue("name") as string;
         if (name == null)
             return;
