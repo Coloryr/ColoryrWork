@@ -1,4 +1,5 @@
-﻿using ColoryrWork.Lib.Build;
+﻿using ColoryrBuild.Windows;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
 using System;
@@ -88,8 +89,9 @@ public abstract class HttpUtilsBase
             var temp = await httpClient.PostAsync(App.Config.Http, Content);
             return await temp.Content.ReadAsStringAsync();
         }
-        catch
+        catch(Exception e)
         {
+            InfoWindow.Show("登录错误", "服务器无响应" + Environment.NewLine + e.ToString());
             return null;
         }
     }

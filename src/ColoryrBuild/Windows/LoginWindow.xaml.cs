@@ -65,10 +65,6 @@ public partial class LoginWindow : Window
             }
             Close();
         }
-        else
-        {
-            InfoWindow.Show("登录错误", "服务器无响应");
-        }
         Addr.IsEnabled = User.IsEnabled = Pass.IsEnabled = ButtonLogin.IsEnabled = true;
         IsLogin = false;
     }
