@@ -56,13 +56,13 @@ internal static partial class DllRun
             object dllres;
             if (mi.IsStatic)
             {
-                var temp = Delegate.CreateDelegate(typeof(DllIN), mi) as DllIN;
+                var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), mi) as Dll.DllIN;
                 dllres = temp(arg);
             }
             else
             {
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var temp = Delegate.CreateDelegate(typeof(DllIN), obj1, mi) as DllIN;
+                var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), obj1, mi) as Dll.DllIN;
                 dllres = temp(arg);
             }
 
@@ -213,13 +213,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(SocketTcpIn), mi) as SocketTcpIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.SocketTcpIn), mi) as Dll.SocketTcpIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(SocketTcpIn), obj1, mi) as SocketTcpIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.SocketTcpIn), obj1, mi) as Dll.SocketTcpIn;
                     dllres = temp(head);
                 }
 
@@ -260,13 +260,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(SocketUdpIn), mi) as SocketUdpIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.SocketUdpIn), mi) as Dll.SocketUdpIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(SocketUdpIn), obj1, mi) as SocketUdpIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.SocketUdpIn), obj1, mi) as Dll.SocketUdpIn;
                     dllres = temp(head);
                 }
 
@@ -308,13 +308,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketMessageIn), mi) as WebSocketMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketMessageIn), mi) as Dll.WebSocketMessageIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketMessageIn), obj1, mi) as WebSocketMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketMessageIn), obj1, mi) as Dll.WebSocketMessageIn;
                     dllres = temp(head);
                 }
 
@@ -356,13 +356,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketOpenIn), mi) as WebSocketOpenIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketOpenIn), mi) as Dll.WebSocketOpenIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketOpenIn), obj1, mi) as WebSocketOpenIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketOpenIn), obj1, mi) as Dll.WebSocketOpenIn;
                     dllres = temp(head);
                 }
 
@@ -404,13 +404,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketCloseIn), mi) as WebSocketCloseIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketCloseIn), mi) as Dll.WebSocketCloseIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(WebSocketCloseIn), obj1, mi) as WebSocketCloseIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketCloseIn), obj1, mi) as Dll.WebSocketCloseIn;
                     dllres = temp(head);
                 }
 
@@ -452,13 +452,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(RobotMessageIn), mi) as RobotMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), mi) as Dll.RobotMessageIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(RobotMessageIn), obj1, mi) as RobotMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), obj1, mi) as Dll.RobotMessageIn;
                     dllres = temp(head);
                 }
 
@@ -500,13 +500,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(RobotEventIn), mi) as RobotEventIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), mi) as Dll.RobotEventIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(RobotEventIn), obj1, mi) as RobotEventIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), obj1, mi) as Dll.RobotEventIn;
                     dllres = temp(head);
                 }
 
@@ -548,13 +548,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(RobotSendIn), mi) as RobotSendIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), mi) as Dll.RobotSendIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(RobotSendIn), obj1, mi) as RobotSendIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), obj1, mi) as Dll.RobotSendIn;
                     dllres = temp(head);
                 }
 
@@ -596,13 +596,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTMessageLoadingIn), mi) as MQTTMessageLoadingIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTMessageLoadingIn), mi) as Dll.MQTTMessageLoadingIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTMessageLoadingIn), obj1, mi) as MQTTMessageLoadingIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTMessageLoadingIn), obj1, mi) as Dll.MQTTMessageLoadingIn;
                     dllres = temp(head);
                 }
 
@@ -644,13 +644,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTValidatorIn), mi) as MQTTValidatorIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTValidatorIn), mi) as Dll.MQTTValidatorIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTValidatorIn), obj1, mi) as MQTTValidatorIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTValidatorIn), obj1, mi) as Dll.MQTTValidatorIn;
                     dllres = temp(head);
                 }
 
@@ -692,13 +692,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTUnsubscriptionIn), mi) as MQTTUnsubscriptionIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTUnsubscriptionIn), mi) as Dll.MQTTUnsubscriptionIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTUnsubscriptionIn), obj1, mi) as MQTTUnsubscriptionIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTUnsubscriptionIn), obj1, mi) as Dll.MQTTUnsubscriptionIn;
                     dllres = temp(head);
                 }
 
@@ -740,13 +740,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTMessageIn), mi) as MQTTMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTMessageIn), mi) as Dll.MQTTMessageIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTMessageIn), obj1, mi) as MQTTMessageIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTMessageIn), obj1, mi) as Dll.MQTTMessageIn;
                     dllres = temp(head);
                 }
 
@@ -788,13 +788,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTSubscriptionIn), mi) as MQTTSubscriptionIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTSubscriptionIn), mi) as Dll.MQTTSubscriptionIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTSubscriptionIn), obj1, mi) as MQTTSubscriptionIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTSubscriptionIn), obj1, mi) as Dll.MQTTSubscriptionIn;
                     dllres = temp(head);
                 }
 
@@ -836,13 +836,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTClientConnectedIn), mi) as MQTTClientConnectedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTClientConnectedIn), mi) as Dll.MQTTClientConnectedIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTClientConnectedIn), obj1, mi) as MQTTClientConnectedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTClientConnectedIn), obj1, mi) as Dll.MQTTClientConnectedIn;
                     dllres = temp(head);
                 }
 
@@ -884,13 +884,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTClientDisconnectedIn), mi) as MQTTClientDisconnectedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTClientDisconnectedIn), mi) as Dll.MQTTClientDisconnectedIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTClientDisconnectedIn), obj1, mi) as MQTTClientDisconnectedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTClientDisconnectedIn), obj1, mi) as Dll.MQTTClientDisconnectedIn;
                     dllres = temp(head);
                 }
 
@@ -932,13 +932,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTInterceptingPublishIn), mi) as MQTTInterceptingPublishIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTInterceptingPublishIn), mi) as Dll.MQTTInterceptingPublishIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTInterceptingPublishIn), obj1, mi) as MQTTInterceptingPublishIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTInterceptingPublishIn), obj1, mi) as Dll.MQTTInterceptingPublishIn;
                     dllres = temp(head);
                 }
 
@@ -980,13 +980,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(MQTTRetainedMessageChangedIn), mi) as MQTTRetainedMessageChangedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTRetainedMessageChangedIn), mi) as Dll.MQTTRetainedMessageChangedIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(MQTTRetainedMessageChangedIn), obj1, mi) as MQTTRetainedMessageChangedIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.MQTTRetainedMessageChangedIn), obj1, mi) as Dll.MQTTRetainedMessageChangedIn;
                     dllres = temp(head);
                 }
 
@@ -1029,13 +1029,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(ServiceErrorIn), mi) as ServiceErrorIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServiceErrorIn), mi) as Dll.ServiceErrorIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(ServiceErrorIn), obj1, mi) as ServiceErrorIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServiceErrorIn), obj1, mi) as Dll.ServiceErrorIn;
                     dllres = temp(head);
                 }
 
@@ -1077,13 +1077,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(ServicePerBuildIn), mi) as ServicePerBuildIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServicePerBuildIn), mi) as Dll.ServicePerBuildIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(ServicePerBuildIn), obj1, mi) as ServicePerBuildIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServicePerBuildIn), obj1, mi) as Dll.ServicePerBuildIn;
                     dllres = temp(head);
                 }
 
@@ -1124,13 +1124,13 @@ internal static partial class DllRun
                 bool dllres;
                 if (mi.IsStatic)
                 {
-                    var temp = Delegate.CreateDelegate(typeof(ServicePostBuildIn), mi) as ServicePostBuildIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServicePostBuildIn), mi) as Dll.ServicePostBuildIn;
                     dllres = temp(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(ServicePostBuildIn), obj1, mi) as ServicePostBuildIn;
+                    var temp = Delegate.CreateDelegate(typeof(Dll.ServicePostBuildIn), obj1, mi) as Dll.ServicePostBuildIn;
                     dllres = temp(head);
                 }
 

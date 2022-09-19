@@ -120,4 +120,6 @@
 
   <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
 
+  <Import Project="..\..\ColoryrWork.Lib.Debug\ColoryrWork.Lib.Debug.projitems" Label="Shared" />
+
 </Project>

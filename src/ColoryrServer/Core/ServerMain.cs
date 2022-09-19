@@ -8,6 +8,7 @@ using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.Core.Html;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
+using ColoryrServer.Core.ServerDebug;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using HtmlAgilityPack;
@@ -181,6 +182,7 @@ public class ServerMain
             ServiceManager.Start();
             PortSocketServer.Start();
             PortWebSocket.Start();
+            DebugNetty.Start();
 
             //等待初始化完成
             Thread.Sleep(2000);

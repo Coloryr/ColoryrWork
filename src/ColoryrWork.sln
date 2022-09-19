@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest.Run", "ColoryrT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.NetCoreServer", "ColoryrServer\NetCoreServer\ColoryrServer.NetCoreServer.csproj", "{336AC9DE-FBDD-4989-8FFE-A66720C454CC}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Debug", "ColoryrWork.Lib.Debug\ColoryrWork.Lib.Debug.shproj", "{6957D84A-8B7D-463C-9499-CB85BC359298}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,8 @@ Global
 		Lib\Lib.Server\Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
 		Lib\Lib.Build\Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
 		Lib\Lib.Build\Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
+		ColoryrWork.Lib.Debug\ColoryrWork.Lib.Debug.projitems*{6957d84a-8b7d-463c-9499-cb85bc359298}*SharedItemsImports = 13
+		ColoryrWork.Lib.Debug\ColoryrWork.Lib.Debug.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.Build\Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 		Lib\Lib.Server\Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 	EndGlobalSection

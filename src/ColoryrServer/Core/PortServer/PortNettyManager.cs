@@ -10,8 +10,8 @@ namespace ColoryrServer.Core.PortServer;
 
 internal static class PortNettyManager
 {
-    private static MultithreadEventLoopGroup BossGroup;
-    private static MultithreadEventLoopGroup WorkerGroup;
+    public static MultithreadEventLoopGroup BossGroup;
+    public static MultithreadEventLoopGroup WorkerGroup;
     private readonly static Dictionary<string, INetty> RunNetty = new();
     public static void Start()
     {

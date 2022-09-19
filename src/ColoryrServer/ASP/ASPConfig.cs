@@ -204,6 +204,14 @@ public class ASPConfigUtils : ConfigUtils
             {
                 Key = "Key",
                 IV = "IV"
+            },
+            FixMode = false,
+            DebugPort = new()
+            { 
+                Enable = true,
+                Port = 20000,
+                Key = "Key",
+                IV = "IV"
             }
         }, FilePath);
     }

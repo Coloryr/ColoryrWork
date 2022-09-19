@@ -3,7 +3,7 @@ using System;
 
 namespace ColoryrServer.Core.DllManager;
 
-internal static partial class DllRun
+public static class Dll
 {
     public delegate dynamic DllIN(HttpDllRequest arg);
     public delegate bool SocketTcpIn(SocketTcpRequest arg);

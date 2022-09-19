@@ -1,6 +1,6 @@
 ﻿namespace ColoryrServer.Core.DllManager;
 
-internal static class CodeDemo
+public static class CodeDemo
 {
     public const string DllMain = "Main";
     public const string SocketTcp = "OnTcpMessage";

@@ -22,6 +22,7 @@ internal class Program
     //}
     static void Main(string[] args)
     {
+        ServerDebug.Test();
         //var bossGroup = new MultithreadEventLoopGroup();
         //var workerGroup = new MultithreadEventLoopGroup();
         //var p1 = new NettyDemoCS();
@@ -40,49 +41,49 @@ internal class Program
         //p2.Stop();
         //Task.WaitAll(bossGroup.ShutdownGracefullyAsync(), workerGroup.ShutdownGracefullyAsync());
 
-        Stopwatch stopwatch = new();
-        stopwatch.Start();
-        var class1 = new DllDemo();
-        for (int a = 0; a < 100000000; a++)
-        {
-            class1.Main(null);
-        }
-        stopwatch.Stop();
-        Console.WriteLine(stopwatch.ElapsedMilliseconds);
+        //Stopwatch stopwatch = new();
+        //stopwatch.Start();
+        //var class1 = new DllDemo();
+        //for (int a = 0; a < 100000000; a++)
+        //{
+        //    class1.Main(null);
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine(stopwatch.ElapsedMilliseconds);
 
-        var type = typeof(DllDemo);
+        //var type = typeof(DllDemo);
 
-        stopwatch = new();
-        stopwatch.Start();
-        dynamic obj1 = Activator.CreateInstance(type);
-        for (int a = 0; a < 100000000; a++)
-        {
-            obj1.Main(null);
-        }
-        stopwatch.Stop();
-        Console.WriteLine(stopwatch.ElapsedMilliseconds);
+        //stopwatch = new();
+        //stopwatch.Start();
+        //dynamic obj1 = Activator.CreateInstance(type);
+        //for (int a = 0; a < 100000000; a++)
+        //{
+        //    obj1.Main(null);
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine(stopwatch.ElapsedMilliseconds);
 
-        var method = type.GetMethod("Main");
+        //var method = type.GetMethod("Main");
 
-        stopwatch = new();
-        stopwatch.Start();
-        obj1 = Activator.CreateInstance(type);
-        for (int a = 0; a < 100000000; a++)
-        {
-            //method.Invoke(obj1, new object[] { null });
-        }
-        stopwatch.Stop();
-        Console.WriteLine(stopwatch.ElapsedMilliseconds);
+        //stopwatch = new();
+        //stopwatch.Start();
+        //obj1 = Activator.CreateInstance(type);
+        //for (int a = 0; a < 100000000; a++)
+        //{
+        //    //method.Invoke(obj1, new object[] { null });
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine(stopwatch.ElapsedMilliseconds);
 
-        stopwatch = new();
-        stopwatch.Start();
-        obj1 = Activator.CreateInstance(type);
-        DllIN getDelegate = Delegate.CreateDelegate(typeof(DllIN), obj1, method) as DllIN;
-        for (int a = 0; a < 100000000; a++)
-        {
-            getDelegate(null);
-        }
-        stopwatch.Stop();
-        Console.WriteLine(stopwatch.ElapsedMilliseconds);
+        //stopwatch = new();
+        //stopwatch.Start();
+        //obj1 = Activator.CreateInstance(type);
+        //DllIN getDelegate = Delegate.CreateDelegate(typeof(DllIN), obj1, method) as DllIN;
+        //for (int a = 0; a < 100000000; a++)
+        //{
+        //    getDelegate(null);
+        //}
+        //stopwatch.Stop();
+        //Console.WriteLine(stopwatch.ElapsedMilliseconds);
     }
 }

@@ -1,11 +1,19 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.FileSystem.Web;
+using ColoryrServer.Core.ServerDebug;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
+using ColoryrWork.Lib.Debug.Object;
+using DotNetty.Transport.Channels;
+using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Routing;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 
 namespace ColoryrServer.Core.Http;
 
@@ -42,6 +50,76 @@ public class DllRoute : RouteObj
     }
 }
 
+public class DebugRoute : RouteObj
+{
+    public static ConcurrentDictionary<long, Semaphore> locks = new();
+    public static ConcurrentDictionary<long, HttpReturn> res = new();
+
+    private static Random random = new();
+    private static object obj1 = new();
+
+    public static long Add()
+    {
+        long item;
+        lock (obj1)
+        {
+            do
+            {
+                item = random.NextInt64();
+            }
+            while (locks.ContainsKey(item));
+            locks.TryAdd(item, new Semaphore(0, 2));
+            res.TryRemove(item, out _);
+        }
+        return item;
+    }
+
+    public static void Res(long id, HttpReturn http)
+    {
+        if (!res.ContainsKey(id))
+        {
+            res.TryAdd(id, http);
+            locks[id].Release();
+        }
+    }
+
+    public static void Remove(long id)
+    {
+        lock (obj1)
+        {
+            locks.TryRemove(id, out _);
+            res.TryRemove(id, out _);
+        }
+    }
+
+    public IChannelHandlerContext context;
+    public string url;
+    public override HttpReturn Invoke(HttpDllRequest arg, string function)
+    {
+        var obj = new HttpObj()
+        {
+            requestObj = new()
+            {
+                Parameter = arg.Parameter,
+                RowRequest = arg.RowRequest,
+                Cookie = arg.Cookie,
+                ContentType = arg.ContentType,
+                Data = arg.Data,
+                Data1 = arg.Data1,
+                Method = arg.Method
+            },
+            url = url,
+            function = function,
+            id = Add()
+        };
+        context.SendHttp(obj);
+        locks[obj.id].WaitOne();
+        HttpReturn http = res[obj.id];
+        Remove(obj.id);
+
+        return http;
+    }
+}
 public class WebRoute : RouteObj
 {
     private ConcurrentDictionary<string, byte[]> cache = new();
@@ -223,6 +301,18 @@ public static class HttpInvokeRoute
         else
         {
             Routes.TryAdd(name, new WebRoute(obj));
+        }
+    }
+
+    public static void AddDebug(string name , IChannelHandlerContext context)
+    {
+        if (!Routes.ContainsKey(name))
+        {
+            Routes.TryAdd(name, new DebugRoute
+            {
+                url = name,
+                context = context
+            });
         }
     }
 

@@ -62,9 +62,33 @@ public abstract record MainConfig
     /// </summary>
     public CodeConfigObj CodeSetting { get; set; }
     /// <summary>
+    /// 调试模式
+    /// </summary>
+    public ServerDebug DebugPort { get; set; }
+    /// <summary>
     /// 维护模式
     /// </summary>
     public bool FixMode { get; set; }
+}
+
+public record ServerDebug
+{ 
+    /// <summary>
+    /// 启用调试
+    /// </summary>
+    public bool Enable { get; set; }
+    /// <summary>
+    /// 调试开放端口
+    /// </summary>
+    public int Port { get; set; }
+    /// <summary>
+    /// 密钥
+    /// </summary>
+    public string Key { get; set; }
+    /// <summary>
+    /// 密钥
+    /// </summary>
+    public string IV { get; set; }
 }
 
 public record SslConfigObj

@@ -196,24 +196,25 @@ public partial class EnCode
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
-        using var rDel = Aes.Create();
-        var size = rDel.KeySize / 8;
+        using var aes = Aes.Create();
+        aes.Mode = CipherMode.CBC;
+        aes.Padding = mode;
+
+        var size = aes.KeySize / 8;
         if (key.Length != size)
         {
             Array.Resize(ref key, size);
         }
-        size = rDel.BlockSize / 8;
+        size = aes.BlockSize / 8;
         if (iv.Length != size)
         {
             Array.Resize(ref iv, size);
         }
 
-        rDel.Key = key;
-        rDel.IV = iv;
-        rDel.Mode = CipherMode.CBC;
-        rDel.Padding = mode;
+        aes.Key = key;
+        aes.IV = iv;
 
-        using var cTransform = rDel.CreateEncryptor();
+        using var cTransform = aes.CreateEncryptor();
         byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
 
         return resultArray;
@@ -236,27 +237,28 @@ public partial class EnCode
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
-        using var rDel = Aes.Create();
-        var size = rDel.KeySize / 8;
+        using var aes = Aes.Create();
+        aes.KeySize = 256;
+        aes.BlockSize = 128;
+        aes.FeedbackSize = 128;
+        aes.Padding = mode;
+        aes.Mode = CipherMode.CBC;
+
+        var size = aes.KeySize / 8;
         if (key.Length != size)
         {
             Array.Resize(ref key, size);
         }
-        size = rDel.BlockSize / 8;
+        size = aes.BlockSize / 8;
         if (iv.Length != size)
         {
             Array.Resize(ref iv, size);
         }
 
-        rDel.BlockSize = 128;
-        rDel.KeySize = 256;
-        rDel.FeedbackSize = 128;
-        rDel.Padding = mode;
-        rDel.Mode = CipherMode.CBC;
-        rDel.Key = key;
-        rDel.IV = iv;
+        aes.Key = key;
+        aes.IV = iv;
 
-        using var cTransform = rDel.CreateEncryptor();
+        using var cTransform = aes.CreateEncryptor();
         byte[] resultArray = cTransform.TransformFinalBlock(data, 0, data.Length);
 
         return resultArray;
@@ -287,24 +289,25 @@ public partial class DeCode
     public static byte[] AES128(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
-        using var rijalg = Aes.Create();
-        var size = rijalg.KeySize / 8;
+        using var aes = Aes.Create();
+        var size = aes.KeySize / 8;
+        aes.Padding = mode;
+        aes.Mode = CipherMode.CBC;
+
         if (key.Length != size)
         {
             Array.Resize(ref key, size);
         }
-        size = rijalg.BlockSize / 8;
+        size = aes.BlockSize / 8;
         if (iv.Length != size)
         {
             Array.Resize(ref iv, size);
         }
 
-        rijalg.Padding = mode;
-        rijalg.Mode = CipherMode.CBC;
-        rijalg.Key = key;
-        rijalg.IV = iv;
+        aes.Key = key;
+        aes.IV = iv;
 
-        using var decryptor = rijalg.CreateDecryptor();
+        using var decryptor = aes.CreateDecryptor();
         byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
         return resultArray;
@@ -326,27 +329,28 @@ public partial class DeCode
     public static byte[] AES256(byte[] data, byte[] key, byte[] iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
-        using var rijalg = Aes.Create();
-        var size = rijalg.KeySize / 8;
+        using var aes = Aes.Create();
+        aes.KeySize = 256;
+        aes.BlockSize = 128;
+        aes.FeedbackSize = 128;
+        aes.Padding = mode;
+        aes.Mode = CipherMode.CBC;
+
+        var size = aes.KeySize / 8;
         if (key.Length != size)
         {
             Array.Resize(ref key, size);
         }
-        size = rijalg.BlockSize / 8;
+        size = aes.BlockSize / 8;
         if (iv.Length != size)
         {
             Array.Resize(ref iv, size);
         }
 
-        rijalg.BlockSize = 128;
-        rijalg.KeySize = 256;
-        rijalg.FeedbackSize = 128;
-        rijalg.Padding = mode;
-        rijalg.Mode = CipherMode.CBC;
-        rijalg.Key = key;
-        rijalg.IV = iv;
+        aes.Key = key;
+        aes.IV = iv;
 
-        using var decryptor = rijalg.CreateDecryptor();
+        using var decryptor = aes.CreateDecryptor();
 
         byte[] resultArray = decryptor.TransformFinalBlock(data, 0, data.Length);
 
