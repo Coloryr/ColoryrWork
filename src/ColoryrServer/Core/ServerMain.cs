@@ -32,7 +32,7 @@ namespace ColoryrServer.Core;
 
 public class ServerMain
 {
-    public const string Version = "2.3.0";
+    public const string Version = "2.4.0";
     /// <summary>
     /// 配置文件
     /// </summary>
