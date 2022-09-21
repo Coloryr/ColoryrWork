@@ -82,11 +82,12 @@ internal static class HttpGet
             await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
             return;
         }
-        HttpReturn httpReturn;
+
         var name = context.GetRouteValue("name") as string;
         var route = HttpUtils.GetUUID(name, out string funtion);
         if (route != null)
         {
+            HttpReturn httpReturn;
             if (route.IsDll)
             {
                 var arg = InitArg(request);
@@ -114,15 +115,13 @@ internal static class HttpGet
                     await response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
                     break;
                 case ResType.Byte:
-                    var bytes = httpReturn.Data as byte[];
-                    await response.BodyWriter.WriteAsync(bytes);
+                    await response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
                     break;
                 case ResType.Json:
-                    await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data));
+                    await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data), httpReturn.Encoding);
                     break;
                 case ResType.Stream:
-                    var stream = httpReturn.Data as Stream;
-                    if (stream == null)
+                    if (httpReturn.Data is not Stream stream)
                     {
                         response.StatusCode = 500;
                         await response.WriteAsync("stream in null", httpReturn.Encoding);

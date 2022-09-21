@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.Core.FileSystem.Web;
 using ColoryrServer.SDK;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,26 +24,48 @@ public record HttpReturn
 
 public static class HttpReturnSave
 {
+    public static HttpReturn FromError { get; } = new()
+    {
+        Res = ResType.String,
+        ContentType = ServerContentType.JSON,
+        Data = JsonConvert.SerializeObject(new
+        {
+            res = 500,
+            text = "表单解析发生错误，请检查数据"
+        })
+    };
+
+    public static HttpReturn StreamError { get; } = new()
+    {
+        Res = ResType.String,
+        ContentType = ServerContentType.JSON,
+        Data = JsonConvert.SerializeObject(new
+        {
+            res = 500,
+            text = "流数据错误"
+        })
+    };
+
     public static HttpReturn ResReload { get; } = new()
     {
-        Res = ResType.Json,
-        ContentType = "application/json; charset=UTF-8",
-        Data = new
+        Res = ResType.String,
+        ContentType = ServerContentType.JSON,
+        Data = JsonConvert.SerializeObject(new
         {
             res = 90,
             text = "服务器正在重载"
-        }
+        })
     };
     public static HttpReturn ResError { get; } = new()
     {
-        Res = ResType.Json,
-        ReCode = 500,
-        ContentType = "application/json; charset=UTF-8",
-        Data = new
+        Res = ResType.String,
+        ReCode = 400,
+        ContentType = ServerContentType.JSON,
+        Data = JsonConvert.SerializeObject(new
         {
-            res = 500,
+            res = 400,
             text = "服务器内部错误"
-        }
+        })
     };
     public static HttpReturn Res404 { get; } = new()
     {

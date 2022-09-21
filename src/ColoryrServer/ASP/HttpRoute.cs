@@ -10,8 +10,10 @@ internal static class HttpRoute
         RouteConfigObj rote, HttpResponse Response, int start = 1)
     {
         HttpClient ProxyRequest = ASPServer.Clients.GetOne();
-        HttpRequestMessage message = new();
-        message.Method = new HttpMethod(Request.Method);
+        HttpRequestMessage message = new()
+        {
+            Method = new HttpMethod(Request.Method)
+        };
         string url = "";
         if (arg.Length >= start)
         {

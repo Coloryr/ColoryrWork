@@ -112,13 +112,9 @@ internal static class HttpPost
                 var arg = await InitArg(request);
                 if (arg == null)
                 {
-                    var obj1 = new GetMeesage
-                    {
-                        Res = 123,
-                        Text = "表单解析发生错误，请检查数据"
-                    };
                     response.StatusCode = 500;
-                    await response.WriteAsync(JsonConvert.SerializeObject(obj1));
+                    await response.WriteAsync(HttpReturnSave.FromError.Data as string);
+                    return;
                 }
                 httpReturn = route.Invoke(arg, funtion);
             }
@@ -144,19 +140,17 @@ internal static class HttpPost
                     await response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
                     break;
                 case ResType.Byte:
-                    var bytes = httpReturn.Data as byte[];
-                    await response.BodyWriter.WriteAsync(bytes);
+                    await response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
                     break;
                 case ResType.Json:
                     var obj1 = httpReturn.Data;
                     await response.WriteAsync(JsonConvert.SerializeObject(obj1));
                     break;
                 case ResType.Stream:
-                    var stream = httpReturn.Data as Stream;
-                    if (stream == null)
+                    if (httpReturn.Data is not Stream stream)
                     {
                         response.StatusCode = 500;
-                        await response.WriteAsync("stream in null", httpReturn.Encoding);
+                        await response.WriteAsync(HttpReturnSave.StreamError.Data as string);
                     }
                     else
                     {

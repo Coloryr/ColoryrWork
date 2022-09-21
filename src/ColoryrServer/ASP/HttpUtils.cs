@@ -18,7 +18,6 @@ public static class HttpUtils
         }
         if (string.IsNullOrWhiteSpace(name))
         {
-            funtion = "";
             return null;
         }
         string temp = "";
