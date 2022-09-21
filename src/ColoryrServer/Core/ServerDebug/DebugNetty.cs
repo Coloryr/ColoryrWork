@@ -87,6 +87,7 @@ internal static class DebugNetty
                 TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)),
             workerGroup.ShutdownGracefullyAsync(
                 TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)));
+        ServerMain.LogOut("服务器调试已关闭");
     }
 
     internal static byte[] Decode(byte[] input)
