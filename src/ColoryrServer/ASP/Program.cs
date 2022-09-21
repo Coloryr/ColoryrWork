@@ -113,8 +113,6 @@ public static class ASPServer
         }
 
         IsRun = false;
-        ReadThread.Interrupt();
-        ServerMain.LogOut("按下回车键退出");
     }
 
     private static Thread ReadThread;
