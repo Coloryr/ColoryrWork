@@ -13,36 +13,36 @@ namespace ColoryrServer.ASP;
 internal static class HttpGet
 {
     private readonly static string[] data1 = Array.Empty<string>();
-    internal static Task RoteGetIndex(HttpContext context)
+    internal static async Task RoteGetIndex(HttpContext context)
     {
         HttpRequest request = context.Request;
         HttpResponse response = context.Response;
         if (ServerMain.Config.FixMode)
         {
             response.ContentType = ServerContentType.HTML;
-            return response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode).AsTask();
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
         }
         if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
         {
-            return HttpRoute.RouteDo(request, data1, rote1, response);
+            await HttpRoute.RouteDo(request, data1, rote1, response);
         }
         else
         {
             response.ContentType = ServerContentType.HTML;
-            return response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex).AsTask();
+            await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
         }
     }
 
-    internal static Task GetIndex(HttpContext context)
+    internal static async Task GetIndex(HttpContext context)
     {
         HttpResponse Response = context.Response;
         if (ServerMain.Config.FixMode)
         {
             Response.ContentType = ServerContentType.HTML;
-            return Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode).AsTask();
+            await Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
         }
         Response.ContentType = ServerContentType.HTML;
-        return Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex).AsTask();
+        await Response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlIndex);
     }
 
     private static HttpDllRequest InitArg(HttpRequest request)
