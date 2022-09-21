@@ -1,13 +1,8 @@
 ﻿using ColoryrWork.Lib.Debug.Object;
 using DotNetty.Buffers;
-using System;
+using MsgPack.Serialization;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrWork.Lib.ServerDebug;
 
@@ -54,7 +49,7 @@ public static class DebugDecode
                 Cookie = buffer.ReadDictionary(),
                 Head = buffer.ReadDictionary(),
                 ContentType = buffer.ReadString(),
-                data = buffer.ReadBytes1()
+                Data = buffer.ReadBytes1()
             },
             id = buffer.ReadLong()
         };
@@ -62,10 +57,28 @@ public static class DebugDecode
 
     public static HttpObj ReadHttpPack(this IByteBuffer buffer)
     {
-        IFormatter formatter = new BinaryFormatter();
-        byte[] byt = new byte[buffer.Capacity];
+        byte[] byt = new byte[buffer.ReadableBytes];
         buffer.ReadBytes(byt);
-        Stream stream = new MemoryStream(byt, 0, byt.Length);
-        return formatter.Deserialize(stream) as HttpObj;
+        var serializer = MessagePackSerializer.Get<HttpObj>();
+        var obj = serializer.UnpackSingleObject(byt);
+        return obj;
+    }
+
+    public static DatabaseObj ReadDatabasePack(this IByteBuffer buffer) 
+    {
+        byte[] byt = new byte[buffer.ReadableBytes];
+        buffer.ReadBytes(byt);
+        var serializer = MessagePackSerializer.Get<DatabaseObj>();
+        var obj = serializer.UnpackSingleObject(byt);
+        return obj;
+    }
+
+    public static DatabaseResObj ReadDatabaseResPack(this IByteBuffer buffer)
+    {
+        byte[] byt = new byte[buffer.ReadableBytes];
+        buffer.ReadBytes(byt);
+        var serializer = MessagePackSerializer.Get<DatabaseResObj>();
+        var obj = serializer.UnpackSingleObject(byt);
+        return obj;
     }
 }

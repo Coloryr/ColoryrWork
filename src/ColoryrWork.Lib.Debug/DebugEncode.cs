@@ -1,15 +1,8 @@
 ﻿using ColoryrWork.Lib.Debug.Object;
 using DotNetty.Buffers;
-using System;
+using MsgPack.Serialization;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
-using ColoryrSDK;
-using System.Security.Cryptography;
 
 namespace ColoryrWork.Lib.ServerDebug;
 
@@ -47,13 +40,9 @@ public static class DebugEncode
     public static IByteBuffer ToPack(this HttpObj obj)
     {
         var buffer = Unpooled.Buffer();
-        IFormatter formatter = new BinaryFormatter();
-        using MemoryStream stream = new();
-        formatter.Serialize(stream, obj);
-        byte[] byt = new byte[stream.Length];
-        byt = stream.ToArray();
-        stream.Flush();
-        buffer.WriteBytes(byt);
+        var serializer = MessagePackSerializer.Get<HttpObj>();
+        var data = serializer.PackSingleObject(obj);
+        buffer.WriteBytes(data);
         return buffer;
     }
 
@@ -64,8 +53,26 @@ public static class DebugEncode
             .WriteDictionary(obj.resopneObj.Cookie)
             .WriteDictionary(obj.resopneObj.Head)
             .WriteString(obj.resopneObj.ContentType)
-            .WriteBytes1(obj.resopneObj.data)
+            .WriteBytes1(obj.resopneObj.Data)
             .WriteLong(obj.id);
+        return buffer;
+    }
+
+    public static IByteBuffer ToPack(this DatabaseObj obj) 
+    {
+        var buffer = Unpooled.Buffer();
+        var serializer = MessagePackSerializer.Get<DatabaseObj>();
+        var data = serializer.PackSingleObject(obj);
+        buffer.WriteBytes(data);
+        return buffer;
+    }
+
+    public static IByteBuffer ToPack(this DatabaseResObj obj)
+    {
+        var buffer = Unpooled.Buffer();
+        var serializer = MessagePackSerializer.Get<DatabaseResObj>();
+        var data = serializer.PackSingleObject(obj);
+        buffer.WriteBytes(data);
         return buffer;
     }
 }

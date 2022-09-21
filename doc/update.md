@@ -5,6 +5,12 @@
 ## 2.5.0计划
 1. 服务器调试模式，可以本地IDE链接服务器进行调试  
 
+- 不兼容变更
+1. `Oracle`更名`OracleSql`  
+`Sqlite`更名`SqliteSql`
+2. `HtmlAsync`,`NewHttpHtml`,`HttpHtml`与2.6.0删除
+3. `MysqlSql`,`MysqlCommand`,`MSsqlSql`,`MSsqlCommand`...删除
+
 ## 2.4.0 同编辑器2.2.0
 - 新增  
 1. 服务器维护模式，开启后中止所有服务，仅允许编写代码  

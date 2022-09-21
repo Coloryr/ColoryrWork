@@ -89,7 +89,7 @@ public abstract class HttpUtilsBase
             var temp = await httpClient.PostAsync(App.Config.Http, Content);
             return await temp.Content.ReadAsStringAsync();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             InfoWindow.Show("登录错误", "服务器无响应" + Environment.NewLine + e.ToString());
             return null;

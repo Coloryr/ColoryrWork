@@ -416,7 +416,7 @@ public record GroupSettings
 /// <summary>
 /// 消息来源类型
 /// </summary>
-public enum MessageSourceKind 
+public enum MessageSourceKind
 {
     /// <summary>
     /// 群消息
@@ -2919,7 +2919,7 @@ public partial class RobotSDK
         Pipe.StartRead();
     }
 
-    private void Read() 
+    private void Read()
     {
         while (IsRun)
         {

@@ -1,18 +1,12 @@
 ﻿using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Handlers.Logging;
-using DotNetty.Handlers.Tls;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.ServerDebug;
 
@@ -22,7 +16,7 @@ internal static class DebugNetty
     private static Bootstrap Bootstrap = new();
     private static IChannel ClientChannel;
     private static EchoClientHandler handler;
-    public async static void Start(string ip, int port, string key, string iv)
+    public static void Start(string ip, int port, string key, string iv)
     {
         Bootstrap
             .Group(Group)
@@ -38,10 +32,10 @@ internal static class DebugNetty
                 pipeline.AddLast(handler = new EchoClientHandler(key, iv));
             }));
 
-        ClientChannel = await Bootstrap.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port));
+        ClientChannel = Bootstrap.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port)).Result;
     }
 
-    public async static void Stop() 
+    public async static void Stop()
     {
         await ClientChannel.CloseAsync();
         await Group.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
@@ -99,19 +93,19 @@ internal static class DebugNetty
 
         public async void Send(IByteBuffer buffer)
         {
-            byte[] data = new byte[buffer.Capacity];
-            var data1 = Encode(data);
-            var buffer1 = Unpooled.Buffer();
-            buffer.WriteBytes(data1);
+            byte[] data = new byte[buffer.ReadableBytes];
+            buffer.ReadBytes(data);
+            data = Encode(data);
+            var buffer1 = Unpooled.WrappedBuffer(data);
             await ClientChannel.WriteAndFlushAsync(buffer1);
         }
 
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
-            var byteBuffer = message as IByteBuffer;
-            if (byteBuffer != null)
+            if (message is IByteBuffer byteBuffer)
             {
-                var data = byteBuffer.Array;
+                byte[] data = new byte[byteBuffer.ReadableBytes];
+                byteBuffer.ReadBytes(data);
                 data = Decode(data);
                 var buffer1 = Unpooled.WrappedBuffer(data);
                 PackRead.Pack(buffer1);

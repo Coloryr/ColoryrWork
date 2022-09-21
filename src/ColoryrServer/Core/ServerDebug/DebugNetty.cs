@@ -1,20 +1,12 @@
-﻿using ColoryrServer.Core.PortServer;
-using DotNetty.Buffers;
+﻿using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Handlers.Logging;
-using DotNetty.Handlers.Tls;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using EcmaScript.NET;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Org.BouncyCastle.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.ServerDebug;
 
@@ -103,7 +95,8 @@ internal static class DebugNetty
 
     public static async void Send(IChannelHandlerContext context, IByteBuffer buffer)
     {
-        byte[] data = new byte[buffer.Capacity];
+        byte[] data = new byte[buffer.ReadableBytes];
+        buffer.ReadBytes(data);
         data = Encode(data);
         await context.WriteAndFlushAsync(Unpooled.WrappedBuffer(data));
     }
@@ -117,7 +110,7 @@ public class DebugServerHandler : ChannelHandlerAdapter
         var buffer = message as IByteBuffer;
         if (buffer != null)
         {
-            var data = new byte[buffer.Capacity];
+            var data = new byte[buffer.ReadableBytes];
             buffer.ReadBytes(data);
             data = DebugNetty.Decode(data);
             PackRead.Pack(context, Unpooled.WrappedBuffer(data));

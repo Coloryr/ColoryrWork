@@ -8,7 +8,14 @@ using System.Data.SqlClient;
 
 namespace ColoryrServer.SDK;
 
-public partial class Mysql
+public interface IDatabase
+{
+    public IEnumerable<dynamic> Query(string sql, object arg);
+    public IEnumerable<T> Query<T>(string sql, object arg);
+    public int Execute(string sql, object arg);
+}
+
+public partial class Mysql : IDatabase
 {
     private string Database;
     private int ID;
@@ -64,69 +71,6 @@ public partial class Mysql
     }
 
     /// <summary>
-    /// 旧版执行语句
-    /// </summary>
-    public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            MySqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
-    /// 执行sql语句
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>Mysql命令语句</returns>
-    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
@@ -136,7 +80,7 @@ public partial class Mysql
     }
 }
 
-public partial class MSsql
+public partial class MSsql : IDatabase
 {
     private string Database;
     private int ID;
@@ -192,69 +136,6 @@ public partial class MSsql
     }
 
     /// <summary>
-    /// 旧版执行语句
-    /// </summary>
-    public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new SqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            SqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (SqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
-    /// 执行sql语句
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>MSsql命令语句</returns>
-    public SqlCommand MSsqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new SqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (SqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
@@ -264,7 +145,7 @@ public partial class MSsql
     }
 }
 
-public partial class Sqlite
+public partial class SqliteSql : IDatabase
 {
     private string Database;
     private int ID;
@@ -273,7 +154,7 @@ public partial class Sqlite
     /// </summary>
     /// <param name="database">数据库名</param>
     /// <param name="id">数据库ID</param>
-    public Sqlite(string database = "", int id = 0)
+    public SqliteSql(string database = "", int id = 0)
     {
         ID = id;
         Database = database;
@@ -320,69 +201,6 @@ public partial class Sqlite
     }
 
     /// <summary>
-    /// 旧版执行语句
-    /// </summary>
-    public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            MySqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
-    /// 执行sql语句
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>Mysql命令语句</returns>
-    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
@@ -391,7 +209,7 @@ public partial class Sqlite
         return MysqlCon.GetConnection(ID);
     }
 }
-public partial class Oracle
+public partial class OracleSql : IDatabase
 {
     private string Database;
     private int ID;
@@ -400,7 +218,7 @@ public partial class Oracle
     /// </summary>
     /// <param name="database">数据库名</param>
     /// <param name="id">数据库ID</param>
-    public Oracle(string database = "", int id = 0)
+    public OracleSql(string database = "", int id = 0)
     {
         ID = id;
         if (!OracleCon.Contains(id))
@@ -444,69 +262,6 @@ public partial class Oracle
         var conn = Get();
         conn.ChangeDatabase(Database);
         return conn.Execute(sql, arg);
-    }
-
-    /// <summary>
-    /// 旧版执行语句
-    /// </summary>
-    public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new OracleCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            OracleDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (OracleException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
-    }
-
-    /// <summary>
-    /// 执行sql语句
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>Oracle命令语句</returns>
-    public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new OracleCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (OracleException e)
-        {
-            throw new ErrorDump("执行sql语句出错", e);
-        }
     }
 
     /// <summary>

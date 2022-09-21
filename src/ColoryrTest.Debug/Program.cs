@@ -1,15 +1,11 @@
 ﻿using ColoryrServer.ServerDebug;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ColoryrTest.Run;
 
-namespace ColoryrTest.Run;
+namespace ColoryrTest.Debug;
 
-internal static class ServerDebug
+internal class Program
 {
-    public static void Test()
+    static void Main(string[] args)
     {
         Console.ReadLine();
 

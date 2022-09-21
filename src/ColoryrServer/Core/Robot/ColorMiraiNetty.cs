@@ -1670,7 +1670,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
     }
     private ConcurrentBag<PackTask> queue1;
     private ConcurrentBag<IByteBuffer> queue2;
-    
+
     private Thread thread;
     private MultithreadEventLoopGroup group;
     private IChannel client;
@@ -2177,7 +2177,7 @@ internal class ColorMiraiNetty : IColorMiraiPipe
         });
     }
 
-    internal void AddReadPack(IByteBuffer pack) 
+    internal void AddReadPack(IByteBuffer pack)
     {
         queue2.Add(pack);
     }

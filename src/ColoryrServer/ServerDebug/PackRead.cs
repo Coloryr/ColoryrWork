@@ -1,12 +1,5 @@
-﻿using DotNetty.Buffers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using ColoryrWork.Lib.ServerDebug;
+﻿using ColoryrWork.Lib.ServerDebug;
+using DotNetty.Buffers;
 
 namespace ColoryrServer.ServerDebug;
 
@@ -29,7 +22,20 @@ internal static class PackRead
             case 2:
                 {
                     var obj = buffer.ReadHttpPack();
-                    DebugIn.Invoke(obj);
+                    Task.Run(() =>
+                    {
+                        var res = DebugIn.Invoke(obj);
+                        if (res != null)
+                        {
+                            PackWrite.SendHttpRes(res);
+                        }
+                    });
+                }
+                break;
+            case 3:
+                {
+                    var obj = buffer.ReadDatabaseResPack();
+                    
                 }
                 break;
         }

@@ -1,16 +1,9 @@
-﻿using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.Http;
+﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Debug.Object;
-using ColoryrWork.Lib.ServerDebug;
-using DotNetty.Buffers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.ServerDebug;
 
@@ -28,16 +21,31 @@ public static class DebugIn
         DebugNetty.Start(ip, port, key, iv);
     }
 
-    public static void Send(IByteBuffer test)
-    {
-        DebugNetty.Send(test);
-    }
 
-    public static void Invoke(HttpObj obj)
+    public static HttpResObj? Invoke(HttpObj obj)
     {
-        if (Saves.TryGetValue(obj.url, out var save)
-            && save.Methods.TryGetValue(obj.function, out var mi))
+        if (Saves.TryGetValue(obj.url, out var save))
         {
+            if (string.IsNullOrWhiteSpace(obj.function))
+            {
+                obj.function = CodeDemo.DllMain;
+            }
+            else if (!save.Methods.ContainsKey(obj.function))
+            {
+                return new HttpResObj
+                {
+                    resopneObj = new()
+                    {
+                        ReCode = 90,
+                        ContentType = ServerContentType.TXT,
+                        Data = Encoding.UTF8.GetBytes("找不到方法")
+                    },
+                    id = obj.id
+                };
+            }
+
+            MethodInfo mi = save.Methods[obj.function];
+
             var arg = new HttpDllRequest
             {
                 Parameter = obj.requestObj.Parameter,
@@ -63,74 +71,85 @@ public static class DebugIn
 
             if (dllres is string)
             {
-                return new HttpReturn
+                return new HttpResObj
                 {
-                    Data = dllres,
-                    Res = ResType.String
+                    resopneObj = new()
+                    {
+                        ReCode = 200,
+                        ContentType = ServerContentType.TXT,
+                        Data = Encoding.UTF8.GetBytes(dllres as string)
+                    },
+                    id = obj.id
                 };
             }
             else if (dllres is HttpResponseString)
             {
                 var dr = dllres as HttpResponseString;
-                return new HttpReturn
+                return new HttpResObj
                 {
-                    Data = dr.Data,
-                    Res = ResType.String,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie
+                    resopneObj = new()
+                    {
+                        ReCode = dr.ReCode,
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        Cookie = dr.Cookie,
+                        Data = Encoding.UTF8.GetBytes(dr.Data)
+                    },
+                    id = obj.id
                 };
             }
             else if (dllres is HttpResponseDictionary)
             {
                 var dr = dllres as HttpResponseDictionary;
-                return new HttpReturn
+                return new HttpResObj
                 {
-                    Data = dr.Data,
-                    Res = ResType.Json,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie
+                    resopneObj = new()
+                    {
+                        ReCode = dr.ReCode,
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        Cookie = dr.Cookie,
+                        Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(dr.Data))
+                    },
+                    id = obj.id
                 };
             }
             else if (dllres is HttpResponseStream)
             {
-                var dr = dllres as HttpResponseStream;
-                return new HttpReturn
-                {
-                    Data = dr.Data,
-                    Res = ResType.Stream,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie,
-                    Pos = dr.Pos
-                };
+                throw new Exception("Debug不支持流");
             }
             else if (dllres is HttpResponseBytes)
             {
                 var dr = dllres as HttpResponseBytes;
-                return new HttpReturn
+                return new HttpResObj
                 {
-                    Data = dr.Data,
-                    Res = ResType.Byte,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie
+                    resopneObj = new()
+                    {
+                        ReCode = dr.ReCode,
+                        Head = dr.Head,
+                        ContentType = dr.ContentType,
+                        Cookie = dr.Cookie,
+                        Data = dr.Data
+                    },
+                    id = obj.id
                 };
             }
             else
             {
-                return new HttpReturn
+                return new HttpResObj
                 {
-                    Data = dllres,
-                    Res = ResType.Json
+                    resopneObj = new()
+                    {
+                        ReCode = 200,
+                        ContentType = ServerContentType.JSON,
+                        Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(dllres))
+                    },
+                    id = obj.id
                 };
             }
         }
+
+        return null;
     }
 
     public static void Register(string url, Type dll)
@@ -167,10 +186,10 @@ public static class DebugIn
 
         Saves.Add(url, save);
 
-        var pack = new RegisterObj
+        var obj = new RegisterObj
         {
             url = url
-        }.ToPack();
-        DebugNetty.Send(pack);
+        };
+        PackWrite.SendRegister(obj);
     }
 }

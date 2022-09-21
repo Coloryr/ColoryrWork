@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.SDK;
-using System.Diagnostics;
 
 namespace ColoryrTest.Run;
 
@@ -22,7 +21,6 @@ internal class Program
     //}
     static void Main(string[] args)
     {
-        ServerDebug.Test();
         //var bossGroup = new MultithreadEventLoopGroup();
         //var workerGroup = new MultithreadEventLoopGroup();
         //var p1 = new NettyDemoCS();

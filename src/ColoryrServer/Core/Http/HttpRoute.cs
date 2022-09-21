@@ -6,12 +6,9 @@ using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using ColoryrWork.Lib.Debug.Object;
 using DotNetty.Transport.Channels;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Security.Policy;
 using System.Text;
 using System.Threading;
 
@@ -55,8 +52,8 @@ public class DebugRoute : RouteObj
     public static ConcurrentDictionary<long, Semaphore> locks = new();
     public static ConcurrentDictionary<long, HttpReturn> res = new();
 
-    private static Random random = new();
-    private static object obj1 = new();
+    private static readonly Random random = new();
+    private static readonly object obj1 = new();
 
     public static long Add()
     {
@@ -90,6 +87,11 @@ public class DebugRoute : RouteObj
             locks.TryRemove(id, out _);
             res.TryRemove(id, out _);
         }
+    }
+
+    public DebugRoute()
+    {
+        IsDll = true;
     }
 
     public IChannelHandlerContext context;
@@ -304,7 +306,7 @@ public static class HttpInvokeRoute
         }
     }
 
-    public static void AddDebug(string name , IChannelHandlerContext context)
+    public static void AddDebug(string name, IChannelHandlerContext context)
     {
         if (!Routes.ContainsKey(name))
         {
@@ -313,6 +315,7 @@ public static class HttpInvokeRoute
                 url = name,
                 context = context
             });
+            ServerMain.LogOut($"开始调试[{name}]");
         }
     }
 

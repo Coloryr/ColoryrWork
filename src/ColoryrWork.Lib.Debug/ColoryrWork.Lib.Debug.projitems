@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)DebugEncode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DebugDecode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Object\DatabaseObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Object\HttpObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Object\RegisterObj.cs" />
   </ItemGroup>

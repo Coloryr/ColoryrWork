@@ -207,7 +207,7 @@ public class ASPConfigUtils : ConfigUtils
             },
             FixMode = false,
             DebugPort = new()
-            { 
+            {
                 Enable = true,
                 Port = 20000,
                 Key = "Key",

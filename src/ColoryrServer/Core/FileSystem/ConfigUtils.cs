@@ -72,7 +72,7 @@ public abstract record MainConfig
 }
 
 public record ServerDebug
-{ 
+{
     /// <summary>
     /// 启用调试
     /// </summary>

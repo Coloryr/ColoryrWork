@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK;
 
+//2.6.0删除
 public partial class NewHttpHtml : StaticDllHttpClient
 {
     public NewHttpHtml(CookieContainer cookie = null,

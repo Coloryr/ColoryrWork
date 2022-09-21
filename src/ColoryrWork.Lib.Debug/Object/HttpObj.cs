@@ -1,8 +1,6 @@
 ﻿using ColoryrServer.SDK;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 
 namespace ColoryrWork.Lib.Debug.Object;
 
@@ -65,7 +63,14 @@ public record HttpResopneObj
     /// </summary>
     public string ContentType { get; init; }
 
-    public byte[] data;
+    public byte[] Data { get; init; }
+
+    public HttpResopneObj()
+    {
+        Cookie ??= new();
+        Head ??= new();
+        ContentType ??= ServerContentType.TXT;
+    }
 }
 
 public record HttpResObj
