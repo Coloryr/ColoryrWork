@@ -116,11 +116,7 @@
   <ItemGroup>
     <Folder Include="Resources\Demo\Vue\" />
   </ItemGroup>
-
-  <Import Project="..\..\Lib\Lib.Build\Lib.Build.projitems" Label="Shared" />
-
-  <Import Project="..\..\Lib\Lib.Server\Lib.Server.projitems" Label="Shared" />
-
-  <Import Project="..\..\ColoryrWork.Lib.Debug\ColoryrWork.Lib.Debug.projitems" Label="Shared" />
-
+  <Import Project="..\..\Lib\Lib.Build\ColoryrWork.Lib.Build.projitems" Label="Shared" />
+  <Import Project="..\..\Lib\Lib.Debug\ColoryrWork.Lib.Debug.projitems" Label="Shared" />
+  <Import Project="..\..\Lib\Lib.Server\ColoryrWork.Lib.Server.projitems" Label="Shared" />
 </Project>

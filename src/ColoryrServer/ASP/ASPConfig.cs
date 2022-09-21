@@ -36,7 +36,7 @@ public class ASPConfigUtils : ConfigUtils
                     "turn",
                     new()
                     {
-                        Url = "http://127.0.0.1/",
+                        Url = "http://+",
                         Heads = new()
                     }
                 }
