@@ -140,16 +140,13 @@
     <value>Resources\SDK\RobotSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="ServiceSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\sdk\servicesdk.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\ServiceSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="SocketSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SDK\SocketSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="WebApiSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SDK\WebApiSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
-  </data>
-  <data name="WebApiSDK1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\sdk\webapisdk.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
   <data name="WebHtmlSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SDK\WebHtmlSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>

@@ -125,19 +125,19 @@
     <value>Resources\OtherSDK\HtmlDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JsonDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\jsondll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\JsonDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JsonDll1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\jsondll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\JsonDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JsonDll2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\jsondll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\JsonDll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JsonDll3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\jsondll3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\JsonDll3.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JsonDll4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\jsondll4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\JsonDll4.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MqttDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -146,19 +146,19 @@
     <value>Resources\OtherSDK\MqttDll1.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll10.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll10.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll11" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll11.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll11.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll12.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll12.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll13" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll13.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll13.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll14" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll14.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll14.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MqttDll2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -176,13 +176,13 @@
     <value>Resources\OtherSDK\MqttDll6.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll7.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll7.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll8" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll8.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll8.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MqttDll9" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\othersdk\mqttdll9.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\OtherSDK\MqttDll9.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="MysqlDll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OtherSDK\MysqlDll.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
