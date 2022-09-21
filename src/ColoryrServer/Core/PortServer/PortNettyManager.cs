@@ -27,7 +27,11 @@ internal static class PortNettyManager
             item.Stop();
         }
         RunNetty.Clear();
-        Task.WaitAll(BossGroup.ShutdownGracefullyAsync(), WorkerGroup.ShutdownGracefullyAsync());
+        Task.WaitAll(
+            BossGroup.ShutdownGracefullyAsync(
+                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)), 
+            WorkerGroup.ShutdownGracefullyAsync(
+                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)));
     }
 
     public static void AddItem(SocketDllAssembly dll)

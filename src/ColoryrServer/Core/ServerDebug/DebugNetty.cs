@@ -7,6 +7,7 @@ using DotNetty.Transport.Channels.Sockets;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.ServerDebug;
 
@@ -81,6 +82,11 @@ internal static class DebugNetty
         ServerMain.LogOut("服务器调试关闭中");
         await bootstrapChannel?.CloseAsync();
         await bootstrapChannel?.DisconnectAsync();
+        Task.WaitAll(
+            bossGroup.ShutdownGracefullyAsync(
+                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)),
+            workerGroup.ShutdownGracefullyAsync(
+                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)));
     }
 
     internal static byte[] Decode(byte[] input)
