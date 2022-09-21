@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <BaseOutputPath>..\..\build_out\Core</BaseOutputPath>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0</FileVersion>
@@ -31,9 +31,9 @@
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="HttpMultipartParser" Version="7.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-1.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-2.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.6" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0-rc.1.22426.7" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
     <PackageReference Include="MQTTnet" Version="4.1.0.247" />
     <PackageReference Include="MsgPack.Cli" Version="1.0.1" />
@@ -48,7 +48,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.6.66" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.2-mauipre.1.22102.15" />
+    <PackageReference Include="System.Resources.Extensions" Version="7.0.0-rc.1.22426.10" />
     <PackageReference Include="YUICompressor.NET" Version="3.1.0" />
     <PackageReference Include="YUICompressor.NET.MSBuild" Version="3.0.0" />
   </ItemGroup>
