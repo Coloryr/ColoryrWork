@@ -194,6 +194,11 @@ public partial class App : Application
         e.SetObserved();
     }
 
+    private void Application_Exit(object sender, ExitEventArgs e)
+    {
+        ServerConfigView.Stop();
+    }
+
     internal static void LoginOut()
     {
         Config.Token = null;

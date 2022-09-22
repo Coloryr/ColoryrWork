@@ -86,6 +86,8 @@ public partial class ServerConfigView : UserControl
         };
     }
 
+    private int count = 0;
+
     private async void Run()
     {
         while (IsRun)
@@ -94,16 +96,21 @@ public partial class ServerConfigView : UserControl
             {
                 if (App.IsLogin)
                 {
-                    var res = await App.HttpUtils.GetLog();
-                    if (res != null && res.Build)
+                    count++;
+                    if (count >= 5)
                     {
-                        Dispatcher.Invoke(() =>
+                        count = 0;
+                        var res = await App.HttpUtils.GetLog();
+                        if (res != null && res.Build)
                         {
-                            ServerLog.AppendText(res.Message);
-                        });
+                            Dispatcher.Invoke(() =>
+                            {
+                                ServerLog.AppendText(res.Message);
+                            });
+                        }
                     }
                 }
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
             }
             catch (Exception e)
             {
