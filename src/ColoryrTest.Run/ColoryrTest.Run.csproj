@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ColoryrServer\Core\ColoryrServer.Core.csproj" />
-    <ProjectReference Include="..\ColoryrServer\ServerDebug\ColoryrServer.ServerDebug.csproj" />
   </ItemGroup>
 
 </Project>
