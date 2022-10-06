@@ -227,6 +227,8 @@
                                     Content="设置" />
                             </Grid>
                         </GroupBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <GroupBox
                             Margin="2"
                             HorizontalAlignment="Left"
@@ -263,6 +265,45 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Click="WebSocketButtonClick"
+                                    Content="设置" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Header="机器人设置">
+                            <Grid Margin="5">
+                                <Label
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="地址" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,3,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding Robot.IP}" />
+                                <Label
+                                    Margin="0,25,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="端口" />
+                                <TextBox
+                                    Width="100"
+                                    Height="20"
+                                    Margin="40,28,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Text="{Binding Robot.Port}" />
+                                <Button
+                                    Width="150"
+                                    Height="20"
+                                    Margin="0,60,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Click="RobotButtonClick"
                                     Content="设置" />
                             </Grid>
                         </GroupBox>
@@ -317,60 +358,9 @@
                         Content="重读配置" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="机器人设置" Style="{StaticResource TabItem}">
-                <StackPanel>
-                    <Grid>
-                        <Label
-                            Width="50"
-                            Margin="4,4,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="IP" />
-                        <TextBox
-                            Width="200"
-                            Margin="62,8,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Text="{Binding Robot.IP}" />
-                        <Label
-                            Width="50"
-                            Margin="4,34,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="Port" />
-                        <TextBox
-                            Width="200"
-                            Margin="62,38,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Text="{Binding Robot.Port}" />
-                        <Button
-                            Width="150"
-                            Height="20"
-                            Margin="0,39,10,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Click="RobotButtonClick"
-                            Content="设置" />
-                        <TextBlock
-                            Margin="4,69,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Text="设置后要重启服务器才能生效" />
-                        <Button
-                            Width="150"
-                            Height="20"
-                            Margin="0,10,10,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Click="ButtonClick3"
-                            Content="重读配置" />
-                    </Grid>
-                </StackPanel>
-            </TabItem>
             <TabItem Header="控制面板" Style="{StaticResource TabItem}">
                 <StackPanel Orientation="Vertical">
-                    <StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <Button
                             Width="160"
                             Height="20"
@@ -379,6 +369,13 @@
                             VerticalAlignment="Top"
                             Click="ButtonClick2"
                             Content="重启服务器" />
+                        <Button
+                            Width="160"
+                            Height="20"
+                            Margin="2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Content="服务器打包" Click="Button_Click_2" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <CheckBox

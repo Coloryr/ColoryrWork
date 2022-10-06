@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.IO;
@@ -77,6 +76,6 @@ internal static class LoadRobot
     /// <param name="name">文件名字</param>
     public static void Reload(string item)
     {
-        LoadFile(FileDllManager.LocalService + item + ".dll");
+        LoadFile(FileSystem.Managers.DllFileManager.LocalService + item + ".dll");
     }
 }

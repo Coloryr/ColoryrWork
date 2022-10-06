@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
 using ColoryrServer.Core.FileSystem.Database;
-using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -56,14 +55,14 @@ internal class GenClass
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
             using (var FileStream = new FileStream(
-                FileDllManager.LocalClass + obj.UUID + ".dll", FileMode.OpenOrCreate))
+                FileSystem.Managers.DllFileManager.LocalClass + obj.UUID + ".dll", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MS.ToArray());
                 FileStream.Flush();
             }
 
             using (var FileStream = new FileStream(
-                FileDllManager.LocalClass + obj.UUID + ".pdb", FileMode.OpenOrCreate))
+                FileSystem.Managers.DllFileManager.LocalClass + obj.UUID + ".pdb", FileMode.OpenOrCreate))
             {
                 FileStream.Write(build.MSPdb.ToArray());
                 FileStream.Flush();
@@ -75,7 +74,7 @@ internal class GenClass
             build.MS.Close();
             build.MS.Dispose();
 
-            GenCode.LoadClass(FileDllManager.LocalClass + obj.UUID + ".dll");
+            GenCode.LoadClass(FileSystem.Managers.DllFileManager.LocalClass + obj.UUID + ".dll");
 
             GC.Collect();
         });

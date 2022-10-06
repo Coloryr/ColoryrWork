@@ -47,7 +47,7 @@ internal static class GenSocket
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileDllManager.SaveSocket(obj.UUID, build);
+            DllFileManager.SaveSocket(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace ColoryrServer.Core.FileSystem.Managers;
 
-internal static class FileDllManager
+internal static class DllFileManager
 {
     public static readonly string LocalDll = ServerMain.RunLocal + "Dll/Dll/";
     public static readonly string LocalClass = ServerMain.RunLocal + "Dll/Class/";

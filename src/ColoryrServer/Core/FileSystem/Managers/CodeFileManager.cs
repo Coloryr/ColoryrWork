@@ -202,31 +202,31 @@ internal static class CodeFileManager
             {
                 case CodeType.Dll:
                     DllFileList.TryRemove(uuid, out var item);
-                    FileDllManager.RemoveDll(uuid);
+                    DllFileManager.RemoveDll(uuid);
                     break;
                 case CodeType.Class:
                     ClassFileList.TryRemove(uuid, out var item1);
-                    FileDllManager.RemoveClass(uuid);
+                    DllFileManager.RemoveClass(uuid);
                     break;
                 case CodeType.Socket:
                     SocketFileList.TryRemove(uuid, out var item2);
-                    FileDllManager.RemoveSocket(uuid);
+                    DllFileManager.RemoveSocket(uuid);
                     break;
                 case CodeType.WebSocket:
                     WebSocketFileList.TryRemove(uuid, out var item3);
-                    FileDllManager.RemoveWebSocket(uuid);
+                    DllFileManager.RemoveWebSocket(uuid);
                     break;
                 case CodeType.Robot:
                     RobotFileList.TryRemove(uuid, out var item4);
-                    FileDllManager.RemoveRobot(uuid);
+                    DllFileManager.RemoveRobot(uuid);
                     break;
                 case CodeType.Mqtt:
                     MqttFileList.TryRemove(uuid, out var item6);
-                    FileDllManager.RemoveMqtt(uuid);
+                    DllFileManager.RemoveMqtt(uuid);
                     break;
                 case CodeType.Service:
                     ServiceFileList.TryRemove(uuid, out var item7);
-                    FileDllManager.RemoveService(uuid);
+                    DllFileManager.RemoveService(uuid);
                     break;
             }
 

@@ -96,23 +96,6 @@ public partial class App : Application
             }
     }
 
-    public static async void GetPDB(CodeType type, string uuid)
-    {
-        string dir = RunLocal + "CodeTEMP/PDB/";
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
-
-        var res = await HttpUtils.GetPDB(type, uuid);
-        if (res.Build)
-        {
-            dir += type.ToString() + "_" + uuid.Replace("/", "_") + ".pdb";
-            var data = Convert.FromBase64String(res.Message);
-            await File.WriteAllBytesAsync(dir, data);
-        }
-    }
-
     public static void Close()
     {
         Current.Shutdown();

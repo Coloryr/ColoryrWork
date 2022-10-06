@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.Core.DllManager.Service;
-using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.PortServer;
 using System.Collections.Concurrent;
@@ -101,7 +100,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveDll(uuid);
+        FileSystem.Managers.DllFileManager.RemoveDll(uuid);
         HttpInvokeRoute.Remove(uuid);
     }
     public static DllAssembly GetDll(string uuid)
@@ -112,6 +111,11 @@ internal static class AssemblyList
         }
         else
             return null;
+    }
+
+    public static List<DllAssembly> GetDll()
+    {
+        return new List<DllAssembly>(MapDll.Values);
     }
 
     public static void AddClass(string uuid, DllAssembly save)
@@ -141,8 +145,14 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveClass(uuid);
+        FileSystem.Managers.DllFileManager.RemoveClass(uuid);
     }
+
+    public static List<DllAssembly> GetClass()
+    {
+        return new List<DllAssembly>(MapClass.Values);
+    }
+
     public static DllAssembly GetClass(string uuid)
     {
         if (MapClass.TryGetValue(uuid, out var save))
@@ -184,7 +194,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveSocket(uuid);
+        FileSystem.Managers.DllFileManager.RemoveSocket(uuid);
     }
     public static List<SocketDllAssembly> GetSocket()
     {
@@ -218,7 +228,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveWebSocket(uuid);
+        FileSystem.Managers.DllFileManager.RemoveWebSocket(uuid);
     }
     public static List<DllAssembly> GetWebSocket()
     {
@@ -252,7 +262,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveRobot(uuid);
+        FileSystem.Managers.DllFileManager.RemoveRobot(uuid);
     }
     public static List<RobotDllAssembly> GetRobot()
     {
@@ -286,7 +296,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveMqtt(uuid);
+        FileSystem.Managers.DllFileManager.RemoveMqtt(uuid);
     }
     public static List<DllAssembly> GetMqtt()
     {
@@ -321,7 +331,7 @@ internal static class AssemblyList
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        FileDllManager.RemoveService(uuid);
+        FileSystem.Managers.DllFileManager.RemoveService(uuid);
     }
     public static ServiceDllAssembly GetService(string uuid)
     {

@@ -44,12 +44,8 @@ public static class ASPServer
                     options.CertificateHeader = "X-SSL-CERT";
                     options.HeaderConverter = (headerValue) =>
                     {
-                        if (!string.IsNullOrWhiteSpace(headerValue))
-                        {
-                            byte[] bytes = StringToByteArray(headerValue);
-                            return new X509Certificate2(bytes);
-                        }
-                        return null;
+                        byte[] bytes = StringToByteArray(headerValue);
+                        return new X509Certificate2(bytes);
                     };
                 });
                 ServerMain.LogOut("正在加载SSL证书");

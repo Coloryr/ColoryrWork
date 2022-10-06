@@ -48,7 +48,7 @@ internal static class GenService
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileDllManager.SaveService(obj.UUID, build);
+            FileSystem.Managers.DllFileManager.SaveService(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

@@ -27,6 +27,7 @@ public partial class LogView : UserControl
         Dispatcher.Invoke(() =>
         {
             Text.AppendText(text + Environment.NewLine);
+            Text.ScrollToEnd();
         });
     }
 

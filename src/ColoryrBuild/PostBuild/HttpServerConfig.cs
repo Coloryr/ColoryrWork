@@ -8,26 +8,6 @@ namespace ColoryrBuild.PostBuild;
 public partial class HttpBuild : HttpUtilsBase
 {
     /// <summary>
-    /// 获取机器人设置参数
-    /// </summary>
-    /// <returns>结果</returns>
-    public async Task<RobotObj> GetRobotConfig()
-    {
-        var data = await DoPost(new BuildOBJ
-        {
-            User = App.Config.Name,
-            Token = App.Config.Token,
-            Mode = PostBuildType.ConfigGetRobot
-        });
-        if (data == null)
-            return null;
-        if (!CheckLogin(data))
-        {
-            return await GetRobotConfig();
-        }
-        return JsonConvert.DeserializeObject<RobotObj>(data);
-    }
-    /// <summary>
     /// 获取端口设置参数
     /// </summary>
     /// <returns>结果</returns>
@@ -258,31 +238,6 @@ public partial class HttpBuild : HttpUtilsBase
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }
     /// <summary>
-    /// 设置机器人配置
-    /// </summary>
-    /// <param name="ip">IP</param>
-    /// <param name="port">端口</param>
-    /// <param name="packs">订阅的包</param>
-    /// <returns></returns>
-    public async Task<ReMessage> SetRobotConfig(string ip, int port)
-    {
-        var data = await DoPost(new BuildOBJ
-        {
-            User = App.Config.Name,
-            Token = App.Config.Token,
-            Mode = PostBuildType.ConfigSetRobot,
-            Code = ip,
-            Version = port
-        });
-        if (data == null)
-            return null;
-        if (!CheckLogin(data))
-        {
-            return await SetRobotConfig(ip, port);
-        }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
-    }
-    /// <summary>
     /// 重启服务器
     /// </summary>
     public async Task Reboot()
@@ -427,6 +382,27 @@ public partial class HttpBuild : HttpUtilsBase
         if (!CheckLogin(data))
         {
             return await GetLog();
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
+
+    /// <summary>
+    /// 服务器打包
+    /// </summary>
+    /// <returns>结果</returns>
+    public async Task<ReMessage> MakePack()
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.MakePack,
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            return await MakePack();
         }
         return JsonConvert.DeserializeObject<ReMessage>(data);
     }

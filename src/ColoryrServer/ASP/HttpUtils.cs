@@ -9,7 +9,7 @@ namespace ColoryrServer.ASP;
 
 public static class HttpUtils
 {
-    public static RouteObj? GetUUID(string name, out string funtion)
+    public static RouteObj? GetUUID(string? name, out string funtion)
     {
         funtion = "";
         if (ServerMain.Config.FixMode)

@@ -5,7 +5,7 @@ namespace ColoryrServer.ASP;
 
 internal class ColoryrLogger : ILogger, IDisposable
 {
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
         return this;
     }

@@ -47,7 +47,7 @@ internal static class GenMqtt
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileDllManager.SaveMqtt(obj.UUID, build);
+            FileSystem.Managers.DllFileManager.SaveMqtt(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

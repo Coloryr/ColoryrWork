@@ -16,7 +16,7 @@ internal static class HttpPost
     private static async Task<HttpDllRequest?> InitArg(HttpRequest Request)
     {
         MyContentType type = MyContentType.XFormData;
-        var temp = new Dictionary<string, dynamic>();
+        var temp = new Dictionary<string, dynamic?>();
         if (Request.ContentType != null)
         {
             if (Request.ContentType is ServerContentType.POSTXFORM)

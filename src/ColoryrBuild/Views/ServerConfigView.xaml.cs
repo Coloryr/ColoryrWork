@@ -126,7 +126,6 @@ public partial class ServerConfigView : UserControl
     {
         GetHttpList();
         GetSocketConfig();
-        GetRobotConfig();
         GetUserConfig();
     }
 
@@ -145,21 +144,6 @@ public partial class ServerConfigView : UserControl
         }
     }
 
-    private async void GetRobotConfig()
-    {
-        var res = await App.HttpUtils.GetRobotConfig();
-        if (res == null)
-        {
-            InfoWindow.Show("获取配置", "获取服务器Socket配置错误");
-            return;
-        }
-        Obj.Robot = new()
-        {
-            IP = res.IP,
-            Port = res.Port
-        };
-    }
-
     private async void GetSocketConfig()
     {
         var res = await App.HttpUtils.GetSocketConfig();
@@ -171,6 +155,7 @@ public partial class ServerConfigView : UserControl
         Obj.Socket = res.Socket;
         Obj.Mqtt = res.Mqtt;
         Obj.WebSocket = res.WebSocket;
+        Obj.Robot = res.Robot;
     }
 
     private async void GetHttpList()
@@ -443,7 +428,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "Socket");
         if (res1 == null)
         {
             InfoWindow.Show("修改Socket配置", "修改服务器Socket配置错误");
@@ -471,7 +456,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "Mqtt");
         if (res1 == null)
         {
             InfoWindow.Show("修改Mqtt配置", "修改服务器Mqtt配置错误");
@@ -499,7 +484,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.SetSocket(ip, port, "socket");
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "WebSocket");
         if (res1 == null)
         {
             InfoWindow.Show("修改WebSocket配置", "修改服务器WebSocket配置错误");
@@ -510,11 +495,6 @@ public partial class ServerConfigView : UserControl
             InfoWindow.Show("修改WebSocket配置", res1.Message);
             return;
         }
-    }
-
-    private void ButtonClick3(object sender, RoutedEventArgs e)
-    {
-        GetRobotConfig();
     }
 
     private async void EnableRoute_Click(object sender, RoutedEventArgs e)
@@ -572,6 +552,11 @@ public partial class ServerConfigView : UserControl
         ServerLog.Text = "";
     }
 
+    private async void Button_Click_2(object sender, RoutedEventArgs e)
+    {
+        await App.HttpUtils.MakePack();
+    }
+
     private async void RobotButtonClick(object sender, RoutedEventArgs e)
     {
         string ip = Obj.Robot.IP;
@@ -587,7 +572,7 @@ public partial class ServerConfigView : UserControl
             return;
         }
 
-        var res1 = await App.HttpUtils.SetRobotConfig(ip, port);
+        var res1 = await App.HttpUtils.SetSocket(ip, port, "Robot");
         if (res1 == null)
         {
             InfoWindow.Show("修改Robot配置", "修改服务器Robot配置错误");

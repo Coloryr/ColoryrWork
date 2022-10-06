@@ -2,7 +2,7 @@
 
 public class ASPHttpUtils
 {
-    public static Dictionary<string, List<string>> HaveCookie(string hashtable)
+    public static Dictionary<string, List<string>> HaveCookie(string? hashtable)
     {
         if (hashtable == null)
             return new();

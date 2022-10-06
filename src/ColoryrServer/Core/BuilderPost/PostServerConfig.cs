@@ -73,10 +73,11 @@ public static class PostServerConfig
         {
             Socket = ServerMain.Config.Socket,
             Mqtt = ServerMain.Config.MqttConfig.Socket,
-            WebSocket = ServerMain.Config.WebSocket.Socket
+            WebSocket = ServerMain.Config.WebSocket.Socket,
+            Robot = ServerMain.Config.Robot.Socket
         };
     }
-    public static ReMessage WebSetSocket(BuildOBJ json)
+    public static ReMessage SetSocketConfig(BuildOBJ json)
     {
         string ip = json.Code;
         int port = json.Version;
@@ -118,6 +119,17 @@ public static class PostServerConfig
                 Message = "设置Mqtt配置完成"
             };
         }
+        else if (json.Text is "Robot")
+        {
+            ServerMain.Config.Robot.Socket.IP = ip;
+            ServerMain.Config.Robot.Socket.Port = port;
+            ServerMain.ConfigUtils.Save();
+            return new()
+            {
+                Build = true,
+                Message = "设置Robot配置完成"
+            };
+        }
         else if (json.Text is "WebSocket")
         {
             ServerMain.Config.WebSocket.Socket.IP = ip;
@@ -137,45 +149,6 @@ public static class PostServerConfig
                 Message = "参数错误"
             };
         }
-    }
-    public static RobotObj GetRobotConfig()
-    {
-        return new()
-        {
-            IP = ServerMain.Config.Robot.Socket.IP,
-            Port = ServerMain.Config.Robot.Socket.Port
-        };
-    }
-    public static ReMessage SetRobotConfig(BuildOBJ json)
-    {
-        string ip = json.Code;
-        int port = json.Version;
-        if (IPAddress.TryParse(ip, out _) == false)
-        {
-            return new()
-            {
-                Build = false,
-                Message = "参数非法"
-            };
-        }
-        if (port > 0xFFFF || port < 0)
-        {
-            return new()
-            {
-                Build = false,
-                Message = "参数非法"
-            };
-        }
-
-        ServerMain.Config.Robot.Socket.IP = ip;
-        ServerMain.Config.Robot.Socket.Port = port;
-        ServerMain.ConfigUtils.Save();
-
-        return new()
-        {
-            Build = true,
-            Message = "机器人配置设置完成"
-        };
     }
     public static ReMessage Reboot()
     {

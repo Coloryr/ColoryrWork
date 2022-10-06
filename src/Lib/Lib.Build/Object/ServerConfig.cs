@@ -31,6 +31,7 @@ public record SocketObj
     public SocketConfig Socket { get; set; }
     public SocketConfig Mqtt { get; set; }
     public SocketConfig WebSocket { get; set; }
+    public SocketConfig Robot { get; set; }
 }
 
 public record HttpListObj

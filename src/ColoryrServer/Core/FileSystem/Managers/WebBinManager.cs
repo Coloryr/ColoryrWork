@@ -23,8 +23,6 @@ public static class WebBinManager
 
     public static void Start()
     {
-        ServerMain.OnStop += BaseDir.Stop;
-
         if (!Directory.Exists(WebBinStatic))
             Directory.CreateDirectory(WebBinStatic);
 
@@ -52,5 +50,7 @@ public static class WebBinManager
         }
 
         BaseDir = new StaticDir(WebBinStatic);
+
+        ServerMain.OnStop += BaseDir.Stop;
     }
 }

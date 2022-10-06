@@ -47,7 +47,7 @@ internal static class GenWebSocket
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileDllManager.SaveWebSocket(obj.UUID, build);
+            FileSystem.Managers.DllFileManager.SaveWebSocket(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

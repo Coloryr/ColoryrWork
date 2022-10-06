@@ -165,8 +165,7 @@ public static class PostDo
                 PostBuildType.ConfigAddHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),
                 PostBuildType.ConfigRemoveHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
                 PostBuildType.ConfigGetSocket => PostServerConfig.GetSocketConfig(),
-                PostBuildType.ConfigGetRobot => PostServerConfig.GetRobotConfig(),
-                PostBuildType.ConfigSetRobot => PostServerConfig.SetRobotConfig(json),
+                PostBuildType.ConfigSetSocket => PostServerConfig.SetSocketConfig(json),
                 PostBuildType.ConfigAddHttpRoute => PostServerConfig.AddHttpRouteConfig(json),
                 PostBuildType.ConfigRemoveHttpRoute => PostServerConfig.RemoveHttpRouteConfig(json),
                 PostBuildType.SetServerEnable => PostServerConfig.SetServerEnable(json),
@@ -177,23 +176,18 @@ public static class PostDo
                 PostBuildType.Rebuild => Rebuild(),
                 PostBuildType.InitLog => AddClient(json.Token),
                 PostBuildType.GetLog => GetLog(json.Token),
-                PostBuildType.GetPDB => GetPDB(json),
+                PostBuildType.MakePack => MakePack(),
                 _ => PostRes.Error
             };
     }
 
-    public static ReMessage GetPDB(BuildOBJ obj)
+    public static ReMessage MakePack()
     {
-        switch (obj.Code)
+        Task.Run(Package.MakePackage);
+        return new()
         {
-            case "":
-                break;
-
-        }
-
-        return new ReMessage
-        {
-            Build = false
+            Build = true,
+            Message = "服务器正在打包"
         };
     }
 
@@ -207,14 +201,47 @@ public static class PostDo
             ServerMain.Config.FixMode = true;
             foreach (var item in CodeFileManager.ClassFileList)
             {
-                GenClass.StartGen(item.Value);
+                var res = GenClass.StartGen(item.Value);
+                ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
             foreach (var item in CodeFileManager.DllFileList)
             {
-                GenDll.StartGen(item.Value, "ColoryrServer");
+                var res = GenDll.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
+            foreach (var item in CodeFileManager.RobotFileList)
+            {
+                var res = GenRobot.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
+                Thread.Sleep(100);
+            }
+            foreach (var item in CodeFileManager.MqttFileList)
+            {
+                var res = GenMqtt.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
+                Thread.Sleep(100);
+            }
+            foreach (var item in CodeFileManager.SocketFileList)
+            {
+                var res = GenSocket.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
+                Thread.Sleep(100);
+            }
+            foreach (var item in CodeFileManager.WebSocketFileList)
+            {
+                var res = GenWebSocket.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
+                Thread.Sleep(100);
+            }
+            foreach (var item in CodeFileManager.ServiceFileList)
+            {
+                var res = GenService.StartGen(item.Value, "ColoryrServer");
+                ServerMain.LogOut(res.Res);
+                Thread.Sleep(100);
+            }
+            IsRebuild = false;
         });
 
         return PostRes.RebuildStart;

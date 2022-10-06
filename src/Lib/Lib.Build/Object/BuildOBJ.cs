@@ -9,13 +9,13 @@ public enum PostBuildType
     UpdataDll, UpdataClass, UpdataSocket, UpdataWebSocket, UpdataRobot, UpdataMqtt, UpdataTask, UpdataWeb,
     WebRemoveFile, WebAddFile, WebAddCode, WebCodeZIP, WebSetIsVue, WebBuild, WebBuildRes, WebDownloadFile,
     AddClassFile, RemoveClassFile, BuildClass,
-    ConfigGetHttpList, ConfigGetSocket, ConfigGetRobot, ConfigGetUser,
+    ConfigGetHttpList, ConfigGetSocket, ConfigGetUser,
     ConfigAddHttp, ConfigAddHttpRoute, ConfigAddHttpUrlRoute,
     ConfigRemoveHttp, ConfigRemoveHttpRoute, ConfigRemoveHttpUrlRoute,
     ConfigAddUser, ConfigRemoveUser,
-    ConfigSetSocket, ConfigSetRobot,
+    ConfigSetSocket,
     SetServerEnable, Rebuild, InitLog, GetLog,
-    Check, Login, GetApi, ServerReboot, GetPDB
+    Check, Login, GetApi, ServerReboot, MakePack
 }
 public record BuildOBJ
 {

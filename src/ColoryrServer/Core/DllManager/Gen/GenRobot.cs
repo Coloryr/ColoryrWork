@@ -47,7 +47,7 @@ internal class GenRobot
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileDllManager.SaveRobot(obj.UUID, build);
+            FileSystem.Managers.DllFileManager.SaveRobot(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();
