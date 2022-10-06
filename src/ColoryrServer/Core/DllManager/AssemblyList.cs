@@ -1,22 +1,15 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.DllManager.Service;
-using ColoryrServer.Core.FileSystem.Code;
+﻿using ColoryrServer.Core.DllManager.Service;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.PortServer;
-using ColoryrServer.SDK;
-using ColoryrWork.Lib.Server;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.DllManager;
 
-public static class DllStongeManager
+internal static class AssemblyList
 {
     private static readonly ConcurrentDictionary<string, DllAssembly> MapDll = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapClass = new();
@@ -25,14 +18,6 @@ public static class DllStongeManager
     private static readonly ConcurrentDictionary<string, RobotDllAssembly> MapRobot = new();
     private static readonly ConcurrentDictionary<string, DllAssembly> MapMqtt = new();
     private static readonly ConcurrentDictionary<string, ServiceDllAssembly> MapService = new();
-
-    public static readonly string LocalDll = ServerMain.RunLocal + "Dll/Dll/";
-    public static readonly string LocalClass = ServerMain.RunLocal + "Dll/Class/";
-    public static readonly string LocalSocket = ServerMain.RunLocal + "Dll/Socket/";
-    public static readonly string LocalWebSocket = ServerMain.RunLocal + "Dll/WebSocket/";
-    public static readonly string LocalRobot = ServerMain.RunLocal + "Dll/Robot/";
-    public static readonly string LocalMqtt = ServerMain.RunLocal + "Dll/Mqtt/";
-    public static readonly string LocalService = ServerMain.RunLocal + "Dll/Service/";
 
     private static void Stop()
     {
@@ -73,16 +58,9 @@ public static class DllStongeManager
         MapService.Clear();
     }
 
-    private static void RemoveAll(string dir)
+    public static void Start()
     {
-        if (File.Exists(dir + ".dll"))
-        {
-            File.Delete(dir + ".dll");
-        }
-        if (File.Exists(dir + ".pdb"))
-        {
-            File.Delete(dir + ".pdb");
-        }
+        ServerMain.OnStop += Stop;
     }
 
     public static DllAssembly FindClass(AssemblyName name)
@@ -123,7 +101,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalDll + EnCode.SHA1(uuid));
+        FileDllManager.RemoveDll(uuid);
         HttpInvokeRoute.Remove(uuid);
     }
     public static DllAssembly GetDll(string uuid)
@@ -163,7 +141,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalClass + uuid);
+        FileDllManager.RemoveClass(uuid);
     }
     public static DllAssembly GetClass(string uuid)
     {
@@ -206,7 +184,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalSocket + uuid);
+        FileDllManager.RemoveSocket(uuid);
     }
     public static List<SocketDllAssembly> GetSocket()
     {
@@ -240,7 +218,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalWebSocket + uuid);
+        FileDllManager.RemoveWebSocket(uuid);
     }
     public static List<DllAssembly> GetWebSocket()
     {
@@ -274,7 +252,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalRobot + uuid);
+        FileDllManager.RemoveRobot(uuid);
     }
     public static List<RobotDllAssembly> GetRobot()
     {
@@ -308,7 +286,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalMqtt + uuid);
+        FileDllManager.RemoveMqtt(uuid);
     }
     public static List<DllAssembly> GetMqtt()
     {
@@ -343,7 +321,7 @@ public static class DllStongeManager
             item.SelfType = null;
             item.MethodInfos.Clear();
         }
-        RemoveAll(LocalRobot + uuid);
+        FileDllManager.RemoveService(uuid);
     }
     public static ServiceDllAssembly GetService(string uuid)
     {
@@ -352,145 +330,5 @@ public static class DllStongeManager
     public static List<ServiceDllAssembly> GetService()
     {
         return new List<ServiceDllAssembly>(MapService.Values);
-    }
-    public static void Start()
-    {
-        ServerMain.OnStop += Stop;
-        if (!Directory.Exists(LocalDll))
-        {
-            Directory.CreateDirectory(LocalDll);
-        }
-        if (!Directory.Exists(LocalClass))
-        {
-            Directory.CreateDirectory(LocalClass);
-        }
-        if (!Directory.Exists(LocalSocket))
-        {
-            Directory.CreateDirectory(LocalSocket);
-        }
-        if (!Directory.Exists(LocalWebSocket))
-        {
-            Directory.CreateDirectory(LocalWebSocket);
-        }
-        if (!Directory.Exists(LocalRobot))
-        {
-            Directory.CreateDirectory(LocalRobot);
-        }
-        if (!Directory.Exists(LocalMqtt))
-        {
-            Directory.CreateDirectory(LocalMqtt);
-        }
-        if (!Directory.Exists(LocalService))
-        {
-            Directory.CreateDirectory(LocalService);
-        }
-        if (!Directory.Exists(LocalMqtt))
-        {
-            Directory.CreateDirectory(LocalMqtt);
-        }
-
-        //加载class
-        var dirs = Function.GetPathFileName(LocalClass);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadClass.LoadFile(item);
-                GenCode.LoadClass(item.FullName);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        //加载dll
-        foreach (var item in CodeFileManager.DllFileList.Keys)
-        {
-            string name = LocalDll + EnCode.SHA1(item) + ".dll";
-            if (File.Exists(name))
-            {
-                try
-                {
-                    LoadDll.LoadFile(item, name);
-                }
-                catch (Exception e)
-                {
-                    ServerMain.LogError(e);
-                }
-            }
-        }
-
-        dirs = Function.GetPathFileName(LocalSocket);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadSocket.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        dirs = Function.GetPathFileName(LocalWebSocket);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadWebSocket.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        dirs = Function.GetPathFileName(LocalRobot);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadRobot.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        dirs = Function.GetPathFileName(LocalMqtt);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadMqtt.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
-        dirs = Function.GetPathFileName(LocalService);
-        foreach (var item in dirs)
-        {
-            try
-            {
-                if (item.FullName.Contains(".pdb"))
-                    continue;
-                LoadService.LoadFile(item);
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
-        }
     }
 }

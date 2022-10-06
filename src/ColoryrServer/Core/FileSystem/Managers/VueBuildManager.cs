@@ -1,9 +1,9 @@
-﻿using ColoryrServer.Core.FileSystem.Web;
+﻿using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
 using System.Collections.Concurrent;
 
-namespace ColoryrServer.Core.FileSystem.Vue;
+namespace ColoryrServer.Core.FileSystem.Managers;
 
 public static class VueBuildManager
 {
@@ -23,7 +23,7 @@ public static class VueBuildManager
         if (NowBuild.TryRemove(web.UUID, out var item))
         {
             BuildRes.AddOrUpdate(web.UUID, item.Res);
-            DllRunLog.PutBuildLog($"Web:{web.UUID}", item.Res);
+            LogDatabsae.PutBuildLog($"Web:{web.UUID}", item.Res);
             WebFileManager.Add(web);
         }
     }

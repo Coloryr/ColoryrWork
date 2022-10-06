@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.SDK;
 using System;
 using System.Reflection;
@@ -33,7 +33,7 @@ internal class ServiceThread : IService
     {
         Arg = arg;
         Name = name;
-        Assembly = DllStongeManager.GetService(name);
+        Assembly = AssemblyList.GetService(name);
         if (Assembly == null)
         {
             State = ServiceState.Error;
@@ -82,7 +82,7 @@ internal class ServiceThread : IService
                 catch (Exception e)
                 {
                     Task.Run(() => DllRun.ServiceOnError(e));
-                    DllRunLog.PutError($"[Service]{Name}", e.ToString());
+                    LogDatabsae.PutError($"[Service]{Name}", e.ToString());
                     ServerMain.LogError("[Service]{Name}运行错误", e);
                 }
                 Thread.Sleep(50);
@@ -133,7 +133,7 @@ internal class ServiceThread : IService
                     }
 
                     Task.Run(() => DllRun.ServiceOnError(e));
-                    DllRunLog.PutError($"[Service]{Name}", error);
+                    LogDatabsae.PutError($"[Service]{Name}", error);
                     ServerMain.LogError($"[Service]{Name}运行出错", e);
                 }
                 Semaphore2.Release();

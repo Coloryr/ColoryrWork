@@ -1,6 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager.DllLoad;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -51,19 +50,7 @@ internal static class GenDll
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            using (var FileStream = new FileStream(
-                DllStongeManager.LocalDll + name + ".dll", FileMode.OpenOrCreate))
-            {
-                FileStream.Write(build.MS.ToArray());
-                FileStream.Flush();
-            }
-
-            using (var FileStream = new FileStream(
-                DllStongeManager.LocalDll + name + ".pdb", FileMode.OpenOrCreate))
-            {
-                FileStream.Write(build.MSPdb.ToArray());
-                FileStream.Flush();
-            }
+            FileDllManager.SaveDll(name, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

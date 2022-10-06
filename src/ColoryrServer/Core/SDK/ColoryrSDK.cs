@@ -1,6 +1,7 @@
 ﻿using ColoryrSDK;
 using ColoryrServer.Core;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
@@ -543,7 +544,7 @@ public partial class Tools
     /// <returns>类</returns>
     public static dynamic GetClass(string classname, params object[] obj)
     {
-        var data = DllStongeManager.GetClass(classname);
+        var data = AssemblyList.GetClass(classname);
         if (data == null)
             throw new ErrorDump("没有这个类:" + classname);
         try
@@ -628,14 +629,14 @@ public partial class FileLoad
     /// <param name="encoding">读取编码</param>
     /// <returns>文件里面的字符串</returns>
     public static string LoadString(string filename, Encoding encoding = null)
-        => Core.FileSystem.FileLoad.LoadString(filename, encoding);
+        => FileUtils.LoadString(filename, encoding);
     /// <summary>
     /// 读一个文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件二进制</returns>
     public static byte[] LoadBytes(string filename)
-        => Core.FileSystem.FileLoad.LoadBytes(filename);
+        => FileUtils.LoadBytes(filename);
     /// <summary>
     /// 开始文件流
     /// </summary>
@@ -645,7 +646,7 @@ public partial class FileLoad
     /// <returns>流</returns>
     public static HttpResponseStream StartStream(HttpDllRequest http, string local,
         string contentType = ServerContentType.TXT)
-        => FileHttpStream.StartStream(http, local, contentType);
+        => FileStreamManager.NewStream(http, local, contentType);
 }
 public partial class ErrorDump : Exception
 {

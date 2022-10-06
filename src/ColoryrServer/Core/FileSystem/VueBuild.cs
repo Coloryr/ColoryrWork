@@ -1,9 +1,9 @@
-﻿using ColoryrServer.Core.FileSystem.Web;
+﻿using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Diagnostics;
 
-namespace ColoryrServer.Core.FileSystem.Vue;
+namespace ColoryrServer.Core.FileSystem;
 
 public class VueBuild
 {

@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
 
@@ -65,7 +64,7 @@ internal static class ServiceManager
     {
         ServerMain.OnStop += Stop;
 
-        foreach (var item in DllStongeManager.GetService())
+        foreach (var item in AssemblyList.GetService())
         {
             Load(item);
         }

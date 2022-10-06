@@ -3,9 +3,9 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Threading.Tasks;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.FileSystem.Database;
 
-public static class DllRunLog
+public static class LogDatabsae
 {
     private static readonly string DB = ServerMain.RunLocal + "DllLog.db";
 

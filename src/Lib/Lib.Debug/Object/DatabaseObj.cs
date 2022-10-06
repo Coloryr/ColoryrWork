@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ColoryrWork.Lib.Debug.Object;
 
@@ -18,8 +16,8 @@ public record DatabaseObj
 }
 
 public record RedisObj
-{ 
-    
+{
+
 }
 
 public record DatabaseResObj

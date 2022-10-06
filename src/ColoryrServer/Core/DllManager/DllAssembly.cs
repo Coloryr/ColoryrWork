@@ -1,5 +1,4 @@
 ﻿using ColoryrServer.Core.DllManager.Service;
-using ColoryrServer.Core.FileSystem;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System;
@@ -38,7 +37,7 @@ public class DllAssembly : AssemblyLoadContext
     public Dictionary<string, MethodInfo> MethodInfos { get; } = new();
     protected override Assembly Load(AssemblyName name)
     {
-        var item = DllStongeManager.FindClass(name);
+        var item = AssemblyList.FindClass(name);
         if (item == null)
         {
             return null;

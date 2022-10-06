@@ -1,6 +1,6 @@
 ﻿using ColoryrWork.Lib.Build.Object;
 
-namespace ColoryrServer.Core.FileSystem.Code;
+namespace ColoryrServer.Core.FileSystem.Database;
 
 internal static class CodeObj
 {

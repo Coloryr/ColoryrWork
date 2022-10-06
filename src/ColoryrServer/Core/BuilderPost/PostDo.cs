@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
@@ -25,14 +26,14 @@ public static class PostDo
         Name = "LogThread"
     };
     private static bool IsRun;
-    public static void Start()
+    internal static void Start()
     {
+        ServerMain.OnStop += Stop;
         IsRun = true;
         TaskThread.Start();
-        ServerMain.OnStop += Stop;
     }
 
-    public static void Stop()
+    private static void Stop()
     {
         IsRun = false;
         Client.Clear();
@@ -75,10 +76,10 @@ public static class PostDo
             {
                 return PostRes.UserError;
             }
-            else if (LoginSave.CheckPassword(json.User.ToLower(), json.Code.ToLower()))
+            else if (LoginDatabase.CheckPassword(json.User.ToLower(), json.Code.ToLower()))
             {
                 string uuid = Guid.NewGuid().ToString().Replace("-", "");
-                LoginSave.UpdateToken(json.User.ToLower(), uuid.ToLower());
+                LoginDatabase.UpdateToken(json.User.ToLower(), uuid.ToLower());
                 return new ReMessage
                 {
                     Build = true,
@@ -96,10 +97,10 @@ public static class PostDo
             }
             return new ReMessage
             {
-                Build = LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower())
+                Build = LoginDatabase.CheckLogin(json.User.ToLower(), json.Token.ToLower())
             };
         }
-        else if (!LoginSave.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
+        else if (!LoginDatabase.CheckLogin(json.User.ToLower(), json.Token.ToLower()))
         {
             return PostRes.LoginOut;
         }
@@ -176,8 +177,24 @@ public static class PostDo
                 PostBuildType.Rebuild => Rebuild(),
                 PostBuildType.InitLog => AddClient(json.Token),
                 PostBuildType.GetLog => GetLog(json.Token),
+                PostBuildType.GetPDB => GetPDB(json),
                 _ => PostRes.Error
             };
+    }
+
+    public static ReMessage GetPDB(BuildOBJ obj)
+    {
+        switch (obj.Code)
+        {
+            case "":
+                break;
+
+        }
+
+        return new ReMessage
+        {
+            Build = false
+        };
     }
 
     public static ReMessage Rebuild()

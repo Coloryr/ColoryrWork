@@ -6,7 +6,6 @@ using DiffPlex.DiffBuilder.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -34,35 +33,6 @@ public partial class MainWindow : Window
         AddCodeEdit = FAddCodeEdit;
         CloseCodeEdit = FCloseCodeEdit;
         LoginDone = FLoginDone;
-    }
-
-    private async void GetApi()
-    {
-        string dir = App.RunLocal + "CodeTEMP/SDK/";
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
-        foreach (var item in Directory.GetFiles(dir))
-        {
-            File.Delete(item);
-        }
-        var list = await App.HttpUtils.GetApi();
-        if (list.List != null)
-            foreach (var item in list.List)
-            {
-                File.WriteAllText(dir + item.Key + ".cs", item.Value);
-            }
-        dir = App.RunLocal + "CodeTEMP/Common/";
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
-        if (list.Other != null)
-            foreach (var item in list.Other)
-            {
-                File.WriteAllText(dir + item.Key + ".cs", item.Value);
-            }
     }
 
     public void RefreshCode(CodeType type)
@@ -98,7 +68,7 @@ public partial class MainWindow : Window
 
     public void FLoginDone()
     {
-        GetApi();
+        App.GetApi();
         CallRefresh.Invoke();
     }
 

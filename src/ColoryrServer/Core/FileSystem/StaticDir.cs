@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ColoryrServer.Core.Utils;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 
-namespace ColoryrServer.Core.FileSystem.Web;
+namespace ColoryrServer.Core.FileSystem;
 
 public class StaticDir
 {
@@ -125,15 +126,15 @@ public class StaticDir
         if (File.Exists(e.FullPath))
         {
             if (e.Name.ToLower() is "404.html")
-                Html404 = FileLoad.LoadBytes(e.FullPath);
+                Html404 = FileUtils.LoadBytes(e.FullPath);
             else if (e.Name.ToLower() is "favicon.ico")
-                HtmlIcon = FileLoad.LoadBytes(e.FullPath);
+                HtmlIcon = FileUtils.LoadBytes(e.FullPath);
             else if (e.Name.ToLower() is "index.html")
-                HtmlIndex = FileLoad.LoadBytes(e.FullPath);
+                HtmlIndex = FileUtils.LoadBytes(e.FullPath);
             else if (e.Name.ToLower() is "fixmode.html")
-                HtmlFixMode = FileLoad.LoadBytes(e.FullPath);
+                HtmlFixMode = FileUtils.LoadBytes(e.FullPath);
             else if (FileTempMap.TryGetValue(e.Name, out var v))
-                v.Data = FileLoad.LoadBytes(e.FullPath);
+                v.Data = FileUtils.LoadBytes(e.FullPath);
             ServerMain.LogOut($"重读文件[{e.FullPath}]");
         }
     }
@@ -205,7 +206,7 @@ public class StaticDir
             {
                 var file = new StaticTempFile()
                 {
-                    Data = FileLoad.LoadBytes(Dir + name)
+                    Data = FileUtils.LoadBytes(Dir + name)
                 };
                 file.Reset();
                 FileTempMap.TryAdd(name, file);
@@ -217,5 +218,19 @@ public class StaticDir
             return NextDir[rote[index]].GetFile(rote, index + 1);
         }
         return null;
+    }
+}
+
+internal class StaticTempFile
+{
+    public byte[] Data { get; set; }
+    public int Time { get; private set; }
+    public void Reset()
+    {
+        Time = ServerMain.Config.Requset.TempTime;
+    }
+    public void Tick()
+    {
+        Time--;
     }
 }

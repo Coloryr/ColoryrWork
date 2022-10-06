@@ -1,4 +1,4 @@
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.Core.PortServer;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
@@ -26,7 +26,7 @@ public static class MqttSDK
         }
         catch (Exception e)
         {
-            DllRunLog.PutError("ColoryrServer", e.ToString());
+            LogDatabsae.PutError("ColoryrServer", e.ToString());
         }
     }
 }

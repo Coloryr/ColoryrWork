@@ -1,5 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
-using ColoryrServer.SDK;
+﻿using ColoryrServer.SDK;
 using System;
 using System.Reflection;
 
@@ -18,7 +17,7 @@ internal class ServiceOnly : IService
     public ServiceOnly(string name)
     {
         Name = name;
-        Assembly = DllStongeManager.GetService(name);
+        Assembly = AssemblyList.GetService(name);
         if (Assembly == null)
         {
             State = ServiceState.Error;

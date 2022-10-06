@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -159,7 +159,7 @@ internal static partial class DllRun
             else if (e.InnerException is ErrorDump dump1)
             {
                 string error = dump1.data + "\n" + e.ToString();
-                DllRunLog.PutError($"[Dll]{dll.Name}", error);
+                LogDatabsae.PutError($"[Dll]{dll.Name}", error);
                 if (dll.Debug)
                     return new HttpReturn
                     {
@@ -178,7 +178,7 @@ internal static partial class DllRun
             else
             {
                 string error = e.ToString();
-                DllRunLog.PutError($"[Dll]{dll.Name}", error);
+                LogDatabsae.PutError($"[Dll]{dll.Name}", error);
                 if (dll.Debug)
                     return new HttpReturn
                     {
@@ -202,7 +202,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void SocketGo(SocketTcpRequest head)
     {
-        foreach (var dll in DllStongeManager.GetSocket())
+        foreach (var dll in AssemblyList.GetSocket())
         {
             try
             {
@@ -239,7 +239,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Socket]{dll.Name}", error);
+                LogDatabsae.PutError($"[Socket]{dll.Name}", error);
                 ServerMain.LogError("[Socket]{dll.Name}运行错误", e);
             }
         }
@@ -250,7 +250,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void SocketGo(SocketUdpRequest head)
     {
-        foreach (var dll in DllStongeManager.GetSocket())
+        foreach (var dll in AssemblyList.GetSocket())
         {
             try
             {
@@ -286,7 +286,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Socket]{dll.Name}", error);
+                LogDatabsae.PutError($"[Socket]{dll.Name}", error);
                 ServerMain.LogError("[Socket]{dll.Name}运行错误", e);
             }
         }
@@ -297,7 +297,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void WebSocketGo(WebSocketMessage head)
     {
-        foreach (var dll in DllStongeManager.GetWebSocket())
+        foreach (var dll in AssemblyList.GetWebSocket())
         {
             try
             {
@@ -334,7 +334,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                LogDatabsae.PutError($"[WebSocket]{dll.Name}", error);
                 ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
@@ -345,7 +345,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void WebSocketGo(WebSocketOpen head)
     {
-        foreach (var dll in DllStongeManager.GetWebSocket())
+        foreach (var dll in AssemblyList.GetWebSocket())
         {
             try
             {
@@ -382,7 +382,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                LogDatabsae.PutError($"[WebSocket]{dll.Name}", error);
                 ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
@@ -393,7 +393,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void WebSocketGo(WebSocketClose head)
     {
-        foreach (var dll in DllStongeManager.GetWebSocket())
+        foreach (var dll in AssemblyList.GetWebSocket())
         {
             try
             {
@@ -430,7 +430,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[WebSocket]{dll.Name}", error);
+                LogDatabsae.PutError($"[WebSocket]{dll.Name}", error);
                 ServerMain.LogError("[WebSocket]{dll.Name}运行错误", e);
             }
         }
@@ -441,7 +441,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void RobotGo(RobotMessage head)
     {
-        foreach (var dll in DllStongeManager.GetRobot())
+        foreach (var dll in AssemblyList.GetRobot())
         {
             try
             {
@@ -478,7 +478,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
                 ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
@@ -489,7 +489,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void RobotGo(RobotEvent head)
     {
-        foreach (var dll in DllStongeManager.GetRobot())
+        foreach (var dll in AssemblyList.GetRobot())
         {
             try
             {
@@ -526,7 +526,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
                 ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
@@ -537,7 +537,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void RobotGo(RobotSend head)
     {
-        foreach (var dll in DllStongeManager.GetRobot())
+        foreach (var dll in AssemblyList.GetRobot())
         {
             try
             {
@@ -574,7 +574,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Robot]{dll.Name}", error);
+                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
                 ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
             }
         }
@@ -585,7 +585,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttLoadingRetainedMessages head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -622,7 +622,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -633,7 +633,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttConnectionValidator head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -670,7 +670,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -681,7 +681,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttUnsubscription head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -718,7 +718,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -729,7 +729,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttMessage head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -766,7 +766,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -777,7 +777,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttSubscription head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -814,7 +814,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -825,7 +825,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttClientConnected head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -862,7 +862,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -873,7 +873,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttClientDisconnected head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -910,7 +910,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -921,7 +921,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttInterceptingPublish head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -958,7 +958,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -969,7 +969,7 @@ internal static partial class DllRun
     /// <param name="head"></param>
     public static void MqttGo(DllMqttRetainedMessageChanged head)
     {
-        foreach (var dll in DllStongeManager.GetMqtt())
+        foreach (var dll in AssemblyList.GetMqtt())
         {
             try
             {
@@ -1006,7 +1006,7 @@ internal static partial class DllRun
                 }
 
                 Task.Run(() => ServiceOnError(e));
-                DllRunLog.PutError($"[Mqtt]{dll.Name}", error);
+                LogDatabsae.PutError($"[Mqtt]{dll.Name}", error);
                 ServerMain.LogError("[Mqtt]{dll.Name}运行错误", e);
             }
         }
@@ -1018,7 +1018,7 @@ internal static partial class DllRun
     /// <returns></returns>
     public static void ServiceOnError(Exception head)
     {
-        foreach (var dll in DllStongeManager.GetService())
+        foreach (var dll in AssemblyList.GetService())
         {
             try
             {
@@ -1054,7 +1054,7 @@ internal static partial class DllRun
                     error = e.ToString();
                 }
 
-                DllRunLog.PutError($"[Service]{dll.Name}", error);
+                LogDatabsae.PutError($"[Service]{dll.Name}", error);
                 ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }
@@ -1066,7 +1066,7 @@ internal static partial class DllRun
     /// <param name="arg">构建信息</param>
     public static void ServiceOnBuild(PerBuildArg head)
     {
-        foreach (var dll in DllStongeManager.GetService())
+        foreach (var dll in AssemblyList.GetService())
         {
             try
             {
@@ -1102,7 +1102,7 @@ internal static partial class DllRun
                     error = e.ToString();
                 }
 
-                DllRunLog.PutError($"[Service]{dll.Name}", error);
+                LogDatabsae.PutError($"[Service]{dll.Name}", error);
                 ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }
@@ -1113,7 +1113,7 @@ internal static partial class DllRun
     /// <param name="arg">构建信息</param>
     public static void ServiceOnBuild(PostBuildArg head)
     {
-        foreach (var dll in DllStongeManager.GetService())
+        foreach (var dll in AssemblyList.GetService())
         {
             try
             {
@@ -1149,7 +1149,7 @@ internal static partial class DllRun
                     error = e.ToString();
                 }
 
-                DllRunLog.PutError($"[Service]{dll.Name}", error);
+                LogDatabsae.PutError($"[Service]{dll.Name}", error);
                 ServerMain.LogError("[Service]{dll.Name}运行错误", e);
             }
         }

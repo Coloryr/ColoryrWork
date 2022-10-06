@@ -1,7 +1,8 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.FileSystem.Managers;
+using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
@@ -65,7 +66,7 @@ internal static class PostBuildClass
 
     public static ClassCodeGetObj GetCode(BuildOBJ json)
     {
-        var list = CodeFileManager.GetClassCode(json.UUID);
+        var list = CodeDatabase.GetClassCode(json.UUID);
         var obj = CodeFileManager.GetClass(json.UUID);
         return new ClassCodeGetObj { Obj = obj, List = list };
     }
@@ -89,7 +90,7 @@ internal static class PostBuildClass
                 Message = $"Class[{json.UUID}]版本号错误"
             };
         }
-        var code = CodeFileManager.CheckClassCode(obj, json.Temp);
+        var code = CodeDatabase.CheckClassCode(obj, json.Temp);
         if (code == null)
         {
             return new ReMessage
@@ -101,7 +102,7 @@ internal static class PostBuildClass
 
         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
 
-        code.code = FileEdit.StartEdit(code.code, list);
+        code.code = FileUtils.StartEdit(code.code, list);
         obj.Text = json.Text;
 
         var arg = new PerBuildArg
@@ -172,7 +173,7 @@ internal static class PostBuildClass
                 Message = $"没有这个Class[{json.UUID}]"
             };
         }
-        var code = CodeFileManager.CheckClassCode(obj, json.Temp);
+        var code = CodeDatabase.CheckClassCode(obj, json.Temp);
         if (code != null)
         {
             return new ReMessage
@@ -203,7 +204,7 @@ internal static class PostBuildClass
                 Message = $"没有这个Class[{json.UUID}]"
             };
         }
-        var code = CodeFileManager.CheckClassCode(obj, json.Temp);
+        var code = CodeDatabase.CheckClassCode(obj, json.Temp);
         if (code == null)
         {
             return new ReMessage
@@ -213,7 +214,7 @@ internal static class PostBuildClass
             };
         }
 
-        CodeFileManager.RemoveClassCode(json.UUID, json.Temp, json.User);
+        CodeDatabase.RemoveClassCode(json.UUID, json.Temp, json.User);
 
         return new ReMessage
         {

@@ -64,7 +64,7 @@ public static class DebugDecode
         return obj;
     }
 
-    public static DatabaseObj ReadDatabasePack(this IByteBuffer buffer) 
+    public static DatabaseObj ReadDatabasePack(this IByteBuffer buffer)
     {
         byte[] byt = new byte[buffer.ReadableBytes];
         buffer.ReadBytes(byt);

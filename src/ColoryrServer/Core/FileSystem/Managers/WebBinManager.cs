@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace ColoryrServer.Core.FileSystem.Web;
+namespace ColoryrServer.Core.FileSystem.Managers;
 
 public static class WebBinManager
 {
@@ -17,12 +17,14 @@ public static class WebBinManager
 
     public static HttpResponseStream GetStream(HttpDllRequest request, string arg)
     {
-        return FileHttpStream.StartStream(request, $"{WebBinStatic}/{arg}",
+        return FileStreamManager.NewStream(request, $"{WebBinStatic}/{arg}",
             ServerContentType.EndType(arg));
     }
 
     public static void Start()
     {
+        ServerMain.OnStop += BaseDir.Stop;
+
         if (!Directory.Exists(WebBinStatic))
             Directory.CreateDirectory(WebBinStatic);
 
@@ -50,6 +52,5 @@ public static class WebBinManager
         }
 
         BaseDir = new StaticDir(WebBinStatic);
-        ServerMain.OnStop += BaseDir.Stop;
     }
 }

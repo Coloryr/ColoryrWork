@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.FileSystem;
+﻿using ColoryrServer.Core.FileSystem.Database;
 using ColoryrWork.Lib.Build.Object;
 
 namespace ColoryrServer.Core.BuilderPost;
@@ -11,7 +11,7 @@ internal static class PostUser
         {
             List = new()
         };
-        foreach (var item in LoginSave.GetAllUser())
+        foreach (var item in LoginDatabase.GetAllUser())
         {
             list.List.Add(new()
             {
@@ -26,7 +26,7 @@ internal static class PostUser
     {
         string user = obj.Code;
         string password = obj.Text.ToLower();
-        var res = LoginSave.AddUser(user.ToLower(), password);
+        var res = LoginDatabase.AddUser(user.ToLower(), password);
         if (!res)
         {
             return new()
@@ -45,7 +45,7 @@ internal static class PostUser
     public static ReMessage Remove(BuildOBJ obj)
     {
         string user = obj.Code;
-        var res = LoginSave.Remove(user.ToLower());
+        var res = LoginDatabase.Remove(user.ToLower());
         if (!res)
         {
             return new()

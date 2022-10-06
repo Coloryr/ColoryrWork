@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.SDK;
 using DotNetty.Transport.Channels;
 using System;
@@ -10,13 +10,12 @@ namespace ColoryrServer.Core.PortServer;
 
 internal static class PortNettyManager
 {
-    public static MultithreadEventLoopGroup BossGroup;
-    public static MultithreadEventLoopGroup WorkerGroup;
+    private static MultithreadEventLoopGroup BossGroup = new();
+    private static MultithreadEventLoopGroup WorkerGroup = new();
     private readonly static Dictionary<string, INetty> RunNetty = new();
+
     public static void Start()
     {
-        BossGroup = new();
-        WorkerGroup = new();
         ServerMain.OnStop += Stop;
     }
 
@@ -29,7 +28,7 @@ internal static class PortNettyManager
         RunNetty.Clear();
         Task.WaitAll(
             BossGroup.ShutdownGracefullyAsync(
-                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)), 
+                TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)),
             WorkerGroup.ShutdownGracefullyAsync(
                 TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)));
     }
@@ -50,7 +49,7 @@ internal static class PortNettyManager
             {
                 string error = e.ToString();
                 Task.Run(() => DllRun.ServiceOnError(e));
-                DllRunLog.PutError($"[Socket]{dll.Name}", error);
+                LogDatabsae.PutError($"[Socket]{dll.Name}", error);
                 ServerMain.LogError($"Netty[{dll.Name}]启动错误", e);
             }
         }

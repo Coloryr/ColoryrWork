@@ -299,4 +299,23 @@ public partial class HttpBuild : HttpUtilsBase
         }
         return JsonConvert.DeserializeObject<ClassCodeGetObj>(data);
     }
+
+    public async Task<ReMessage> GetPDB(CodeType type, string uuid)
+    {
+        var data = await DoPost(new BuildOBJ
+        {
+            User = App.Config.Name,
+            Token = App.Config.Token,
+            Mode = PostBuildType.GetPDB,
+            UUID = uuid,
+            Code = type.ToString()
+        });
+        if (data == null)
+            return null;
+        if (!CheckLogin(data))
+        {
+            return await GetPDB(type, uuid);
+        }
+        return JsonConvert.DeserializeObject<ReMessage>(data);
+    }
 }

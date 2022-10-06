@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.FileSystem.Database;
 
-internal static class LoginSave
+internal static class LoginDatabase
 {
     public record LoginObj
     {

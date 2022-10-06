@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Vue;
-using ColoryrServer.Core.FileSystem.Web;
+using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
@@ -136,7 +135,7 @@ internal static class PostBuildWeb
                 Message = $"Web[{json.UUID}]不存在文件[{json.Temp}]"
             };
         }
-        code = FileEdit.StartEdit(code, list);
+        code = FileUtils.StartEdit(code, list);
         obj.Text = json.Text;
 
         WebFileManager.StorageCode(obj, json.Temp, code);
@@ -424,7 +423,7 @@ internal static class PostBuildWeb
         obj.Files.Clear();
         ZipUtils.ZipDeCompress(temp, local);
         var dir = new DirectoryInfo(local);
-        foreach (var item in FileUtils.GetDirectoryFile(dir))
+        foreach (var item in Utils.FileUtils.GetDirectoryFile(dir))
         {
             string name = item.FullName.Replace(dir.FullName, "")[1..];
             if (name.EndsWith(".html") || name.EndsWith(".css")
@@ -444,7 +443,7 @@ internal static class PostBuildWeb
             }
         }
         obj.Up();
-        WebFileManager.Storage(obj);
+        WebDatabase.Storage(obj);
 
         return new ReMessage
         {

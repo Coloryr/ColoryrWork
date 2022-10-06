@@ -91,7 +91,10 @@ public abstract class HttpUtilsBase
         }
         catch (Exception e)
         {
-            InfoWindow.Show("登录错误", "服务器无响应" + Environment.NewLine + e.ToString());
+            App.ThisApp.Dispatcher.Invoke(() =>
+            {
+                InfoWindow.Show("错误", "服务器无响应" + Environment.NewLine + e.ToString());
+            });
             return null;
         }
     }

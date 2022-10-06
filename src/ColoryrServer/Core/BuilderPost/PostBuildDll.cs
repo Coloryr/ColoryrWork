@@ -1,8 +1,8 @@
 ﻿using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
@@ -101,7 +101,7 @@ internal static class PostBuildDll
         }
 
         var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
-        obj.Code = FileEdit.StartEdit(obj.Code, list);
+        obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 
         var arg = new PerBuildArg

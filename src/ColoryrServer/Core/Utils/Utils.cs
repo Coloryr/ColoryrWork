@@ -1,10 +1,13 @@
 ﻿using ColoryrServer.SDK;
+using ColoryrWork.Lib.Build.Object;
 using HtmlCompression.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Yahoo.Yui.Compressor;
 
 namespace ColoryrServer.Core.Utils;
@@ -12,14 +15,14 @@ namespace ColoryrServer.Core.Utils;
 /// <summary>
 /// 快速方法
 /// </summary>
-internal static class ExtensionMethods
+public static class ExtensionMethods
 {
     public static void AddOrUpdate<K, V>(this ConcurrentDictionary<K, V> dictionary, K key, V value)
     {
         dictionary.AddOrUpdate(key, value, (oldkey, oldvalue) => value);
     }
 }
-internal static class CodeCompressUtils
+public static class CodeCompressUtils
 {
     private static readonly HtmlCompressor html = new();
     private static readonly CssCompressor css = new();
@@ -39,7 +42,7 @@ internal static class CodeCompressUtils
 }
 
 
-internal static class StreamUtils
+public static class StreamUtils
 {
     public static byte[] JsonOBJ(object obj)
     {
@@ -53,7 +56,7 @@ internal static class StreamUtils
     }
 }
 
-internal static class FileUtils
+public static class FileUtils
 {
     /// <summary>
     /// 获得指定路径下所有文件名
@@ -84,9 +87,85 @@ internal static class FileUtils
 
         return list;
     }
+
+    public static string LoadString(string filename, Encoding encoding = null)
+    {
+        try
+        {
+            encoding ??= Encoding.UTF8;
+            var data = LoadBytes(filename);
+            return encoding.GetString(data);
+        }
+        catch (Exception e)
+        {
+            throw new ErrorDump("读取文件错误", e);
+        }
+    }
+
+    public static byte[] LoadBytes(string filename)
+    {
+        int times = 10;
+        Exception e;
+        do
+        {
+            try
+            {
+                using FileStream Stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                Thread.Sleep(20);
+                var outputdata = new byte[Stream.Length];
+                Stream.Read(outputdata, 0, outputdata.Length);
+                return outputdata;
+            }
+            catch (FileNotFoundException e2)
+            {
+                throw new ErrorDump("读取文件找不到", e2);
+            }
+            catch (Exception e1)
+            {
+                e = e1;
+                if (times > 0)
+                {
+                    times--;
+                    ServerMain.LogWarn($"文件:{filename} 被占用 剩余重试测试:{times}");
+                    Thread.Sleep(100);
+                }
+            }
+        } while (times > 0);
+
+        throw new ErrorDump("读取文件错误", e);
+    }
+
+    public static string StartEdit(string old, List<CodeEditObj> editText)
+    {
+        var temp = old.Replace("\r", "").Split("\n");
+        int arg = 0;
+        var list = new List<string>(temp);
+        foreach (var item in editText)
+        {
+            switch (item.Fun)
+            {
+                case EditFun.Add:
+                    list.Insert(item.Line + arg, item.Code);
+                    break;
+                case EditFun.Edit:
+                    list[item.Line + arg] = item.Code;
+                    break;
+                case EditFun.Remove:
+                    list.RemoveAt(item.Line + arg);
+                    arg--;
+                    break;
+            }
+        }
+        old = "";
+        foreach (var item in list)
+        {
+            old += item + "\n";
+        }
+        return old[0..^1];
+    }
 }
 
-internal static class ZipUtils
+public static class ZipUtils
 {
     public static void ZipDeCompress(byte[] zip, string path)
     {

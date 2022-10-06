@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
@@ -100,7 +101,7 @@ internal static class LoadDll
             };
         }
 
-        DllStongeManager.AddDll(uuid, assembly);
+        AssemblyList.AddDll(uuid, assembly);
 
         ServerMain.LogOut($"加载Dll[{uuid}]完成");
 
@@ -131,6 +132,6 @@ internal static class LoadDll
     /// <param name="name">文件名字</param>
     public static void Reload(string item)
     {
-        LoadFile(item, DllStongeManager.LocalDll + EnCode.SHA1(item) + ".dll");
+        LoadFile(item, FileDllManager.LocalDll + EnCode.SHA1(item) + ".dll");
     }
 }

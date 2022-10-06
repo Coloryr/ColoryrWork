@@ -15,7 +15,7 @@ public enum PostBuildType
     ConfigAddUser, ConfigRemoveUser,
     ConfigSetSocket, ConfigSetRobot,
     SetServerEnable, Rebuild, InitLog, GetLog,
-    Check, Login, GetApi, ServerReboot
+    Check, Login, GetApi, ServerReboot, GetPDB
 }
 public record BuildOBJ
 {

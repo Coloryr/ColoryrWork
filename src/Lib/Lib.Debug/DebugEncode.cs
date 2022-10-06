@@ -58,7 +58,7 @@ public static class DebugEncode
         return buffer;
     }
 
-    public static IByteBuffer ToPack(this DatabaseObj obj) 
+    public static IByteBuffer ToPack(this DatabaseObj obj)
     {
         var buffer = Unpooled.Buffer();
         var serializer = MessagePackSerializer.Get<DatabaseObj>();

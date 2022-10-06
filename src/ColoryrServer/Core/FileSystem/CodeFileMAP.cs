@@ -1,7 +1,7 @@
 ﻿using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 
-namespace ColoryrServer.Core.FileSystem.Code;
+namespace ColoryrServer.Core.FileSystem;
 
 internal record CodeFileMAP
 {

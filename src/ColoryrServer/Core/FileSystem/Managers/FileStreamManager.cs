@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 
-namespace ColoryrServer.Core.FileSystem;
+namespace ColoryrServer.Core.FileSystem.Managers;
 
 internal class StreamTemp
 {
@@ -14,7 +14,8 @@ internal class StreamTemp
 
     public void Tick() { time--; }
 }
-internal static class FileHttpStream
+
+internal static class FileStreamManager
 {
     private static readonly ConcurrentDictionary<string, StreamTemp> EtagTemp = new();
 
@@ -79,7 +80,7 @@ internal static class FileHttpStream
         }
     }
 
-    public static HttpResponseStream StartStream(HttpDllRequest http, string file, string contentType)
+    public static HttpResponseStream NewStream(HttpDllRequest http, string file, string contentType)
     {
         try
         {

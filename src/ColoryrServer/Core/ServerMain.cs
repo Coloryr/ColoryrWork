@@ -1,14 +1,14 @@
 ﻿using ColoryrServer.Core.BuilderPost;
 using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.DllManager;
 using ColoryrServer.Core.DllManager.Gen;
 using ColoryrServer.Core.DllManager.Service;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Code;
-using ColoryrServer.Core.FileSystem.Web;
+using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Html;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
-using ColoryrServer.Core.ServerDebug;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using HtmlAgilityPack;
@@ -33,7 +33,7 @@ namespace ColoryrServer.Core;
 
 public class ServerMain
 {
-    public const string Version = "2.4.0";
+    public const string Version = "2.5.0";
     /// <summary>
     /// 配置文件
     /// </summary>
@@ -152,6 +152,7 @@ public class ServerMain
             //配置文件
             ConfigUtils.Start();
 
+            AssemblyList.Start();
             PostDo.Start();
             PortNettyManager.Start();
             CodeFileManager.Start();
@@ -161,9 +162,9 @@ public class ServerMain
             HttpClientUtils.Start();
             PortMqttServer.Start();
             RobotUtils.Start();
-            LoginSave.Start();
+            LoginDatabase.Start();
             WebBinManager.Start();
-            DllRunLog.Start();
+            LogDatabsae.Start();
             MSCon.Start();
             RedisCon.Start();
             OracleCon.Start();
@@ -176,13 +177,11 @@ public class ServerMain
             GenCode.Start();
 
             WebFileManager.Start();
-            FileHttpStream.Start();
-
-            DllStongeManager.Start();
+            FileStreamManager.Start();
+            FileDllManager.Start();
             ServiceManager.Start();
             PortSocketServer.Start();
             PortWebSocket.Start();
-            DebugNetty.Start();
 
             //等待初始化完成
             Thread.Sleep(2000);

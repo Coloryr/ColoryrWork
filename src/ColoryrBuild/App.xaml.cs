@@ -6,6 +6,7 @@ using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ public partial class App : Application
 
     public static MainWindow WindowMain;
     public static LoginWindow WindowLogin;
+    public static App ThisApp;
 
     private record CodeInfo
     {
@@ -44,6 +46,7 @@ public partial class App : Application
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+        ThisApp = this;
         RunLocal = AppDomain.CurrentDomain.BaseDirectory;
         CodeSave.Start();
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -52,7 +55,7 @@ public partial class App : Application
         {
             Name = "",
             Token = "",
-            Http = "http://127.0.0.1",
+            Http = "http://127.0.0.1:8080",
             AES = false,
             Key = "Key",
             IV = "IV"
@@ -62,6 +65,52 @@ public partial class App : Application
         DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+    }
+
+    public static async void GetApi()
+    {
+        string dir = RunLocal + "CodeTEMP/SDK/";
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+        foreach (var item in Directory.GetFiles(dir))
+        {
+            File.Delete(item);
+        }
+        var list = await HttpUtils.GetApi();
+        if (list.List != null)
+            foreach (var item in list.List)
+            {
+                File.WriteAllText(dir + item.Key + ".cs", item.Value);
+            }
+        dir = RunLocal + "CodeTEMP/Common/";
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+        if (list.Other != null)
+            foreach (var item in list.Other)
+            {
+                File.WriteAllText(dir + item.Key + ".cs", item.Value);
+            }
+    }
+
+    public static async void GetPDB(CodeType type, string uuid)
+    {
+        string dir = RunLocal + "CodeTEMP/PDB/";
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        var res = await HttpUtils.GetPDB(type, uuid);
+        if (res.Build)
+        {
+            dir += type.ToString() + "_" + uuid.Replace("/", "_") + ".pdb";
+            var data = Convert.FromBase64String(res.Message);
+            await File.WriteAllBytesAsync(dir, data);
+        }
     }
 
     public static void Close()

@@ -232,7 +232,7 @@ public record RedisConfig
 }
 public abstract class ConfigUtils
 {
-    public static string FilePath = ServerMain.RunLocal + @"MainConfig.json";
+    public static string FilePath { get; } = ServerMain.RunLocal + "MainConfig.json";
     /// <summary>
     /// 读配置文件
     /// </summary>
