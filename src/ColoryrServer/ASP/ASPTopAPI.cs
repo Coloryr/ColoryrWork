@@ -13,7 +13,7 @@ public class ASPTopAPI : ITopAPI
         {
             var res = json.Code.ToLower() == "true";
             ASPServer.Config.RouteEnable = res;
-            ServerMain.ConfigUtils.Save();
+            ASPConfigUtils.Save();
             return new()
             {
                 Build = true,
@@ -69,7 +69,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.Http.Add(item);
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {
@@ -100,7 +100,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.Http.Remove(list.First());
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {
@@ -124,7 +124,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.Routes.Add(targe, item);
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {
@@ -146,7 +146,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.Routes.Remove(targe);
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {
@@ -170,7 +170,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.UrlRoutes.Add(targe, item);
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {
@@ -192,7 +192,7 @@ public class ASPTopAPI : ITopAPI
         }
 
         ASPServer.Config.UrlRoutes.Remove(targe);
-        ServerMain.ConfigUtils.Save();
+        ASPConfigUtils.Save();
 
         return new ReMessage()
         {

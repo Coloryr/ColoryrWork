@@ -1,9 +1,10 @@
-﻿using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
 using System.Collections.Generic;
 
 namespace ColoryrServer.Core.FileSystem;
 
-public abstract record MainConfig
+public record MainConfig
 {
     /// <summary>
     /// Socket配置
@@ -44,15 +45,11 @@ public abstract record MainConfig
     /// <summary>
     /// 任务配置
     /// </summary>
-    public TaskUtilConfig TaskConfig { get; set; }
+    public TaskUtilConfigObj TaskConfig { get; set; }
     /// <summary>
     /// HttpClient数量
     /// </summary>
     public int HttpClientNumber { get; set; }
-    /// <summary>
-    /// 请求选项
-    /// </summary>
-    public RequsetChoose Requset { get; set; }
     /// <summary>
     /// 编辑器AES加密
     /// </summary>
@@ -62,33 +59,45 @@ public abstract record MainConfig
     /// </summary>
     public CodeConfigObj CodeSetting { get; set; }
     /// <summary>
-    /// 调试模式
+    /// 集群设置
     /// </summary>
-    public ServerDebug DebugPort { get; set; }
+    public PipeConfigObj Pipe { get; set; }
+    /// <summary>
+    /// 请求选项
+    /// </summary>
+    public RequsetChooseObj Requset { get; set; }
     /// <summary>
     /// 维护模式
     /// </summary>
     public bool FixMode { get; set; }
 }
 
-public record ServerDebug
+public record RequsetChooseObj
 {
     /// <summary>
-    /// 启用调试
+    /// 缓存保留时间
+    /// </summary>
+    public int TempTime { get; set; }
+}
+
+public record PipeConfigObj
+{ 
+    /// <summary>
+    /// 是否启用集群
     /// </summary>
     public bool Enable { get; set; }
     /// <summary>
-    /// 调试开放端口
+    /// 是否为服务器端
+    /// </summary>
+    public bool Server { get; set; }
+    /// <summary>
+    /// 服务器IP
+    /// </summary>
+    public string IP { get; set; }
+    /// <summary>
+    /// 服务器端口
     /// </summary>
     public int Port { get; set; }
-    /// <summary>
-    /// 密钥
-    /// </summary>
-    public string Key { get; set; }
-    /// <summary>
-    /// 密钥
-    /// </summary>
-    public string IV { get; set; }
 }
 
 public record SslConfigObj
@@ -154,26 +163,7 @@ public record AESConfig
     /// </summary>
     public string IV { get; set; }
 }
-public record RequsetChoose
-{
-    /// <summary>
-    /// 放进缓存的文件类型
-    /// </summary>
-    public List<string> Temp { get; set; }
-    /// <summary>
-    /// 缓存保留时间
-    /// </summary>
-    public int TempTime { get; set; }
-    /// <summary>
-    /// 启用文件流
-    /// </summary>
-    public bool Stream { get; set; }
-    /// <summary>
-    /// 文件流的类型
-    /// </summary>
-    public List<string> StreamType { get; set; }
-}
-public record TaskUtilConfig
+public record TaskUtilConfigObj
 {
     /// <summary>
     /// 最大运行时间
@@ -230,15 +220,144 @@ public record RedisConfig
     /// </summary>
     public string Conn { get; set; }
 }
-public abstract class ConfigUtils
+internal static class ConfigUtils
 {
-    public static string FilePath { get; } = ServerMain.RunLocal + "MainConfig.json";
+    private static string FilePath { get; } = ServerMain.RunLocal + "MainConfig.json";
+
+    private static MainConfig MakeNew()
+    {
+        return new()
+        {
+            CodeSetting = new()
+            {
+                NotInclude = new()
+                {
+                    "sni.dll"
+                },
+                CodeLog = true,
+                MinifyCSS = true,
+                MinifyHtml = true,
+                MinifyJS = true
+            },
+            Socket = new()
+            {
+                IP = "0.0.0.0",
+                Port = 25556
+            },
+            WebSocket = new()
+            {
+                Ssl = "",
+                Password = "",
+                UseSsl = false,
+                Socket = new()
+                {
+                    IP = "0.0.0.0",
+                    Port = 25557
+                }
+            },
+            Robot = new()
+            {
+                Socket = new()
+                {
+                    IP = "127.0.0.1",
+                    Port = 23333
+                }
+            },
+            Mysql = new()
+            {
+                new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    Port = 3306,
+                    User = "root",
+                    Password = "MTIzNDU2",
+                    TimeOut = 1000,
+                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
+                }
+            },
+            MSsql = new()
+            {
+                new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    User = "root",
+                    Password = "MTIzNDU2",
+                    TimeOut = 1000,
+                    Conn = "Server={0};UID={1};PWD={2};"
+                }
+            },
+            Redis = new()
+            {
+                new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    Port = 6379,
+                    Conn = "{0}:{1}"
+                }
+            },
+            Oracle = new()
+            {
+                new()
+                {
+                    Enable = false,
+                    IP = "",
+                    User = "",
+                    Password = "",
+                    TimeOut = 1000,
+                    Conn = "Data Source=MyDatabase.db;Mode=ReadWriteCreate"
+                }
+            },
+            SQLite = new()
+            {
+                new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    User = "root",
+                    Password = "MTIzNDU2",
+                    TimeOut = 1000,
+                    Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
+                }
+            },
+            MqttConfig = new()
+            {
+                Ssl = "",
+                Password = "",
+                Socket = new()
+                {
+                    IP = "0.0.0.0",
+                    Port = 12345
+                }
+            },
+            TaskConfig = new()
+            {
+                MaxTime = 30
+            },
+            HttpClientNumber = 100,
+            AES = new()
+            {
+                Key = "Key",
+                IV = "IV"
+            },
+            FixMode = false
+        };
+    }
+
     /// <summary>
     /// 读配置文件
     /// </summary>
-    public abstract void Start();
+    public static void Start()
+    {
+        ServerMain.Config = ConfigSave.Config(MakeNew(), FilePath);
+    }
     /// <summary>
     /// 保存配置文件
     /// </summary>
-    public abstract void Save();
+    public static void Save()
+    {
+        ConfigSave.Save(ServerMain.Config, FilePath);
+    }
 }

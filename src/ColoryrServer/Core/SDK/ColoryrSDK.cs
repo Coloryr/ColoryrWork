@@ -1,6 +1,6 @@
 ﻿using ColoryrSDK;
 using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.Dll;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;

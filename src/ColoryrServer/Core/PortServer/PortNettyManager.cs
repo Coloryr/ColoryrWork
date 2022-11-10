@@ -1,5 +1,5 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.FileSystem.Database;
+﻿using ColoryrServer.Core.Database;
+using ColoryrServer.Core.Dll;
 using ColoryrServer.SDK;
 using DotNetty.Transport.Channels;
 using System;

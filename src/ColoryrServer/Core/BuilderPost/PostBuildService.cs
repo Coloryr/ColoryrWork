@@ -1,6 +1,6 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem.Managers;
+﻿using ColoryrServer.Core.Dll.Gen;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -15,7 +15,7 @@ internal static class PostBuildService
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        if (CodeFileManager.GetService(json.UUID) != null)
+        if (CodeManager.GetService(json.UUID) != null)
             return new ReMessage
             {
                 Build = false,
@@ -52,7 +52,7 @@ internal static class PostBuildService
             }
         };
         obj.Code = obj.Code.Replace(CodeDemo.Name, json.UUID);
-        CodeFileManager.StorageService(obj, json.User);
+        CodeManager.StorageService(obj, json.User);
         GenService.StartGen(obj, json.User);
         ServerMain.LogOut($"[{json.User}]创建Service[{json.UUID}]完成");
 
@@ -66,7 +66,7 @@ internal static class PostBuildService
     public static CSFileList GetList()
     {
         var list = new CSFileList();
-        foreach (var item in CodeFileManager.ServiceFileList)
+        foreach (var item in CodeManager.ServiceFileList)
         {
             list.List.Add(item.Key, item.Value);
         }
@@ -76,7 +76,7 @@ internal static class PostBuildService
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Service, json.UUID, json.User);
+        CodeManager.RemoveFile(CodeType.Service, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -86,7 +86,7 @@ internal static class PostBuildService
 
     public static ReMessage Updata(BuildOBJ json)
     {
-        var obj = CodeFileManager.GetService(json.UUID);
+        var obj = CodeManager.GetService(json.UUID);
         if (obj == null)
         {
             return new ReMessage

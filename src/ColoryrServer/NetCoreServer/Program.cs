@@ -115,7 +115,6 @@ class CoreServer
     public static CoreConfig Config;
     static void Main(string[] args)
     {
-        ServerMain.ConfigUtils = new CoreConfigUtils();
         PostServerConfig.Init(new CoreTopAPI());
 
         ServerMain.Start();

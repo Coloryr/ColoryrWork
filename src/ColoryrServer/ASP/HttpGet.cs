@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.Core;
-using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.Database;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;

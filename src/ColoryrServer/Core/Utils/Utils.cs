@@ -1,4 +1,5 @@
-﻿using ColoryrServer.SDK;
+﻿using ColoryrServer.Core.Database;
+using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
 using HtmlCompression.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Yahoo.Yui.Compressor;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ColoryrServer.Core.Utils;
 
@@ -163,7 +165,55 @@ public static class FileUtils
         }
         return old[0..^1];
     }
+
+    public static string GetDllName(string local) 
+    {
+        string temp = local.Replace("\\", "/");
+        string[] arg = temp.Split('/');
+        string name = arg[^1];
+        if (name.ToLower().EndsWith(".dll"))
+        {
+            return name;
+        }
+        for (int a = arg.Length - 1; a > 0; a++)
+        { 
+            
+        }
+
+        return "";
+    }
 }
+
+public static class CodeUtils
+{
+    public static QCodeObj ToQCode(this CSFileCode obj)
+    {
+        return new QCodeObj()
+        {
+            uuid = obj.UUID,
+            text = obj.Text,
+            version = obj.Version,
+            createtime = obj.CreateTime,
+            updatetime = obj.UpdateTime
+        };
+    }
+
+    public static WebObj ToWeb(this QWebObj obj)
+    {
+        return new()
+        {
+            UUID = obj.uuid,
+            Text = obj.text,
+            Version = obj.version,
+            CreateTime = obj.createtime,
+            UpdateTime = obj.updatetime,
+            IsVue = obj.vue,
+            Codes = new(),
+            Files = new()
+        };
+    }
+}
+
 
 public static class ZipUtils
 {

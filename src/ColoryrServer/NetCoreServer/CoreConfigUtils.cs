@@ -26,9 +26,9 @@ internal record CoreConfig : MainConfig
     //public bool RouteEnable { get; set; }
 }
 
-internal class CoreConfigUtils : ConfigUtils
+internal class CoreConfigUtils
 {
-    public override void Start()
+    public void Start()
     {
         ServerMain.Config = CoreServer.Config = ConfigSave.Config(new CoreConfig
         {
@@ -177,20 +177,20 @@ internal class CoreConfigUtils : ConfigUtils
             },
             Requset = new()
             {
-                Temp = new()
-                {
-                    ".jpg",
-                    ".png",
-                    ".mp4",
-                    ".jpge",
-                    ".gif"
-                },
+                //Temp = new()
+                //{
+                //    ".jpg",
+                //    ".png",
+                //    ".mp4",
+                //    ".jpge",
+                //    ".gif"
+                //},
                 TempTime = 1800,
-                Stream = true,
-                StreamType = new()
-                {
-                    ".mp4"
-                }
+                //Stream = true,
+                //StreamType = new()
+                //{
+                //    ".mp4"
+                //}
             },
             HttpClientNumber = 100,
             AES = new()
@@ -198,11 +198,11 @@ internal class CoreConfigUtils : ConfigUtils
                 Key = "Key",
                 IV = "IV"
             }
-        }, FilePath);
+        }, "config.json");
     }
 
-    public override void Save()
+    public void Save()
     {
-        ConfigSave.Save(CoreServer.Config, FilePath);
+        ConfigSave.Save(CoreServer.Config, "config.json");
     }
 }

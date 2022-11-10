@@ -6,9 +6,9 @@ using System.Threading;
 
 namespace ColoryrServer.Core.FileSystem;
 
-public class StaticDir
+public class StaticDictionary
 {
-    private ConcurrentDictionary<string, StaticDir> NextDir = new();
+    private ConcurrentDictionary<string, StaticDictionary> NextDir = new();
     private ConcurrentDictionary<string, StaticTempFile> FileTempMap = new();
     private FileSystemWatcher FileWatch;
     private string Dir;
@@ -20,13 +20,13 @@ public class StaticDir
     public byte[] HtmlIndex { get; private set; }
     public byte[] HtmlFixMode { get; private set; }
 
-    public StaticDir(string dir)
+    public StaticDictionary(string dir)
     {
         Dir = dir;
         IsRun = true;
         TickThread = new(TickTask)
         {
-            Name = $"watch {dir}"
+            Name = $"DictionaryWatch[{dir}]"
         };
         FileWatch = new()
         {
@@ -45,7 +45,7 @@ public class StaticDir
         var info = new DirectoryInfo(dir);
         foreach (var item in info.GetDirectories())
         {
-            NextDir.TryAdd(item.Name, new StaticDir(item.FullName + "/"));
+            NextDir.TryAdd(item.Name, new StaticDictionary(item.FullName + "/"));
         }
         var list = new DirectoryInfo(dir).GetFiles();
         foreach (var item in list)
@@ -115,7 +115,7 @@ public class StaticDir
     {
         if (Directory.Exists(e.FullPath))
         {
-            var dir = new StaticDir(e.FullPath);
+            var dir = new StaticDictionary(e.FullPath);
             NextDir.TryAdd(e.Name, dir);
             ServerMain.LogOut($"创建路径[{e.FullPath}]");
         }

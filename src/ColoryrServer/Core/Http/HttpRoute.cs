@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.DllManager;
+﻿using ColoryrServer.Core.Dll;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;

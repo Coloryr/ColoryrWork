@@ -1,7 +1,8 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem.Managers;
+﻿using ColoryrServer.Core.Dll;
+using ColoryrServer.Core.Dll.Gen;
+using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Http;
+using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
@@ -21,7 +22,7 @@ internal static class PostBuildDll
         {
             uuid = uuid[..^1];
         }
-        if (CodeFileManager.GetDll(uuid) != null)
+        if (CodeManager.GetDll(uuid) != null)
         {
             return new ReMessage
             {
@@ -48,7 +49,7 @@ internal static class PostBuildDll
             Code = DemoResource.Dll
             .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
         };
-        CodeFileManager.StorageDll(obj, json.User);
+        CodeManager.StorageDll(obj, json.User);
         GenDll.StartGen(obj, json.User);
         ServerMain.LogOut($"[{json.User}]创建Dll[{uuid}]完成");
 
@@ -62,7 +63,7 @@ internal static class PostBuildDll
     public static CSFileList GetList()
     {
         var list = new CSFileList();
-        foreach (var item in CodeFileManager.DllFileList)
+        foreach (var item in CodeManager.DllFileList)
         {
             list.List.Add(item.Key, item.Value);
         }
@@ -72,7 +73,7 @@ internal static class PostBuildDll
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Dll, json.UUID, json.User);
+        CodeManager.RemoveFile(CodeType.Dll, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -82,7 +83,7 @@ internal static class PostBuildDll
 
     public static ReMessage Updata(BuildOBJ json)
     {
-        var obj = CodeFileManager.GetDll(json.UUID);
+        var obj = CodeManager.GetDll(json.UUID);
         if (obj == null)
         {
             return new ReMessage

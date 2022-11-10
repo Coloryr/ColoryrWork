@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.DllManager;
+﻿using ColoryrServer.Core.Dll;
 using ColoryrServer.SDK;
 using Fleck;
 using System;

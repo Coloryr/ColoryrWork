@@ -10,7 +10,28 @@ internal record SslObj
     public string Ssl { get; set; }
     public string Password { get; set; }
 }
-internal record ASPConfig : MainConfig
+
+public record RequsetChooseObj
+{
+    /// <summary>
+    /// 放进缓存的文件类型
+    /// </summary>
+    public List<string> Temp { get; set; }
+    /// <summary>
+    /// 缓存保留时间
+    /// </summary>
+    public int TempTime { get; set; }
+    /// <summary>
+    /// 启用文件流
+    /// </summary>
+    public bool Stream { get; set; }
+    /// <summary>
+    /// 文件流的类型
+    /// </summary>
+    public List<string> StreamType { get; set; }
+}
+
+internal record ASPConfig
 {
     /// <summary>
     /// Http配置
@@ -20,15 +41,21 @@ internal record ASPConfig : MainConfig
     public bool UseSsl { get; set; }
     public Dictionary<string, SslObj> Ssls { get; set; }
     public Dictionary<string, RouteConfigObj> UrlRoutes { get; set; }
+    /// <summary>
+    /// 请求选项
+    /// </summary>
+    public RequsetChooseObj Requset { get; set; }
     public bool RouteEnable { get; set; }
     public bool NoInput { get; set; }
 }
 
-public class ASPConfigUtils : ConfigUtils
+internal static class ASPConfigUtils
 {
-    public override void Start()
+    private static string FilePath { get; } = ServerMain.RunLocal + "ASPConfig.json";
+
+    private static ASPConfig MakeNew() 
     {
-        ServerMain.Config = ASPServer.Config = ConfigSave.Config(new ASPConfig
+        return new ASPConfig
         {
             Routes = new()
             {
@@ -52,6 +79,14 @@ public class ASPConfigUtils : ConfigUtils
                     }
                 }
             },
+            Http = new()
+            {
+                new()
+                {
+                    IP = "+",
+                    Port = 8080
+                }
+            },
             RouteEnable = false,
             UseSsl = false,
             Ssls = new()
@@ -64,123 +99,6 @@ public class ASPConfigUtils : ConfigUtils
                         Password = "123456"
                     }
                 }
-            },
-            NoInput = false,
-            CodeSetting = new()
-            {
-                NotInclude = new()
-                {
-                    "sni.dll"
-                },
-                CodeLog = true,
-                MinifyCSS = true,
-                MinifyHtml = true,
-                MinifyJS = true
-            },
-            Http = new()
-            {
-                new()
-                {
-                    IP = "+",
-                    Port = 8080
-                }
-            },
-            Socket = new()
-            {
-                IP = "0.0.0.0",
-                Port = 25556
-            },
-            WebSocket = new()
-            {
-                Ssl = "",
-                Password = "",
-                UseSsl = false,
-                Socket = new()
-                {
-                    IP = "0.0.0.0",
-                    Port = 25557
-                }
-            },
-            Robot = new()
-            {
-                Socket = new()
-                {
-                    IP = "127.0.0.1",
-                    Port = 23333
-                }
-            },
-            Mysql = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    Port = 3306,
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    TimeOut = 1000,
-                    Conn = "SslMode=none;Server={0};Port={1};User ID={2};Password={3};Charset=utf8;"
-                }
-            },
-            MSsql = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    TimeOut = 1000,
-                    Conn = "Server={0};UID={1};PWD={2};"
-                }
-            },
-            Redis = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    Port = 6379,
-                    Conn = "{0}:{1}"
-                }
-            },
-            Oracle = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "",
-                    User = "",
-                    Password = "",
-                    TimeOut = 1000,
-                    Conn = "Data Source=MyDatabase.db;Mode=ReadWriteCreate"
-                }
-            },
-            SQLite = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    User = "root",
-                    Password = "MTIzNDU2",
-                    TimeOut = 1000,
-                    Conn = "User Id={2};Password={3};Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={1})))(CONNECT_DATA=(SERVICE_NAME=test)))"
-                }
-            },
-            MqttConfig = new()
-            {
-                Ssl = "",
-                Password = "",
-                Socket = new()
-                {
-                    IP = "0.0.0.0",
-                    Port = 12345
-                }
-            },
-            TaskConfig = new()
-            {
-                MaxTime = 30
             },
             Requset = new()
             {
@@ -199,24 +117,16 @@ public class ASPConfigUtils : ConfigUtils
                     ".mp4"
                 }
             },
-            HttpClientNumber = 100,
-            AES = new()
-            {
-                Key = "Key",
-                IV = "IV"
-            },
-            FixMode = false,
-            DebugPort = new()
-            {
-                Enable = true,
-                Port = 20000,
-                Key = "Key",
-                IV = "IV"
-            }
-        }, FilePath);
+            NoInput = false
+        };
     }
 
-    public override void Save()
+    public static void Start()
+    {
+        ASPServer.Config = ConfigSave.Config(MakeNew(), FilePath);
+    }
+
+    public static void Save()
     {
         ConfigSave.Save(ASPServer.Config, FilePath);
     }

@@ -134,7 +134,7 @@ public partial class ServerConfigView : UserControl
         var res = await App.HttpUtils.GetAllUser();
         if (res == null)
         {
-            InfoWindow.Show("获取配置", "获取服务器Socket配置错误");
+            InfoWindow.Show("获取配置", "获取用户配置错误");
             return;
         }
         UserList.Items.Clear();

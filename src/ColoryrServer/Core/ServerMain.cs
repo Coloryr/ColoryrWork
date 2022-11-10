@@ -1,12 +1,13 @@
 ﻿using ColoryrServer.Core.BuilderPost;
-using ColoryrServer.Core.DataBase;
-using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.DllManager.Service;
+using ColoryrServer.Core.Database;
+using ColoryrServer.Core.DBConnection;
+using ColoryrServer.Core.Dll;
+using ColoryrServer.Core.Dll.Gen;
+using ColoryrServer.Core.Dll.Service;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Database;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Html;
+using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.SDK;
@@ -31,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace ColoryrServer.Core;
 
-public class ServerMain
+public static class ServerMain
 {
     public const string Version = "2.5.0";
     /// <summary>
@@ -42,10 +43,6 @@ public class ServerMain
     /// 运行路径
     /// </summary>
     public static string RunLocal { get; private set; }
-    /// <summary>
-    /// 配置文件操作
-    /// </summary>
-    public static ConfigUtils ConfigUtils { get; set; }
 
     /// <summary>
     /// 服务器停止时的回调
@@ -155,7 +152,7 @@ public class ServerMain
             AssemblyList.Start();
             PostDo.Start();
             PortNettyManager.Start();
-            CodeFileManager.Start();
+            CodeManager.Start();
             NoteFile.Start();
             APIFile.Start();
             FileRam.Start();
@@ -170,12 +167,12 @@ public class ServerMain
             OracleCon.Start();
             MysqlCon.Start();
             SqliteCon.Start();
-            RamDataBase.Start();
+            RamDatabase.Start();
 
             DllLoad();
 
             GenCode.Start();
-            Package.Start();
+            ServerPackage.Start();
 
             WebFileManager.Start();
             FileStreamManager.Start();

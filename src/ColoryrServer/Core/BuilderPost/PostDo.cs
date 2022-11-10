@@ -1,7 +1,7 @@
-﻿using ColoryrServer.Core.DllManager.Gen;
+﻿using ColoryrServer.Core.Database;
+using ColoryrServer.Core.Dll.Gen;
 using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core.FileSystem.Database;
-using ColoryrServer.Core.FileSystem.Managers;
+using ColoryrServer.Core.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
@@ -123,13 +123,13 @@ public static class PostDo
                 PostBuildType.GetMqtt => PostBuildMqtt.GetList(),
                 PostBuildType.GetTask => PostBuildService.GetList(),
                 PostBuildType.GetWeb => PostBuildWeb.GetList(),
-                PostBuildType.CodeDll => CodeFileManager.GetDll(json.UUID),
+                PostBuildType.CodeDll => CodeManager.GetDll(json.UUID),
                 PostBuildType.CodeClass => PostBuildClass.GetCode(json),
-                PostBuildType.CodeSocket => CodeFileManager.GetSocket(json.UUID),
-                PostBuildType.CodeWebSocket => CodeFileManager.GetWebSocket(json.UUID),
-                PostBuildType.CodeRobot => CodeFileManager.GetRobot(json.UUID),
-                PostBuildType.CodeMqtt => CodeFileManager.GetMqtt(json.UUID),
-                PostBuildType.CodeTask => CodeFileManager.GetService(json.UUID),
+                PostBuildType.CodeSocket => CodeManager.GetSocket(json.UUID),
+                PostBuildType.CodeWebSocket => CodeManager.GetWebSocket(json.UUID),
+                PostBuildType.CodeRobot => CodeManager.GetRobot(json.UUID),
+                PostBuildType.CodeMqtt => CodeManager.GetMqtt(json.UUID),
+                PostBuildType.CodeTask => CodeManager.GetService(json.UUID),
                 PostBuildType.CodeWeb => PostBuildWeb.GetCode(json),
                 PostBuildType.GetApi => APIFile.list,
                 PostBuildType.RemoveDll => PostBuildDll.Remove(json),
@@ -183,7 +183,7 @@ public static class PostDo
 
     public static ReMessage MakePack()
     {
-        Task.Run(Package.MakePackage);
+        Task.Run(ServerPackage.MakePackage);
         return new()
         {
             Build = true,
@@ -199,43 +199,43 @@ public static class PostDo
         Task.Run(() =>
         {
             ServerMain.Config.FixMode = true;
-            foreach (var item in CodeFileManager.ClassFileList)
+            foreach (var item in CodeManager.ClassFileList)
             {
                 var res = GenClass.StartGen(item.Value);
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.DllFileList)
+            foreach (var item in CodeManager.DllFileList)
             {
                 var res = GenDll.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.RobotFileList)
+            foreach (var item in CodeManager.RobotFileList)
             {
                 var res = GenRobot.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.MqttFileList)
+            foreach (var item in CodeManager.MqttFileList)
             {
                 var res = GenMqtt.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.SocketFileList)
+            foreach (var item in CodeManager.SocketFileList)
             {
                 var res = GenSocket.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.WebSocketFileList)
+            foreach (var item in CodeManager.WebSocketFileList)
             {
                 var res = GenWebSocket.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);
                 Thread.Sleep(100);
             }
-            foreach (var item in CodeFileManager.ServiceFileList)
+            foreach (var item in CodeManager.ServiceFileList)
             {
                 var res = GenService.StartGen(item.Value, "ColoryrServer");
                 ServerMain.LogOut(res.Res);

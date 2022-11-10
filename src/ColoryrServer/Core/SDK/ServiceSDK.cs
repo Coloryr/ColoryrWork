@@ -1,4 +1,4 @@
-﻿using ColoryrServer.Core.DllManager.Service;
+﻿using ColoryrServer.Core.Dll.Service;
 using ColoryrWork.Lib.Build.Object;
 using System;
 

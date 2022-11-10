@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.DataBase;
+﻿using ColoryrServer.Core.Database;
+using ColoryrServer.Core.DBConnection;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
@@ -221,7 +222,7 @@ public partial class OracleSql : IDatabase
     public OracleSql(string database = "", int id = 0)
     {
         ID = id;
-        if (!OracleCon.Contains(id))
+        if (!Core.DBConnection.OracleCon.Contains(id))
             throw new ErrorDump($"没有Oracle数据库{id}");
         Database = database;
     }
@@ -268,9 +269,9 @@ public partial class OracleSql : IDatabase
     /// 获取一个数据库链接
     /// </summary>
     /// <returns>链接</returns>
-    public OracleConnection Get()
+    public Oracle.ManagedDataAccess.Client.OracleConnection Get()
     {
-        return OracleCon.GetConnection(ID);
+        return Core.DBConnection.OracleCon.GetConnection(ID);
     }
 }
 
@@ -337,7 +338,7 @@ public partial class RamData
     /// <param name="name">缓存名</param>
     public RamData(string name, bool save = false)
     {
-        Name = RamDataBase.NewCache(name, save);
+        Name = RamDatabase.NewCache(name, save);
     }
     /// <summary>
     /// 获取值
@@ -345,24 +346,24 @@ public partial class RamData
     /// <param name="key">键</param>
     /// <returns>返回值</returns>
     public dynamic Get(string key)
-        => RamDataBase.GetCache(Name, key);
+        => RamDatabase.GetCache(Name, key);
     /// <summary>
     /// 设置键值
     /// </summary>
     /// <param name="key">键</param>
     /// <param name="value">值</param>
     public void Set(string key, dynamic value)
-        => RamDataBase.SetCache(Name, key, value);
+        => RamDatabase.SetCache(Name, key, value);
     /// <summary>
     /// 检查是否有键
     /// </summary>
     /// <param name="key">键名</param>
     /// <returns>是否存在</returns>
     public bool HaveKey(string key)
-        => RamDataBase.HaveCacheKey(Name, key);
+        => RamDatabase.HaveCacheKey(Name, key);
     /// <summary>
     /// 清理缓存
     /// </summary>
     public void Close()
-        => RamDataBase.CloseCache(Name);
+        => RamDatabase.CloseCache(Name);
 }

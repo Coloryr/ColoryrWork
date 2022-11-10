@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace ColoryrServer.Core.FileSystem;
 
-public class VueBuild
+internal class VueBuild
 {
     private const string CMDBuild = "npm run build";
 
@@ -21,7 +21,7 @@ public class VueBuild
 
     public void Init()
     {
-        process.StartInfo.FileName = "cmd.exe";//设置打开cmd命令窗口
+        process.StartInfo.FileName = "cmd";//设置打开cmd命令窗口
         process.StartInfo.UseShellExecute = false;//不使用操作系统shell启动进程的值
         process.StartInfo.RedirectStandardInput = true;//设置可以从标准输入流读取值
         process.StartInfo.RedirectStandardOutput = true;//设置可以向标准输出流写入值

@@ -1,4 +1,5 @@
-﻿using ColoryrWork.Lib.Build.Object;
+﻿using ColoryrServer.Core.FileSystem;
+using ColoryrWork.Lib.Build.Object;
 using System.Net;
 
 namespace ColoryrServer.Core.BuilderPost;
@@ -57,7 +58,7 @@ public static class PostServerConfig
         {
             bool enable = json.Code.ToLower() is "true";
             ServerMain.Config.FixMode = enable;
-            ServerMain.ConfigUtils.Save();
+            ConfigUtils.Save();
             return new()
             {
                 Build = true,
@@ -101,7 +102,7 @@ public static class PostServerConfig
         {
             ServerMain.Config.Socket.IP = ip;
             ServerMain.Config.Socket.Port = port;
-            ServerMain.ConfigUtils.Save();
+            ConfigUtils.Save();
             return new()
             {
                 Build = true,
@@ -112,7 +113,7 @@ public static class PostServerConfig
         {
             ServerMain.Config.MqttConfig.Socket.IP = ip;
             ServerMain.Config.MqttConfig.Socket.Port = port;
-            ServerMain.ConfigUtils.Save();
+            ConfigUtils.Save();
             return new()
             {
                 Build = true,
@@ -123,7 +124,7 @@ public static class PostServerConfig
         {
             ServerMain.Config.Robot.Socket.IP = ip;
             ServerMain.Config.Robot.Socket.Port = port;
-            ServerMain.ConfigUtils.Save();
+            ConfigUtils.Save();
             return new()
             {
                 Build = true,
@@ -134,7 +135,7 @@ public static class PostServerConfig
         {
             ServerMain.Config.WebSocket.Socket.IP = ip;
             ServerMain.Config.WebSocket.Socket.Port = port;
-            ServerMain.ConfigUtils.Save();
+            ConfigUtils.Save();
             return new()
             {
                 Build = true,

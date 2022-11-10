@@ -1,6 +1,6 @@
-﻿using ColoryrServer.Core.DllManager;
-using ColoryrServer.Core.DllManager.Gen;
-using ColoryrServer.Core.FileSystem.Managers;
+﻿using ColoryrServer.Core.Dll.Gen;
+using ColoryrServer.Core.FileSystem;
+using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
 using Newtonsoft.Json;
@@ -14,7 +14,7 @@ internal static class PostBuildMqtt
 {
     public static ReMessage Add(BuildOBJ json)
     {
-        if (CodeFileManager.GetMqtt(json.UUID) != null)
+        if (CodeManager.GetMqtt(json.UUID) != null)
             return new ReMessage
             {
                 Build = false,
@@ -30,7 +30,7 @@ internal static class PostBuildMqtt
             Code = DemoResource.Mqtt
             .Replace(CodeDemo.Name, json.UUID)
         };
-        CodeFileManager.StorageMqtt(obj, json.User);
+        CodeManager.StorageMqtt(obj, json.User);
         GenMqtt.StartGen(obj, json.User);
         ServerMain.LogOut($"[{json.User}]创建Mqtt[{json.UUID}]完成");
 
@@ -44,7 +44,7 @@ internal static class PostBuildMqtt
     public static CSFileList GetList()
     {
         var list = new CSFileList();
-        foreach (var item in CodeFileManager.MqttFileList)
+        foreach (var item in CodeManager.MqttFileList)
         {
             list.List.Add(item.Key, item.Value);
         }
@@ -54,7 +54,7 @@ internal static class PostBuildMqtt
 
     public static ReMessage Remove(BuildOBJ json)
     {
-        CodeFileManager.RemoveFile(CodeType.Mqtt, json.UUID, json.User);
+        CodeManager.RemoveFile(CodeType.Mqtt, json.UUID, json.User);
         return new ReMessage
         {
             Build = true,
@@ -64,7 +64,7 @@ internal static class PostBuildMqtt
 
     public static ReMessage Updata(BuildOBJ json)
     {
-        var obj = CodeFileManager.GetMqtt(json.UUID);
+        var obj = CodeManager.GetMqtt(json.UUID);
         if (obj == null)
         {
             return new ReMessage

@@ -27,11 +27,11 @@ public static class ASPServer
 
     public static void Main()
     {
-        ServerMain.ConfigUtils = new ASPConfigUtils();
         PostServerConfig.Init(new ASPTopAPI());
         while (IsReboot)
         {
             IsReboot = false;
+            ASPConfigUtils.Start();
             ServerMain.Start();
             StartRead();
             var builder = WebApplication.CreateBuilder();

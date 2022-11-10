@@ -1,5 +1,5 @@
 ﻿using ColoryrSDK;
-using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.Dll;
 using ColoryrServer.SDK;
 using System.Collections.Generic;
 

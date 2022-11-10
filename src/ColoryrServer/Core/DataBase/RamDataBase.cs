@@ -2,9 +2,40 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace ColoryrServer.Core.DataBase;
+namespace ColoryrServer.Core.Database;
 
-internal static class RamDataBase
+/// <summary>
+/// 内存数据库内容缓存
+/// </summary>
+public class RamDataObj
+{
+    /// <summary>
+    /// 是否固化
+    /// </summary>
+    public bool IsSave { get; set; }
+    /// <summary>
+    /// 数据
+    /// </summary>
+    public ConcurrentDictionary<string, dynamic> Data { get; init; }
+
+    public RamDataObj(ConcurrentDictionary<string, dynamic> data = null)
+    {
+        if (data == null)
+            Data = new();
+        else
+            Data = data;
+    }
+
+    /// <summary>
+    /// 删除缓存
+    /// </summary>
+    public void Delete()
+    {
+        Data.Clear();
+    }
+}
+
+internal static class RamDatabase
 {
     internal static bool State;
     /// <summary>
