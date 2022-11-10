@@ -1,6 +1,8 @@
-﻿using ColoryrServer.Core.Utils;
+﻿using ColoryrServer.Core.FileSystem.Managers;
+using ColoryrServer.Core.Utils;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -136,6 +138,11 @@ public class StaticDictionary
             else if (FileTempMap.TryGetValue(e.Name, out var v))
                 v.Data = FileUtils.LoadBytes(e.FullPath);
             ServerMain.LogOut($"重读文件[{e.FullPath}]");
+
+            if (Debugger.IsAttached)
+            {
+                WebBinManager.Reload?.Invoke();
+            }
         }
     }
 

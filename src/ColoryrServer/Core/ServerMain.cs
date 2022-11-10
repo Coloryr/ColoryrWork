@@ -129,23 +129,28 @@ public static class ServerMain
         });
     }
 
+    public static void Init() 
+    {
+        OnStop = null;
+        //初始化运行路径
+        RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
+        if (!Directory.Exists(RunLocal))
+        {
+            Directory.CreateDirectory(RunLocal);
+        }
+        //设置编码
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+        //创建日志文件
+        Logs = new Logs(RunLocal);
+    }
+
     public static void Start()
     {
         try
         {
             Console.WriteLine($"ColoryrServer版本:{Version}");
-            OnStop = null;
-            //初始化运行路径
-            RunLocal = AppDomain.CurrentDomain.BaseDirectory + "ColoryrServer/";
-            if (!Directory.Exists(RunLocal))
-            {
-                Directory.CreateDirectory(RunLocal);
-            }
-            //设置编码
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-            //创建日志文件
-            Logs = new Logs(RunLocal);
+            
             //配置文件
             ConfigUtils.Start();
 

@@ -25,14 +25,22 @@ public static class ASPServer
     private static bool IsReboot = true;
     private static bool IsRun = true;
 
+    private static void PageReload() 
+    {
+        //Web.UseMiddleware<BrowserRefresh>();
+    }
+
     public static void Main()
     {
         PostServerConfig.Init(new ASPTopAPI());
         while (IsReboot)
         {
             IsReboot = false;
+            ServerMain.Init();
+            WebBinManager.Reload = PageReload;
             ASPConfigUtils.Start();
             ServerMain.Start();
+            
             StartRead();
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();

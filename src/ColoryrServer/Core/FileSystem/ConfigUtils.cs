@@ -342,7 +342,18 @@ internal static class ConfigUtils
                 Key = "Key",
                 IV = "IV"
             },
-            FixMode = false
+            FixMode = false,
+            Pipe = new()
+            {
+                Enable = false,
+                IP = "127.0.0.1",
+                Port = 45678,
+                Server = false
+            },
+            Requset = new()
+            {
+                TempTime = 180
+            }
         };
     }
 

@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.SDK;
+using System;
 using System.IO;
 using System.Text;
 
@@ -7,6 +8,8 @@ namespace ColoryrServer.Core.FileSystem.Managers;
 public static class WebBinManager
 {
     private static readonly string WebBinStatic = ServerMain.RunLocal + "Static/";
+
+    public static Action Reload;
 
     public static StaticDictionary BaseDir { get; private set; }
 
