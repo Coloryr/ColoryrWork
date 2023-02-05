@@ -81,7 +81,7 @@ public record RequsetChooseObj
 }
 
 public record PipeConfigObj
-{ 
+{
     /// <summary>
     /// 是否启用集群
     /// </summary>

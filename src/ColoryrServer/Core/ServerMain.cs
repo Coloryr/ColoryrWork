@@ -129,7 +129,7 @@ public static class ServerMain
         });
     }
 
-    public static void Init() 
+    public static void Init()
     {
         OnStop = null;
         //初始化运行路径
@@ -150,7 +150,7 @@ public static class ServerMain
         try
         {
             Console.WriteLine($"ColoryrServer版本:{Version}");
-            
+
             //配置文件
             ConfigUtils.Start();
 

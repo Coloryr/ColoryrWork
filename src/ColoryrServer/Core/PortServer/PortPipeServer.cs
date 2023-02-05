@@ -1,20 +1,10 @@
-﻿using ColoryrServer.SDK;
-using DotNetty.Buffers;
+﻿using DotNetty.Buffers;
 using DotNetty.Codecs;
-using DotNetty.Common.Utilities;
 using DotNetty.Handlers.Logging;
-using DotNetty.Handlers.Tls;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using DotNetty.Transport.Libuv;
-using Org.BouncyCastle.Tls.Crypto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,7 +35,7 @@ internal static class PortPipeServer
         }
     }
 
-    private static async void StartClient() 
+    private static async void StartClient()
     {
         try
         {
@@ -68,12 +58,12 @@ internal static class PortPipeServer
             await ClientConnect();
         }
         catch (Exception e)
-        { 
-        
+        {
+
         }
     }
 
-    private static async void StartServer() 
+    private static async void StartServer()
     {
         ServerBootstrap = new ServerBootstrap();
         ServerBootstrap.Group(BossGroup, WorkerGroup)
@@ -93,7 +83,7 @@ internal static class PortPipeServer
         BoundChannel = await ServerBootstrap.BindAsync(ServerMain.Config.Pipe.Port);
     }
 
-    public static Task ClientConnect() 
+    public static Task ClientConnect()
     {
         return Bootstrap.ConnectAsync(ServerMain.Config.Pipe.IP, ServerMain.Config.Pipe.Port);
     }
@@ -122,7 +112,7 @@ public class PipeClientHandler : ChannelHandlerAdapter
         var byteBuffer = message as IByteBuffer;
         if (byteBuffer != null)
         {
-            
+
         }
     }
 
@@ -154,7 +144,7 @@ public class PipeServerHandler : ChannelHandlerAdapter
         var buffer = message as IByteBuffer;
         if (buffer != null)
         {
-            
+
         }
         context.WriteAsync(message);
     }

@@ -10,7 +10,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Yahoo.Yui.Compressor;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ColoryrServer.Core.Utils;
 
@@ -166,7 +165,7 @@ public static class FileUtils
         return old[0..^1];
     }
 
-    public static string GetDllName(string local) 
+    public static string GetDllName(string local)
     {
         string temp = local.Replace("\\", "/");
         string[] arg = temp.Split('/');
@@ -176,8 +175,8 @@ public static class FileUtils
             return name;
         }
         for (int a = arg.Length - 1; a > 0; a++)
-        { 
-            
+        {
+
         }
 
         return "";

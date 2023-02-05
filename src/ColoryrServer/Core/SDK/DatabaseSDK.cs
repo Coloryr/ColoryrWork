@@ -2,7 +2,6 @@
 using ColoryrServer.Core.DBConnection;
 using Dapper;
 using MySql.Data.MySqlClient;
-using Oracle.ManagedDataAccess.Client;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;

@@ -25,7 +25,7 @@ public static class ASPServer
     private static bool IsReboot = true;
     private static bool IsRun = true;
 
-    private static void PageReload() 
+    private static void PageReload()
     {
         //Web.UseMiddleware<BrowserRefresh>();
     }
@@ -40,7 +40,7 @@ public static class ASPServer
             WebBinManager.Reload = PageReload;
             ASPConfigUtils.Start();
             ServerMain.Start();
-            
+
             StartRead();
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();

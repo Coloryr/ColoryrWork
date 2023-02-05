@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ColoryrWork.Lib.Build.Object;
+﻿namespace ColoryrWork.Lib.Build.Object;
 
 public enum CodeType
 {

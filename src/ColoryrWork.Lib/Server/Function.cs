@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace ColoryrWork.Lib.Server;
+﻿namespace ColoryrWork.Lib.Server;
 
 public static class Function
 {

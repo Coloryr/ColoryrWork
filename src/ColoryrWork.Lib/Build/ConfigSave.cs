@@ -1,15 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System.IO;
 
 namespace ColoryrWork.Lib.Build;
 
 public static class ConfigSave
 {
-    private static object Locker = new object();
-    public static T Config<T>(T obj1, string FilePath) where T : new()
+    private static object Locker = new();
+    public static T? Config<T>(T obj1, string FilePath) where T : new()
     {
         FileInfo file = new(FilePath);
-        T obj;
+        T? obj;
         if (!file.Exists)
         {
             if (obj1 == null)
