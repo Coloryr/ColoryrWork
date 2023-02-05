@@ -5,10 +5,6 @@ VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.Core", "ColoryrServer\Core\ColoryrServer.Core.csproj", "{F2920FB6-F206-4BAD-89A4-E479762508D0}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Server", "Lib\Lib.Server\ColoryrWork.Lib.Server.shproj", "{013195F8-CD93-4C2E-B3F8-D1706C16EEBB}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Build", "Lib\Lib.Build\ColoryrWork.Lib.Build.shproj", "{42931492-DCC9-412A-B3FE-35733C8B6E8B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuild\ColoryrBuild.csproj", "{38E05DD9-CC47-45D7-AC4D-52F6B3C3F70D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
@@ -19,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest.Run", "ColoryrT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.NetCoreServer", "ColoryrServer\NetCoreServer\ColoryrServer.NetCoreServer.csproj", "{336AC9DE-FBDD-4989-8FFE-A66720C454CC}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ColoryrWork.Lib.Debug", "Lib\Lib.Debug\ColoryrWork.Lib.Debug.shproj", "{6957D84A-8B7D-463C-9499-CB85BC359298}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrWork.Lib.Server", "ColoryrWork.Lib\Server\ColoryrWork.Lib.Server.csproj", "{E761132D-EB34-42C4-906A-0FCDFD7F36B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrWork.Lib.Build", "ColoryrWork.Lib\Build\ColoryrWork.Lib.Build.csproj", "{1CFED614-0E1D-4B4C-A7BC-2E0486517448}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,20 +49,19 @@ Global
 		{336AC9DE-FBDD-4989-8FFE-A66720C454CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{336AC9DE-FBDD-4989-8FFE-A66720C454CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{336AC9DE-FBDD-4989-8FFE-A66720C454CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E761132D-EB34-42C4-906A-0FCDFD7F36B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E761132D-EB34-42C4-906A-0FCDFD7F36B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E761132D-EB34-42C4-906A-0FCDFD7F36B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E761132D-EB34-42C4-906A-0FCDFD7F36B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CFED614-0E1D-4B4C-A7BC-2E0486517448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CFED614-0E1D-4B4C-A7BC-2E0486517448}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CFED614-0E1D-4B4C-A7BC-2E0486517448}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CFED614-0E1D-4B4C-A7BC-2E0486517448}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D4365924-469B-4DB5-AD81-4B4C10D6E826}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Lib\Lib.Server\ColoryrWork.Lib.Server.projitems*{013195f8-cd93-4c2e-b3f8-d1706c16eebb}*SharedItemsImports = 13
-		Lib\Lib.Build\ColoryrWork.Lib.Build.projitems*{38e05dd9-cc47-45d7-ac4d-52f6b3c3f70d}*SharedItemsImports = 5
-		Lib\Lib.Build\ColoryrWork.Lib.Build.projitems*{42931492-dcc9-412a-b3fe-35733c8b6e8b}*SharedItemsImports = 13
-		Lib\Lib.Debug\ColoryrWork.Lib.Debug.projitems*{6957d84a-8b7d-463c-9499-cb85bc359298}*SharedItemsImports = 13
-		Lib\Lib.Build\ColoryrWork.Lib.Build.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.Debug\ColoryrWork.Lib.Debug.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
-		Lib\Lib.Server\ColoryrWork.Lib.Server.projitems*{f2920fb6-f206-4bad-89a4-e479762508d0}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

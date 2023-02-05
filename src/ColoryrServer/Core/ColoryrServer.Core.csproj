@@ -37,7 +37,6 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.2" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
     <PackageReference Include="MQTTnet" Version="4.1.4.563" />
-    <PackageReference Include="MsgPack.Cli" Version="1.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.90" />
@@ -117,7 +116,9 @@
   <ItemGroup>
     <Folder Include="Resources\Demo\Vue\" />
   </ItemGroup>
-  <Import Project="..\..\Lib\Lib.Build\ColoryrWork.Lib.Build.projitems" Label="Shared" />
-  <Import Project="..\..\Lib\Lib.Debug\ColoryrWork.Lib.Debug.projitems" Label="Shared" />
-  <Import Project="..\..\Lib\Lib.Server\ColoryrWork.Lib.Server.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ColoryrWork.Lib\Build\ColoryrWork.Lib.Build.csproj" />
+    <ProjectReference Include="..\..\ColoryrWork.Lib\Server\ColoryrWork.Lib.Server.csproj" />
+  </ItemGroup>
 </Project>

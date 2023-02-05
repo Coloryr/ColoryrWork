@@ -13,8 +13,16 @@ using System.Diagnostics;
 
 namespace ColoryrServer.Core.BuilderPost;
 
+/// <summary>
+/// 编辑器类操作
+/// </summary>
 internal static class PostBuildClass
 {
+    /// <summary>
+    /// 添加一个类
+    /// </summary>
+    /// <param name="json">类信息</param>
+    /// <returns>结果</returns>
     public static ReMessage Add(BuildOBJ json)
     {
         if (CodeManager.GetClass(json.UUID) != null)
@@ -44,6 +52,10 @@ internal static class PostBuildClass
         };
     }
 
+    /// <summary>
+    /// 获取所有类
+    /// </summary>
+    /// <returns>类集</returns>
     public static CSFileList GetList()
     {
         var list = new CSFileList();
@@ -58,6 +70,8 @@ internal static class PostBuildClass
     public static ReMessage Remove(BuildOBJ json)
     {
         CodeManager.RemoveFile(CodeType.Class, json.UUID, json.User);
+        AssemblyList.RemoveClass(json.UUID);
+
         return new ReMessage
         {
             Build = true,

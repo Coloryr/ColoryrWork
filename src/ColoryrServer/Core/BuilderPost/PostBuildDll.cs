@@ -15,6 +15,11 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class PostBuildDll
 {
+    /// <summary>
+    /// 添加一个接口
+    /// </summary>
+    /// <param name="json">接口信息</param>
+    /// <returns>结果</returns>
     public static ReMessage Add(BuildOBJ json)
     {
         string uuid = json.UUID.Replace('\\', '/');
@@ -74,6 +79,8 @@ internal static class PostBuildDll
     public static ReMessage Remove(BuildOBJ json)
     {
         CodeManager.RemoveFile(CodeType.Dll, json.UUID, json.User);
+        AssemblyList.RemoveDll(json.UUID);
+
         return new ReMessage
         {
             Build = true,

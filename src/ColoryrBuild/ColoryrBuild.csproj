@@ -21,9 +21,13 @@
     <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
     <PackageReference Include="DiffPlex" Version="1.7.1" />
     <PackageReference Include="DiffPlex.Wpf" Version="1.3.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NotifyIconWpf" Version="1.0.0" />
-    <PackageReference Include="SharpZipLib" Version="1.4.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ColoryrWork.Lib\Build\ColoryrWork.Lib.Build.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,5 +42,4 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
-  <Import Project="..\Lib\Lib.Build\ColoryrWork.Lib.Build.projitems" Label="Shared" />
 </Project>

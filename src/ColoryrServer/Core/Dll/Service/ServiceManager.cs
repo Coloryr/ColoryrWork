@@ -1,6 +1,7 @@
 ﻿using ColoryrServer.SDK;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace ColoryrServer.Core.Dll.Service;
 
@@ -8,9 +9,9 @@ internal static class ServiceManager
 {
     private static readonly ConcurrentDictionary<string, IService> Services = new();
 
-    public static void Remove(string name)
+    public static void Remove(string uuid)
     {
-        if (Services.TryRemove(name, out var item))
+        if (Services.TryRemove(uuid, out var item))
         {
             item.Close();
         }

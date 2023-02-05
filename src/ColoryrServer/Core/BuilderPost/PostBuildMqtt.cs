@@ -1,4 +1,5 @@
-﻿using ColoryrServer.Core.Dll.Gen;
+﻿using ColoryrServer.Core.Dll;
+using ColoryrServer.Core.Dll.Gen;
 using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
@@ -55,6 +56,8 @@ internal static class PostBuildMqtt
     public static ReMessage Remove(BuildOBJ json)
     {
         CodeManager.RemoveFile(CodeType.Mqtt, json.UUID, json.User);
+        AssemblyList.RemoveMqtt(json.UUID);
+
         return new ReMessage
         {
             Build = true,

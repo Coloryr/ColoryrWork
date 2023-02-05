@@ -1,4 +1,5 @@
 ﻿using ColoryrServer.Core.Dll.DllLoad;
+using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Managers;
 using ColoryrWork.Lib.Build.Object;
 using Microsoft.CodeAnalysis;
@@ -48,7 +49,7 @@ internal static class GenService
             build.MS.Seek(0, SeekOrigin.Begin);
             build.MSPdb.Seek(0, SeekOrigin.Begin);
 
-            FileSystem.Managers.DllFileManager.SaveService(obj.UUID, build);
+            DllFileManager.SaveService(obj.UUID, build);
 
             build.MSPdb.Close();
             build.MSPdb.Dispose();

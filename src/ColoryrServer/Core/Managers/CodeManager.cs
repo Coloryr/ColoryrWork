@@ -171,7 +171,7 @@ internal static class CodeManager
     {
         try
         {
-            CSFileCode obj = type switch
+            var obj = type switch
             {
                 CodeType.Dll => GetDll(uuid),
                 CodeType.Class => GetClass(uuid),
@@ -185,7 +185,7 @@ internal static class CodeManager
 
             if (obj == null)
             {
-                string name = type switch
+                var name = type switch
                 {
                     CodeType.Dll => "Dll",
                     CodeType.Class => "Class",
