@@ -95,7 +95,9 @@ public partial class MainWindow : Window
 
     private void FAddCodeEdit(UserControl view)
     {
-        var view1 = view as IEditView;
+        if (view is not IEditView view1)
+            return;
+
         TabItem item = new()
         {
             Content = view,
@@ -114,7 +116,9 @@ public partial class MainWindow : Window
             Tabs.Items.Remove(temp);
         }
         Views.Remove(view);
-        var view1 = view as IEditView;
+        if (view is not IEditView view1)
+            return;
+
         view1.Close();
         GC.Collect();
     }
@@ -141,7 +145,7 @@ public partial class MainWindow : Window
     {
         if (Tabs.SelectedItem == null)
             return;
-        Title = (Tabs.SelectedItem as TabItem).Header as string;
+        Title = (Tabs.SelectedItem as TabItem)?.Header as string ?? "代码编辑器";
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)

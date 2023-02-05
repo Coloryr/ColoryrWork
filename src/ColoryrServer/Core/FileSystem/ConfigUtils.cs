@@ -232,6 +232,11 @@ internal static class ConfigUtils
             {
                 NotInclude = new()
                 {
+                    "krbcc64.dll",
+                    "krb5_64.dll",
+                    "k5sprt64.dll",
+                    "gssapi64.dll",
+                    "comerr64.dll",
                     "sni.dll"
                 },
                 CodeLog = true,

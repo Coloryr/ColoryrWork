@@ -11,7 +11,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取端口设置参数
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<SocketObj> GetSocketConfig()
+    public async Task<SocketObj?> GetSocketConfig()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -31,7 +31,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取Http设置参数
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<HttpListObj> GetHttpConfigList()
+    public async Task<HttpListObj?> GetHttpConfigList()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -53,7 +53,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="ip">IP</param>
     /// <param name="port">端口</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> AddHttpConfig(string ip, int port)
+    public async Task<ReMessage?> AddHttpConfig(string ip, int port)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -77,7 +77,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="ip">IP</param>
     /// <param name="port">端口</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> RemoveHttpConfig(string ip, int port)
+    public async Task<ReMessage?> RemoveHttpConfig(string ip, int port)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -101,7 +101,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="key">键</param>
     /// <param name="obj">设置</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> AddHttpRoute(string key, RouteConfigObj obj)
+    public async Task<ReMessage?> AddHttpRoute(string key, RouteConfigObj obj)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -124,7 +124,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="key">键</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> RemoveHttpRoute(string key)
+    public async Task<ReMessage?> RemoveHttpRoute(string key)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -147,7 +147,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="key">键</param>
     /// <param name="obj">值</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> AddHttpUrlRoute(string key, RouteConfigObj obj)
+    public async Task<ReMessage?> AddHttpUrlRoute(string key, RouteConfigObj obj)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -170,7 +170,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="key">键</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> RemoveHttpUrlRoute(string key)
+    public async Task<ReMessage?> RemoveHttpUrlRoute(string key)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -193,7 +193,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="enable">启用</param>
     /// <param name="type">类型</param>
     /// <returns>设置结果</returns>
-    public async Task<ReMessage> SetServerEnable(bool enable, string type)
+    public async Task<ReMessage?> SetServerEnable(bool enable, string type)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -218,7 +218,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="port">端口</param>
     /// <param name="type">类型</param>
     /// <returns></returns>
-    public async Task<ReMessage> SetSocket(string ip, int port, string type)
+    public async Task<ReMessage?> SetSocket(string ip, int port, string type)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -259,7 +259,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取所有用户信息
     /// </summary>
     /// <returns>返回</returns>
-    public async Task<UserList> GetAllUser()
+    public async Task<UserList?> GetAllUser()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -282,7 +282,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="user">用户名</param>
     /// <param name="password">密码</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddUser(string user, string password)
+    public async Task<ReMessage?> AddUser(string user, string password)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -305,7 +305,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="user">用户名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> RemoveUser(string user)
+    public async Task<ReMessage?> RemoveUser(string user)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -327,7 +327,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 重构代码
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<ReMessage> Rebuild()
+    public async Task<ReMessage?> Rebuild()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -348,7 +348,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 初始化服务器日志
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<ReMessage> InitLog()
+    public async Task<ReMessage?> InitLog()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -369,7 +369,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取服务器日志
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<ReMessage> GetLog()
+    public async Task<ReMessage?> GetLog()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -390,7 +390,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 服务器打包
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<ReMessage> MakePack()
+    public async Task<ReMessage?> MakePack()
     {
         var data = await DoPost(new BuildOBJ
         {

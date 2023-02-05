@@ -13,7 +13,7 @@
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
             Name="TextEditor"
-            Margin="10,32,165,104"
+            Margin="10,32,165,159"
             Background="#55DADADA"
             BorderBrush="#FF5ABED6"
             BorderThickness="1"
@@ -24,7 +24,7 @@
             SyntaxHighlighting="C#" />
         <TextBox
             Name="Logs"
-            Height="89"
+            Height="144"
             Margin="10,0,165,10"
             VerticalAlignment="Bottom"
             IsReadOnly="True"

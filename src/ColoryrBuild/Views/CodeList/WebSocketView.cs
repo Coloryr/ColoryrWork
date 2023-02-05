@@ -56,17 +56,17 @@ public class WebSocketView : CodeListView
 
     public override void ChangeClick(object sender, RoutedEventArgs e)
     {
-        if (List1.SelectedItem == null)
+        if (List1.SelectedItem is not CSFileObj item)
             return;
-        var item = List1.SelectedItem as CSFileObj;
+
         App.AddEdit(item, Type);
     }
 
     public override async void DeleteClick(object sender, RoutedEventArgs e)
     {
-        if (List1.SelectedItem == null)
+        if (List1.SelectedItem is not CSFileObj item)
             return;
-        var item = List1.SelectedItem as CSFileObj;
+
         if (new ChoseWindow("删除确认", "是否要删除").Set())
         {
             var res = await App.HttpUtils.RemoveObj(Type, item);

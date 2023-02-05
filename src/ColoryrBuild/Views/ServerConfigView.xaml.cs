@@ -29,7 +29,7 @@ public partial class ServerConfigView : UserControl
         public string IP { get { return _ip; } set { _ip = value; OnPropertyChanged(nameof(IP)); } }
         public int Port { get { return _port; } set { _port = value; OnPropertyChanged(nameof(Port)); } }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -63,7 +63,7 @@ public partial class ServerConfigView : UserControl
             set { _robot = value; OnPropertyChanged(nameof(Robot)); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -499,7 +499,7 @@ public partial class ServerConfigView : UserControl
 
     private async void EnableRoute_Click(object sender, RoutedEventArgs e)
     {
-        bool check = (bool)EnableRoute.IsChecked;
+        bool check = EnableRoute.IsChecked == true;
         var res = await App.HttpUtils.SetServerEnable(check, "Route");
         if (res == null)
         {
@@ -520,7 +520,7 @@ public partial class ServerConfigView : UserControl
 
     private async void FixMode_Click(object sender, RoutedEventArgs e)
     {
-        bool check = (bool)FixMode.IsChecked;
+        bool check = FixMode.IsChecked == true;
         var res = await App.HttpUtils.SetServerEnable(check, "FixMode");
         if (res == null)
         {

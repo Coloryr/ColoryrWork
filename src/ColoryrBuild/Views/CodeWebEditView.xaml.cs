@@ -75,7 +75,7 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
     }
 
-    private void GetBuildRes(object sender, ElapsedEventArgs e)
+    private void GetBuildRes(object? sender, ElapsedEventArgs e)
     {
         var res = App.HttpUtils.BuildWebRes(WebObj).Result;
         if (res == null)
@@ -173,11 +173,8 @@ public partial class CodeWebEditView : UserControl, IEditView
         foreach (var item in WebObj.Codes)
         {
             string local = newLocal + item.Key;
-            FileInfo info = new(local);
-            if (!Directory.Exists(info.DirectoryName))
-            {
-                Directory.CreateDirectory(info.DirectoryName);
-            }
+            var info = new FileInfo(local);
+            info.Directory?.Create();
             if (File.Exists(Local + item.Key))
             {
                 File.Move(Local + item.Key, local);
@@ -280,11 +277,10 @@ public partial class CodeWebEditView : UserControl, IEditView
 
     private async void Image_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null || IsBuild)
+        if (FileList.SelectedItem is not string data || IsBuild)
             return;
 
         Logs.Text = "";
-        string data = FileList.SelectedItem as string;
         var data1 = await App.HttpUtils.WebDownloadFile(WebObj, data);
         if (data1 == null)
         {
@@ -364,7 +360,7 @@ public partial class CodeWebEditView : UserControl, IEditView
             return;
 
         Logs.Text = "";
-        ReMessage res;
+        ReMessage? res;
         if (data.EndsWith(".html") || data.EndsWith(".css")
             || data.EndsWith(".js") || data.EndsWith(".json")
             || data.EndsWith(".txt") || data.EndsWith(".vue")
@@ -406,9 +402,9 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private void Change_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null || IsBuild)
+        if (FileList.SelectedItem is not string data || IsBuild)
             return;
-        string data = FileList.SelectedItem as string;
+
         if (FileName == data)
             return;
 
@@ -433,11 +429,10 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private async void Download_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null || IsBuild)
+        if (FileList.SelectedItem is not string data || IsBuild)
             return;
 
         Logs.Text = "";
-        string data = FileList.SelectedItem as string;
         var data1 = await App.HttpUtils.WebDownloadFile(WebObj, data);
         if (data1 == null)
         {
@@ -475,11 +470,10 @@ public partial class CodeWebEditView : UserControl, IEditView
     }
     private async void Delete_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null || IsBuild)
+        if (FileList.SelectedItem is not string data || IsBuild)
             return;
 
         Logs.Text = "";
-        string data = FileList.SelectedItem as string;
         var data1 = await App.HttpUtils.WebRemoveFile(WebObj, data);
         if (data1 == null)
         {

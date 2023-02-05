@@ -10,6 +10,7 @@
     <FileVersion>1.2.0</FileVersion>
     <DebugType>embedded</DebugType>
     <BaseOutputPath>..\build_out\Build</BaseOutputPath>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

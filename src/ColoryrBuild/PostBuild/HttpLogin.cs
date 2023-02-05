@@ -17,10 +17,11 @@ public partial class HttpBuild : HttpUtilsBase
     public static bool CheckLogin(string data)
     {
         var obj = JObject.Parse(data);
+
         if (obj.ContainsKey("Build") && obj.ContainsKey("Message"))
         {
-            var item1 = obj["Build"].ToString();
-            var item2 = obj["Message"].ToString();
+            var item1 = obj["Build"]!.ToString();
+            var item2 = obj["Message"]!.ToString();
             if (item1 == "False" && item2 == "登录失效")
             {
                 InfoWindow.Show("验证错误", item2);
@@ -45,7 +46,7 @@ public partial class HttpBuild : HttpUtilsBase
         });
         if (data == null)
             return false;
-        ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
+        var res = JsonConvert.DeserializeObject<ReMessage>(data);
         if (res?.Build == true)
         {
             return true;
@@ -71,7 +72,7 @@ public partial class HttpBuild : HttpUtilsBase
         });
         if (data == null)
             return false;
-        ReMessage res = JsonConvert.DeserializeObject<ReMessage>(data);
+        var res = JsonConvert.DeserializeObject<ReMessage>(data);
         if (res?.Build == true)
         {
             App.Config.Token = res.Message;
@@ -80,7 +81,7 @@ public partial class HttpBuild : HttpUtilsBase
         }
         else
         {
-            InfoWindow.Show("登录错误", $"登录错误:{res.Message}");
+            InfoWindow.Show("登录错误", $"登录错误:{res?.Message}");
         }
         return false;
     }

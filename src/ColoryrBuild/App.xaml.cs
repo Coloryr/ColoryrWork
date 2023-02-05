@@ -32,7 +32,7 @@ public partial class App : Application
     public static ConfigObj Config { get; private set; }
 
     public static MainWindow WindowMain;
-    public static LoginWindow WindowLogin;
+    public static LoginWindow? WindowLogin;
     public static App ThisApp;
 
     private record CodeInfo
@@ -150,9 +150,12 @@ public partial class App : Application
             Type = type
         };
         string name = type.ToString() + code.UUID;
-        if (CodeEdits.ContainsKey(info))
+        if (CodeEdits.TryGetValue(info, out var value))
         {
-            var temp = CodeEdits[info] as IEditView;
+            var temp = value as IEditView;
+            if (temp == null)
+                return;
+
             ColoryrBuild.MainWindow.SwitchTo(CodeEdits[info]);
             temp.GetCode();
         }
@@ -175,6 +178,9 @@ public partial class App : Application
     public static void CloseEdit(UserControl view)
     {
         var view1 = view as IEditView;
+        if (view1 == null)
+            return;
+
         var info = new CodeInfo
         {
             UUID = view1.Obj.UUID,
@@ -220,7 +226,7 @@ public partial class App : Application
         MessageBox.Show(sbEx.ToString());
     }
 
-    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+    private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
         e.SetObserved();

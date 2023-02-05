@@ -23,7 +23,7 @@ public partial class CodeCSEditView : UserControl, IEditView
     public CodeType Type { get; }
 
     private string OldCode;
-    private string FileName;
+    private string? FileName;
     private CSFileCode CsObj;
     private DiffPaneModel Model;
     private readonly Dictionary<string, string> FileMap = new();
@@ -174,7 +174,12 @@ public partial class CodeCSEditView : UserControl, IEditView
         IsWrite = true;
         if (Type == CodeType.Class)
         {
-            string name = e.Name.Replace(".cs", "");
+            var name = e.Name?.Replace(".cs", "");
+            if (name == null)
+            {
+                IsWrite = false;
+                return;
+            }
             if (name.Contains('.'))
             {
                 IsWrite = false;
@@ -248,6 +253,9 @@ public partial class CodeCSEditView : UserControl, IEditView
                     Line = pos
                 });
             }
+            if (FileName == null)
+                return;
+
             var res = App.HttpUtils.ClassFileEdit(CsObj, FileName, list);
             if (res == null)
             {
@@ -291,7 +299,7 @@ public partial class CodeCSEditView : UserControl, IEditView
             return;
         Logs.Text = "";
         IsBuild = true;
-        ReMessage data;
+        ReMessage? data;
         if (Type != CodeType.Class)
         {
             await UpdateTask();
@@ -383,9 +391,9 @@ public partial class CodeCSEditView : UserControl, IEditView
     }
     private void Change_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem is not string data)
             return;
-        string data = FileList.SelectedItem as string;
+
         if (FileName == data)
             return;
         if (Type == CodeType.Class)
@@ -397,10 +405,10 @@ public partial class CodeCSEditView : UserControl, IEditView
     }
     private async void Delete_Click(object sender, RoutedEventArgs e)
     {
-        if (FileList.SelectedItem == null)
+        if (FileList.SelectedItem is not string data)
             return;
+
         Logs.Text = "";
-        string data = FileList.SelectedItem as string;
         var res = await App.HttpUtils.RemoveClassFile(CsObj, data);
         if (res == null)
         {

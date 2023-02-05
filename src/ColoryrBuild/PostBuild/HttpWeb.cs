@@ -13,7 +13,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">项目</param>
     /// <param name="set">设置值</param>
     /// <returns>服务器结果</returns>
-    public async Task<ReMessage> SetIsVue(WebObj obj, bool set)
+    public async Task<ReMessage?> SetIsVue(WebObj obj, bool set)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -39,7 +39,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">项目</param>
     /// <param name="file">压缩包内容</param>
     /// <returns>服务器结果</returns>
-    public async Task<ReMessage> WebCodeZIP(WebObj obj, string file)
+    public async Task<ReMessage?> WebCodeZIP(WebObj obj, string file)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -66,7 +66,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="name">文件名</param>
     /// <param name="list">修改那日</param>
     /// <returns>服务器结果</returns>
-    public async Task<ReMessage> WebFileEdit(WebObj obj, string name, List<CodeEditObj> list)
+    public async Task<ReMessage?> WebFileEdit(WebObj obj, string name, List<CodeEditObj> list)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -94,7 +94,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">工程对象</param>
     /// <param name="name">文件名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> WebDownloadFile(WebObj obj, string name)
+    public async Task<ReMessage?> WebDownloadFile(WebObj obj, string name)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -120,7 +120,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="name">名字</param>
     /// <param name="isVue">Vue项目</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddWeb(string name, bool isVue)
+    public async Task<ReMessage?> AddWeb(string name, bool isVue)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -143,7 +143,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="name">文件名</param>
     /// <returns>结果</returns>
-    public async Task<WebObj> GetWebCode(string name)
+    public async Task<WebObj?> GetWebCode(string name)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -165,7 +165,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="obj">Web工程</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> BuildWeb(CSFileObj obj)
+    public async Task<ReMessage?> BuildWeb(CSFileObj obj)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -189,7 +189,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="obj">Web工程</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> BuildWebRes(CSFileObj obj)
+    public async Task<ReMessage?> BuildWebRes(CSFileObj obj)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -214,7 +214,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">Web工程</param>
     /// <param name="name">文件名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddWebCode(CSFileObj obj, string name)
+    public async Task<ReMessage?> AddWebCode(CSFileObj obj, string name)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -241,7 +241,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="name">文件名</param>
     /// <param name="by">数据</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddWebFile(CSFileObj obj, string name, string by)
+    public async Task<ReMessage?> AddWebFile(CSFileObj obj, string name, string by)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -268,7 +268,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj"></param>
     /// <param name="name"></param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> WebRemoveFile(CSFileObj obj, string name)
+    public async Task<ReMessage?> WebRemoveFile(CSFileObj obj, string name)
     {
         var data = await DoPost(new BuildOBJ
         {

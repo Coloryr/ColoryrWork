@@ -13,7 +13,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="type">类型</param>
     /// <returns>代码列表</returns>
-    public async Task<CSFileList> GetList(CodeType type)
+    public async Task<CSFileList?> GetList(CodeType type)
     {
         var reType = type switch
         {
@@ -48,7 +48,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="file">文件名</param>
     /// <param name="list">修改内容</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> ClassFileEdit(CSFileCode obj, string file, List<CodeEditObj> list)
+    public async Task<ReMessage?> ClassFileEdit(CSFileCode obj, string file, List<CodeEditObj> list)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -76,7 +76,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="name">名字</param>
     /// <param name="arg">附加参数</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddObj(CodeType type, string name, string arg = null)
+    public async Task<ReMessage?> AddObj(CodeType type, string name, string arg = null)
     {
         var reType = type switch
         {
@@ -111,7 +111,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="type">类型</param>
     /// <param name="obj">代码项目</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> RemoveObj(CodeType type, CSFileObj obj)
+    public async Task<ReMessage?> RemoveObj(CodeType type, CSFileObj obj)
     {
         var reType = type switch
         {
@@ -145,7 +145,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="type">类型</param>
     /// <param name="name">名字</param>
     /// <returns>结果</returns>
-    public async Task<CSFileCode> GetCode(CodeType type, string name)
+    public async Task<CSFileCode?> GetCode(CodeType type, string name)
     {
         var reType = type switch
         {
@@ -179,7 +179,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="type">类型</param>
     /// <param name="list">修改内容</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> Build(CSFileObj obj, CodeType type, List<CodeEditObj> list)
+    public async Task<ReMessage?> Build(CSFileObj obj, CodeType type, List<CodeEditObj>? list)
     {
         var reType = type switch
         {
@@ -213,7 +213,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// 获取API代码
     /// </summary>
     /// <returns>结果</returns>
-    public async Task<APIFileObj> GetApi()
+    public async Task<APIFileObj?> GetApi()
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -235,7 +235,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">代码对象</param>
     /// <param name="file">文件名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> AddClassFile(CSFileObj obj, string file)
+    public async Task<ReMessage?> AddClassFile(CSFileObj obj, string file)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -259,7 +259,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="obj">代码对象</param>
     /// <param name="file">文件名</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage> RemoveClassFile(CSFileObj obj, string file)
+    public async Task<ReMessage?> RemoveClassFile(CSFileObj obj, string file)
     {
         var data = await DoPost(new BuildOBJ
         {
@@ -282,7 +282,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     /// <param name="obj">代码对象</param>
     /// <returns>结果</returns>
-    public async Task<ClassCodeGetObj> GetClassCode(CSFileObj obj)
+    public async Task<ClassCodeGetObj?> GetClassCode(CSFileObj obj)
     {
         var data = await DoPost(new BuildOBJ
         {

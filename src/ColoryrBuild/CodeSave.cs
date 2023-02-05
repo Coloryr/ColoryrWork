@@ -55,11 +55,8 @@ internal static class CodeSave
             {
                 File.Delete(name);
             }
-            FileInfo info = new(name);
-            if (!Directory.Exists(info.DirectoryName))
-            {
-                Directory.CreateDirectory(info.DirectoryName);
-            }
+            var info = new FileInfo(name);
+            info.Directory?.Create();
             File.Create(name).Close();
             using FileStream Stream = File.Open(name, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             if (Stream != null && !string.IsNullOrWhiteSpace(data))
@@ -73,7 +70,7 @@ internal static class CodeSave
             lock1.ExitWriteLock();
         }
     }
-    public static string Load(string code)
+    public static string? Load(string code)
     {
         try
         {
