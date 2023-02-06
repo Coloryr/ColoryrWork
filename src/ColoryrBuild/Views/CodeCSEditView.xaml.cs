@@ -19,17 +19,48 @@ namespace ColoryrBuild.Views;
 /// </summary>
 public partial class CodeCSEditView : UserControl, IEditView
 {
+    /// <summary>
+    /// 项目
+    /// </summary>
     public CSFileObj Obj { get; }
+    /// <summary>
+    /// 类型
+    /// </summary>
     public CodeType Type { get; }
 
+    /// <summary>
+    /// 旧代码
+    /// </summary>
     private string OldCode;
+    /// <summary>
+    /// 文件名
+    /// </summary>
     private string? FileName;
+    /// <summary>
+    /// 代码项目
+    /// </summary>
     private CSFileCode CsObj;
+    /// <summary>
+    /// 对比结果
+    /// </summary>
     private DiffPaneModel Model;
+    /// <summary>
+    /// 文件列表
+    /// </summary>
     private readonly Dictionary<string, string> FileMap = new();
+    /// <summary>
+    /// 文件名列表
+    /// </summary>
     private readonly ObservableCollection<string> Files = new();
+    /// <summary>
+    /// 文件监视
+    /// </summary>
     private readonly FileSystemWatcher FileSystemWatcher;
+    /// <summary>
+    /// 路径
+    /// </summary>
     private readonly string Local;
+
     private bool IsWrite;
     private bool IsUpdate;
     private bool IsBuild;
@@ -70,11 +101,17 @@ public partial class CodeCSEditView : UserControl, IEditView
         }
     }
 
+    /// <summary>
+    /// 关闭
+    /// </summary>
     public void Close()
     {
         FileSystemWatcher.Dispose();
     }
 
+    /// <summary>
+    /// 获取代码
+    /// </summary>
     public async void GetCode()
     {
         if (IsWrite)
@@ -162,6 +199,10 @@ public partial class CodeCSEditView : UserControl, IEditView
         IsWrite = false;
     }
 
+    /// <summary>
+    /// 添加编译日志
+    /// </summary>
+    /// <param name="data">内容</param>
     private void AddLog(string data)
     {
         Logs.AppendText($"[{DateTime.Now}]{data}");
@@ -190,7 +231,11 @@ public partial class CodeCSEditView : UserControl, IEditView
                 IsWrite = false;
                 return;
             }
-            CsObj.Code = CodeSave.Load(Local + e.Name).Replace("\r", "");
+            var code = CodeSave.Load(Local + e.Name)?.Replace("\r", "");
+            if (code == null)
+                return;
+
+            CsObj.Code = code;
             await Dispatcher.Invoke(async () =>
             {
                 FileList.SelectedItem = name;
@@ -201,7 +246,11 @@ public partial class CodeCSEditView : UserControl, IEditView
         }
         else if (e.Name == "main.cs")
         {
-            CsObj.Code = CodeSave.Load(Local + "main.cs").Replace("\r", "");
+            var code = CodeSave.Load(Local + "main.cs")?.Replace("\r", "");
+            if (code == null)
+                return;
+
+            CsObj.Code = code;
             await Dispatcher.InvokeAsync(() =>
             {
                 Model = App.StartContrast(CsObj, OldCode);
@@ -211,6 +260,9 @@ public partial class CodeCSEditView : UserControl, IEditView
         IsWrite = false;
     }
 
+    /// <summary>
+    /// 更新代码对比
+    /// </summary>
     private async Task UpdateTask()
     {
         if (IsUpdate)
@@ -286,6 +338,9 @@ public partial class CodeCSEditView : UserControl, IEditView
         await UpdateTask();
     }
 
+    /// <summary>
+    /// 重新获取代码
+    /// </summary>
     private void ReCode_Click(object sender, RoutedEventArgs e)
     {
         ReCode_Button.IsEnabled = false;
@@ -293,6 +348,9 @@ public partial class CodeCSEditView : UserControl, IEditView
         ReCode_Button.IsEnabled = true;
     }
 
+    /// <summary>
+    /// 编译
+    /// </summary>
     private async void Build()
     {
         if (IsBuild)

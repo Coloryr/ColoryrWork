@@ -5,31 +5,14 @@ using System.Windows;
 
 namespace ColoryrBuild.Views.CodeList;
 
-internal class WebView : CodeListView
+public class WebView : CodeListView
 {
-    private const CodeType Type = CodeType.Web;
-    public static Action Refresh;
+    public static Action FRefresh;
     public WebView()
     {
-        MainWindow.CallRefresh += FRefresh;
-        RefreshAction = Refresh = FRefresh;
-    }
-
-    private async void FRefresh()
-    {
-        var list = await App.HttpUtils.GetList(Type);
-        if (list == null)
-        {
-            InfoWindow.Show("刷新", $"{Type}刷新失败");
-            return;
-        }
-        CodeList = list.List;
-        List1.Items.Clear();
-        foreach (var item in CodeList)
-        {
-            List1.Items.Add(item.Value);
-        }
-        App.LogShow("刷新", $"{Type}刷新成功");
+        type = CodeType.Web;
+        MainWindow.CallRefresh += Refresh;
+        FRefresh = Refresh;
     }
 
     public override async void AddClick(object sender, RoutedEventArgs e)
@@ -53,44 +36,11 @@ internal class WebView : CodeListView
         App.LogShow("创建", list.Message);
         if (list.Build)
         {
-            FRefresh();
+            Refresh();
         }
         else
         {
             InfoWindow.Show("创建", list.Message);
-        }
-    }
-
-    public override void ChangeClick(object sender, RoutedEventArgs e)
-    {
-        if (List1.SelectedItem is not CSFileObj item)
-            return;
-
-        App.AddEdit(item, Type);
-    }
-
-    public override async void DeleteClick(object sender, RoutedEventArgs e)
-    {
-        if (List1.SelectedItem is not CSFileObj item)
-            return;
-
-        if (new ChoseWindow("删除确认", "是否要删除").Set())
-        {
-            var res = await App.HttpUtils.RemoveObj(Type, item);
-            if (res == null)
-            {
-                App.LogShow("删除", "服务器返回错误");
-                return;
-            }
-            App.LogShow("删除", res.Message);
-            if (res.Build)
-            {
-                Refresh();
-            }
-            else
-            {
-                InfoWindow.Show("删除", res.Message);
-            }
         }
     }
 }

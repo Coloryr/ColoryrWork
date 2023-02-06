@@ -48,7 +48,6 @@ internal static class PostBuildWeb
                     {
                         { "index.html", Encoding.UTF8.GetString(DemoVueResource.index) },
                         { "package.json", Encoding.UTF8.GetString(DemoVueResource.package) },
-                        { "package-lock.json", Encoding.UTF8.GetString(DemoVueResource.package_lock) },
                         { "tsconfig.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig) },
                         { "tsconfig.node.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig_node) },
                         { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config).Replace("{dir}", $"/{uuid}/") },

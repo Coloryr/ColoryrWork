@@ -17,10 +17,6 @@ public static class WebFileManager
     /// Web项目删除
     /// </summary>
     private static readonly string WebRemoveLocal = ServerMain.RunLocal + "Removes/Web/";
-    /// <summary>
-    /// Vue编译nodejs
-    /// </summary>
-    private static readonly string WebNodeJS = WebCodeLocal + "node_modules/";
 
     /// <summary>
     /// Web项目储存
@@ -52,8 +48,6 @@ public static class WebFileManager
             Directory.CreateDirectory(WebCodeLocal);
         if (!Directory.Exists(WebRemoveLocal))
             Directory.CreateDirectory(WebRemoveLocal);
-        if (!Directory.Exists(WebNodeJS))
-            Directory.CreateDirectory(WebNodeJS);
 
         WebDatabase.Start();
 
@@ -132,6 +126,9 @@ UpdateTime:{obj.UpdateTime}");
             Directory.CreateDirectory(info.DirectoryName);
             File.WriteAllBytes(info.FullName, item.Value);
         }
+
+        string dir1 = WebCodeLocal + obj.UUID;
+        Directory.Delete(dir1, true);
 
         HtmlCodeList.TryRemove(obj.UUID, out var temp1);
         WebDatabase.Remove(obj.UUID);

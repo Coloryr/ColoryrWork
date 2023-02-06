@@ -40,28 +40,28 @@ public partial class MainWindow : Window
         switch (type)
         {
             case CodeType.Dll:
-                WebApiView.Refresh();
+                WebApiView.FRefresh();
                 break;
             case CodeType.Class:
-                ClassView.Refresh();
+                ClassView.FRefresh();
                 break;
             case CodeType.Socket:
-                SocketView.Refresh();
+                SocketView.FRefresh();
                 break;
             case CodeType.Robot:
-                RobotView.Refresh();
+                RobotView.FRefresh();
                 break;
             case CodeType.WebSocket:
-                WebSocketView.Refresh();
+                WebSocketView.FRefresh();
                 break;
             case CodeType.Mqtt:
-                MqttView.Refresh();
+                MqttView.FRefresh();
                 break;
             case CodeType.Service:
-                ServiceView.Refresh();
+                ServiceView.FRefresh();
                 break;
             case CodeType.Web:
-                WebView.Refresh();
+                WebView.FRefresh();
                 break;
         }
     }

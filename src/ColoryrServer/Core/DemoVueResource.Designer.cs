@@ -133,16 +133,6 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static byte[] package_lock {
-            get {
-                object obj = ResourceManager.GetObject("package_lock", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
         internal static byte[] tsconfig {
             get {
                 object obj = ResourceManager.GetObject("tsconfig", resourceCulture);

@@ -139,9 +139,6 @@
   <data name="package" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\package.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="package_lock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Vue\package-lock.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="tsconfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\tsconfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

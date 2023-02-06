@@ -21,7 +21,7 @@
             FontSize="14px"
             KeyDown="TextEditor_KeyDown"
             ShowLineNumbers="True"
-            SyntaxHighlighting="C#" />
+            SyntaxHighlighting="HTML" />
         <TextBox
             Name="Logs"
             Height="89"

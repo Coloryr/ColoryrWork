@@ -2,6 +2,8 @@
 using ColoryrWork.Lib.Build.Object;
 using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,6 +35,7 @@ public partial class CodeWebEditView : UserControl, IEditView
     private bool IsWrite;
     private bool IsBuild = false;
     private Timer Timer;
+    private RegistryOptions registryOptions;
 
     public CodeWebEditView(CSFileObj obj)
     {
@@ -128,7 +131,11 @@ public partial class CodeWebEditView : UserControl, IEditView
         }
         FileName = name;
         OldCode = WebObj.Codes[name];
-        WebObj.Codes[name] = CodeSave.Load(e.FullPath).Replace("\r", "");
+        var code = CodeSave.Load(e.FullPath)?.Replace("\r", "");
+        if (code == null)
+            return;
+
+        WebObj.Codes[name] = code;
         await Dispatcher.InvokeAsync(async () =>
         {
             FileList.SelectedItem = null;
@@ -139,11 +146,18 @@ public partial class CodeWebEditView : UserControl, IEditView
         IsWrite = false;
     }
 
+    /// <summary>
+    /// 添加编译日志
+    /// </summary>
+    /// <param name="data">内容</param>
     private void AddLog(string data)
     {
         Logs.AppendText($"[{DateTime.Now}]{data}" + Environment.NewLine);
     }
 
+    /// <summary>
+    /// 获取代码
+    /// </summary>
     public async void GetCode()
     {
         if (IsWrite || IsBuild)
@@ -206,6 +220,9 @@ public partial class CodeWebEditView : UserControl, IEditView
         IsWrite = false;
     }
 
+    /// <summary>
+    /// 更新代码
+    /// </summary>
     private async Task UpdateTask()
     {
         Update_Button.IsEnabled = false;
@@ -299,6 +316,9 @@ public partial class CodeWebEditView : UserControl, IEditView
         _ = new ImageWindow(temp);
     }
 
+    /// <summary>
+    /// 重新获取代码 
+    /// </summary>
     private void ReCode_Click(object sender, RoutedEventArgs e)
     {
         ReCode_Button.IsEnabled = false;
@@ -306,6 +326,9 @@ public partial class CodeWebEditView : UserControl, IEditView
         ReCode_Button.IsEnabled = true;
     }
 
+    /// <summary>
+    /// 编译
+    /// </summary>
     private async void BuildWeb()
     {
         if (IsBuild)
@@ -419,11 +442,10 @@ public partial class CodeWebEditView : UserControl, IEditView
             TextEditor.Text = "无法编辑文件";
             TextEditor.IsReadOnly = true;
         }
-        //TODO 编辑器高亮
-        if (data.EndsWith(".js"))
-        {
 
-        }
+        string ex = Path.GetExtension(data);
+        var temp = HighlightingManager.Instance.GetDefinitionByExtension(ex);
+        TextEditor.SyntaxHighlighting = temp;
 
         FileName = data;
     }
