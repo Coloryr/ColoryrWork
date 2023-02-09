@@ -117,13 +117,13 @@ UpdateTime:{obj.UpdateTime}");
         foreach (var item in obj.Codes)
         {
             var info = new FileInfo(dir + item.Key);
-            Directory.CreateDirectory(info.DirectoryName);
+            info.Directory?.Create();
             File.WriteAllText(dir + item.Key, item.Value);
         }
         foreach (var item in obj.Files)
         {
             var info = new FileInfo(dir + item.Key);
-            Directory.CreateDirectory(info.DirectoryName);
+            info.Directory?.Create();
             File.WriteAllBytes(info.FullName, item.Value);
         }
 
