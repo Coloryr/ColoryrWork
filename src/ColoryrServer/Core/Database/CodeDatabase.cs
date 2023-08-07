@@ -435,7 +435,7 @@ internal static class CodeDatabase
         }
     }
 
-    public static List<ClassCodeObj> GetClassCode(string uuid)
+    public static List<ClassCodeObj>? GetClassCode(string uuid)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
         var list = codeSQL.Query<ClassCodeObj>("SELECT name,code FROM classcode WHERE uuid=@uuid", new { uuid });

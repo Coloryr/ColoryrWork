@@ -83,7 +83,7 @@ internal static class PostBuildClass
     {
         var list = CodeDatabase.GetClassCode(json.UUID);
         var obj = CodeManager.GetClass(json.UUID);
-        return new ClassCodeGetObj { Obj = obj, List = list };
+        return new ClassCodeGetObj { Obj = obj, List = list ?? new() };
     }
 
     public static ReMessage Updata(BuildOBJ json)

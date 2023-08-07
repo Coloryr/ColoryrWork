@@ -49,7 +49,7 @@ internal static class CodeManager
 
     public static void StorageDll(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (DllFileList.ContainsKey(obj.UUID))
             DllFileList[obj.UUID] = obj;
         else
@@ -58,7 +58,7 @@ internal static class CodeManager
     }
     public static void StorageClass(CSFileCode obj, string file, string code, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user, file, code));
+        CodeDatabase.SaveCode(obj, user, file, code);
         if (ClassFileList.ContainsKey(obj.UUID))
             ClassFileList[obj.UUID] = obj;
         else
@@ -67,7 +67,7 @@ internal static class CodeManager
     }
     public static void StorageSocket(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (SocketFileList.ContainsKey(obj.UUID))
             SocketFileList[obj.UUID] = obj;
         else
@@ -76,7 +76,7 @@ internal static class CodeManager
     }
     public static void StorageWebSocket(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (WebSocketFileList.ContainsKey(obj.UUID))
             WebSocketFileList[obj.UUID] = obj;
         else
@@ -85,7 +85,7 @@ internal static class CodeManager
     }
     public static void StorageRobot(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (RobotFileList.ContainsKey(obj.UUID))
             RobotFileList[obj.UUID] = obj;
         else
@@ -94,7 +94,7 @@ internal static class CodeManager
     }
     public static void StorageMqtt(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (MqttFileList.ContainsKey(obj.UUID))
             MqttFileList[obj.UUID] = obj;
         else
@@ -103,7 +103,7 @@ internal static class CodeManager
     }
     public static void StorageService(CSFileCode obj, string user)
     {
-        Task.Run(() => CodeDatabase.SaveCode(obj, user));
+        CodeDatabase.SaveCode(obj, user);
         if (ServiceFileList.ContainsKey(obj.UUID))
             ServiceFileList[obj.UUID] = obj;
         else
@@ -237,10 +237,13 @@ internal static class CodeManager
             if (type == CodeType.Class)
             {
                 var list = CodeDatabase.GetClassCode(uuid);
-                foreach (var item in list)
+                if (list != null)
                 {
-                    code += $"/* {item.name} */" + Environment.NewLine +
-                        item.code + Environment.NewLine;
+                    foreach (var item in list)
+                    {
+                        code += $"/* {item.name} */" + Environment.NewLine +
+                            item.code + Environment.NewLine;
+                    }
                 }
             }
             else

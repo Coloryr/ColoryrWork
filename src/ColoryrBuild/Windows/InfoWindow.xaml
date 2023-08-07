@@ -16,12 +16,11 @@
             Fill="#FFF4F4F5"
             Stroke="#FF5ABED6"
             StrokeThickness="2" />
-        <TextBlock
+        <TextBox
             Name="Text"
-            Margin="10,10,10,0"
-            VerticalAlignment="Top"
+            Margin="10,10,10,39"
+            HorizontalScrollBarVisibility="Visible"
             Text="信息"
-            TextAlignment="Center"
             TextWrapping="Wrap" />
         <Button
             Height="24"

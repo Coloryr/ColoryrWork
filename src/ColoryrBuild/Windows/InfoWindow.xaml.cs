@@ -9,7 +9,10 @@ public partial class InfoWindow : Window
 {
     public static void Show(string title, string text = null)
     {
-        _ = new InfoWindow(title, text);
+        App.ThisApp.Dispatcher.Invoke(() =>
+        {
+            _ = new InfoWindow(title, text);
+        });
     }
     private InfoWindow(string title, string text)
     {

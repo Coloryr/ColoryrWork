@@ -36,7 +36,7 @@ internal static class SqliteCon
     {
         try
         {
-            new Microsoft.Data.Sqlite.SqliteConnection(conn).Execute("ANALYZE;");
+            new SqliteConnection(conn).Execute("ANALYZE;");
             return true;
         }
         catch (SqliteException ex)
@@ -55,7 +55,7 @@ internal static class SqliteCon
         {
             State[item.Key] = false;
         }
-        Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+        SqliteConnection.ClearAllPools();
         State.Clear();
         ConnectStr.Clear();
         Connecting.Clear();
@@ -136,8 +136,8 @@ internal static class SqliteCon
     /// </summary>
     /// <param name="ID">数据库ID</param>
     /// <returns>链接</returns>
-    internal static Microsoft.Data.Sqlite.SqliteConnection GetConnection(int id)
+    internal static SqliteConnection GetConnection(int id)
     {
-        return new Microsoft.Data.Sqlite.SqliteConnection(ConnectStr[id]);
+        return new SqliteConnection(ConnectStr[id]);
     }
 }

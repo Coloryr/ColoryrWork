@@ -60,7 +60,7 @@ internal static class HttpPost
             }
             else if (Request.ContentType.StartsWith(ServerContentType.JSON))
             {
-                MemoryStream stream = new();
+                using MemoryStream stream = new();
                 await Request.Body.CopyToAsync(stream);
                 var Str = Encoding.UTF8.GetString(stream.ToArray());
                 JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
