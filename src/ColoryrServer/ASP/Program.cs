@@ -112,10 +112,12 @@ public static class ASPServer
             Web.DisposeAsync().AsTask().Wait();
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
-            ReadThread.Interrupt();
+            
         }
 
+        ServerMain.LogOut("按下任意键退出");
         IsRun = false;
+        ReadThread.Interrupt();
     }
 
     private static Thread ReadThread;
