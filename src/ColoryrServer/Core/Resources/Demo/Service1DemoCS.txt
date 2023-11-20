@@ -4,7 +4,7 @@ using ColoryrServer.SDK;
 
 //ColoryrServer_Debug
 
-[ServiceIN(false, ServiceType.Normal)] //true±íÊ¾¸úËæ·şÎñÆ÷Æô¶¯
+[ServiceIN(false, ServiceType.Normal)] //trueè¡¨ç¤ºè·ŸéšæœåŠ¡å™¨å¯åŠ¨
 public class {name}
 {
     public ServiceNextState Run(object[] args, CancellationToken token)

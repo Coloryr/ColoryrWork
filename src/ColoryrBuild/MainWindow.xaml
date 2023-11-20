@@ -17,10 +17,6 @@
     Loaded="Window_Loaded"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
         <TabControl
             Name="Tabs"
             Margin="2"

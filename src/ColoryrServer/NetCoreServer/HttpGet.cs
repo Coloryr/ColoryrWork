@@ -2,7 +2,7 @@
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using NetCoreServer;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System.Collections.Specialized;
 
 namespace ColoryrServer.NetCoreServer;
@@ -115,7 +115,7 @@ internal class HttpGet
                         session.Response.SetBody(bytes);
                         break;
                     case ResType.Json:
-                        session.Response.SetBody(JsonConvert.SerializeObject(httpReturn.Data));
+                        session.Response.SetBody(JsonUtils.ToString(httpReturn.Data));
                         break;
                         //case ResType.Stream:
                         //    var stream = httpReturn.Data as Stream;

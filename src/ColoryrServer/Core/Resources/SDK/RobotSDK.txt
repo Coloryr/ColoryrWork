@@ -9,7 +9,7 @@ public record MessageKey
     public int[] Ids2 { get; set; }
 }
 /// <summary>
-/// »úÆ÷ÈË·¢ËÍÏûÏ¢ÊÂ¼ş
+/// æœºå™¨äººå‘é€æ¶ˆæ¯äº‹ä»¶
 /// </summary>
 public class RobotSend
 {
@@ -24,13 +24,13 @@ public class RobotSend
     public RobotSDK Robot { get; init; }
 
     /// <summary>
-    /// ³·»ØÏûÏ¢
+    /// æ’¤å›æ¶ˆæ¯
     /// </summary>
     public void ReCall()
         => Robot.ReCallMessage(QQ, MessageId.Ids1, MessageId.Ids2, Type);
 }
 /// <summary>
-/// »úÆ÷ÈËÏûÏ¢ÊÂ¼ş
+/// æœºå™¨äººæ¶ˆæ¯äº‹ä»¶
 /// </summary>
 public class RobotMessage
 {
@@ -45,23 +45,23 @@ public class RobotMessage
     public RobotSDK Robot { get; init; }
 
     /// <summary>
-    /// ³·»ØÏûÏ¢
+    /// æ’¤å›æ¶ˆæ¯
     /// </summary>
     public void ReCall()
         => Robot.ReCallMessage(QQ, MessageId.Ids1, MessageId.Ids2, Type);
 
     /// <summary>
-    /// ·¢ËÍÏûÏ¢»ØÓ¦
+    /// å‘é€æ¶ˆæ¯å›åº”
     /// </summary>
-    /// <param name="message">ÏûÏ¢</param>
+    /// <param name="message">æ¶ˆæ¯</param>
     public void SendMessage(string message)
     {
         SendMessage(new List<string> { message });
     }
     /// <summary>
-    /// ·¢ËÍÏûÏ¢»ØÓ¦
+    /// å‘é€æ¶ˆæ¯å›åº”
     /// </summary>
-    /// <param name="message">ÏûÏ¢</param>
+    /// <param name="message">æ¶ˆæ¯</param>
     public void SendMessage(List<string> message)
     {
         switch (Type)
@@ -82,9 +82,9 @@ public class RobotMessage
     }
 
     /// <summary>
-    /// ·¢ËÍ±¾µØÎÄ¼ş»ØÓ¦
+    /// å‘é€æœ¬åœ°æ–‡ä»¶å›åº”
     /// </summary>
-    /// <param name="file">ÎÄ¼şÃû</param>
+    /// <param name="file">æ–‡ä»¶å</param>
     public void SendImageFile(string file)
     {
         switch (Type)
@@ -105,9 +105,9 @@ public class RobotMessage
     }
 
     /// <summary>
-    /// ·¢ËÍ±¾µØÉùÒôÎÄ¼ş»Ø¸´
+    /// å‘é€æœ¬åœ°å£°éŸ³æ–‡ä»¶å›å¤
     /// </summary>
-    /// <param name="sound">ÎÄ¼şÃû</param>
+    /// <param name="sound">æ–‡ä»¶å</param>
     public void SendSoundFile(string file)
     {
         switch (Type)
@@ -122,12 +122,12 @@ public class RobotMessage
                 Robot.SendStrangerSoundFile(QQ, Id, file, null);
                 break;
             default:
-                throw new ErrorDump("²»Ö§³ÖµÄ²Ù×÷");
+                throw new ErrorDump("ä¸æ”¯æŒçš„æ“ä½œ");
         }
     }
 }
 /// <summary>
-/// »úÆ÷ÈËÊÂ¼ş
+/// æœºå™¨äººäº‹ä»¶
 /// </summary>
 public class RobotEvent
 {

@@ -1,11 +1,13 @@
 ﻿using ColoryrServer.SDK;
 using System;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.Dll;
 
 public static class Dll
 {
     public delegate dynamic DllIN(HttpDllRequest arg);
+    public delegate Task<dynamic> DllAsyncIN(HttpDllRequest arg);
     public delegate bool SocketTcpIn(SocketTcpRequest arg);
     public delegate bool SocketUdpIn(SocketUdpRequest arg);
     public delegate bool WebSocketMessageIn(WebSocketMessage arg);

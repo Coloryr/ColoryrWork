@@ -18,7 +18,7 @@ public class RamDataObj
     /// </summary>
     public ConcurrentDictionary<string, dynamic> Data { get; init; }
 
-    public RamDataObj(ConcurrentDictionary<string, dynamic> data = null)
+    public RamDataObj(ConcurrentDictionary<string, dynamic>? data = null)
     {
         if (data == null)
             Data = new();

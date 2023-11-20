@@ -11,10 +11,10 @@ public static class WebHtml
     /// <param name="uuid"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static byte[] GetWebFile(string uuid, string name)
+    public static byte[]? GetWebFile(string uuid, string name)
     {
         var route = HttpInvokeRoute.Get(uuid);
-        return route.Invoke(null, name).Data as byte[];
+        return route.Invoke(null, name).Result.Data as byte[];
     }
     /// <summary>
     /// 获取静态前端资源

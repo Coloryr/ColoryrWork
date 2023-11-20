@@ -79,21 +79,29 @@ public partial class App : Application
             File.Delete(item);
         }
         var list = await HttpUtils.GetApi();
+        if (list == null)
+        {
+            return;
+        }
         if (list.List != null)
+        {
             foreach (var item in list.List)
             {
                 File.WriteAllText(dir + item.Key + ".cs", item.Value);
             }
+        }
         dir = RunLocal + "CodeTEMP/Common/";
         if (!Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);
         }
         if (list.Other != null)
+        {
             foreach (var item in list.Other)
             {
                 File.WriteAllText(dir + item.Key + ".cs", item.Value);
             }
+        }
     }
 
     public static void Close()

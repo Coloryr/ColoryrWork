@@ -18,7 +18,8 @@ namespace ColoryrServer.Core.Utils;
 /// </summary>
 public static class ExtensionMethods
 {
-    public static void AddOrUpdate<K, V>(this ConcurrentDictionary<K, V> dictionary, K key, V value)
+    public static void AddOrUpdate<K, V>(this ConcurrentDictionary<K, V> dictionary, K key, V value) 
+        where K : notnull
     {
         dictionary.AddOrUpdate(key, value, (oldkey, oldvalue) => value);
     }
@@ -89,7 +90,7 @@ public static class FileUtils
         return list;
     }
 
-    public static string LoadString(string filename, Encoding encoding = null)
+    public static string LoadString(string filename, Encoding? encoding = null)
     {
         try
         {

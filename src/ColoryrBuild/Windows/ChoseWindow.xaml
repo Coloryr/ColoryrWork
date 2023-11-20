@@ -12,10 +12,6 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
         <TextBlock
             Name="Text"
             Margin="10,10,10,0"

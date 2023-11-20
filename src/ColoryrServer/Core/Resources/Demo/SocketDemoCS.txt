@@ -7,7 +7,7 @@ public class {name}
 {
     public bool OnTcpMessage(SocketTcpRequest head)
     {
-        return false; //true±íÊ¾ÊÂ¼şÒÑ´¦ÀíÍê±Ï
+        return false; //trueè¡¨ç¤ºäº‹ä»¶å·²å¤„ç†å®Œæ¯•
     }
     public bool OnUdpMessage(SocketUdpRequest head)
     {

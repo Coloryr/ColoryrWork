@@ -2,17 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK;
 
 public class HttpDllRequest
 {
     /// <summary>
-    /// ÇëÇó²ÎÊı
-    /// </summary>
-    public Dictionary<string, dynamic> Parameter { get; init; }
-    /// <summary>
-    /// ÇëÇóÍ·
+    /// è¯·æ±‚å¤´
     /// </summary>
     public NameValueCollection RowRequest { get; init; }
     /// <summary>
@@ -20,38 +17,26 @@ public class HttpDllRequest
     /// </summary>
     public Dictionary<string, List<string>> Cookie { get; init; }
     /// <summary>
-    /// ÇëÇóÌåÀàĞÍ
+    /// è¯·æ±‚ä½“ç±»å‹
     /// </summary>
-    public MyContentType ContentType { get; init; }
+    public string? ContentType { get; init; }
     /// <summary>
-    /// ÇëÇóÌåÁ÷
+    /// è¯·æ±‚ä½“æµ
     /// </summary>
     public Stream Stream { get; init; }
     /// <summary>
-    /// ÇëÇóÌåÊı¾İ
-    /// </summary>
-    public string Data { get; init; }
-    /// <summary>
-    /// ÇëÇóÌåÊı¾İ
-    /// </summary>
-    public byte[] Data1 { get; init; }
-    /// <summary>
-    /// ÇëÇó·½·¨
+    /// è¯·æ±‚æ–¹æ³•
     /// </summary>
     public string Method { get; init; }
-
     /// <summary>
-    /// »ñÈ¡ÇëÇóÊı¾İ
+    /// è§£æè¯·æ±‚æ•°æ®
     /// </summary>
-    /// <param name="arg">²ÎÊıÃû</param>
-    /// <returns>·µ»Ø</returns>
-    public dynamic Get(string arg)
-        => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
+    public required Func<Task<(MyContentType, IDictionary<string, dynamic?>?)>> GetBody;
 }
 public abstract class HttpDllResponse
 {
     /// <summary>
-    /// ·µ»ØÂë
+    /// è¿”å›ç 
     /// </summary>
     public int ReCode { get; set; }
     /// <summary>
@@ -59,26 +44,25 @@ public abstract class HttpDllResponse
     /// </summary>
     public Dictionary<string, string> Cookie { get; set; }
     /// <summary>
-    /// ·µ»ØÍ·
+    /// è¿”å›å¤´
     /// </summary>
     public Dictionary<string, string> Head { get; set; }
     /// <summary>
-    /// ·µ»ØÀàĞÍ
+    /// è¿”å›ç±»å‹
     /// </summary>
     public string ContentType { get; init; }
     public HttpDllResponse()
     {
-        if (Head == null)
-            Head = new();
+        Head ??= [];
         ReCode = 200;
-        Cookie = new();
+        Cookie ??= [];
         ContentType = ServerContentType.JSON;
     }
     /// <summary>
-    /// Íù·µ»ØÍ·Ğ´Êı¾İ
+    /// å¾€è¿”å›å¤´å†™æ•°æ®
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <param name="value">Öµ</param>
+    /// <param name="key">é”®</param>
+    /// <param name="value">å€¼</param>
     public HttpDllResponse AddHead(string key, string value)
     {
         Head.Add(key, value);
@@ -89,21 +73,21 @@ public abstract class HttpDllResponse
 public class HttpResponseString : HttpDllResponse
 {
     /// <summary>
-    /// ·µ»ØÊı¾İ
+    /// è¿”å›æ•°æ®
     /// </summary>
     public string Data { get; set; }
 
     public HttpResponseString() : base() { }
     /// <summary>
-    /// Ğ´Êı¾İ
+    /// å†™æ•°æ®
     /// </summary>
-    /// <param name="data">ÄÚÈİ</param>
+    /// <param name="data">å†…å®¹</param>
     public void Write(string data)
         => Data += data;
     /// <summary>
-    /// Ğ´Êı¾İºó»»ĞĞ
+    /// å†™æ•°æ®åæ¢è¡Œ
     /// </summary>
-    /// <param name="data">ÄÚÈİ</param>
+    /// <param name="data">å†…å®¹</param>
     public void WriteNewLine(string data)
        => Data += data + "\n";
 }
@@ -112,23 +96,22 @@ public class HttpResponseDictionary : HttpDllResponse
 {
     public Dictionary<string, object> Data { get; set; }
     /// <summary>
-    /// ·µ»ØÍ·½á¹¹Ìå
+    /// è¿”å›å¤´ç»“æ„ä½“
     /// </summary>
-    /// <param name="ReCode">ÏàÓ¦´úÂë</param>
+    /// <param name="ReCode">ç›¸åº”ä»£ç </param>
     public HttpResponseDictionary() : base()
     {
-        if (Data == null)
-            Data = new();
+        Data ??= [];
     }
     /// <summary>
-    /// Íù·µ»ØµÄ×Ö·û´®Ğ´Êı¾İ
+    /// å¾€è¿”å›çš„å­—ç¬¦ä¸²å†™æ•°æ®
     /// </summary>
-    /// <param name="Key">¼ü</param>
-    /// <param name="Value">Öµ</param>
+    /// <param name="Key">é”®</param>
+    /// <param name="Value">å€¼</param>
     public void AddResponse(string Key, object Value)
         => Data.Add(Key, Value);
     /// <summary>
-    /// Ğ´Êı¾İ
+    /// å†™æ•°æ®
     /// </summary>
     /// <param name="res"></param>
     /// <param name="text"></param>
@@ -144,28 +127,26 @@ public class HttpResponseDictionary : HttpDllResponse
 public class HttpResponseStream : HttpDllResponse
 {
     /// <summary>
-    /// Á÷
+    /// æµ
     /// </summary>
     public Stream Data { get; set; }
     /// <summary>
-    /// Á÷µÄÎ»ÖÃ
+    /// æµçš„ä½ç½®
     /// </summary>
     public int Pos { get; set; }
     public HttpResponseStream() : base()
     {
-        if (Data == null)
-            Data = new MemoryStream();
+        Data ??= new MemoryStream();
     }
 }
 public class HttpResponseBytes : HttpDllResponse
 {
     /// <summary>
-    /// ¶ş½øÖÆ
+    /// äºŒè¿›åˆ¶
     /// </summary>
     public byte[] Data { get; set; }
     public HttpResponseBytes() : base()
     {
-        if (Data == null)
-            Data = Array.Empty<byte>();
+        Data ??= [];
     }
 }

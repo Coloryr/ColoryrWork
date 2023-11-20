@@ -5,12 +5,9 @@ using ColoryrServer.Core.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using ColoryrWork.Lib.Server;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,17 +52,7 @@ public static class PostDo
         }
         var receivedData = DeCode.AES256(input,
             ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-        var str = Encoding.UTF8.GetString(receivedData);
-        JObject obj;
-        try
-        {
-            obj = JObject.Parse(Function.GetSrings(str, "{"));
-        }
-        catch
-        {
-            return PostRes.ArgError;
-        }
-        var json = obj.ToObject<BuildOBJ>();
+        var json = JsonUtils.ToObj<BuildOBJ>(receivedData);
         if (json == null)
         {
             return PostRes.ArgError;
@@ -107,69 +94,69 @@ public static class PostDo
         else
             return json.Mode switch
             {
-                PostBuildType.AddDll => PostBuildDll.Add(json),
-                PostBuildType.AddClass => PostBuildClass.Add(json),
-                PostBuildType.AddSocket => PostBuildSocket.Add(json),
-                PostBuildType.AddWebSocket => PostBuildWebSocket.Add(json),
-                PostBuildType.AddRobot => PostBuildRobot.Add(json),
-                PostBuildType.AddMqtt => PostBuildMqtt.Add(json),
-                PostBuildType.AddService => PostBuildService.Add(json),
-                PostBuildType.AddWeb => PostBuildWeb.Add(json),
-                PostBuildType.GetDll => PostBuildDll.GetList(),
-                PostBuildType.GetClass => PostBuildClass.GetList(),
-                PostBuildType.GetSocket => PostBuildSocket.GetList(),
-                PostBuildType.GetWebSocket => PostBuildWebSocket.GetList(),
-                PostBuildType.GetRobot => PostBuildRobot.GetList(),
-                PostBuildType.GetMqtt => PostBuildMqtt.GetList(),
-                PostBuildType.GetTask => PostBuildService.GetList(),
-                PostBuildType.GetWeb => PostBuildWeb.GetList(),
+                PostBuildType.AddDll => BuildDll.Add(json),
+                PostBuildType.AddClass => BuildClass.Add(json),
+                PostBuildType.AddSocket => BuildSocket.Add(json),
+                PostBuildType.AddWebSocket => BuildWebSocket.Add(json),
+                PostBuildType.AddRobot => BuildRobot.Add(json),
+                PostBuildType.AddMqtt => BuildMqtt.Add(json),
+                PostBuildType.AddService => BuildService.Add(json),
+                PostBuildType.AddWeb => BuildWeb.Add(json),
+                PostBuildType.GetDll => BuildDll.GetList(),
+                PostBuildType.GetClass => BuildClass.GetList(),
+                PostBuildType.GetSocket => BuildSocket.GetList(),
+                PostBuildType.GetWebSocket => BuildWebSocket.GetList(),
+                PostBuildType.GetRobot => BuildRobot.GetList(),
+                PostBuildType.GetMqtt => BuildMqtt.GetList(),
+                PostBuildType.GetTask => BuildService.GetList(),
+                PostBuildType.GetWeb => BuildWeb.GetList(),
                 PostBuildType.CodeDll => CodeManager.GetDll(json.UUID),
-                PostBuildType.CodeClass => PostBuildClass.GetCode(json),
+                PostBuildType.CodeClass => BuildClass.GetCode(json),
                 PostBuildType.CodeSocket => CodeManager.GetSocket(json.UUID),
                 PostBuildType.CodeWebSocket => CodeManager.GetWebSocket(json.UUID),
                 PostBuildType.CodeRobot => CodeManager.GetRobot(json.UUID),
                 PostBuildType.CodeMqtt => CodeManager.GetMqtt(json.UUID),
                 PostBuildType.CodeTask => CodeManager.GetService(json.UUID),
-                PostBuildType.CodeWeb => PostBuildWeb.GetCode(json),
+                PostBuildType.CodeWeb => BuildWeb.GetCode(json),
                 PostBuildType.GetApi => APIFile.list,
-                PostBuildType.RemoveDll => PostBuildDll.Remove(json),
-                PostBuildType.RemoveClass => PostBuildClass.Remove(json),
-                PostBuildType.RemoveSocket => PostBuildSocket.Remove(json),
-                PostBuildType.RemoveWebSocket => PostBuildWebSocket.Remove(json),
-                PostBuildType.RemoveRobot => PostBuildRobot.Remove(json),
-                PostBuildType.RemoveMqtt => PostBuildMqtt.Remove(json),
-                PostBuildType.RemoveTask => PostBuildService.Remove(json),
-                PostBuildType.RemoveWeb => PostBuildWeb.Remove(json),
-                PostBuildType.UpdataDll => PostBuildDll.Updata(json),
-                PostBuildType.UpdataClass => PostBuildClass.Updata(json),
-                PostBuildType.UpdataSocket => PostBuildSocket.Updata(json),
-                PostBuildType.UpdataRobot => PostBuildRobot.Updata(json),
-                PostBuildType.UpdataWebSocket => PostBuildWebSocket.Updata(json),
-                PostBuildType.UpdataMqtt => PostBuildMqtt.Updata(json),
-                PostBuildType.UpdataTask => PostBuildService.Updata(json),
-                PostBuildType.UpdataWeb => PostBuildWeb.Updata(json),
-                PostBuildType.WebBuild => PostBuildWeb.Build(json),
-                PostBuildType.WebBuildRes => PostBuildWeb.BuildRes(json),
-                PostBuildType.WebAddCode => PostBuildWeb.AddCode(json),
-                PostBuildType.WebRemoveFile => PostBuildWeb.RemoveFile(json),
-                PostBuildType.WebAddFile => PostBuildWeb.WebAddFile(json),
-                PostBuildType.WebSetIsVue => PostBuildWeb.SetIsVue(json),
-                PostBuildType.WebCodeZIP => PostBuildWeb.ZIP(json),
-                PostBuildType.AddClassFile => PostBuildClass.AddFile(json),
-                PostBuildType.RemoveClassFile => PostBuildClass.RemoveFile(json),
-                PostBuildType.BuildClass => PostBuildClass.Build(json),
-                PostBuildType.WebDownloadFile => PostBuildWeb.Download(json),
-                PostBuildType.ConfigGetHttpList => PostServerConfig.GetHttpConfigList(json),
-                PostBuildType.ConfigAddHttp => PostServerConfig.AddHttpConfig(json),
-                PostBuildType.ConfigRemoveHttp => PostServerConfig.RemoveHttpConfig(json),
-                PostBuildType.ConfigAddHttpUrlRoute => PostServerConfig.AddHttpUrlRouteConfig(json),
-                PostBuildType.ConfigRemoveHttpUrlRoute => PostServerConfig.RemoveHttpUrlRouteConfig(json),
-                PostBuildType.ConfigGetSocket => PostServerConfig.GetSocketConfig(),
-                PostBuildType.ConfigSetSocket => PostServerConfig.SetSocketConfig(json),
-                PostBuildType.ConfigAddHttpRoute => PostServerConfig.AddHttpRouteConfig(json),
-                PostBuildType.ConfigRemoveHttpRoute => PostServerConfig.RemoveHttpRouteConfig(json),
-                PostBuildType.SetServerEnable => PostServerConfig.SetServerEnable(json),
-                PostBuildType.ServerReboot => PostServerConfig.Reboot(),
+                PostBuildType.RemoveDll => BuildDll.Remove(json),
+                PostBuildType.RemoveClass => BuildClass.Remove(json),
+                PostBuildType.RemoveSocket => BuildSocket.Remove(json),
+                PostBuildType.RemoveWebSocket => BuildWebSocket.Remove(json),
+                PostBuildType.RemoveRobot => BuildRobot.Remove(json),
+                PostBuildType.RemoveMqtt => BuildMqtt.Remove(json),
+                PostBuildType.RemoveTask => BuildService.Remove(json),
+                PostBuildType.RemoveWeb => BuildWeb.Remove(json),
+                PostBuildType.UpdataDll => BuildDll.Updata(json),
+                PostBuildType.UpdataClass => BuildClass.Updata(json),
+                PostBuildType.UpdataSocket => BuildSocket.Updata(json),
+                PostBuildType.UpdataRobot => BuildRobot.Updata(json),
+                PostBuildType.UpdataWebSocket => BuildWebSocket.Updata(json),
+                PostBuildType.UpdataMqtt => BuildMqtt.Updata(json),
+                PostBuildType.UpdataTask => BuildService.Updata(json),
+                PostBuildType.UpdataWeb => BuildWeb.Updata(json),
+                PostBuildType.WebBuild => BuildWeb.Build(json),
+                PostBuildType.WebBuildRes => BuildWeb.BuildRes(json),
+                PostBuildType.WebAddCode => BuildWeb.AddCode(json),
+                PostBuildType.WebRemoveFile => BuildWeb.RemoveFile(json),
+                PostBuildType.WebAddFile => BuildWeb.WebAddFile(json),
+                PostBuildType.WebSetIsVue => BuildWeb.SetIsVue(json),
+                PostBuildType.WebCodeZIP => BuildWeb.ZIP(json),
+                PostBuildType.AddClassFile => BuildClass.AddFile(json),
+                PostBuildType.RemoveClassFile => BuildClass.RemoveFile(json),
+                PostBuildType.BuildClass => BuildClass.Build(json),
+                PostBuildType.WebDownloadFile => BuildWeb.Download(json),
+                PostBuildType.ConfigGetHttpList => ServerConfig.GetHttpConfigList(json),
+                PostBuildType.ConfigAddHttp => ServerConfig.AddHttpConfig(json),
+                PostBuildType.ConfigRemoveHttp => ServerConfig.RemoveHttpConfig(json),
+                PostBuildType.ConfigAddHttpUrlRoute => ServerConfig.AddHttpUrlRouteConfig(json),
+                PostBuildType.ConfigRemoveHttpUrlRoute => ServerConfig.RemoveHttpUrlRouteConfig(json),
+                PostBuildType.ConfigGetSocket => ServerConfig.GetSocketConfig(),
+                PostBuildType.ConfigSetSocket => ServerConfig.SetSocketConfig(json),
+                PostBuildType.ConfigAddHttpRoute => ServerConfig.AddHttpRouteConfig(json),
+                PostBuildType.ConfigRemoveHttpRoute => ServerConfig.RemoveHttpRouteConfig(json),
+                PostBuildType.SetServerEnable => ServerConfig.SetServerEnable(json),
+                PostBuildType.ServerReboot => ServerConfig.Reboot(),
                 PostBuildType.ConfigGetUser => PostUser.GetAll(),
                 PostBuildType.ConfigAddUser => PostUser.Add(json),
                 PostBuildType.ConfigRemoveUser => PostUser.Remove(json),

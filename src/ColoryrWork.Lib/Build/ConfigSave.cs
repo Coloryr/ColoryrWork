@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-
-namespace ColoryrWork.Lib.Build;
+﻿namespace ColoryrWork.Lib.Build;
 
 public static class ConfigSave
 {
-    private static object Locker = new();
-    public static T? Config<T>(T obj1, string FilePath) where T : new()
+    private static readonly object s_locker = new();
+    public static T Config<T>(T obj1, string FilePath) where T : new()
     {
         FileInfo file = new(FilePath);
         T? obj;
@@ -19,10 +17,11 @@ public static class ConfigSave
         }
         else
         {
-            lock (Locker)
+            lock (s_locker)
             {
-                obj = JsonConvert.DeserializeObject<T>(File.ReadAllText(FilePath));
+                obj = JsonUtils.ToObj<T>(File.ReadAllText(FilePath));
             }
+            obj ??= new();
         }
         return obj;
     }
@@ -31,9 +30,9 @@ public static class ConfigSave
     /// </summary>
     public static void Save(object obj, string FilePath)
     {
-        lock (Locker)
+        lock (s_locker)
         {
-            File.WriteAllText(FilePath, JsonConvert.SerializeObject(obj, Formatting.Indented));
+            File.WriteAllText(FilePath, JsonUtils.ToString(obj));
         }
     }
 }

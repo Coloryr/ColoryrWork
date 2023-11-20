@@ -111,7 +111,7 @@ public class ASPTopAPI : ITopAPI
     public ReMessage AddHttpRouteConfig(BuildOBJ json)
     {
         string targe = json.Temp;
-        RouteConfigObj item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
+        var item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
 
         if (ASPServer.Config.Routes.ContainsKey(targe))
         {

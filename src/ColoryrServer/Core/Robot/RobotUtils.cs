@@ -8,7 +8,7 @@ namespace ColoryrServer.Core.Robot;
 public static class RobotUtils
 {
     public static RobotSDK Robot { get; private set; }
-    private static void Message(byte type, object data)
+    private static void Message(int type, object data)
     {
         if (ServerMain.Config.FixMode)
             return;

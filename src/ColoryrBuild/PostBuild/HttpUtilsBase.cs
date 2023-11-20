@@ -1,7 +1,6 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -84,7 +83,7 @@ public abstract class HttpUtilsBase
     {
         try
         {
-            HttpContent Content = new ByteArrayContent(AES(JsonConvert.SerializeObject(pack)));
+            HttpContent Content = new ByteArrayContent(AES(JsonUtils.ToString(pack)));
             Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var temp = await httpClient.PostAsync(App.Config.Http, Content);
             return await temp.Content.ReadAsStringAsync();

@@ -7,13 +7,13 @@ using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
 using DotNetty.Transport.Channels;
 using Fleck;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace ColoryrServer.SDK;
 
@@ -125,7 +125,7 @@ public partial class ServerContentType
 /// </summary>
 public enum MyContentType
 {
-    Json, XFormData, MFormData, Other
+    Json, XFormData, MFormData, Other, Error
 }
 public partial class EnCode
 {
@@ -428,7 +428,7 @@ public partial class Tools
     /// <param name="b">从开始</param>
     /// <param name="c">到结束</param>
     /// <returns>分割后的</returns>
-    public static string GetString(string a, string b, string c = null)
+    public static string GetString(string a, string b, string? c = null)
     {
         if (b == null)
         {
@@ -497,7 +497,7 @@ public partial class Tools
     {
         try
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonUtils.ToString(obj);
         }
         catch (Exception e)
         {
@@ -510,11 +510,11 @@ public partial class Tools
     /// <typeparam name="T">类型</typeparam>
     /// <param name="json">字符串</param>
     /// <returns>对象</returns>
-    public static T ToObject<T>(string json)
+    public static T? ToObject<T>(string json)
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonUtils.ToObj<T>(json);
         }
         catch (Exception e)
         {
@@ -526,11 +526,11 @@ public partial class Tools
     /// </summary>
     /// <param name="json">json字符串</param>
     /// <returns>JSON对象</returns>
-    public static JObject ToJObject(string json)
+    public static JsonNode? ToJObject(string json)
     {
         try
         {
-            return JObject.Parse(json);
+            return JsonNode.Parse(json);
         }
         catch (Exception e)
         {
@@ -542,7 +542,7 @@ public partial class Tools
     /// </summary>
     /// <param name="classname">类名</param>
     /// <returns>类</returns>
-    public static dynamic GetClass(string classname, params object[] obj)
+    public static dynamic? GetClass(string classname, params object[] obj)
     {
         var data = AssemblyList.GetClass(classname);
         if (data == null)
@@ -628,7 +628,7 @@ public partial class FileLoad
     /// <param name="filename">文件名</param>
     /// <param name="encoding">读取编码</param>
     /// <returns>文件里面的字符串</returns>
-    public static string LoadString(string filename, Encoding encoding = null)
+    public static string LoadString(string filename, Encoding? encoding = null)
         => FileUtils.LoadString(filename, encoding);
     /// <summary>
     /// 读一个文件
@@ -672,18 +672,12 @@ public partial class ErrorDump : Exception
         return a;
     }
 }
-public partial class VarDump : Exception
+/// <summary>
+/// 变量输出
+/// </summary>
+/// <param name="obj">变量</param>
+public partial class VarDump(params object[] obj) : Exception
 {
-    private object[] obj;
-    /// <summary>
-    /// 变量输出
-    /// </summary>
-    /// <param name="obj">变量</param>
-    public VarDump(params object[] obj)
-    {
-        this.obj = obj;
-    }
-
     public string Get()
     {
         try
@@ -692,9 +686,9 @@ public partial class VarDump : Exception
             {
                 return "no obj";
             }
-            else if (obj.Length == 1 && obj[0] is string)
+            else if (obj.Length == 1 && obj[0] is string str)
             {
-                return obj[0] as string;
+                return str;
             }
             var data = new Dictionary<string, object>(new RepeatDictionaryComparer());
             foreach (var item in obj)
@@ -709,7 +703,7 @@ public partial class VarDump : Exception
                     data.Add(name.Name, item);
                 }
             }
-            return JsonConvert.SerializeObject(data, Formatting.Indented).Replace("\\\"", "\"");
+            return JsonUtils.ToString(data).Replace("\\\"", "\"");
         }
         catch (Exception e)
         {
@@ -720,7 +714,7 @@ public partial class VarDump : Exception
 }
 internal class RepeatDictionaryComparer : IEqualityComparer<string>
 {
-    public bool Equals(string x, string y)
+    public bool Equals(string? x, string? y)
     {
         return x != y;
     }

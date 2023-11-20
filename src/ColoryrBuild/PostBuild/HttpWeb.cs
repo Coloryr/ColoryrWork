@@ -1,5 +1,5 @@
 ﻿using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,7 +31,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await SetIsVue(obj, set);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 代码压缩包
@@ -57,7 +57,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await WebCodeZIP(obj, file);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 修改文件
@@ -77,7 +77,7 @@ public partial class HttpBuild : HttpUtilsBase
             Version = obj.Version,
             Text = obj.Text,
             Temp = name,
-            Code = JsonConvert.SerializeObject(list)
+            Code = JsonUtils.ToString(list)
         });
         if (data == null)
             return null;
@@ -85,7 +85,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await WebFileEdit(obj, name, list);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await WebDownloadFile(obj, name);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加Web项目
@@ -136,7 +136,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddWeb(name, isVue);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 获取Web代码
@@ -158,7 +158,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetWebCode(name);
         }
-        return JsonConvert.DeserializeObject<WebObj>(data);
+        return JsonUtils.ToObj<WebObj>(data);
     }
     /// <summary>
     /// 构建Web项目
@@ -182,7 +182,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await BuildWeb(obj);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 获取构建Web项目结果
@@ -206,7 +206,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await BuildWebRes(obj);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加Web代码
@@ -232,7 +232,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddWebCode(obj, name);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加Web文件
@@ -260,7 +260,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddWebFile(obj, name, by);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除Web文件
@@ -286,6 +286,6 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await WebRemoveFile(obj, name);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 }

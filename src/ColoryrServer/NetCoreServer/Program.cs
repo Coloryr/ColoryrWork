@@ -115,7 +115,7 @@ class CoreServer
     public static CoreConfig Config;
     static void Main(string[] args)
     {
-        PostServerConfig.Init(new CoreTopAPI());
+        ServerConfig.Init(new CoreTopAPI());
 
         ServerMain.Start();
         IHttpServer server;

@@ -5,15 +5,16 @@ using ColoryrServer.Core.Http;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
-internal static class PostBuildDll
+internal static class BuildDll
 {
     /// <summary>
     /// 添加一个接口
@@ -51,8 +52,8 @@ internal static class PostBuildDll
             UUID = uuid,
             Type = CodeType.Dll,
             CreateTime = time,
-            Code = DemoResource.Dll
-            .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
+            Code = Encoding.UTF8.GetString(DemoResource.Dll)
+                .Replace(CodeDemo.Name, EnCode.SHA1(uuid))
         };
         CodeManager.StorageDll(obj, json.User);
         GenDll.StartGen(obj, json.User);
@@ -108,7 +109,7 @@ internal static class PostBuildDll
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

@@ -1,5 +1,5 @@
 ﻿using ColoryrServer.SDK;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,13 +23,13 @@ internal static class NoteFile
             Directory.CreateDirectory(ClassFileLocal);
         }
     }
-    private static void Storage(string local, object obj)
+    private static void Storage(string local, List<NotesSDK> obj)
     {
         Task.Run(() =>
         {
             try
             {
-                File.WriteAllText(local, JsonConvert.SerializeObject(obj, Formatting.Indented));
+                File.WriteAllText(local, JsonUtils.ToString(obj));
             }
             catch (Exception e)
             {

@@ -33,9 +33,9 @@ public partial class StaticDllHttpClient : IDisposable
         HttpClientUtils.Close(Client);
     }
     /// <summary>
-    /// »ñÈ¡byte
+    /// è·å–byte
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
+    /// <param name="url">ç½‘å€</param>
     /// <returns>byte</returns>
     public byte[] GetByte(string url)
     {
@@ -56,10 +56,10 @@ public partial class StaticDllHttpClient : IDisposable
         return result.Content.ReadAsByteArrayAsync(Cancel.Token).Result;
     }
     /// <summary>
-    /// »ñÈ¡×Ö·û´®
+    /// è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public string GetString(string url)
     {
         HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
@@ -79,11 +79,11 @@ public partial class StaticDllHttpClient : IDisposable
         return result.Content.ReadAsStringAsync(Cancel.Token).Result;
     }
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡×Ö·û´®
+    /// å‘é€è¡¨å•è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public string PostString(string url, Dictionary<string, string> arg)
     {
         HttpRequestMessage requestMessage = new(HttpMethod.Post, url);
@@ -104,33 +104,33 @@ public partial class StaticDllHttpClient : IDisposable
         return result.Content.ReadAsStringAsync(Cancel.Token).Result;
     }
     /// <summary>
-    /// »ñÈ¡½âÎöºóµÄhtml
+    /// è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>½âÎöºóµÄhtml</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è§£æåçš„html</returns>
     public HtmlDoc GetWebHtml(string url)
         => new(GetString(url));
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡½âÎöºóµÄhtml
+    /// å‘é€è¡¨å•è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
     /// <returns></returns>
     public HtmlDoc PostWebHtml(string url, Dictionary<string, string> arg)
         => new(PostString(url, arg));
     /// <summary>
-    /// ½øĞĞÒ»´ÎhttpÇëÇó
+    /// è¿›è¡Œä¸€æ¬¡httpè¯·æ±‚
     /// </summary>
-    /// <param name="httpRequest">ÇëÇó½á¹¹</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="httpRequest">è¯·æ±‚ç»“æ„</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage Send(HttpRequestMessage httpRequest)
         => Client.Client.SendAsync(httpRequest, Cancel.Token).Result;
     /// <summary>
-    /// ·¢ËÍÊı¾İ
+    /// å‘é€æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="data">Êı¾İ</param>
-    /// <returns>·µ»ØµÄ×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="data">æ•°æ®</param>
+    /// <returns>è¿”å›çš„å­—ç¬¦ä¸²</returns>
     public string PutString(string url, byte[] data)
     {
         HttpRequestMessage requestMessage = new(HttpMethod.Put, url);
@@ -151,11 +151,11 @@ public partial class StaticDllHttpClient : IDisposable
         return result.Content.ReadAsStringAsync(Cancel.Token).Result;
     }
     /// <summary>
-    /// ·¢ËÍ±íµ¥Êı¾İ
+    /// å‘é€è¡¨å•æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
     {
         HttpRequestMessage requestMessage = new(HttpMethod.Post, url);
@@ -176,10 +176,10 @@ public partial class StaticDllHttpClient : IDisposable
         return result;
     }
     /// <summary>
-    /// Get»ñÈ¡Êı¾İ
+    /// Getè·å–æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage GetData(string url)
     {
         HttpRequestMessage requestMessage = new(HttpMethod.Get, url);
@@ -239,144 +239,144 @@ public partial class DllHttpClient : IDisposable
     }
 
     /// <summary>
-    /// »ñÈ¡byte
+    /// è·å–byte
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
+    /// <param name="url">ç½‘å€</param>
     /// <returns>byte</returns>
     public byte[] GetByte(string url)
         => Client.GetByteArrayAsync(url, Cancel.Token).Result;
     /// <summary>
-    /// »ñÈ¡×Ö·û´®
+    /// è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public string GetString(string url)
         => Client.GetStringAsync(url, Cancel.Token).Result;
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡×Ö·û´®
+    /// å‘é€è¡¨å•è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public string PostString(string url, Dictionary<string, string> arg)
         => Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
     /// <summary>
-    /// »ñÈ¡½âÎöºóµÄhtml
+    /// è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>½âÎöºóµÄhtml</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è§£æåçš„html</returns>
     public HtmlDoc GetWebHtml(string url)
         => new(GetString(url));
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡½âÎöºóµÄhtml
+    /// å‘é€è¡¨å•è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
     /// <returns></returns>
     public HtmlDoc PostWebHtml(string url, Dictionary<string, string> arg)
         => new(PostString(url, arg));
     /// <summary>
-    /// ½øĞĞÒ»´ÎhttpÇëÇó
+    /// è¿›è¡Œä¸€æ¬¡httpè¯·æ±‚
     /// </summary>
-    /// <param name="httpRequest">ÇëÇó½á¹¹</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="httpRequest">è¯·æ±‚ç»“æ„</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage Send(HttpRequestMessage httpRequest)
         => Client.SendAsync(httpRequest, Cancel.Token).Result;
     /// <summary>
-    /// ·¢ËÍÊı¾İ
+    /// å‘é€æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="data">Êı¾İ</param>
-    /// <returns>·µ»ØµÄ×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="data">æ•°æ®</param>
+    /// <returns>è¿”å›çš„å­—ç¬¦ä¸²</returns>
     public string PutString(string url, byte[] data)
         => Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token).Result.Content.ReadAsStringAsync().Result;
     /// <summary>
-    /// ·¢ËÍ±íµ¥Êı¾İ
+    /// å‘é€è¡¨å•æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage PostData(string url, Dictionary<string, string> arg)
         => Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token).Result;
     /// <summary>
-    /// Get»ñÈ¡Êı¾İ
+    /// Getè·å–æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public HttpResponseMessage GetData(string url)
         => Client.GetAsync(url, Cancel.Token).Result;
 
     /// <summary>
-    /// »ñÈ¡byte
+    /// è·å–byte
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
+    /// <param name="url">ç½‘å€</param>
     /// <returns>byte</returns>
     public Task<byte[]> GetByteAsync(string url)
         => Client.GetByteArrayAsync(url, Cancel.Token);
     /// <summary>
-    /// »ñÈ¡×Ö·û´®
+    /// è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public Task<string> GetStringAsync(string url)
         => Client.GetStringAsync(url, Cancel.Token);
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡×Ö·û´®
+    /// å‘é€è¡¨å•è·å–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public async Task<string> PostStringAsync(string url, Dictionary<string, string> arg)
     {
         var temp = await Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
         return await temp.Content.ReadAsStringAsync();
     }
     /// <summary>
-    /// »ñÈ¡½âÎöºóµÄhtml
+    /// è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>½âÎöºóµÄhtml</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è§£æåçš„html</returns>
     public async Task<HtmlDoc> GetWebHtmlAsync(string url)
         => new HtmlDoc(await GetStringAsync(url));
     /// <summary>
-    /// ·¢ËÍ±íµ¥»ñÈ¡½âÎöºóµÄhtml
+    /// å‘é€è¡¨å•è·å–è§£æåçš„html
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
     /// <returns></returns>
     public async Task<HtmlDoc> PostWebHtmlAsync(string url, Dictionary<string, string> arg)
         => new HtmlDoc(await PostStringAsync(url, arg));
     /// <summary>
-    /// ½øĞĞÒ»´ÎhttpÇëÇó
+    /// è¿›è¡Œä¸€æ¬¡httpè¯·æ±‚
     /// </summary>
-    /// <param name="httpRequest">ÇëÇó½á¹¹</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="httpRequest">è¯·æ±‚ç»“æ„</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public async Task<HttpResponseMessage> DoStringAsync(HttpRequestMessage httpRequest)
         => await Client.SendAsync(httpRequest, Cancel.Token);
     /// <summary>
-    /// ·¢ËÍÊı¾İ
+    /// å‘é€æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="data">Êı¾İ</param>
-    /// <returns>·µ»ØµÄ×Ö·û´®</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="data">æ•°æ®</param>
+    /// <returns>è¿”å›çš„å­—ç¬¦ä¸²</returns>
     public async Task<string> PutStringAsync(string url, byte[] data)
     {
         var temp = await Client.PutAsync(url, new ByteArrayContent(data), Cancel.Token);
         return await temp.Content.ReadAsStringAsync();
     }
     /// <summary>
-    /// ·¢ËÍ±íµ¥Êı¾İ
+    /// å‘é€è¡¨å•æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <param name="arg">Êı¾İ</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <param name="arg">æ•°æ®</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public async Task<HttpResponseMessage> PostDataAsync(string url, Dictionary<string, string> arg)
         => await Client.PostAsync(url, new FormUrlEncodedContent(arg), Cancel.Token);
     /// <summary>
-    /// Get»ñÈ¡Êı¾İ
+    /// Getè·å–æ•°æ®
     /// </summary>
-    /// <param name="url">ÍøÖ·</param>
-    /// <returns>·µ»Ø½á¹¹</returns>
+    /// <param name="url">ç½‘å€</param>
+    /// <returns>è¿”å›ç»“æ„</returns>
     public async Task<HttpResponseMessage> GetDataAsync(string url)
         => await Client.GetAsync(url, Cancel.Token);
 }
@@ -385,22 +385,22 @@ public partial class HtmlDoc
 {
     public HtmlDocument html = new();
     /// <summary>
-    /// Html½âÎö
+    /// Htmlè§£æ
     /// </summary>
-    /// <param name="data">Html×Ö·û´®</param>
+    /// <param name="data">Htmlå­—ç¬¦ä¸²</param>
     public HtmlDoc(string data)
        => html.LoadHtml(data);
     /// <summary>
-    /// Html½âÎö
+    /// Htmlè§£æ
     /// </summary>
-    /// <param name="data">Html½Úµã</param>
+    /// <param name="data">HtmlèŠ‚ç‚¹</param>
     public HtmlDoc(HtmlNode data)
        => html.LoadHtml(data.InnerHtml);
     /// <summary>
-    /// Ñ¡Ôñ½Úµã
+    /// é€‰æ‹©èŠ‚ç‚¹
     /// </summary>
-    /// <param name="node">±êÇ©Ãû</param>
-    /// <param name="name">classÃû×Ö</param>
+    /// <param name="node">æ ‡ç­¾å</param>
+    /// <param name="name">classåå­—</param>
     /// <returns></returns>
     public List<HtmlNode> Select(string node, string name)
     {
@@ -413,15 +413,15 @@ public partial class HtmlDoc
         }
         catch
         {
-            throw new ErrorDump("Ñ¡Ôñ" + node + "_Class:" + name + "³ö´í");
+            throw new ErrorDump("é€‰æ‹©" + node + "_Class:" + name + "å‡ºé”™");
         }
     }
     /// <summary>
-    /// Ñ¡Ôñ½Úµã
+    /// é€‰æ‹©èŠ‚ç‚¹
     /// </summary>
-    /// <param name="node">±êÇ©Ãû</param>
-    /// <param name="name">ÔªËØÃû×Ö</param>
-    /// <param name="attributes">ÔªËØ</param>
+    /// <param name="node">æ ‡ç­¾å</param>
+    /// <param name="name">å…ƒç´ åå­—</param>
+    /// <param name="attributes">å…ƒç´ </param>
     /// <returns></returns>
     public List<HtmlNode> Select(string node, string name, string attributes)
     {
@@ -434,13 +434,13 @@ public partial class HtmlDoc
         }
         catch (Exception e)
         {
-            throw new ErrorDump("Ñ¡Ôñ" + node + "_" + node + ":" + attributes + "³ö´í", e);
+            throw new ErrorDump("é€‰æ‹©" + node + "_" + node + ":" + attributes + "å‡ºé”™", e);
         }
     }
     /// <summary>
-    /// Ñ¡Ôñ½Úµã
+    /// é€‰æ‹©èŠ‚ç‚¹
     /// </summary>
-    /// <param name="node">±êÇ©Ãû</param>
+    /// <param name="node">æ ‡ç­¾å</param>
     /// <returns></returns>
     public List<HtmlNode> Select(string node)
     {
@@ -450,7 +450,7 @@ public partial class HtmlDoc
         }
         catch (Exception e)
         {
-            throw new ErrorDump("Ñ¡Ôñ" + node + "³ö´í", e);
+            throw new ErrorDump("é€‰æ‹©" + node + "å‡ºé”™", e);
         }
     }
 }

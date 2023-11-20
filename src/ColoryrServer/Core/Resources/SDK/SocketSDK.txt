@@ -8,22 +8,22 @@ namespace ColoryrServer.SDK;
 public partial class SocketTcpRequest
 {
     /// <summary>
-    /// ¶Ë¿Ú
+    /// ç«¯å£
     /// </summary>
     public IPEndPoint Port { get; init; }
     /// <summary>
-    /// Êı¾İ
+    /// æ•°æ®
     /// </summary>
     public byte[] Data { get; init; }
     /// <summary>
-    /// ³¤¶È
+    /// é•¿åº¦
     /// </summary>
     public int Length { get; set; }
     /// <summary>
-    /// ¹¹Ôì·½·¨
+    /// æ„é€ æ–¹æ³•
     /// </summary>
-    /// <param name="port">Socket¶Ë¿Ú</param>
-    /// <param name="data">Socket·¢ËÍµÄÊı¾İ</param>
+    /// <param name="port">Socketç«¯å£</param>
+    /// <param name="data">Socketå‘é€çš„æ•°æ®</param>
     public SocketTcpRequest(IPEndPoint port, byte[] data, int length)
     {
         Port = port;
@@ -31,17 +31,17 @@ public partial class SocketTcpRequest
         Length = length;
     }
     /// <summary>
-    /// ÏòSocketÉè±¸·¢ËÍ×Ö·û´®
+    /// å‘Socketè®¾å¤‡å‘é€å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="Data">×Ö·û´®</param>
+    /// <param name="Data">å­—ç¬¦ä¸²</param>
     public void Send(string Data)
         => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(Data));
     public static void Send(IPEndPoint Port, string data)
         => PortSocketServer.TcpSendData(Port, Encoding.UTF8.GetBytes(data));
     /// <summary>
-    /// ÏòSocketÉè±¸·¢ËÍÊı¾İ
+    /// å‘Socketè®¾å¤‡å‘é€æ•°æ®
     /// </summary>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="data">æ•°æ®</param>
     public void Send(byte[] data)
         => PortSocketServer.TcpSendData(Port, data);
     public static void Send(IPEndPoint port, byte[] data)
@@ -50,22 +50,22 @@ public partial class SocketTcpRequest
 public partial class SocketUdpRequest
 {
     /// <summary>
-    /// ¶Ë¿Ú
+    /// ç«¯å£
     /// </summary>
     public IPEndPoint Port { get; init; }
     /// <summary>
-    /// Êı¾İ
+    /// æ•°æ®
     /// </summary>
     public byte[] Data { get; init; }
     /// <summary>
-    /// ³¤¶È
+    /// é•¿åº¦
     /// </summary>
     public int Length { get; set; }
     /// <summary>
-    /// ¹¹Ôì·½·¨
+    /// æ„é€ æ–¹æ³•
     /// </summary>
-    /// <param name="port">Socket¶Ë¿Ú</param>
-    /// <param name="data">Socket·¢ËÍµÄÊı¾İ</param>
+    /// <param name="port">Socketç«¯å£</param>
+    /// <param name="data">Socketå‘é€çš„æ•°æ®</param>
     public SocketUdpRequest(IPEndPoint port, byte[] data, int length)
     {
         Port = port;
@@ -73,17 +73,17 @@ public partial class SocketUdpRequest
         Length = length;
     }
     /// <summary>
-    /// ÏòSocketÉè±¸·¢ËÍ×Ö·û´®
+    /// å‘Socketè®¾å¤‡å‘é€å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="data">×Ö·û´®</param>
+    /// <param name="data">å­—ç¬¦ä¸²</param>
     public void Send(string data)
         => PortSocketServer.UdpSendData(Port, Encoding.UTF8.GetBytes(data));
     public static void Send(IPEndPoint port, string Data)
         => PortSocketServer.UdpSendData(port, Encoding.UTF8.GetBytes(Data));
     /// <summary>
-    /// ÏòSocketÉè±¸·¢ËÍÊı¾İ
+    /// å‘Socketè®¾å¤‡å‘é€æ•°æ®
     /// </summary>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="data">æ•°æ®</param>
     public void Send(byte[] data)
        => PortSocketServer.UdpSendData(Port, data);
     public static void Send(IPEndPoint port, byte[] data)
@@ -93,15 +93,15 @@ public partial class SocketUdpRequest
 public static class SocketUtils
 {
     /// <summary>
-    /// »ñÈ¡SocketÉè±¸ÁĞ±í
+    /// è·å–Socketè®¾å¤‡åˆ—è¡¨
     /// </summary>
-    /// <returns>Éè±¸ÁĞ±í</returns>
+    /// <returns>è®¾å¤‡åˆ—è¡¨</returns>
     public static List<IPEndPoint> GetTcpList()
         => PortSocketServer.GetTcpList();
     /// <summary>
-    /// »ñÈ¡SocketÉè±¸ÁĞ±í
+    /// è·å–Socketè®¾å¤‡åˆ—è¡¨
     /// </summary>
-    /// <returns>Éè±¸ÁĞ±í</returns>
+    /// <returns>è®¾å¤‡åˆ—è¡¨</returns>
     public static List<IPEndPoint> GetUdpList()
         => PortSocketServer.GetUdpList();
 }

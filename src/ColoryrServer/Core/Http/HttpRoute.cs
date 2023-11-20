@@ -6,6 +6,7 @@ using ColoryrWork.Lib.Build.Object;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.Http;
 
@@ -13,7 +14,7 @@ public abstract class RouteObj
 {
     public bool IsDll { get; protected set; }
     public bool IsReload { get; protected set; }
-    public abstract HttpReturn Invoke(HttpDllRequest arg, string function);
+    public abstract Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function);
 }
 
 public class DllRoute : RouteObj
@@ -25,7 +26,7 @@ public class DllRoute : RouteObj
         this.dll = dll;
     }
 
-    public override HttpReturn Invoke(HttpDllRequest arg, string function)
+    public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
     {
         return DllRun.DllGo(dll, arg, function);
     }
@@ -52,7 +53,7 @@ public class WebRoute : RouteObj
         Reload();
     }
 
-    public override HttpReturn Invoke(HttpDllRequest arg, string function)
+    public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
     {
         if (string.IsNullOrWhiteSpace(function))
         {
@@ -60,14 +61,14 @@ public class WebRoute : RouteObj
         }
         if (cache.TryGetValue(function, out var item))
         {
-            return new HttpReturn()
+            return Task.FromResult(new CoreHttpReturn()
             {
                 Res = ResType.Byte,
                 Data = item,
                 ContentType = ServerContentType.EndType(function)
-            };
+            });
         }
-        return HttpReturnSave.Res404;
+        return Task.FromResult(HttpReturnSave.Res404);
     }
 
     public void Reload(string name)

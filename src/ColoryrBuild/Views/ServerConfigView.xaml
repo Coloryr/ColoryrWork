@@ -9,10 +9,6 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
         <TabControl Margin="2" TabStripPlacement="Left">
             <TabItem Header="服务器日志" Style="{StaticResource TabItem}">
                 <Grid>
@@ -375,7 +371,8 @@
                             Margin="2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="服务器打包" Click="Button_Click_2" />
+                            Click="Button_Click_2"
+                            Content="服务器打包" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <CheckBox

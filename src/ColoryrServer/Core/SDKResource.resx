@@ -119,39 +119,39 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ColoryrSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\ColoryrSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\ColoryrSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DatabaseSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\DatabaseSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\DatabaseSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="HtmlSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\HtmlSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\HtmlSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MqttSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\MqttSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\MqttSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="NotesSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\NotesSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\NotesSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="RobotPacks" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\RobotPacks.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\RobotPacks.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="RobotSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\RobotSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\RobotSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ServiceSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\ServiceSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\ServiceSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="SocketSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\SocketSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\SocketSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WebApiSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\WebApiSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\WebApiSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WebHtmlSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\WebHtmlSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\WebHtmlSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WebSocketSDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SDK\WebSocketSDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\SDK\WebSocketSDK.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

@@ -61,372 +61,122 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core;
-        ///using ColoryrServer.Core.FileSystem;
-        ///using ColoryrServer.Core.PortServer;
-        ///using ColoryrServer.Core.Robot;
-        ///using ColoryrServer.Core.Utils;
-        ///using DotNetty.Transport.Channels;
-        ///using Fleck;
-        ///using Newtonsoft.Json;
-        ///using Newtonsoft.Json.Linq;
-        ///using System;
-        ///using System.Collections.Generic;
-        ///using System.IO;
-        ///using System.Security.Cryptography;
-        ///using System.Text;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ////// &lt;summary&gt;
-        ////// Netty接口
-        ////// &lt;/summary&gt;
-        ///public abstract class INetty
-        ///{
-        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string ColoryrSDK {
+        public static byte[] ColoryrSDK {
             get {
-                return ResourceManager.GetString("ColoryrSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("ColoryrSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.DataBase;
-        ///using Dapper;
-        ///using MySql.Data.MySqlClient;
-        ///using Oracle.ManagedDataAccess.Client;
-        ///using StackExchange.Redis;
-        ///using System.Collections.Generic;
-        ///using System.Data.SqlClient;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public partial class Mysql
-        ///{
-        ///    private string Database;
-        ///    private int ID;
-        ///    /// &lt;summary&gt;
-        ///    /// Mysql数据库
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;database&quot;&gt;数据库名&lt;/param&gt;
-        ///    /// &lt;param name=&quot;id&quot;&gt;数据库ID&lt;/param&gt;
-        ///    public Mysql(string database = &quot;&quot;,  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string DatabaseSDK {
+        public static byte[] DatabaseSDK {
             get {
-                return ResourceManager.GetString("DatabaseSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("DatabaseSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.Html;
-        ///using HtmlAgilityPack;
-        ///using System;
-        ///using System.Collections.Generic;
-        ///using System.Linq;
-        ///using System.Net;
-        ///using System.Net.Http;
-        ///using System.Threading;
-        ///using System.Threading.Tasks;
-        ///using static System.Net.WebRequestMethods;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public partial class StaticDllHttpClient : IDisposable
-        ///{
-        ///    private readonly ExHttpClient Client;
-        ///    private readonly Dictionary&lt;string, string&gt; Head;
-        ///
-        ///    public CancellationTokenSource Cancel { get; p [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string HtmlSDK {
+        public static byte[] HtmlSDK {
             get {
-                return ResourceManager.GetString("HtmlSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("HtmlSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.FileSystem;
-        ///using ColoryrServer.Core.PortServer;
-        ///using MQTTnet.Protocol;
-        ///using MQTTnet.Server;
-        ///using System;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public static class MqttSDK
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 发送消息
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;topic&quot;&gt;标题&lt;/param&gt;
-        ///    /// &lt;param name=&quot;data&quot;&gt;数据&lt;/param&gt;
-        ///    public static void Send(string topic, string data, string id = &quot;ColoryrServer&quot;, 
-        ///        MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
-        ///        [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string MqttSDK {
+        public static byte[] MqttSDK {
             get {
-                return ResourceManager.GetString("MqttSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("MqttSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-        ///public class NotesSDK : Attribute
-        ///{
-        ///    public string Text;
-        ///    public string[] Input;
-        ///    public string[] Output;
-        ///
-        ///    public NotesSDK(string text, string[] input = null, string[] output = null)
-        ///    {
-        ///        Text = text;
-        ///        Input = input ?? new string[1];
-        ///        Output = output ?? new string[1];
-        ///    }
-        ///}
-        ///
-        ///[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-        ///publ [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string NotesSDK {
+        public static byte[] NotesSDK {
             get {
-                return ResourceManager.GetString("NotesSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("NotesSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using Newtonsoft.Json;
-        ///using System;
-        ///using System.Collections.Concurrent;
-        ///using System.Collections.Generic;
-        ///using System.Text;
-        ///using System.Threading;
-        /////请用net6运行
-        /////并安装Newtonsoft.Json
-        ///namespace ColoryrServer.Core.Robot;
-        ///
-        /////机器人返回数据包
-        ////// &lt;summary&gt;
-        ////// 55 [插件]获取群列表
-        ////// &lt;/summary&gt;
-        ///public record ReListGroupPack : PackBase
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 群列表
-        ///    /// &lt;/summary&gt;
-        ///    public List&lt;GroupInfo&gt; groups { get; set; }
-        ///    /// &lt;summary&gt;
-        ///    /// 请求UUID
-        ///    /// &lt;/summary&gt;
-        ///    public string uu [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string RobotPacks {
+        public static byte[] RobotPacks {
             get {
-                return ResourceManager.GetString("RobotPacks", resourceCulture);
+                object obj = ResourceManager.GetObject("RobotPacks", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.Robot;
-        ///using System.Collections.Generic;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public class RobotSend
-        ///{
-        ///    public enum MessageType
-        ///    {
-        ///        group, private_, friend, stranger
-        ///    }
-        ///    public long qq { get; private set; }
-        ///    public MessageType type { get; private set; }
-        ///    public long id { get; private set; }
-        ///    public long fid { get; private set; }
-        ///    public bool res { get; private set; }
-        ///    public string error { get; private set; }
-        ///    public string messageId { [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string RobotSDK {
+        public static byte[] RobotSDK {
             get {
-                return ResourceManager.GetString("RobotSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("RobotSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.TaskUtils;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public static class ServiceSDK
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 是否存在服务
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;name&quot;&gt;服务名字&lt;/param&gt;
-        ///    /// &lt;returns&gt;是否存在&lt;/returns&gt;
-        ///    public static bool Have(string name)
-        ///        =&gt; ServiceManager.Have(name);
-        ///    /// &lt;summary&gt;
-        ///    /// 添加一个服务
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;arg&quot;&gt;服务参数&lt;/param&gt;
-        ///    public static void Start(ServiceUserArg arg)
-        ///        =&gt; ServiceManager.Start(arg);
-        ///    /// &lt;sum [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string ServiceSDK {
+        public static byte[] ServiceSDK {
             get {
-                return ResourceManager.GetString("ServiceSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("ServiceSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.PortServer;
-        ///using System.Collections.Generic;
-        ///using System.Net;
-        ///using System.Text;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public partial class TcpSocketRequest
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 端口
-        ///    /// &lt;/summary&gt;
-        ///    public IPEndPoint Port { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// 数据
-        ///    /// &lt;/summary&gt;
-        ///    public byte[] Data { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// 长度
-        ///    /// &lt;/summary&gt;
-        ///    public int Length { get; set; }
-        ///    /// &lt;summary&gt;
-        ///    /// 构造方法
-        ///    /// &lt;/summary&gt;        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string SocketSDK {
+        public static byte[] SocketSDK {
             get {
-                return ResourceManager.GetString("SocketSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("SocketSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using System.Collections.Generic;
-        ///using System.Collections.Specialized;
-        ///using System.IO;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public class HttpDllRequest
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 请求参数
-        ///    /// &lt;/summary&gt;
-        ///    public Dictionary&lt;string, dynamic&gt; Parameter { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// 请求头
-        ///    /// &lt;/summary&gt;
-        ///    public NameValueCollection RowRequest { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// Cookie
-        ///    /// &lt;/summary&gt;
-        ///    public Dictionary&lt;string, List&lt;string&gt;&gt; Cookie { get [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string WebApiSDK {
+        public static byte[] WebApiSDK {
             get {
-                return ResourceManager.GetString("WebApiSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("WebApiSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using System.Collections.Generic;
-        ///using System.Collections.Specialized;
-        ///using System.IO;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public class HttpDllRequest
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 请求参数
-        ///    /// &lt;/summary&gt;
-        ///    public Dictionary&lt;string, dynamic&gt; Parameter { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// 请求头
-        ///    /// &lt;/summary&gt;
-        ///    public NameValueCollection RowRequest { get; init; }
-        ///    /// &lt;summary&gt;
-        ///    /// Cookie
-        ///    /// &lt;/summary&gt;
-        ///    public Dictionary&lt;string, List&lt;string&gt;&gt; Cookie { get [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string WebApiSDK1 {
+        public static byte[] WebHtmlSDK {
             get {
-                return ResourceManager.GetString("WebApiSDK1", resourceCulture);
+                object obj = ResourceManager.GetObject("WebHtmlSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.Core.FileSystem.Web;
-        ///using ColoryrServer.Core.Http;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public static class WebHtml
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 获取动态前端资源
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;uuid&quot;&gt;&lt;/param&gt;
-        ///    /// &lt;param name=&quot;name&quot;&gt;&lt;/param&gt;
-        ///    /// &lt;returns&gt;&lt;/returns&gt;
-        ///    public static byte[] GetWebFile(string uuid, string name)
-        ///    {
-        ///        var route = HttpInvokeRoute.Get(uuid);
-        ///        return route.Invoke(null, name).Data as byte[];
-        ///    }
-        ///    /// &lt;summary&gt;
-        ///    /// 获取静 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        public static string WebHtmlSDK {
+        public static byte[] WebSocketSDK {
             get {
-                return ResourceManager.GetString("WebHtmlSDK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 using ColoryrServer.Core.PortServer;
-        ///using Fleck;
-        ///
-        ///namespace ColoryrServer.SDK;
-        ///
-        ///public static class WebSocketUtils
-        ///{
-        ///    /// &lt;summary&gt;
-        ///    /// 发送数据
-        ///    /// &lt;/summary&gt;
-        ///    /// &lt;param name=&quot;info&quot;&gt;接口&lt;/param&gt;
-        ///    /// &lt;param name=&quot;data&quot;&gt;数据&lt;/param&gt;
-        ///    public static void Send(IWebSocketConnectionInfo info, string data)
-        ///        =&gt; PortWebSocket.Send(info.ClientPort, data);
-        ///    public static void Send(IWebSocketConnectionInfo info, byte[] data)
-        ///        =&gt; PortWebSocket.Send(info.ClientPort, data);
-        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        public static string WebSocketSDK {
-            get {
-                return ResourceManager.GetString("WebSocketSDK", resourceCulture);
+                object obj = ResourceManager.GetObject("WebSocketSDK", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

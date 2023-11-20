@@ -1,9 +1,9 @@
 ﻿using ColoryrBuild.Windows;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ColoryrWork.Lib.Build;
 
 using System.Threading.Tasks;
+using System.Text.Json.Nodes;
 
 namespace ColoryrBuild.PostBuild;
 
@@ -16,9 +16,9 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>是否有效</returns>
     public static bool CheckLogin(string data)
     {
-        var obj = JObject.Parse(data);
+        var obj = JsonNode.Parse(data)?.AsObject();
 
-        if (obj.ContainsKey("Build") && obj.ContainsKey("Message"))
+        if (obj is { } && obj.ContainsKey("Build") && obj.ContainsKey("Message"))
         {
             var item1 = obj["Build"]!.ToString();
             var item2 = obj["Message"]!.ToString();
@@ -46,7 +46,7 @@ public partial class HttpBuild : HttpUtilsBase
         });
         if (data == null)
             return false;
-        var res = JsonConvert.DeserializeObject<ReMessage>(data);
+        var res = JsonUtils.ToObj<ReMessage>(data);
         if (res?.Build == true)
         {
             return true;
@@ -72,7 +72,7 @@ public partial class HttpBuild : HttpUtilsBase
         });
         if (data == null)
             return false;
-        var res = JsonConvert.DeserializeObject<ReMessage>(data);
+        var res = JsonUtils.ToObj<ReMessage>(data);
         if (res?.Build == true)
         {
             App.Config.Token = res.Message;

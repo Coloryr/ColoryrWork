@@ -31,20 +31,17 @@ public static class WebBinManager
 
         if (!File.Exists(WebBinStatic + "index.html"))
         {
-            File.WriteAllText(WebBinStatic + "index.html", WebResource.IndexHtml,
-                Encoding.UTF8);
+            File.WriteAllBytes(WebBinStatic + "index.html", WebResource.IndexHtml);
         }
 
         if (!File.Exists(WebBinStatic + "404.html"))
         {
-            File.WriteAllText(WebBinStatic + "404.html", WebResource.Html404,
-                Encoding.UTF8);
+            File.WriteAllBytes(WebBinStatic + "404.html", WebResource.Html404);
         }
 
         if (!File.Exists(WebBinStatic + "fixmode.html"))
         {
-            File.WriteAllText(WebBinStatic + "fixmode.html", WebResource.FixHtml,
-                Encoding.UTF8);
+            File.WriteAllBytes(WebBinStatic + "fixmode.html", WebResource.FixHtml);
         }
 
         if (!File.Exists(WebBinStatic + "favicon.ico"))

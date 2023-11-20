@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>╡Бйт</title>
+    <title>Ф╣▀Х╞∙</title>
 </head>
 <script src="https://unpkg.com/vue@3.2.36/dist/vue.global.js"></script>
 

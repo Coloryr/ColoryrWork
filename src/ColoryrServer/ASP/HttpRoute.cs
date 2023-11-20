@@ -62,7 +62,7 @@ internal static class HttpRoute
                 if (item.Key is "Transfer-Encoding")
                     continue;
                 StringValues values = new(item.Value.ToArray());
-                Response.Headers.Add(item.Key, values);
+                Response.Headers.Append(item.Key, values);
             }
 
             await res.Content.CopyToAsync(Response.Body);
@@ -90,7 +90,7 @@ internal static class HttpRoute
             foreach (var item in res.Headers)
             {
                 StringValues values = new(item.Value.ToArray());
-                Response.Headers.Add(item.Key, values);
+                Response.Headers.Append(item.Key, values);
             }
             await HttpClientUtils.CopyToAsync(res.Content.ReadAsStream(), Response.Body, CancellationToken.None);
         }

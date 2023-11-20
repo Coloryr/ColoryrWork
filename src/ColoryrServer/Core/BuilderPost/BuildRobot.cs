@@ -4,14 +4,15 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
-internal static class PostBuildRobot
+internal static class BuildRobot
 {
     public static ReMessage Add(BuildOBJ json)
     {
@@ -28,8 +29,8 @@ internal static class PostBuildRobot
             UUID = json.UUID,
             Type = CodeType.Robot,
             CreateTime = time,
-            Code = DemoResource.Robot
-            .Replace(CodeDemo.Name, json.UUID)
+            Code = Encoding.UTF8.GetString(DemoResource.Robot)
+                .Replace(CodeDemo.Name, json.UUID)
         };
         CodeManager.StorageRobot(obj, json.User);
         GenRobot.StartGen(obj, json.User);
@@ -85,7 +86,7 @@ internal static class PostBuildRobot
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

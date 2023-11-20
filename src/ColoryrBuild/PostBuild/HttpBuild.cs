@@ -1,5 +1,5 @@
 ﻿using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,7 +39,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetList(type);
         }
-        return JsonConvert.DeserializeObject<CSFileList>(data);
+        return JsonUtils.ToObj<CSFileList>(data);
     }
     /// <summary>
     /// Class代码编辑
@@ -59,7 +59,7 @@ public partial class HttpBuild : HttpUtilsBase
             Version = obj.Version,
             Text = obj.Text,
             Temp = file,
-            Code = JsonConvert.SerializeObject(list)
+            Code = JsonUtils.ToString(list)
         });
         if (data == null)
             return null;
@@ -67,7 +67,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await ClassFileEdit(obj, file, list);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加代码项目
@@ -76,7 +76,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <param name="name">名字</param>
     /// <param name="arg">附加参数</param>
     /// <returns>结果</returns>
-    public async Task<ReMessage?> AddObj(CodeType type, string name, string arg = null)
+    public async Task<ReMessage?> AddObj(CodeType type, string name, string? arg = null)
     {
         var reType = type switch
         {
@@ -103,7 +103,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddObj(type, name);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除代码项目
@@ -137,7 +137,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await RemoveObj(type, obj);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 获取项目代码
@@ -170,7 +170,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetCode(type, name);
         }
-        return JsonConvert.DeserializeObject<CSFileCode>(data);
+        return JsonUtils.ToObj<CSFileCode>(data);
     }
     /// <summary>
     /// 构建代码
@@ -199,7 +199,7 @@ public partial class HttpBuild : HttpUtilsBase
             UUID = obj.UUID,
             Version = obj.Version,
             Text = obj.Text,
-            Code = JsonConvert.SerializeObject(list)
+            Code = JsonUtils.ToString(list)
         });
         if (data == null)
             return null;
@@ -207,7 +207,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await Build(obj, type, list);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 获取API代码
@@ -227,7 +227,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetApi();
         }
-        return JsonConvert.DeserializeObject<APIFileObj>(data);
+        return JsonUtils.ToObj<APIFileObj>(data);
     }
     /// <summary>
     /// 添加Class文件
@@ -251,7 +251,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddClassFile(obj, file);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除Class文件
@@ -275,7 +275,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddClassFile(obj, file);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 获取Class代码
@@ -297,6 +297,6 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetClassCode(obj);
         }
-        return JsonConvert.DeserializeObject<ClassCodeGetObj>(data);
+        return JsonUtils.ToObj<ClassCodeGetObj>(data);
     }
 }

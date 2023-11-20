@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <BaseOutputPath>..\..\build_out\Core</BaseOutputPath>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.0.0</FileVersion>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.143" />
+    <PackageReference Include="Dapper" Version="2.1.21" />
     <PackageReference Include="DiffPlex" Version="1.7.1" />
     <PackageReference Include="DotNetty.Buffers" Version="0.7.5" />
     <PackageReference Include="DotNetty.Codecs" Version="0.7.5" />
@@ -30,25 +30,25 @@
     <PackageReference Include="DotNetty.Transport" Version="0.7.5" />
     <PackageReference Include="DotNetty.Transport.Libuv" Version="0.7.5" />
     <PackageReference Include="Fleck" Version="1.2.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.51" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
     <PackageReference Include="HttpMultipartParser" Version="8.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0-2.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0-3.final" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.9" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
-    <PackageReference Include="MQTTnet" Version="4.2.1.781" />
-    <PackageReference Include="MySql.Data" Version="8.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.110" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="MQTTnet" Version="4.3.1.873" />
+    <PackageReference Include="MySql.Data" Version="8.2.0" />
+    <!--<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />-->
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.3.0-dev" />
+    <PackageReference Include="RestSharp" Version="110.2.1-alpha.0.16" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
-    <PackageReference Include="SixLabors.ImageSharp.Web" Version="3.0.1" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+    <PackageReference Include="SkiaSharp" Version="2.88.6" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.6" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.4" />
+    <PackageReference Include="Svg.Skia" Version="1.0.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <PackageReference Include="YUICompressor.NET" Version="3.1.0" />
     <PackageReference Include="YUICompressor.NET.MSBuild" Version="3.0.0" />
   </ItemGroup>
@@ -114,7 +114,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Demo\Vue\" />
+    <Folder Include="OLD\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>

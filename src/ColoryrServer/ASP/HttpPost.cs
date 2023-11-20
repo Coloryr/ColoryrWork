@@ -2,20 +2,18 @@
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
-using ColoryrWork.Lib.Server;
 using HttpMultipartParser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ColoryrWork.Lib.Build;
 using System.Collections.Specialized;
-using System.Text;
+using System.Text.Json.Nodes;
 
 namespace ColoryrServer.ASP;
 
 internal static class HttpPost
 {
-    private static async Task<HttpDllRequest?> InitArg(HttpRequest Request)
+    internal static async Task<(MyContentType, IDictionary<string, dynamic?>?)> GetBody(HttpRequest Request)
     {
-        MyContentType type = MyContentType.XFormData;
+        MyContentType type = MyContentType.Error;
         var temp = new Dictionary<string, dynamic?>();
         if (Request.ContentType != null)
         {
@@ -55,42 +53,56 @@ internal static class HttpPost
                 catch (Exception e)
                 {
                     ServerMain.LogError("Post处理出错", e);
-                    return null;
+                    return (type, null);
                 }
             }
             else if (Request.ContentType.StartsWith(ServerContentType.JSON))
             {
-                using MemoryStream stream = new();
-                await Request.Body.CopyToAsync(stream);
-                var Str = Encoding.UTF8.GetString(stream.ToArray());
-                JObject obj = JObject.Parse(Function.GetSrings(Str, "{"));
-                foreach (var item in obj)
+                var obj = JsonNode.Parse(Request.Body);
+                if (obj is { })
                 {
-                    temp.Add(item.Key, item.Value);
+                    if (obj is JsonObject obj1)
+                    {
+                        foreach (var item in obj1)
+                        {
+                            temp.Add(item.Key, item.Value);
+                        }
+                    }
+                    else
+                    {
+                        temp.Add("", obj);
+                    }
+                    type = MyContentType.Json;
                 }
-                type = MyContentType.Json;
             }
             else
             {
                 type = MyContentType.Other;
             }
         }
-        NameValueCollection collection = new();
-        foreach (var item in Request.Headers)
+
+        return (type, temp);
+    }
+
+    private static HttpDllRequest? InitArg(HttpRequest request)
+    {
+        NameValueCollection collection = [];
+        foreach (var item in request.Headers)
         {
             collection.Add(item.Key, item.Value);
         }
 
         return new()
         {
-            Cookie = ASPHttpUtils.HaveCookie(Request.Headers.Cookie),
-            Parameter = temp,
+            Cookie = ASPHttpUtils.HaveCookie(request.Headers.Cookie),
             RowRequest = collection,
-            ContentType = type,
-            Method = Request.Method,
-            Stream = type == MyContentType.Other ? Request.Body : null
+            ContentType = request.ContentType,
+            Method = request.Method,
+            Stream = request.Body,
+            GetBody = () => GetBody(request)
         };
     }
+
     internal static async Task Post(HttpContext context)
     {
         HttpRequest request = context.Request;
@@ -101,32 +113,32 @@ internal static class HttpPost
             await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
             return;
         }
-        HttpReturn httpReturn;
+        CoreHttpReturn httpReturn;
         var name = context.GetRouteValue("name") as string;
         var route = HttpUtils.GetUUID(name, out string funtion);
         if (route != null)
         {
             if (route.IsDll)
             {
-                var arg = await InitArg(request);
+                var arg = InitArg(request);
                 if (arg == null)
                 {
                     response.StatusCode = 500;
                     await response.WriteAsync(HttpReturnSave.FromError.Data as string);
                     return;
                 }
-                httpReturn = route.Invoke(arg, funtion);
+                httpReturn = await route.Invoke(arg, funtion);
             }
             else
             {
-                httpReturn = route.Invoke(null, funtion);
+                httpReturn = await route.Invoke(null, funtion);
             }
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;
             if (httpReturn.Head != null)
                 foreach (var Item in httpReturn.Head)
                 {
-                    response.Headers.Add(Item.Key, Item.Value);
+                    response.Headers.Append(Item.Key, Item.Value);
                 }
             if (httpReturn.Cookie != null)
                 foreach (var item in httpReturn.Cookie)
@@ -143,7 +155,7 @@ internal static class HttpPost
                     break;
                 case ResType.Json:
                     var obj1 = httpReturn.Data;
-                    await response.WriteAsync(JsonConvert.SerializeObject(obj1));
+                    await response.WriteAsync(JsonUtils.ToString(obj1));
                     break;
                 case ResType.Stream:
                     if (httpReturn.Data is not Stream stream)

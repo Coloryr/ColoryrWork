@@ -9,7 +9,7 @@ namespace ColoryrServer.Core.FileSystem.Managers;
 
 internal class StreamTemp
 {
-    public Stream stream;
+    public required Stream stream;
     public int time;
 
     public void Tick() { time--; }
@@ -24,9 +24,8 @@ internal static class FileStreamManager
 
     private const int ResetTime = 180;
 
-    public static void Start()
+    static FileStreamManager()
     {
-        IsRun = true;
         TickThread = new(() =>
         {
             while (IsRun)
@@ -43,6 +42,12 @@ internal static class FileStreamManager
         {
             Name = "StreamTickThread"
         };
+    }
+
+    public static void Start()
+    {
+        IsRun = true;
+        
         TickThread.Start();
         ServerMain.OnStop += Stop;
     }
@@ -62,7 +67,7 @@ internal static class FileStreamManager
         return EtagTemp.ContainsKey(cookie);
     }
 
-    public static Stream LoadStream(string cookie)
+    public static Stream? LoadStream(string cookie)
     {
         try
         {
@@ -84,7 +89,7 @@ internal static class FileStreamManager
     {
         try
         {
-            string etag = http.RowRequest["If-Match"];
+            var etag = http.RowRequest["If-Match"];
             Stream stream;
             if (etag == null || http.Cookie.Count == 0 || http.Cookie.ContainsKey("etag"))
             {
@@ -93,8 +98,7 @@ internal static class FileStreamManager
             }
             else
             {
-                http.Cookie.TryGetValue("etag", out var list);
-                if (list.Count == 0)
+                if (!http.Cookie.TryGetValue("etag", out var list) || list.Count == 0)
                 {
                     Guid guid = Guid.NewGuid();
                     etag = guid.ToString();
@@ -123,7 +127,7 @@ internal static class FileStreamManager
             }
 
             int pos = 0;
-            string range = http.RowRequest["Range"];
+            var range = http.RowRequest["Range"];
             if (range != null)
             {
                 if (range.StartsWith("bytes="))

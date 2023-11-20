@@ -4,7 +4,6 @@ using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using Microsoft.AspNetCore.Connections;
-using Newtonsoft.Json;
 using System.Security.Cryptography.X509Certificates;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -32,7 +31,7 @@ public static class ASPServer
 
     public static void Main()
     {
-        PostServerConfig.Init(new ASPTopAPI());
+        ServerConfig.Init(new ASPTopAPI());
         while (IsReboot)
         {
             IsReboot = false;
@@ -176,7 +175,7 @@ public static class ASPServer
         if (Request.Headers.ContainsKey(BuildKV.BuildK))
         {
             var obj1 = await PostDo.StartBuild(Request.Body, Request.Headers[BuildKV.BuildK]);
-            await Response.WriteAsync(JsonConvert.SerializeObject(obj1));
+            await Response.WriteAsync(JsonUtils.ToString(obj1));
         }
         else
         {

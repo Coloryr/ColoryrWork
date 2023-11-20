@@ -73,16 +73,6 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static byte[] env_d {
-            get {
-                object obj = ResourceManager.GetObject("env_d", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
         internal static byte[] HelloWorld {
             get {
                 object obj = ResourceManager.GetObject("HelloWorld", resourceCulture);
@@ -96,16 +86,6 @@ namespace ColoryrServer.Core {
         internal static byte[] index {
             get {
                 object obj = ResourceManager.GetObject("index", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] logo {
-            get {
-                object obj = ResourceManager.GetObject("logo", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -133,6 +113,16 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
+        internal static byte[] style {
+            get {
+                object obj = ResourceManager.GetObject("style", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
         internal static byte[] tsconfig {
             get {
                 object obj = ResourceManager.GetObject("tsconfig", resourceCulture);
@@ -153,9 +143,39 @@ namespace ColoryrServer.Core {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
+        internal static byte[] vite {
+            get {
+                object obj = ResourceManager.GetObject("vite", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
         internal static byte[] vite_config {
             get {
                 object obj = ResourceManager.GetObject("vite_config", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] vite_env_d {
+            get {
+                object obj = ResourceManager.GetObject("vite_env_d", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] vue {
+            get {
+                object obj = ResourceManager.GetObject("vue", resourceCulture);
                 return ((byte[])(obj));
             }
         }

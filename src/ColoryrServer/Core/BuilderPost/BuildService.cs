@@ -5,14 +5,15 @@ using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
-internal static class PostBuildService
+internal static class BuildService
 {
     public static ReMessage Add(BuildOBJ json)
     {
@@ -45,10 +46,10 @@ internal static class PostBuildService
             CreateTime = time,
             Code = type! switch
             {
-                ServiceType.Normal => DemoResource.Service1,
-                ServiceType.ErrorDump => DemoResource.Service2,
-                ServiceType.OnlyOpen => DemoResource.Service3,
-                ServiceType.Builder => DemoResource.Service4,
+                ServiceType.Normal => Encoding.UTF8.GetString(DemoResource.Service1),
+                ServiceType.ErrorDump => Encoding.UTF8.GetString(DemoResource.Service2),
+                ServiceType.OnlyOpen =>  Encoding.UTF8.GetString(DemoResource.Service3),
+                ServiceType.Builder => Encoding.UTF8.GetString(DemoResource.Service4),
                 _ => ""
             }
         };
@@ -107,7 +108,7 @@ internal static class PostBuildService
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

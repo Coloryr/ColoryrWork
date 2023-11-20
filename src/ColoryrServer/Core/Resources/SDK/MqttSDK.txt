@@ -1,4 +1,4 @@
-using ColoryrServer.Core.FileSystem.Database;
+using ColoryrServer.Core.Database;
 using ColoryrServer.Core.PortServer;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
@@ -9,10 +9,10 @@ namespace ColoryrServer.SDK;
 public static class MqttSDK
 {
     /// <summary>
-    /// ·¢ËÍÏûÏ¢
+    /// å‘é€æ¶ˆæ¯
     /// </summary>
-    /// <param name="topic">±êÌâ</param>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="topic">æ ‡é¢˜</param>
+    /// <param name="data">æ•°æ®</param>
     public static void Send(string topic, string data, string id = "ColoryrServer",
         MqttQualityOfServiceLevel level = MqttQualityOfServiceLevel.ExactlyOnce)
         => PortMqttServer.Send(topic, data, id, level).Wait();
@@ -35,9 +35,9 @@ public class DllMqttLoadingRetainedMessages
 {
     public LoadingRetainedMessagesEventArgs Context { get; init; }
     /// <summary>
-    /// MQTT¼ÓÔØĞÅÏ¢
+    /// MQTTåŠ è½½ä¿¡æ¯
     /// </summary>
-    /// <param name="context">Êı¾İ</param>
+    /// <param name="context">æ•°æ®</param>
     public DllMqttLoadingRetainedMessages(LoadingRetainedMessagesEventArgs context)
         => Context = context;
 }
@@ -46,15 +46,15 @@ public class DllMqttConnectionValidator
 {
     public ValidatingConnectionEventArgs Context { get; init; }
     /// <summary>
-    /// MQTT·şÎñÆ÷ÑéÖ¤
+    /// MQTTæœåŠ¡å™¨éªŒè¯
     /// </summary>
-    /// <param name="context">Êı¾İ</param>
+    /// <param name="context">æ•°æ®</param>
     public DllMqttConnectionValidator(ValidatingConnectionEventArgs context)
         => Context = context;
     /// <summary>
-    /// ÉèÖÃÑéÖ¤ºóµÄ·µ»Ø
+    /// è®¾ç½®éªŒè¯åçš„è¿”å›
     /// </summary>
-    /// <param name="state">×´Ì¬</param>
+    /// <param name="state">çŠ¶æ€</param>
     public void SetReasonCode(MqttConnectReasonCode state)
         => Context.ReasonCode = state;
 }
@@ -63,9 +63,9 @@ public class DllMqttMessage
 {
     public ApplicationMessageNotConsumedEventArgs Context { get; init; }
     /// <summary>
-    /// MQTT·şÎñÆ÷ÊÕµ½ÏûÏ¢
+    /// MQTTæœåŠ¡å™¨æ”¶åˆ°æ¶ˆæ¯
     /// </summary>
-    /// <param name="Context">Êı¾İ</param>
+    /// <param name="Context">æ•°æ®</param>
     public DllMqttMessage(ApplicationMessageNotConsumedEventArgs Context)
         => this.Context = Context;
 }
@@ -74,9 +74,9 @@ public class DllMqttRetainedMessageChanged
 {
     public RetainedMessageChangedEventArgs Context { get; init; }
     /// <summary>
-    /// MQTT±£ÁôÏûÏ¢ĞŞ¸Ä
+    /// MQTTä¿ç•™æ¶ˆæ¯ä¿®æ”¹
     /// </summary>
-    /// <param name="Context">Êı¾İ</param>
+    /// <param name="Context">æ•°æ®</param>
     public DllMqttRetainedMessageChanged(RetainedMessageChangedEventArgs Context)
         => this.Context = Context;
 }
@@ -85,9 +85,9 @@ public class DllMqttSubscription
 {
     public InterceptingSubscriptionEventArgs Context { get; init; }
     /// <summary>
-    /// Mqtt¶©ÔÄ
+    /// Mqttè®¢é˜…
     /// </summary>
-    /// <param name="context">Êı¾İ</param>
+    /// <param name="context">æ•°æ®</param>
     public DllMqttSubscription(InterceptingSubscriptionEventArgs context)
        => Context = context;
     /// <summary>
@@ -97,7 +97,7 @@ public class DllMqttClientConnected
 {
     public ClientConnectedEventArgs Context { get; init; }
     /// <summary>
-    /// Mqtt¿Í»§¶ËÁ´½Ó
+    /// Mqttå®¢æˆ·ç«¯é“¾æ¥
     /// </summary>
     /// <param name="context"></param>
     public DllMqttClientConnected(ClientConnectedEventArgs context)
@@ -108,7 +108,7 @@ public class DllMqttClientDisconnected
 {
     public ClientDisconnectedEventArgs Context { get; init; }
     /// <summary>
-    /// Mqtt¿Í»§¶Ë¶Ï¿ªÁ´½Ó
+    /// Mqttå®¢æˆ·ç«¯æ–­å¼€é“¾æ¥
     /// </summary>
     /// <param name="context"></param>
     public DllMqttClientDisconnected(ClientDisconnectedEventArgs context)
@@ -119,9 +119,9 @@ public class DllMqttUnsubscription
 {
     public InterceptingUnsubscriptionEventArgs Context { get; init; }
     /// <summary>
-    /// MqttÈ¡Ïû¶©ÔÄ
+    /// Mqttå–æ¶ˆè®¢é˜…
     /// </summary>
-    /// <param name="context">Êı¾İ</param>
+    /// <param name="context">æ•°æ®</param>
     public DllMqttUnsubscription(InterceptingUnsubscriptionEventArgs context)
        => Context = context;
 }
@@ -130,9 +130,9 @@ public class DllMqttInterceptingPublish
 {
     public InterceptingPublishEventArgs Context { get; init; }
     /// <summary>
-    /// MqttÍÆËÍÏûÏ¢
+    /// Mqttæ¨é€æ¶ˆæ¯
     /// </summary>
-    /// <param name="context">Êı¾İ</param>
+    /// <param name="context">æ•°æ®</param>
     public DllMqttInterceptingPublish(InterceptingPublishEventArgs context)
        => Context = context;
 }

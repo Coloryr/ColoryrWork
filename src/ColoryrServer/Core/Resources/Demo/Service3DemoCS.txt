@@ -3,7 +3,7 @@ using ColoryrServer.SDK;
 
 //ColoryrServer_Debug
 
-[ServiceIN(false, ServiceType.OnlyOpen)] //true±íÊ¾¸úËæ·şÎñÆ÷Æô¶¯
+[ServiceIN(false, ServiceType.OnlyOpen)] //trueè¡¨ç¤ºè·ŸéšæœåŠ¡å™¨å¯åŠ¨
 public class {name}
 {
     public void OnStart()

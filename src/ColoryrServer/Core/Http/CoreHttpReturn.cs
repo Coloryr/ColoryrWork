@@ -1,8 +1,9 @@
 ﻿using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.SDK;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.Http;
 
@@ -10,7 +11,7 @@ public enum ResType
 {
     Json, String, Byte, Stream
 }
-public record HttpReturn
+public record CoreHttpReturn
 {
     public Encoding Encoding = Encoding.UTF8;
     public Dictionary<string, string> Cookie;
@@ -24,57 +25,57 @@ public record HttpReturn
 
 public static class HttpReturnSave
 {
-    public static HttpReturn FromError { get; } = new()
+    public static CoreHttpReturn FromError { get; } = new()
     {
         Res = ResType.String,
         ContentType = ServerContentType.JSON,
-        Data = JsonConvert.SerializeObject(new
+        Data = JsonUtils.ToString(new
         {
             res = 500,
             text = "表单解析发生错误，请检查数据"
         })
     };
 
-    public static HttpReturn StreamError { get; } = new()
+    public static CoreHttpReturn StreamError { get; } = new()
     {
         Res = ResType.String,
         ContentType = ServerContentType.JSON,
-        Data = JsonConvert.SerializeObject(new
+        Data = JsonUtils.ToString(new
         {
             res = 500,
             text = "流数据错误"
         })
     };
 
-    public static HttpReturn ResReload { get; } = new()
+    public static CoreHttpReturn ResReload { get; } = new()
     {
         Res = ResType.String,
         ContentType = ServerContentType.JSON,
-        Data = JsonConvert.SerializeObject(new
+        Data = JsonUtils.ToString(new
         {
             res = 90,
             text = "服务器正在重载"
         })
     };
-    public static HttpReturn ResError { get; } = new()
+    public static CoreHttpReturn ResError { get; } = new()
     {
         Res = ResType.String,
         ReCode = 400,
         ContentType = ServerContentType.JSON,
-        Data = JsonConvert.SerializeObject(new
+        Data = JsonUtils.ToString(new
         {
             res = 400,
             text = "服务器内部错误"
         })
     };
-    public static HttpReturn Res404 { get; } = new()
+    public static CoreHttpReturn Res404 { get; } = new()
     {
         Data = WebBinManager.BaseDir.Html404,
         ContentType = ServerContentType.HTML,
         Res = ResType.Byte,
         ReCode = 404
     };
-    public static HttpReturn ResFixMode { get; } = new()
+    public static CoreHttpReturn ResFixMode { get; } = new()
     {
         Data = WebBinManager.BaseDir.HtmlFixMode,
         ContentType = ServerContentType.HTML,
@@ -91,9 +92,9 @@ public static class HttpReturnSave
             IsDll = false;
             IsReload = false;
         }
-        public override HttpReturn Invoke(HttpDllRequest arg, string function)
+        public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
         {
-            return ResReload;
+            return Task.FromResult(ResReload);
         }
     }
 
@@ -104,9 +105,9 @@ public static class HttpReturnSave
             IsDll = false;
             IsReload = false;
         }
-        override public HttpReturn Invoke(HttpDllRequest arg, string function)
+        override public Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
         {
-            return ResFixMode;
+            return Task.FromResult(ResFixMode);
         }
     }
 }

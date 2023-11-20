@@ -14,10 +14,8 @@ using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
 using HtmlAgilityPack;
 using ICSharpCode.SharpZipLib.Zip;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using Newtonsoft.Json.Linq;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -34,7 +32,7 @@ namespace ColoryrServer.Core;
 
 public static class ServerMain
 {
-    public const string Version = "2.5.0";
+    public const string Version = "3.0.0";
     /// <summary>
     /// 配置文件
     /// </summary>
@@ -205,18 +203,18 @@ public static class ServerMain
         save.Close();
         dynamic test3 = 1234;
         test3 = "1234";
+        var obj = new JObject();
+        var arr = new JArray();
         var test2 = new HtmlDocument();
-        using HttpResponseMessage test = new();
+        using var test = new HttpResponseMessage();
         var test1 = test.IsSuccessStatusCode;
         Parallel.ForEach(new List<string>(), (i, b) => { });
-        using Image<Rgba32> bitmap = new(1, 1);
-        SystemFonts.Families.GetEnumerator();
-        bitmap.Mutate(a => { a.BackgroundColor(Color.AliceBlue); });
-        ZipEntry entry = new("1");
-        NameValueCollection nameValue = new();
-        Regex re = new("");
+        var entry = new ZipEntry("1");
+        using var image = new SKBitmap();
+        var nameValue = new NameValueCollection();
+        var re = new Regex("");
         using Aes aes = Aes.Create();
-        WebProxy proxy = new();
+        var proxy = new WebProxy();
     }
 
     public static void Stop()

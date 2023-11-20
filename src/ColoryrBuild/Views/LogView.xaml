@@ -18,7 +18,7 @@
         <Button
             Width="80"
             Height="20"
-            Margin="10,5,0,0"
+            Margin="3,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button1_Click"
@@ -26,7 +26,7 @@
         <Button
             Width="80"
             Height="20"
-            Margin="95,5,0,0"
+            Margin="88,5,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click"

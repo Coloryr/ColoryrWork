@@ -3,8 +3,8 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.Core.Utils;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +12,18 @@ using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
-internal static class PostBuildWeb
+internal static class BuildWeb
 {
     public static ReMessage Add(BuildOBJ json)
     {
         if (WebFileManager.GetHtml(json.UUID) != null)
-            new ReMessage
+        {
+            return new ReMessage
             {
                 Build = false,
                 Message = $"Web[{json.UUID}]已存在"
             };
+        }
         var time = string.Format("{0:s}", DateTime.Now);
         var isVue = json.Code.ToLower() == "true";
         string uuid = json.UUID.Replace('\\', '/');
@@ -30,11 +32,13 @@ internal static class PostBuildWeb
             uuid = uuid[..^1];
         }
         if (HttpInvokeRoute.CheckBase(uuid))
+        {
             return new ReMessage
             {
                 Build = false,
                 Message = $"Web[{uuid}]路由冲突"
             };
+        }
         ServerMain.LogOut($"[{json.User}]正在创建Web[{json.UUID}]");
         WebObj obj;
         if (isVue)
@@ -45,21 +49,22 @@ internal static class PostBuildWeb
                 CreateTime = time,
                 Text = "",
                 Codes = new()
-                    {
-                        { "index.html", Encoding.UTF8.GetString(DemoVueResource.index) },
-                        { "package.json", Encoding.UTF8.GetString(DemoVueResource.package) },
-                        { "tsconfig.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig) },
-                        { "tsconfig.node.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig_node) },
-                        { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config).Replace("{dir}", $"/{uuid}/") },
-                        { "src/App.vue", Encoding.UTF8.GetString(DemoVueResource.App) },
-                        { "src/env.d.ts", Encoding.UTF8.GetString(DemoVueResource.env_d) },
-                        { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
-                        { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) }
-                    },
-                Files = new()
-                    {
-                        { "src/logo.png", DemoVueResource.logo }
-                    },
+                {
+                    { "index.html", Encoding.UTF8.GetString(DemoVueResource.index) },
+                    { "package.json", Encoding.UTF8.GetString(DemoVueResource.package) },
+                    { "tsconfig.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig) },
+                    { "tsconfig.node.json", Encoding.UTF8.GetString(DemoVueResource.tsconfig_node) },
+                    { "vite.config.ts", Encoding.UTF8.GetString(DemoVueResource.vite_config)
+                        .Replace("{dir}", $"/{uuid}/") },
+                    { "src/App.vue", Encoding.UTF8.GetString(DemoVueResource.App) },
+                    { "src/HelloWorld.vue", Encoding.UTF8.GetString(DemoVueResource.HelloWorld) },
+                    { "src/main.ts", Encoding.UTF8.GetString(DemoVueResource.main) },
+                    { "src/style.css", Encoding.UTF8.GetString(DemoVueResource.style) },
+                    { "src/vite.svg", Encoding.UTF8.GetString(DemoVueResource.vite) },
+                    { "src/vite-env.d.ts", Encoding.UTF8.GetString(DemoVueResource.vite_env_d) },
+                    { "src/vue.svg", Encoding.UTF8.GetString(DemoVueResource.vue) },
+                },
+                Files = [],
                 IsVue = true
             };
         }
@@ -71,11 +76,11 @@ internal static class PostBuildWeb
                 CreateTime = time,
                 Text = "",
                 Codes = new()
-                    {
-                        { "index.html", DemoWebResource.HtmlDemoHtml.Replace(CodeDemo.Name, json.UUID) },
-                        { "js.js", DemoWebResource.IndexDemoJS }
-                    },
-                Files = new()
+                {
+                    { "index.html", Encoding.UTF8.GetString(DemoWebResource.HtmlDemoHtml).Replace(CodeDemo.Name, json.UUID) },
+                    { "js.js", Encoding.UTF8.GetString(DemoWebResource.IndexDemoJS) }
+                },
+                Files = []
             };
         }
 
@@ -125,7 +130,7 @@ internal static class PostBuildWeb
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         if (!obj.Codes.TryGetValue(json.Temp, out var code))
         {
             return new ReMessage

@@ -6,10 +6,10 @@ namespace ColoryrServer.SDK;
 public static class WebSocketUtils
 {
     /// <summary>
-    /// ·¢ËÍÊı¾İ
+    /// å‘é€æ•°æ®
     /// </summary>
-    /// <param name="info">½Ó¿Ú</param>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="info">æ¥å£</param>
+    /// <param name="data">æ•°æ®</param>
     public static void Send(IWebSocketConnectionInfo info, string data)
         => PortWebSocket.Send(info.ClientPort, data);
     public static void Send(IWebSocketConnectionInfo info, byte[] data)
@@ -24,10 +24,10 @@ public class WebSocketMessage
     public IWebSocketConnectionInfo Info { get; init; }
     public string Data { get; init; }
     /// <summary>
-    /// WebSocket´«À´Êı¾İ
+    /// WebSocketä¼ æ¥æ•°æ®
     /// </summary>
-    /// <param name="client">WS¿Í»§¶Ë</param>
-    /// <param name="data">WS±¾´Î´«À´µÄÊı¾İ</param>
+    /// <param name="client">WSå®¢æˆ·ç«¯</param>
+    /// <param name="data">WSæœ¬æ¬¡ä¼ æ¥çš„æ•°æ®</param>
     public WebSocketMessage(IWebSocketConnection client, string data)
     {
         IsAvailable = client.IsAvailable;
@@ -40,9 +40,9 @@ public class WebSocketOpen
     public bool IsAvailable { get; init; }
     public IWebSocketConnectionInfo Info { get; init; }
     /// <summary>
-    /// WebSocketÁ¬½Ó
+    /// WebSocketè¿æ¥
     /// </summary>
-    /// <param name="client">WS¿Í»§¶Ë</param>
+    /// <param name="client">WSå®¢æˆ·ç«¯</param>
     public WebSocketOpen(IWebSocketConnection client)
     {
         IsAvailable = client.IsAvailable;
@@ -58,9 +58,9 @@ public class WebSocketClose
 {
     public IWebSocketConnectionInfo Info { get; init; }
     /// <summary>
-    /// WebSocket¶Ï¿ª
+    /// WebSocketæ–­å¼€
     /// </summary>
-    /// <param name="client">WS¿Í»§¶Ë</param>
+    /// <param name="client">WSå®¢æˆ·ç«¯</param>
     public WebSocketClose(IWebSocketConnection client)
         => Info = client.ConnectionInfo;
     public WebSocketClose(IWebSocketConnectionInfo info)

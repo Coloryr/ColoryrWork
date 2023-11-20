@@ -61,64 +61,22 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 &lt;!DOCTYPE html&gt;
-        ///&lt;html&gt;
-        ///
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
-        ///    &lt;style&gt;
-        ///        .center {
-        ///            padding: 10px;
-        ///            margin: 20px auto;
-        ///            font-size: 40px;
-        ///            text-align: center;
-        ///        }
-        ///    &lt;/style&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;center&quot;&gt;
-        ///        服务器维护中
-        ///    &lt;/div&gt;
-        ///&lt;/body&gt;
-        ///
-        ///&lt;/html&gt; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string FixHtml {
+        internal static byte[] FixHtml {
             get {
-                return ResourceManager.GetString("FixHtml", resourceCulture);
+                object obj = ResourceManager.GetObject("FixHtml", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 &lt;!DOCTYPE html&gt;
-        ///&lt;html&gt;
-        ///
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
-        ///    &lt;style&gt;
-        ///        .center {
-        ///            padding: 10px;
-        ///            margin: 20px auto;
-        ///            font-size: 40px;
-        ///            text-align: center;
-        ///        }
-        ///    &lt;/style&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;center&quot;&gt;
-        ///        404 NotFound
-        ///    &lt;/div&gt;
-        ///&lt;/body&gt;
-        ///
-        ///&lt;/html&gt; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Html404 {
+        internal static byte[] Html404 {
             get {
-                return ResourceManager.GetString("Html404", resourceCulture);
+                object obj = ResourceManager.GetObject("Html404", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -133,33 +91,12 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 &lt;!DOCTYPE html&gt;
-        ///&lt;html&gt;
-        ///
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;ColoryrServer&lt;/title&gt;
-        ///    &lt;style&gt;
-        ///        .center {
-        ///            padding: 10px;
-        ///            margin: 20px auto;
-        ///            font-size: 40px;
-        ///            text-align: center;
-        ///        }
-        ///    &lt;/style&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;center&quot;&gt;
-        ///        欢迎使用ColoryrServer
-        ///    &lt;/div&gt;
-        ///&lt;/body&gt;
-        ///
-        ///&lt;/html&gt; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string IndexHtml {
+        internal static byte[] IndexHtml {
             get {
-                return ResourceManager.GetString("IndexHtml", resourceCulture);
+                object obj = ResourceManager.GetObject("IndexHtml", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

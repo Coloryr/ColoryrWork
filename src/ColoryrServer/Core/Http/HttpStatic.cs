@@ -5,7 +5,7 @@ namespace ColoryrServer.Core.Http;
 
 public static class HttpStatic
 {
-    public static HttpReturn GetStatic(string[] arg)
+    public static CoreHttpReturn GetStatic(string[] arg)
     {
         var temp = WebBinManager.BaseDir.GetFile(arg, 0);
         if (temp != null)

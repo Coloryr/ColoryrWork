@@ -29,7 +29,7 @@ internal static partial class DllRun
     /// <param name="arg">参数</param>
     /// <param name="function">方法名</param>
     /// <returns></returns>
-    internal static HttpReturn DllGo(DllAssembly dll, HttpDllRequest arg, string function)
+    internal static async Task<CoreHttpReturn> DllGo(DllAssembly dll, HttpDllRequest arg, string function)
     {
         try
         {
@@ -39,7 +39,7 @@ internal static partial class DllRun
             }
             else if (!dll.MethodInfos.ContainsKey(function))
             {
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
                     Data = new GetMeesage
                     {
@@ -57,28 +57,43 @@ internal static partial class DllRun
             object dllres;
             if (mi.IsStatic)
             {
-                var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), mi) as Dll.DllIN;
-                dllres = temp(arg);
+                if (mi.ReturnType == typeof(Task<dynamic>))
+                {
+                    var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), mi) as Dll.DllAsyncIN;
+                    dllres = await temp!(arg);
+                }
+                else
+                {
+                    var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), mi) as Dll.DllIN;
+                    dllres = temp!(arg);
+                }
             }
             else
             {
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), obj1, mi) as Dll.DllIN;
-                dllres = temp(arg);
+                if (mi.ReturnType == typeof(Task<dynamic>))
+                {
+                    var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), obj1, mi) as Dll.DllAsyncIN;
+                    dllres = await temp!(arg);
+                }
+                else
+                {
+                    var temp = Delegate.CreateDelegate(typeof(Dll.DllIN), obj1, mi) as Dll.DllIN;
+                    dllres = temp!(arg);
+                }
             }
 
             if (dllres is string)
             {
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
                     Data = dllres,
                     Res = ResType.String
                 };
             }
-            else if (dllres is HttpResponseString)
+            else if (dllres is HttpResponseString dr)
             {
-                var dr = dllres as HttpResponseString;
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
                     Data = dr.Data,
                     Res = ResType.String,
@@ -88,49 +103,46 @@ internal static partial class DllRun
                     Cookie = dr.Cookie
                 };
             }
-            else if (dllres is HttpResponseDictionary)
+            else if (dllres is HttpResponseDictionary dr1)
             {
-                var dr = dllres as HttpResponseDictionary;
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
-                    Data = dr.Data,
+                    Data = dr1.Data,
                     Res = ResType.Json,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie
+                    Head = dr1.Head,
+                    ContentType = dr1.ContentType,
+                    ReCode = dr1.ReCode,
+                    Cookie = dr1.Cookie
                 };
             }
-            else if (dllres is HttpResponseStream)
+            else if (dllres is HttpResponseStream dr2)
             {
-                var dr = dllres as HttpResponseStream;
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
-                    Data = dr.Data,
+                    Data = dr2.Data,
                     Res = ResType.Stream,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie,
-                    Pos = dr.Pos
+                    Head = dr2.Head,
+                    ContentType = dr2.ContentType,
+                    ReCode = dr2.ReCode,
+                    Cookie = dr2.Cookie,
+                    Pos = dr2.Pos
                 };
             }
-            else if (dllres is HttpResponseBytes)
+            else if (dllres is HttpResponseBytes dr3)
             {
-                var dr = dllres as HttpResponseBytes;
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
-                    Data = dr.Data,
+                    Data = dr3.Data,
                     Res = ResType.Byte,
-                    Head = dr.Head,
-                    ContentType = dr.ContentType,
-                    ReCode = dr.ReCode,
-                    Cookie = dr.Cookie
+                    Head = dr3.Head,
+                    ContentType = dr3.ContentType,
+                    ReCode = dr3.ReCode,
+                    Cookie = dr3.Cookie
                 };
             }
             else
             {
-                return new HttpReturn
+                return new CoreHttpReturn
                 {
                     Data = dllres,
                     Res = ResType.Json
@@ -139,18 +151,18 @@ internal static partial class DllRun
         }
         catch (Exception e)
         {
-            Task.Run(() => ServiceOnError(e));
+            _ =  Task.Run(() => ServiceOnError(e));
             if (e.InnerException is VarDump dump)
             {
                 if (dll.Debug)
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = dump.Get(),
                         Res = ResType.String,
                         ReCode = 200
                     };
                 else
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = ErrorObj2,
                         Res = ResType.Json,
@@ -162,14 +174,14 @@ internal static partial class DllRun
                 string error = dump1.data + "\n" + e.ToString();
                 LogDatabsae.PutError($"[Dll]{dll.Name}", error);
                 if (dll.Debug)
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = error,
                         Res = ResType.String,
                         ReCode = 500
                     };
                 else
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = ErrorObj,
                         Res = ResType.Json,
@@ -181,14 +193,14 @@ internal static partial class DllRun
                 string error = e.ToString();
                 LogDatabsae.PutError($"[Dll]{dll.Name}", error);
                 if (dll.Debug)
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = error,
                         Res = ResType.String,
                         ReCode = 500
                     };
                 else
-                    return new HttpReturn
+                    return new CoreHttpReturn
                     {
                         Data = ErrorObj1,
                         Res = ResType.Json,
@@ -215,13 +227,13 @@ internal static partial class DllRun
                 if (mi.IsStatic)
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.SocketTcpIn), mi) as Dll.SocketTcpIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
                     var temp = Delegate.CreateDelegate(typeof(Dll.SocketTcpIn), obj1, mi) as Dll.SocketTcpIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
 
                 if (dllres)

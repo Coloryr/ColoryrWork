@@ -121,17 +121,11 @@
   <data name="App" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\src\App.vue;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="env_d" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Vue\src\env.d.ts;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="HelloWorld" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\src\HelloWorld.vue;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="index" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Vue\index.html;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
-  </data>
-  <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Vue\src\logo.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\Demo\Vue\index.html;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="main" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\src\main.ts;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -139,13 +133,25 @@
   <data name="package" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\package.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="style" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Vue\src\style.css;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="tsconfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\tsconfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="tsconfig_node" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\tsconfig.node.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="vite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Vue\src\vite.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="vite_config" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Demo\Vue\vite.config.ts;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vite_env_d" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Vue\src\vite-env.d.ts;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Demo\Vue\src\vue.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

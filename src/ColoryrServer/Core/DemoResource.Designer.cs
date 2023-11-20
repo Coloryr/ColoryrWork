@@ -61,299 +61,112 @@ namespace ColoryrServer.Core {
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[ClassIN]
-        ///public class {name}
-        ///{
-        ///    public {name}()
-        ///    {
-        ///             
-        ///    }
-        ///
-        ///    public string GetString(string data)
-        ///    {
-        ///        return data + &quot;test&quot;;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Class {
+        internal static byte[] Class {
             get {
-                return ResourceManager.GetString("Class", resourceCulture);
+                object obj = ResourceManager.GetObject("Class", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[DllIN(true)]//true则报错输出至网页
-        ///public class App_{name}
-        ///{
-        ///    [NotesSDK(&quot;一个接口&quot;, new string[1]{ &quot;输入&quot; }, new string[1]{ &quot;输出&quot; })]
-        ///    public dynamic Main(HttpDllRequest http)
-        ///    {  
-        ///        return &quot;true&quot;;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Dll {
+        internal static byte[] Dll {
             get {
-                return ResourceManager.GetString("Dll", resourceCulture);
+                object obj = ResourceManager.GetObject("Dll", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[MqttIN]
-        ///public class {name}
-        ///{
-        ///    public bool OnMessage(DllMqttMessage head)
-        ///    {
-        ///        return false; //true表示事件已处理完毕
-        ///    }
-        ///    public bool OnRetainedMessageChanged(DllMqttRetainedMessageChanged head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///    public bool OnMessageLoading(DllMqttLoadingRetainedMessages head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///    public bool OnValidator(DllMqttConnectionValidator head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///   [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Mqtt {
+        internal static byte[] Mqtt {
             get {
-                return ResourceManager.GetString("Mqtt", resourceCulture);
+                object obj = ResourceManager.GetObject("Mqtt", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///using System;
-        ///using DotNetty.Transport.Channels;
-        ///using DotNetty.Handlers.Logging;
-        ///using DotNetty.Handlers.Tls;
-        ///using DotNetty.Transport.Bootstrapping;
-        ///using DotNetty.Transport.Channels.Sockets;
-        ///using System.Security.Cryptography.X509Certificates;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[SocketIN(true)] //true表示为Netty类型
-        ///public class {name} : INetty
-        ///{
-        ///    private IChannel bootstrapChannel;
-        ///    public override void Start(MultithreadEventLoopGroup bossGroup, MultithreadEventLoopGroup wor [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Netty {
+        internal static byte[] Netty {
             get {
-                return ResourceManager.GetString("Netty", resourceCulture);
+                object obj = ResourceManager.GetObject("Netty", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[RobotIN(new int[] {})] //在这里添加更多订阅的事件
-        ///public class {name}
-        ///{
-        ///    public bool OnMessage(RobotMessage head)
-        ///    {
-        ///        return false; //true表示事件已处理完毕
-        ///    }
-        ///    public bool OnMessagSend(RobotSend head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///    //这里是更多事件的回调
-        ///    public bool OnRobotEvent(RobotEvent head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Robot {
+        internal static byte[] Robot {
             get {
-                return ResourceManager.GetString("Robot", resourceCulture);
+                object obj = ResourceManager.GetObject("Robot", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
-        ///public class {name}
-        ///{
-        ///    public ServiceNextState Run(object[] args, CancellationToken token)
-        ///    {
-        ///        return ServiceNextState.Stop;
-        ///    }
-        ///
-        ///    public void OnStart()
-        ///    {
-        ///        
-        ///    }
-        ///
-        ///    public void OnStop()
-        ///    {
-        ///        
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Service1 {
+        internal static byte[] Service1 {
             get {
-                return ResourceManager.GetString("Service1", resourceCulture);
+                object obj = ResourceManager.GetObject("Service1", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[ServiceIN(type: ServiceType.ErrorDump)]
-        ///public class {name}
-        ///{
-        ///    public bool OnError(Exception e)
-        ///    {
-        ///        return false;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Service2 {
+        internal static byte[] Service2 {
             get {
-                return ResourceManager.GetString("Service2", resourceCulture);
+                object obj = ResourceManager.GetObject("Service2", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
-        ///public class {name}
-        ///{
-        ///    public ServiceNextState Run(object[] args, CancellationToken token)
-        ///    {
-        ///        return ServiceNextState.Stop;
-        ///    }
-        ///
-        ///    public void OnStart()
-        ///    {
-        ///        
-        ///    }
-        ///
-        ///    public void OnStop()
-        ///    {
-        ///        
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Service3 {
+        internal static byte[] Service3 {
             get {
-                return ResourceManager.GetString("Service3", resourceCulture);
+                object obj = ResourceManager.GetObject("Service3", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using System;
-        ///using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[ServiceIN(false, ServiceType.Normal)] //true表示跟随服务器启动
-        ///public class {name}
-        ///{
-        ///    public ServiceNextState Run(object[] args, CancellationToken token)
-        ///    {
-        ///        return ServiceNextState.Stop;
-        ///    }
-        ///
-        ///    public void OnStart()
-        ///    {
-        ///        
-        ///    }
-        ///
-        ///    public void OnStop()
-        ///    {
-        ///        
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Service4 {
+        internal static byte[] Service4 {
             get {
-                return ResourceManager.GetString("Service4", resourceCulture);
+                object obj = ResourceManager.GetObject("Service4", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[SocketIN]
-        ///public class {name}
-        ///{
-        ///    public bool OnTcpMessage(SocketTcpRequest head)
-        ///    {
-        ///        return false; //true表示事件已处理完毕
-        ///    }
-        ///    public bool OnUdpMessage(SocketUdpRequest head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string Socket {
+        internal static byte[] Socket {
             get {
-                return ResourceManager.GetString("Socket", resourceCulture);
+                object obj = ResourceManager.GetObject("Socket", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   查找类似 using ColoryrServer.SDK;
-        ///
-        /////ColoryrServer_Debug
-        ///
-        ///[WebSocketIN]
-        ///public class {name}
-        ///{
-        ///    public bool OnMessage(WebSocketMessage head)
-        ///    {
-        ///        return false; //true表示事件已处理完毕
-        ///    }
-        ///    public bool OnOpen(WebSocketOpen head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///    public bool OnClose(WebSocketClose head)
-        ///    {
-        ///        return false;
-        ///    }
-        ///} 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
-        internal static string WebSocket {
+        internal static byte[] WebSocket {
             get {
-                return ResourceManager.GetString("WebSocket", resourceCulture);
+                object obj = ResourceManager.GetObject("WebSocket", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

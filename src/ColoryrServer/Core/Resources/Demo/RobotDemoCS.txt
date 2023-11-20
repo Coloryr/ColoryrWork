@@ -2,18 +2,18 @@ using ColoryrServer.SDK;
 
 //ColoryrServer_Debug
 
-[RobotIN(new int[] {})] //ÔÚÕâÀïÌí¼Ó¸ü¶à¶©ÔÄµÄÊÂ¼ş
+[RobotIN(new int[] {})] //åœ¨è¿™é‡Œæ·»åŠ æ›´å¤šè®¢é˜…çš„äº‹ä»¶
 public class {name}
 {
     public bool OnMessage(RobotMessage head)
     {
-        return false; //true±íÊ¾ÊÂ¼şÒÑ´¦ÀíÍê±Ï
+        return false; //trueè¡¨ç¤ºäº‹ä»¶å·²å¤„ç†å®Œæ¯•
     }
     public bool OnMessagSend(RobotSend head)
     {
         return false;
     }
-    //ÕâÀïÊÇ¸ü¶àÊÂ¼şµÄ»Øµ÷
+    //è¿™é‡Œæ˜¯æ›´å¤šäº‹ä»¶çš„å›è°ƒ
     public bool OnRobotEvent(RobotEvent head)
     {
         return false;

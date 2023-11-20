@@ -10,10 +10,6 @@
     Height="160"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
         <StackPanel Margin="4" VerticalAlignment="Top">
             <Label Name="Lable1" />
             <TextBox Name="Input1" VerticalAlignment="Top" />

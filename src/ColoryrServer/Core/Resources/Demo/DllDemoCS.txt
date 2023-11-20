@@ -1,12 +1,31 @@
 using ColoryrServer.SDK;
+using System.Threading.Tasks;
 
 //ColoryrServer_Debug
 
-[DllIN(true)]//true�򱨴��������ҳ
+[DllIN(true)]//true则报错输出至网页
 public class App_{name}
 {
-    [NotesSDK("һ���ӿ�", new string[1]{ "����" }, new string[1]{ "���" })]
-    public dynamic Main(HttpDllRequest http)
+    [NotesSDK("一个静态异步接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public static async Task<object> Main(HttpDllRequest http)
+    {  
+        return "true";
+    }
+
+    [NotesSDK("一个静态接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public static object Test(HttpDllRequest http)
+    {  
+        return "true";
+    }
+
+    [NotesSDK("一个异步接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public async Task<object> Test1(HttpDllRequest http)
+    {  
+        return "true";
+    }
+
+    [NotesSDK("一个接口", new string[1]{ "输入" }, new string[1]{ "输出" })]
+    public object Test2(HttpDllRequest http)
     {  
         return "true";
     }

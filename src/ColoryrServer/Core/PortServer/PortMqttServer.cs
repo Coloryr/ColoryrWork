@@ -151,7 +151,7 @@ internal static class PortMqttServer
             new InjectedMqttApplicationMessage(new()
             {
                 Topic = topic,
-                Payload = Encoding.UTF8.GetBytes(data),
+                PayloadSegment = Encoding.UTF8.GetBytes(data),
                 QualityOfServiceLevel = level
             })
             {

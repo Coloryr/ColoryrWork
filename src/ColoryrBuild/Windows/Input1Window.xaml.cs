@@ -9,7 +9,7 @@ public partial class Input1Window : Window
 {
     private bool Res;
     public Input1Window(string title, string lable1, string lable2,
-        string input1 = null, string input2 = null)
+        string? input1 = null, string? input2 = null)
     {
         InitializeComponent();
         Title = title;

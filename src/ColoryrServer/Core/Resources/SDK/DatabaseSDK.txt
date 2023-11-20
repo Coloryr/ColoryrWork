@@ -1,36 +1,43 @@
-using ColoryrServer.Core.DataBase;
+using ColoryrServer.Core.Database;
+using ColoryrServer.Core.DBConnection;
 using Dapper;
 using MySql.Data.MySqlClient;
-using Oracle.ManagedDataAccess.Client;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace ColoryrServer.SDK;
 
-public partial class Mysql
+public interface IDatabase
+{
+    public IEnumerable<dynamic> Query(string sql, object arg);
+    public IEnumerable<T> Query<T>(string sql, object arg);
+    public int Execute(string sql, object arg);
+}
+
+public partial class Mysql : IDatabase
 {
     private string Database;
     private int ID;
     /// <summary>
-    /// MysqlÊı¾İ¿â
+    /// Mysqlæ•°æ®åº“
     /// </summary>
-    /// <param name="database">Êı¾İ¿âÃû</param>
-    /// <param name="id">Êı¾İ¿âID</param>
+    /// <param name="database">æ•°æ®åº“å</param>
+    /// <param name="id">æ•°æ®åº“ID</param>
     public Mysql(string database = "", int id = 0)
     {
         ID = id;
         Database = database;
         if (!MysqlCon.Contains(id))
-            throw new ErrorDump($"Ã»ÓĞMysqlÊı¾İ¿â{id}");
+            throw new ErrorDump($"æ²¡æœ‰Mysqlæ•°æ®åº“{id}");
     }
 
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<dynamic> Query(string sql, object arg)
     {
         var conn = MysqlCon.GetConnection(ID);
@@ -38,11 +45,11 @@ public partial class Mysql
         return conn.Query(sql, arg);
     }
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<T> Query<T>(string sql, object arg)
     {
         var conn = MysqlCon.GetConnection(ID);
@@ -51,11 +58,11 @@ public partial class Mysql
     }
 
     /// <summary>
-    /// Ö´ĞĞÓï¾ä
+    /// æ‰§è¡Œè¯­å¥
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public int Execute(string sql, object arg)
     {
         var conn = MysqlCon.GetConnection(ID);
@@ -64,101 +71,38 @@ public partial class Mysql
     }
 
     /// <summary>
-    /// ¾É°æÖ´ĞĞÓï¾ä
+    /// è·å–ä¸€ä¸ªæ•°æ®åº“é“¾æ¥
     /// </summary>
-    public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            MySqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// Ö´ĞĞsqlÓï¾ä
-    /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>MysqlÃüÁîÓï¾ä</returns>
-    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ò»¸öÊı¾İ¿âÁ´½Ó
-    /// </summary>
-    /// <returns>Á´½Ó</returns>
+    /// <returns>é“¾æ¥</returns>
     public MySqlConnection Get()
     {
         return MysqlCon.GetConnection(ID);
     }
 }
 
-public partial class MSsql
+public partial class MSsql : IDatabase
 {
     private string Database;
     private int ID;
     /// <summary>
-    /// MSsqlÊı¾İ¿â
+    /// MSsqlæ•°æ®åº“
     /// </summary>
-    /// <param name="database">Êı¾İ¿âÃû</param>
-    /// <param name="id">Êı¾İ¿âID</param>
+    /// <param name="database">æ•°æ®åº“å</param>
+    /// <param name="id">æ•°æ®åº“ID</param>
     public MSsql(string database = "", int id = 0)
     {
         Database = database;
         ID = id;
         if (!MSCon.Contains(id))
-            throw new ErrorDump($"Ã»ÓĞMSÊı¾İ¿â{id}");
+            throw new ErrorDump($"æ²¡æœ‰MSæ•°æ®åº“{id}");
     }
 
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<dynamic> Query(string sql, object arg)
     {
         var conn = MSCon.GetConnection(ID);
@@ -166,11 +110,11 @@ public partial class MSsql
         return conn.Query(sql, arg);
     }
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<T> Query<T>(string sql, object arg)
     {
         var conn = MSCon.GetConnection(ID);
@@ -179,11 +123,11 @@ public partial class MSsql
     }
 
     /// <summary>
-    /// Ö´ĞĞÓï¾ä
+    /// æ‰§è¡Œè¯­å¥
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public int Execute(string sql, object arg)
     {
         var conn = MSCon.GetConnection(ID);
@@ -192,101 +136,38 @@ public partial class MSsql
     }
 
     /// <summary>
-    /// ¾É°æÖ´ĞĞÓï¾ä
+    /// è·å–ä¸€ä¸ªæ•°æ®åº“é“¾æ¥
     /// </summary>
-    public List<List<dynamic>> MSsqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new SqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            SqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (SqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// Ö´ĞĞsqlÓï¾ä
-    /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>MSsqlÃüÁîÓï¾ä</returns>
-    public SqlCommand MSsqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new SqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new SqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (SqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ò»¸öÊı¾İ¿âÁ´½Ó
-    /// </summary>
-    /// <returns>Á´½Ó</returns>
+    /// <returns>é“¾æ¥</returns>
     public SqlConnection Get()
     {
         return MSCon.GetConnection(ID);
     }
 }
 
-public partial class Sqlite
+public partial class SqliteSql : IDatabase
 {
     private string Database;
     private int ID;
     /// <summary>
-    /// SqliteÊı¾İ¿â
+    /// Sqliteæ•°æ®åº“
     /// </summary>
-    /// <param name="database">Êı¾İ¿âÃû</param>
-    /// <param name="id">Êı¾İ¿âID</param>
-    public Sqlite(string database = "", int id = 0)
+    /// <param name="database">æ•°æ®åº“å</param>
+    /// <param name="id">æ•°æ®åº“ID</param>
+    public SqliteSql(string database = "", int id = 0)
     {
         ID = id;
         Database = database;
         if (!SqliteCon.Contains(id))
-            throw new ErrorDump($"Ã»ÓĞSqliteÊı¾İ¿â{id}");
+            throw new ErrorDump($"æ²¡æœ‰Sqliteæ•°æ®åº“{id}");
     }
 
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<dynamic> Query(string sql, object arg)
     {
         var conn = SqliteCon.GetConnection(ID);
@@ -294,11 +175,11 @@ public partial class Sqlite
         return conn.Query(sql, arg);
     }
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<T> Query<T>(string sql, object arg)
     {
         var conn = SqliteCon.GetConnection(ID);
@@ -307,11 +188,11 @@ public partial class Sqlite
     }
 
     /// <summary>
-    /// Ö´ĞĞÓï¾ä
+    /// æ‰§è¡Œè¯­å¥
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public int Execute(string sql, object arg)
     {
         var conn = SqliteCon.GetConnection(ID);
@@ -320,100 +201,37 @@ public partial class Sqlite
     }
 
     /// <summary>
-    /// ¾É°æÖ´ĞĞÓï¾ä
+    /// è·å–ä¸€ä¸ªæ•°æ®åº“é“¾æ¥
     /// </summary>
-    public List<List<dynamic>> MysqlSql(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            MySqlDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// Ö´ĞĞsqlÓï¾ä
-    /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>MysqlÃüÁîÓï¾ä</returns>
-    public MySqlCommand MysqlCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new MySqlCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new MySqlParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (MySqlException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ò»¸öÊı¾İ¿âÁ´½Ó
-    /// </summary>
-    /// <returns>Á´½Ó</returns>
+    /// <returns>é“¾æ¥</returns>
     public MySqlConnection Get()
     {
         return MysqlCon.GetConnection(ID);
     }
 }
-public partial class Oracle
+public partial class OracleSql : IDatabase
 {
     private string Database;
     private int ID;
     /// <summary>
-    /// MSsqlÊı¾İ¿â
+    /// MSsqlæ•°æ®åº“
     /// </summary>
-    /// <param name="database">Êı¾İ¿âÃû</param>
-    /// <param name="id">Êı¾İ¿âID</param>
-    public Oracle(string database = "", int id = 0)
+    /// <param name="database">æ•°æ®åº“å</param>
+    /// <param name="id">æ•°æ®åº“ID</param>
+    public OracleSql(string database = "", int id = 0)
     {
         ID = id;
-        if (!OracleCon.Contains(id))
-            throw new ErrorDump($"Ã»ÓĞOracleÊı¾İ¿â{id}");
+        if (!Core.DBConnection.OracleCon.Contains(id))
+            throw new ErrorDump($"æ²¡æœ‰Oracleæ•°æ®åº“{id}");
         Database = database;
     }
 
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<dynamic> Query(string sql, object arg)
     {
         var conn = Get();
@@ -421,11 +239,11 @@ public partial class Oracle
         return conn.Query(sql, arg);
     }
     /// <summary>
-    /// Ö´ĞĞ²éÑ¯
+    /// æ‰§è¡ŒæŸ¥è¯¢
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public IEnumerable<T> Query<T>(string sql, object arg)
     {
         var conn = Get();
@@ -434,11 +252,11 @@ public partial class Oracle
     }
 
     /// <summary>
-    /// Ö´ĞĞÓï¾ä
+    /// æ‰§è¡Œè¯­å¥
     /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>·µ»ØµÄÊı¾İ</returns>
+    /// <param name="sql">sqlè¯­å¥</param>
+    /// <param name="arg">å‚æ•°</param>
+    /// <returns>è¿”å›çš„æ•°æ®</returns>
     public int Execute(string sql, object arg)
     {
         var conn = Get();
@@ -447,75 +265,12 @@ public partial class Oracle
     }
 
     /// <summary>
-    /// ¾É°æÖ´ĞĞÓï¾ä
+    /// è·å–ä¸€ä¸ªæ•°æ®åº“é“¾æ¥
     /// </summary>
-    public List<List<dynamic>> OracleSql(string sql, Dictionary<string, string> arg)
+    /// <returns>é“¾æ¥</returns>
+    public Oracle.ManagedDataAccess.Client.OracleConnection Get()
     {
-        try
-        {
-            var conn = new OracleCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            OracleDataReader reader = conn.ExecuteReader();
-            var readlist = new List<List<dynamic>>();
-            while (reader.Read())
-            {
-                var item = new List<dynamic>();
-
-                for (int b = 0; b < reader.FieldCount; b++)
-                    item.Add(reader[b]);
-                readlist.Add(item);
-            }
-            reader.Close();
-            conn.Connection.Close();
-            return readlist;
-        }
-        catch (OracleException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// Ö´ĞĞsqlÓï¾ä
-    /// </summary>
-    /// <param name="sql">sqlÓï¾ä</param>
-    /// <param name="arg">²ÎÊı</param>
-    /// <returns>OracleÃüÁîÓï¾ä</returns>
-    public OracleCommand OracleCommand(string sql, Dictionary<string, string> arg)
-    {
-        try
-        {
-            var conn = new OracleCommand(sql, Get());
-            if (arg != null)
-                foreach (var item in arg)
-                {
-                    conn.Parameters.Add(new OracleParameter(item.Key, Tools.GBKtoUTF8(item.Value)));
-                }
-            conn.Connection.Open();
-            conn.Connection.ChangeDatabase(Database);
-            conn.ExecuteNonQuery();
-            conn.Connection.Close();
-            return conn;
-        }
-        catch (OracleException e)
-        {
-            throw new ErrorDump("Ö´ĞĞsqlÓï¾ä³ö´í", e);
-        }
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ò»¸öÊı¾İ¿âÁ´½Ó
-    /// </summary>
-    /// <returns>Á´½Ó</returns>
-    public OracleConnection Get()
-    {
-        return OracleCon.GetConnection(ID);
+        return Core.DBConnection.OracleCon.GetConnection(ID);
     }
 }
 
@@ -523,52 +278,52 @@ public partial class Redis
 {
     private int ID;
     /// <summary>
-    /// RedisÊı¾İ¿â
+    /// Redisæ•°æ®åº“
     /// </summary>
-    /// <param name="id">Êı¾İ¿âID</param>
+    /// <param name="id">æ•°æ®åº“ID</param>
     public Redis(int id = 0)
     {
         ID = id;
         if (!RedisCon.State.ContainsKey(id))
-            throw new ErrorDump($"Ã»ÓĞRedisÊı¾İ¿â{id}");
+            throw new ErrorDump($"æ²¡æœ‰Redisæ•°æ®åº“{id}");
         if (RedisCon.State[id] == false)
-            throw new ErrorDump("RedisÃ»ÓĞÁ´½Ó");
+            throw new ErrorDump("Redisæ²¡æœ‰é“¾æ¥");
     }
     /// <summary>
-    /// »ñÈ¡Êı¾İ
+    /// è·å–æ•°æ®
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <returns>Öµ</returns>
+    /// <param name="key">é”®</param>
+    /// <returns>å€¼</returns>
     public RedisValue Get(string key)
         => RedisCon.Get(key, ID);
 
     /// <summary>
-    /// ÉèÖÃ¼üÖµ¶Ô
+    /// è®¾ç½®é”®å€¼å¯¹
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="Time">´æÔÚÃë</param>
+    /// <param name="key">é”®</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="Time">å­˜åœ¨ç§’</param>
     public bool Set(string key, string value, int Time = 0)
         => RedisCon.Set(key, value, Time, ID);
     /// <summary>
-    /// ÊÇ·ñ´æÔÚ¼ü
+    /// æ˜¯å¦å­˜åœ¨é”®
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <returns>ÊÇ·ñ´æÔÚ</returns>
+    /// <param name="key">é”®</param>
+    /// <returns>æ˜¯å¦å­˜åœ¨</returns>
     public bool Exists(string key)
         => RedisCon.Exists(key, ID);
     /// <summary>
-    /// É¾³ı¼üÖµ¶Ô
+    /// åˆ é™¤é”®å€¼å¯¹
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <returns>ÊÇ·ñ³É¹¦</returns>
+    /// <param name="key">é”®</param>
+    /// <returns>æ˜¯å¦æˆåŠŸ</returns>
     public bool Remove(string key)
         => RedisCon.Remove(key, ID);
     /// <summary>
-    /// ÀÛ¼Ó
+    /// ç´¯åŠ 
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <returns>ÀÛ¼ÓºóµÄÊı¾İ</returns>
+    /// <param name="key">é”®</param>
+    /// <returns>ç´¯åŠ åçš„æ•°æ®</returns>
     public long Increment(string key, long val = 1)
         => RedisCon.Increment(key, ID, val);
 }
@@ -577,37 +332,37 @@ public partial class RamData
 {
     public string Name { get; private set; }
     /// <summary>
-    /// ÆôÓÃ»º´æ
+    /// å¯ç”¨ç¼“å­˜
     /// </summary>
-    /// <param name="name">»º´æÃû</param>
+    /// <param name="name">ç¼“å­˜å</param>
     public RamData(string name, bool save = false)
     {
-        Name = RamDataBase.NewCache(name, save);
+        Name = RamDatabase.NewCache(name, save);
     }
     /// <summary>
-    /// »ñÈ¡Öµ
+    /// è·å–å€¼
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <returns>·µ»ØÖµ</returns>
+    /// <param name="key">é”®</param>
+    /// <returns>è¿”å›å€¼</returns>
     public dynamic Get(string key)
-        => RamDataBase.GetCache(Name, key);
+        => RamDatabase.GetCache(Name, key);
     /// <summary>
-    /// ÉèÖÃ¼üÖµ
+    /// è®¾ç½®é”®å€¼
     /// </summary>
-    /// <param name="key">¼ü</param>
-    /// <param name="value">Öµ</param>
+    /// <param name="key">é”®</param>
+    /// <param name="value">å€¼</param>
     public void Set(string key, dynamic value)
-        => RamDataBase.SetCache(Name, key, value);
+        => RamDatabase.SetCache(Name, key, value);
     /// <summary>
-    /// ¼ì²éÊÇ·ñÓĞ¼ü
+    /// æ£€æŸ¥æ˜¯å¦æœ‰é”®
     /// </summary>
-    /// <param name="key">¼üÃû</param>
-    /// <returns>ÊÇ·ñ´æÔÚ</returns>
+    /// <param name="key">é”®å</param>
+    /// <returns>æ˜¯å¦å­˜åœ¨</returns>
     public bool HaveKey(string key)
-        => RamDataBase.HaveCacheKey(Name, key);
+        => RamDatabase.HaveCacheKey(Name, key);
     /// <summary>
-    /// ÇåÀí»º´æ
+    /// æ¸…ç†ç¼“å­˜
     /// </summary>
     public void Close()
-        => RamDataBase.CloseCache(Name);
+        => RamDatabase.CloseCache(Name);
 }

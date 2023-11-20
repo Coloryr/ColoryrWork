@@ -1,6 +1,5 @@
 ﻿using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace ColoryrBuild.PostBuild;
@@ -25,7 +24,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetSocketConfig();
         }
-        return JsonConvert.DeserializeObject<SocketObj>(data);
+        return JsonUtils.ToObj<SocketObj>(data);
     }
     /// <summary>
     /// 获取Http设置参数
@@ -45,7 +44,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetHttpConfigList();
         }
-        return JsonConvert.DeserializeObject<HttpListObj>(data);
+        return JsonUtils.ToObj<HttpListObj>(data);
     }
     /// <summary>
     /// 添加Http设置
@@ -69,7 +68,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddHttpConfig(ip, port);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除Http设置
@@ -93,7 +92,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await RemoveHttpConfig(ip, port);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加Http转发设置
@@ -117,7 +116,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddHttpRoute(key, obj);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除Http转发设置
@@ -139,7 +138,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await RemoveHttpRoute(key);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 添加HttpUrl转发
@@ -163,7 +162,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddHttpUrlRoute(key, obj);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除HttpUrl转发
@@ -185,7 +184,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await RemoveHttpUrlRoute(key);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 设置服务器启用
@@ -209,7 +208,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await SetServerEnable(enable, type);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 设置服务器端口
@@ -235,7 +234,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await SetSocket(ip, port, type);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 重启服务器
@@ -273,7 +272,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetAllUser();
         }
-        return JsonConvert.DeserializeObject<UserList>(data);
+        return JsonUtils.ToObj<UserList>(data);
     }
 
     /// <summary>
@@ -298,7 +297,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await AddUser(user, password);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
     /// <summary>
     /// 删除用户
@@ -320,7 +319,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await RemoveUser(user);
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 
     /// <summary>
@@ -341,7 +340,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await Rebuild();
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 
     /// <summary>
@@ -362,7 +361,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await InitLog();
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 
     /// <summary>
@@ -383,7 +382,7 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await GetLog();
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 
     /// <summary>
@@ -404,6 +403,6 @@ public partial class HttpBuild : HttpUtilsBase
         {
             return await MakePack();
         }
-        return JsonConvert.DeserializeObject<ReMessage>(data);
+        return JsonUtils.ToObj<ReMessage>(data);
     }
 }

@@ -66,7 +66,8 @@ public static class HttpUtils
                     var res = HttpStatic.GetStream(new()
                     {
                         Cookie = ASPHttpUtils.HaveCookie(request.Headers.Cookie),
-                        RowRequest = collection
+                        RowRequest = collection,
+                        GetBody = null!
                     }, name);
 
                     if (res == null)
@@ -88,7 +89,7 @@ public static class HttpUtils
                         stream.Seek(res.Pos, SeekOrigin.Begin);
                         foreach (var item in res.Head)
                         {
-                            response.Headers.Add(item.Key, item.Value);
+                            response.Headers.Append(item.Key, item.Value);
                         }
                         response.StatusCode = 206;
                         response.ContentType = ServerContentType.GetType(type);

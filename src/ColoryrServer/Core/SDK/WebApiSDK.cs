@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ColoryrServer.SDK;
 
 public class HttpDllRequest
 {
-    /// <summary>
-    /// 请求参数
-    /// </summary>
-    public Dictionary<string, dynamic> Parameter { get; init; }
     /// <summary>
     /// 请求头
     /// </summary>
@@ -22,31 +19,19 @@ public class HttpDllRequest
     /// <summary>
     /// 请求体类型
     /// </summary>
-    public MyContentType ContentType { get; init; }
+    public string? ContentType { get; init; }
     /// <summary>
     /// 请求体流
     /// </summary>
     public Stream Stream { get; init; }
     /// <summary>
-    /// 请求体数据
-    /// </summary>
-    public string Data { get; init; }
-    /// <summary>
-    /// 请求体数据
-    /// </summary>
-    public byte[] Data1 { get; init; }
-    /// <summary>
     /// 请求方法
     /// </summary>
     public string Method { get; init; }
-
     /// <summary>
-    /// 获取请求数据
+    /// 解析请求数据
     /// </summary>
-    /// <param name="arg">参数名</param>
-    /// <returns>返回</returns>
-    public dynamic Get(string arg)
-        => Parameter.ContainsKey(arg) ? Parameter[arg] : null;
+    public required Func<Task<(MyContentType, IDictionary<string, dynamic?>?)>> GetBody;
 }
 public abstract class HttpDllResponse
 {
@@ -68,10 +53,9 @@ public abstract class HttpDllResponse
     public string ContentType { get; init; }
     public HttpDllResponse()
     {
-        if (Head == null)
-            Head = new();
+        Head ??= [];
         ReCode = 200;
-        Cookie = new();
+        Cookie ??= [];
         ContentType = ServerContentType.JSON;
     }
     /// <summary>
@@ -117,8 +101,7 @@ public class HttpResponseDictionary : HttpDllResponse
     /// <param name="ReCode">相应代码</param>
     public HttpResponseDictionary() : base()
     {
-        if (Data == null)
-            Data = new();
+        Data ??= [];
     }
     /// <summary>
     /// 往返回的字符串写数据
@@ -153,8 +136,7 @@ public class HttpResponseStream : HttpDllResponse
     public int Pos { get; set; }
     public HttpResponseStream() : base()
     {
-        if (Data == null)
-            Data = new MemoryStream();
+        Data ??= new MemoryStream();
     }
 }
 public class HttpResponseBytes : HttpDllResponse
@@ -165,7 +147,6 @@ public class HttpResponseBytes : HttpDllResponse
     public byte[] Data { get; set; }
     public HttpResponseBytes() : base()
     {
-        if (Data == null)
-            Data = Array.Empty<byte>();
+        Data ??= [];
     }
 }

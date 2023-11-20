@@ -4,14 +4,15 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
-internal static class PostBuildMqtt
+internal static class BuildMqtt
 {
     public static ReMessage Add(BuildOBJ json)
     {
@@ -28,7 +29,7 @@ internal static class PostBuildMqtt
             UUID = json.UUID,
             Type = CodeType.Mqtt,
             CreateTime = time,
-            Code = DemoResource.Mqtt
+            Code = Encoding.UTF8.GetString(DemoResource.Mqtt)
             .Replace(CodeDemo.Name, json.UUID)
         };
         CodeManager.StorageMqtt(obj, json.User);
@@ -85,7 +86,7 @@ internal static class PostBuildMqtt
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

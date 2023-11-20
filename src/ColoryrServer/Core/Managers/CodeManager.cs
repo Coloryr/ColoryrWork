@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.Core.Database;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -335,7 +335,7 @@ Type:{obj.Type}
         {
             try
             {
-                File.WriteAllText(DllMap, JsonConvert.SerializeObject(new CodeFileMAP
+                File.WriteAllText(DllMap, JsonUtils.ToString(new CodeFileMAP
                 {
                     ClassList = new(ClassFileList.Values),
                     DllList = new(DllFileList.Values),
@@ -344,7 +344,7 @@ Type:{obj.Type}
                     RobotList = new(RobotFileList.Values),
                     MqttList = new(MqttFileList.Values),
                     ServiceList = new(ServiceFileList.Values)
-                }, Formatting.Indented));
+                }));
             }
             catch (Exception e)
             {

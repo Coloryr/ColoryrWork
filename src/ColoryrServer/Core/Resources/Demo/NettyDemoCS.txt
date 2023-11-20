@@ -1,4 +1,4 @@
-﻿using ColoryrServer.SDK;
+using ColoryrServer.SDK;
 using System;
 using DotNetty.Transport.Channels;
 using DotNetty.Handlers.Logging;

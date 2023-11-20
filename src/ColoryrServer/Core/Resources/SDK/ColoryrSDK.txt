@@ -1,24 +1,24 @@
 using ColoryrSDK;
 using ColoryrServer.Core;
-using ColoryrServer.Core.DllManager;
+using ColoryrServer.Core.Dll;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
 using DotNetty.Transport.Channels;
 using Fleck;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace ColoryrServer.SDK;
 
 /// <summary>
-/// Kcp½Ó¿Ú
+/// Kcpæ¥å£
 /// </summary>
 public abstract class IKcp
 {
@@ -26,7 +26,7 @@ public abstract class IKcp
     public abstract void Stop();
 }
 /// <summary>
-/// Netty½Ó¿Ú
+/// Nettyæ¥å£
 /// </summary>
 public abstract class INetty
 {
@@ -34,7 +34,7 @@ public abstract class INetty
     public abstract void Stop();
 }
 /// <summary>
-/// HttpÇëÇóÎÄ¼şÀàĞÍ
+/// Httpè¯·æ±‚æ–‡ä»¶ç±»å‹
 /// </summary>
 public partial class HttpMultipartFile
 {
@@ -44,7 +44,7 @@ public partial class HttpMultipartFile
     public string ContentDisposition { get; set; }
 }
 /// <summary>
-/// Http·µ»ØÌåÀàĞÍ
+/// Httpè¿”å›ä½“ç±»å‹
 /// </summary>
 public partial class ServerContentType
 {
@@ -68,11 +68,11 @@ public partial class ServerContentType
     public const string JS = "application/x-javascript";
     public const string TXT = "text/plain";
     /// <summary>
-    /// Ö±½Ó»ñÈ¡·µ»ØÀàĞÍ
+    /// ç›´æ¥è·å–è¿”å›ç±»å‹
     /// </summary>
-    /// <param name="type">ÀàĞÍ</param>
-    /// <param name="html">Ä¬ÈÏÎªHttp</param>
-    /// <returns>ÀàĞÍ</returns>
+    /// <param name="type">ç±»å‹</param>
+    /// <param name="html">é»˜è®¤ä¸ºHttp</param>
+    /// <returns>ç±»å‹</returns>
     public static string GetType(string type, bool html = false)
     {
         switch (type.ToLower())
@@ -104,11 +104,11 @@ public partial class ServerContentType
         }
     }
     /// <summary>
-    /// ´ÓÈ«³Ì»ñÈ¡ÀàĞÍ
+    /// ä»å…¨ç¨‹è·å–ç±»å‹
     /// </summary>
-    /// <param name="name">Ãû×Ö</param>
-    /// <param name="html">Ä¬ÈÏÎªHttp</param>
-    /// <returns>ÀàĞÍ</returns>
+    /// <param name="name">åå­—</param>
+    /// <param name="html">é»˜è®¤ä¸ºHttp</param>
+    /// <returns>ç±»å‹</returns>
     public static string EndType(string name, bool html = false)
     {
         int index = name.LastIndexOf(".");
@@ -121,36 +121,36 @@ public partial class ServerContentType
     }
 }
 /// <summary>
-/// ÇëÇóÌåÀàĞÍ
+/// è¯·æ±‚ä½“ç±»å‹
 /// </summary>
 public enum MyContentType
 {
-    Json, XFormData, MFormData, Other
+    Json, XFormData, MFormData, Other, Error
 }
 public partial class EnCode
 {
     /// <summary>
-    /// Base64±àÂë
+    /// Base64ç¼–ç 
     /// </summary>
-    /// <param name="data">Ô´Êı¾İ</param>
-    /// <returns>±àÂëºóÊı¾İ</returns>
+    /// <param name="data">æºæ•°æ®</param>
+    /// <returns>ç¼–ç åæ•°æ®</returns>
     public static string BASE64(string data)
     {
         byte[] temp = Encoding.UTF8.GetBytes(data);
         return Convert.ToBase64String(temp);
     }
     /// <summary>
-    /// MD5¼ÓÃÜ
+    /// MD5åŠ å¯†
     /// </summary>
-    /// <param name="data">Êı¾İ</param>
-    /// <returns>¼ÓÃÜºóµÄ×Ö·û´®</returns>
+    /// <param name="data">æ•°æ®</param>
+    /// <returns>åŠ å¯†åçš„å­—ç¬¦ä¸²</returns>
     public static string MD5(string data)
         => BitConverter.ToString(MD5_R(data)).ToLower().Replace("-", "");
     /// <summary>
-    /// MD5¼ÓÃÜ
+    /// MD5åŠ å¯†
     /// </summary>
-    /// <param name="data">¼ÓÃÜ</param>
-    /// <returns>¼ÓÃÜºóµÄbyte</returns>
+    /// <param name="data">åŠ å¯†</param>
+    /// <returns>åŠ å¯†åçš„byte</returns>
     public static byte[] MD5_R(string data)
     {
         using MD5 md5 = System.Security.Cryptography.MD5.Create();
@@ -158,22 +158,22 @@ public partial class EnCode
         return md5.ComputeHash(buffer);
     }
     /// <summary>
-    /// OPENSSL¼ÓÃÜ
+    /// OPENSSLåŠ å¯†
     /// </summary>
-    /// <param name="publicKey">¹«Ô¿</param>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="publicKey">å…¬é’¥</param>
+    /// <param name="data">æ•°æ®</param>
     /// <param name="fOAEP"></param>
-    /// <returns>¼ÓÃÜºóµÄÊı¾İ</returns>
+    /// <returns>åŠ å¯†åçš„æ•°æ®</returns>
     public static string OpenSSL(string publicKey, string data, bool fOAEP = false)
     {
         using var _publicKeyRsaProvider = Openssl.CreateRsaProviderFromPublicKey(publicKey);
         return Convert.ToBase64String(_publicKeyRsaProvider.Encrypt(Encoding.UTF8.GetBytes(data), fOAEP));
     }
     /// <summary>
-    /// SHA1¼ÓÃÜ
+    /// SHA1åŠ å¯†
     /// </summary>
-    /// <param name="data">Ô­Êı¾İ</param>
-    /// <returns>¼ÓÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">åŸæ•°æ®</param>
+    /// <returns>åŠ å¯†åçš„æ•°æ®</returns>
     public static string SHA1(string data)
     {
         using var sha1 = System.Security.Cryptography.SHA1.Create();
@@ -182,13 +182,13 @@ public partial class EnCode
         return BitConverter.ToString(str02).Replace("-", "");
     }
     /// <summary>
-    /// AES-128-CBC¼ÓÃÜ
+    /// AES-128-CBCåŠ å¯†
     /// </summary>
-    /// <param name="data">Ô­Ê¼Êı¾İ</param>
-    /// <param name="key">ÃÜ³×</param>
-    /// <param name="iv">ÑÎ</param>
-    /// <param name="mode">Ìî³äÄ£Ê½</param>
-    /// <returns>¼ÓÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">åŸå§‹æ•°æ®</param>
+    /// <param name="key">å¯†åŒ™</param>
+    /// <param name="iv">ç›</param>
+    /// <param name="mode">å¡«å……æ¨¡å¼</param>
+    /// <returns>åŠ å¯†åçš„æ•°æ®</returns>
     public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
@@ -223,13 +223,13 @@ public partial class EnCode
 
 
     /// <summary>
-    /// AES-256-CBC¼ÓÃÜ
+    /// AES-256-CBCåŠ å¯†
     /// </summary>
-    /// <param name="data">Ô­Ê¼Êı¾İ</param>
-    /// <param name="key">ÃÜ³×</param>
-    /// <param name="iv">ÑÎ</param>
-    /// <param name="mode">Ìî³äÄ£Ê½</param>
-    /// <returns>¼ÓÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">åŸå§‹æ•°æ®</param>
+    /// <param name="key">å¯†åŒ™</param>
+    /// <param name="iv">ç›</param>
+    /// <param name="mode">å¡«å……æ¨¡å¼</param>
+    /// <returns>åŠ å¯†åçš„æ•°æ®</returns>
     public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
@@ -268,20 +268,20 @@ public partial class EnCode
 public partial class DeCode
 {
     /// <summary>
-    /// BASE64½âÂë
+    /// BASE64è§£ç 
     /// </summary>
-    /// <param name="data">Òª½âÃÜµÄÊı¾İ</param>
-    /// <returns>¼ÓÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">è¦è§£å¯†çš„æ•°æ®</param>
+    /// <returns>åŠ å¯†åçš„æ•°æ®</returns>
     public static string BASE64(string data)
         => Encoding.UTF8.GetString(Convert.FromBase64String(data));
     /// <summary>
-    /// AES128½âÂë
+    /// AES128è§£ç 
     /// </summary>
-    /// <param name="data">Êı¾İ</param>
-    /// <param name="key">ÃÜÔ¿</param>
-    /// <param name="iv">ÑÎ</param>
-    /// <param name="mode">Ìî³äÄ£Ê½</param>
-    /// <returns>½âÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">æ•°æ®</param>
+    /// <param name="key">å¯†é’¥</param>
+    /// <param name="iv">ç›</param>
+    /// <param name="mode">å¡«å……æ¨¡å¼</param>
+    /// <returns>è§£å¯†åçš„æ•°æ®</returns>
     public static byte[] AES128(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
@@ -315,13 +315,13 @@ public partial class DeCode
     }
 
     /// <summary>
-    /// AES256½âÃÜ
+    /// AES256è§£å¯†
     /// </summary>
-    /// <param name="data">Êı¾İ</param>
-    /// <param name="key">ÃÜÔ¿</param>
-    /// <param name="iv">ÑÎ</param>
-    /// <param name="mode">Ìî³äÄ£Ê½</param>
-    /// <returns>½âÃÜºóµÄÊı¾İ</returns>
+    /// <param name="data">æ•°æ®</param>
+    /// <param name="key">å¯†é’¥</param>
+    /// <param name="iv">ç›</param>
+    /// <param name="mode">å¡«å……æ¨¡å¼</param>
+    /// <returns>è§£å¯†åçš„æ•°æ®</returns>
     public static byte[] AES256(byte[] data, string key, string iv,
         PaddingMode mode = PaddingMode.PKCS7)
     {
@@ -359,12 +359,12 @@ public partial class DeCode
     }
 
     /// <summary>
-    /// OPENSSL½âÂë
+    /// OPENSSLè§£ç 
     /// </summary>
-    /// <param name="privateKey">Ë½Ô¿</param>
-    /// <param name="data">Êı¾İ</param>
+    /// <param name="privateKey">ç§é’¥</param>
+    /// <param name="data">æ•°æ®</param>
     /// <param name="fOAEP"></param>
-    /// <returns>½âÃÜºóµÄÊı¾İ</returns>
+    /// <returns>è§£å¯†åçš„æ•°æ®</returns>
     public static string OpenSSL(string privateKey, string data, bool fOAEP = false)
     {
         using var _privateKeyRsaProvider = Openssl.CreateRsaProviderFromPrivateKey(privateKey);
@@ -374,10 +374,10 @@ public partial class DeCode
 public partial class Tools
 {
     /// <summary>
-    /// Bytes×ªHEX×Ö·û´®
+    /// Bytesè½¬HEXå­—ç¬¦ä¸²
     /// </summary>
     /// <param name="src">Bytes</param>
-    /// <returns>×Ö·û´®</returns>
+    /// <returns>å­—ç¬¦ä¸²</returns>
     public static string BytesToHexString(byte[] src)
     {
         StringBuilder stringBuilder = new();
@@ -394,10 +394,10 @@ public partial class Tools
         return stringBuilder.ToString();
     }
     /// <summary>
-    /// HEX×Ö·û´®×ªBytes
+    /// HEXå­—ç¬¦ä¸²è½¬Bytes
     /// </summary>
-    /// <param name="hexString">HEX×Ö·û´®</param>
-    /// <returns>HEXÊı×é</returns>
+    /// <param name="hexString">HEXå­—ç¬¦ä¸²</param>
+    /// <returns>HEXæ•°ç»„</returns>
     public static byte[] HexStringToByte(string hex)
     {
         int len = hex.Length / 2;
@@ -412,7 +412,7 @@ public partial class Tools
     }
     public const string bytelist = "0123456789ABCDEF";
     /// <summary>
-    /// Byte×ªHEX×Ö·û
+    /// Byteè½¬HEXå­—ç¬¦
     /// </summary>
     /// <param name="c"></param>
     /// <returns></returns>
@@ -422,13 +422,13 @@ public partial class Tools
         return b;
     }
     /// <summary>
-    /// ½ØÈ¡×Ö·û´®
+    /// æˆªå–å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="a">Ô´×Ö·û´®</param>
-    /// <param name="b">´Ó¿ªÊ¼</param>
-    /// <param name="c">µ½½áÊø</param>
-    /// <returns>·Ö¸îºóµÄ</returns>
-    public static string GetString(string a, string b, string c = null)
+    /// <param name="a">æºå­—ç¬¦ä¸²</param>
+    /// <param name="b">ä»å¼€å§‹</param>
+    /// <param name="c">åˆ°ç»“æŸ</param>
+    /// <returns>åˆ†å‰²åçš„</returns>
+    public static string GetString(string a, string b, string? c = null)
     {
         if (b == null)
         {
@@ -453,10 +453,10 @@ public partial class Tools
     }
     private readonly static Encoding GBK = Encoding.GetEncoding("GBK");
     /// <summary>
-    /// GBKµ½UTF-8
+    /// GBKåˆ°UTF-8
     /// </summary>
-    /// <param name="msg">GBK×Ö·û´®</param>
-    /// <returns>UTF-8×Ö·û´®</returns>
+    /// <param name="msg">GBKå­—ç¬¦ä¸²</param>
+    /// <returns>UTF-8å­—ç¬¦ä¸²</returns>
     public static string GBKtoUTF8(string msg)
     {
         try
@@ -471,10 +471,10 @@ public partial class Tools
         }
     }
     /// <summary>
-    /// UTF-8µ½GBK
+    /// UTF-8åˆ°GBK
     /// </summary>
-    /// <param name="msg">UTF-8×Ö·û´®</param>
-    /// <returns>GBK×Ö·û´®</returns>
+    /// <param name="msg">UTF-8å­—ç¬¦ä¸²</param>
+    /// <returns>GBKå­—ç¬¦ä¸²</returns>
     public static string UTF8toGBK(string msg)
     {
         try
@@ -489,161 +489,161 @@ public partial class Tools
         }
     }
     /// <summary>
-    /// ×ª³ÉJSON×Ö·û´®
+    /// è½¬æˆJSONå­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="obj">¶ÔÏó</param>
-    /// <returns>json×Ö·û´®</returns>
+    /// <param name="obj">å¯¹è±¡</param>
+    /// <returns>jsonå­—ç¬¦ä¸²</returns>
     public static string ToJson(object obj)
     {
         try
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonUtils.ToString(obj);
         }
         catch (Exception e)
         {
-            throw new ErrorDump("×ª³ÉJsonÊ§°Ü", e);
+            throw new ErrorDump("è½¬æˆJsonå¤±è´¥", e);
         }
     }
     /// <summary>
-    /// JSON×ª³É¶ÔÏó
+    /// JSONè½¬æˆå¯¹è±¡
     /// </summary>
-    /// <typeparam name="T">ÀàĞÍ</typeparam>
-    /// <param name="json">×Ö·û´®</param>
-    /// <returns>¶ÔÏó</returns>
-    public static T ToObject<T>(string json)
+    /// <typeparam name="T">ç±»å‹</typeparam>
+    /// <param name="json">å­—ç¬¦ä¸²</param>
+    /// <returns>å¯¹è±¡</returns>
+    public static T? ToObject<T>(string json)
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonUtils.ToObj<T>(json);
         }
         catch (Exception e)
         {
-            throw new ErrorDump("×ª³É¶ÔÏóÊ§°Ü", e);
+            throw new ErrorDump("è½¬æˆå¯¹è±¡å¤±è´¥", e);
         }
     }
     /// <summary>
-    /// ×Ö·û´®×ª³ÉJSON¶ÔÏó
+    /// å­—ç¬¦ä¸²è½¬æˆJSONå¯¹è±¡
     /// </summary>
-    /// <param name="json">json×Ö·û´®</param>
-    /// <returns>JSON¶ÔÏó</returns>
-    public static JObject ToJObject(string json)
+    /// <param name="json">jsonå­—ç¬¦ä¸²</param>
+    /// <returns>JSONå¯¹è±¡</returns>
+    public static JsonNode? ToJObject(string json)
     {
         try
         {
-            return JObject.Parse(json);
+            return JsonNode.Parse(json);
         }
         catch (Exception e)
         {
-            throw new ErrorDump("×ª³ÉJSON¶ÔÏóÊ§°Ü", e);
+            throw new ErrorDump("è½¬æˆJSONå¯¹è±¡å¤±è´¥", e);
         }
     }
     /// <summary>
-    /// »ñÈ¡Àà
+    /// è·å–ç±»
     /// </summary>
-    /// <param name="classname">ÀàÃû</param>
-    /// <returns>Àà</returns>
-    public static dynamic GetClass(string classname, params object[] obj)
+    /// <param name="classname">ç±»å</param>
+    /// <returns>ç±»</returns>
+    public static dynamic? GetClass(string classname, params object[] obj)
     {
         var data = AssemblyList.GetClass(classname);
         if (data == null)
-            throw new ErrorDump("Ã»ÓĞÕâ¸öÀà:" + classname);
+            throw new ErrorDump("æ²¡æœ‰è¿™ä¸ªç±»:" + classname);
         try
         {
             return Activator.CreateInstance(data.SelfType, obj);
         }
         catch (Exception e)
         {
-            throw new ErrorDump("´´½¨Àà:" + classname + "Ê§°Ü", e);
+            throw new ErrorDump("åˆ›å»ºç±»:" + classname + "å¤±è´¥", e);
         }
     }
     /// <summary>
-    /// »ñÈ¡Ê±¼ä´Á
+    /// è·å–æ—¶é—´æˆ³
     /// </summary>
-    /// <returns>Ê±¼ä´Á</returns>
+    /// <returns>æ—¶é—´æˆ³</returns>
     public static long GetTimeSpan()
     {
         TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
         return Convert.ToInt64(ts.TotalSeconds);
     }
     /// <summary>
-    /// ÅĞ¶ÏWebSocket¿Í»§¶ËÊÇ·ñÔÚÏß
+    /// åˆ¤æ–­WebSocketå®¢æˆ·ç«¯æ˜¯å¦åœ¨çº¿
     /// </summary>
-    /// <param name="id">¿Í»§¶ËID</param>
-    /// <returns>ÊÇ·ñÔÚÏß</returns>
+    /// <param name="id">å®¢æˆ·ç«¯ID</param>
+    /// <returns>æ˜¯å¦åœ¨çº¿</returns>
     public static bool WebSocketIsOnline(string id)
         => PortWebSocket.IsOnline(id);
     /// <summary>
-    /// »ñÈ¡ÔÚÏßµÄ»úÆ÷ÈË
+    /// è·å–åœ¨çº¿çš„æœºå™¨äºº
     /// </summary>
-    /// <returns>»úÆ÷ÈËQQºÅÁĞ±í</returns>
+    /// <returns>æœºå™¨äººQQå·åˆ—è¡¨</returns>
     public static List<long> GetBots()
         => new(RobotUtils.GetQQs());
     /// <summary>
-    /// Ñ¹ËõHTML
+    /// å‹ç¼©HTML
     /// </summary>
-    /// <param name="html">Ô­Ê¼Êı¾İ</param>
-    /// <returns>Ñ¹ËõºóµÄÊı¾İ</returns>
+    /// <param name="html">åŸå§‹æ•°æ®</param>
+    /// <returns>å‹ç¼©åçš„æ•°æ®</returns>
     public static string CompressHTML(string html)
         => CodeCompressUtils.HTML(html);
     /// <summary>
-    /// Ñ¹ËõJS
+    /// å‹ç¼©JS
     /// </summary>
-    /// <param name="js">Ô­Ê¼Êı¾İ</param>
-    /// <returns>Ñ¹ËõºóµÄÊı¾İ</returns>
+    /// <param name="js">åŸå§‹æ•°æ®</param>
+    /// <returns>å‹ç¼©åçš„æ•°æ®</returns>
     public static string CompressJS(string js)
         => CodeCompressUtils.JS(js);
     /// <summary>
-    /// Ñ¹ËõCSS
+    /// å‹ç¼©CSS
     /// </summary>
-    /// <param name="css">Ô­Ê¼Êı¾İ</param>
-    /// <returns>Ñ¹ËõºóµÄÊı¾İ</returns>
+    /// <param name="css">åŸå§‹æ•°æ®</param>
+    /// <returns>å‹ç¼©åçš„æ•°æ®</returns>
     public static string CompressCSS(string css)
         => CodeCompressUtils.CSS(css);
     /// <summary>
-    /// »ñÈ¡»úÆ÷ÈË
+    /// è·å–æœºå™¨äºº
     /// </summary>
-    /// <returns>»úÆ÷ÈË</returns>
+    /// <returns>æœºå™¨äºº</returns>
     public static RobotSDK GetRobot()
         => RobotUtils.Robot;
     /// <summary>
-    /// »ñÈ¡Ò»¸öWebSocket¿Í»§¶Ë
+    /// è·å–ä¸€ä¸ªWebSocketå®¢æˆ·ç«¯
     /// </summary>
-    /// <param name="uuid">¿Í»§¶ËUUID</param>
-    /// <returns>WebSocket¿Í»§¶Ë</returns>
+    /// <param name="uuid">å®¢æˆ·ç«¯UUID</param>
+    /// <returns>WebSocketå®¢æˆ·ç«¯</returns>
     public static IWebSocketConnection GetWebSocket(Guid uuid)
         => PortWebSocket.Get(uuid);
     /// <summary>
-    /// »ñÈ¡Ò»¸öWebSocket¿Í»§¶Ë
+    /// è·å–ä¸€ä¸ªWebSocketå®¢æˆ·ç«¯
     /// </summary>
-    /// <param name="port">¶Ë¿Ú</param>
-    /// <returns>WebSocket¿Í»§¶Ë</returns>
+    /// <param name="port">ç«¯å£</param>
+    /// <returns>WebSocketå®¢æˆ·ç«¯</returns>
     public static IWebSocketConnection GetWebSocket(int port)
         => PortWebSocket.Get(port);
 }
 public partial class FileLoad
 {
     /// <summary>
-    /// ´ÓÎÄ¼ş¼ÓÔØ×Ö·û´®
+    /// ä»æ–‡ä»¶åŠ è½½å­—ç¬¦ä¸²
     /// </summary>
-    /// <param name="filename">ÎÄ¼şÃû</param>
-    /// <param name="encoding">¶ÁÈ¡±àÂë</param>
-    /// <returns>ÎÄ¼şÀïÃæµÄ×Ö·û´®</returns>
-    public static string LoadString(string filename, Encoding encoding = null)
+    /// <param name="filename">æ–‡ä»¶å</param>
+    /// <param name="encoding">è¯»å–ç¼–ç </param>
+    /// <returns>æ–‡ä»¶é‡Œé¢çš„å­—ç¬¦ä¸²</returns>
+    public static string LoadString(string filename, Encoding? encoding = null)
         => FileUtils.LoadString(filename, encoding);
     /// <summary>
-    /// ¶ÁÒ»¸öÎÄ¼ş
+    /// è¯»ä¸€ä¸ªæ–‡ä»¶
     /// </summary>
-    /// <param name="filename">ÎÄ¼şÃû</param>
-    /// <returns>ÎÄ¼ş¶ş½øÖÆ</returns>
+    /// <param name="filename">æ–‡ä»¶å</param>
+    /// <returns>æ–‡ä»¶äºŒè¿›åˆ¶</returns>
     public static byte[] LoadBytes(string filename)
         => FileUtils.LoadBytes(filename);
     /// <summary>
-    /// ¿ªÊ¼ÎÄ¼şÁ÷
+    /// å¼€å§‹æ–‡ä»¶æµ
     /// </summary>
-    /// <param name="http">ÇëÇóÊı¾İ</param>
-    /// <param name="local">ÎÄ¼ş¼Ğ</param>
-    /// <param name="contentType">·µ»ØÌåÀàĞÍ</param>
-    /// <returns>Á÷</returns>
+    /// <param name="http">è¯·æ±‚æ•°æ®</param>
+    /// <param name="local">æ–‡ä»¶å¤¹</param>
+    /// <param name="contentType">è¿”å›ä½“ç±»å‹</param>
+    /// <returns>æµ</returns>
     public static HttpResponseStream StartStream(HttpDllRequest http, string local,
         string contentType = ServerContentType.TXT)
         => FileStreamManager.NewStream(http, local, contentType);
@@ -672,19 +672,13 @@ public partial class ErrorDump : Exception
         return a;
     }
 }
-public partial class VarDump : Exception
+/// <summary>
+/// å˜é‡è¾“å‡º
+/// </summary>
+/// <param name="obj">å˜é‡</param>
+public partial class VarDump(params object[] obj) : Exception
 {
-    private object[] obj;
-    /// <summary>
-    /// ±äÁ¿Êä³ö
-    /// </summary>
-    /// <param name="obj">±äÁ¿</param>
-    public VarDump(params object[] obj)
-    {
-        this.obj = obj;
-    }
-
-    public string Get()
+    public string? Get()
     {
         try
         {
@@ -709,18 +703,18 @@ public partial class VarDump : Exception
                     data.Add(name.Name, item);
                 }
             }
-            return JsonConvert.SerializeObject(data, Formatting.Indented).Replace("\\\"", "\"");
+            return JsonUtils.ToString(data).Replace("\\\"", "\"");
         }
         catch (Exception e)
         {
             ServerMain.LogError(e);
-            return "±äÁ¿Êä³öÊ§°Ü" + e.ToString();
+            return "å˜é‡è¾“å‡ºå¤±è´¥" + e.ToString();
         }
     }
 }
 internal class RepeatDictionaryComparer : IEqualityComparer<string>
 {
-    public bool Equals(string x, string y)
+    public bool Equals(string? x, string? y)
     {
         return x != y;
     }

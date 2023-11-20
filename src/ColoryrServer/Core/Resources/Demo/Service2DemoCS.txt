@@ -8,6 +8,6 @@ public class {name}
 {
     public bool OnError(Exception e)
     {
-        return false; //true表示处理结束
+        return false; //true琛ㄧず澶勭悊缁撴潫
     }
 }

@@ -1,211 +1,259 @@
-using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-//ÇëÓÃnet6ÔËĞĞ
-//²¢°²×°Newtonsoft.Json
-namespace ColoryrSDK;
-
-//»úÆ÷ÈË·µ»ØÊı¾İ°ü
+//////////////////////////////////////////////////////////
+//æœºå™¨äººè¿”å›æ•°æ®åŒ…
+//////////////////////////////////////////////////////////
 /// <summary>
-/// 55 [²å¼ş]»ñÈ¡ÈºÁĞ±í
+/// 0 [æ’ä»¶]æ’ä»¶æ¶ˆæ¯å›è°ƒ
+/// </summary>
+public record ReMessagePack : PackBase
+{
+    /// <summary>
+    /// è¯·æ±‚UUID
+    /// </summary>
+    public string uuid { get; set; }
+    /// <summary>
+    /// æ¶ˆæ¯å†…å®¹
+    /// </summary>
+    public string msg { get; set; }
+}
+/// <summary>
+/// 55 [æ’ä»¶]è·å–ç¾¤åˆ—è¡¨
 /// </summary>
 public record ReListGroupPack : PackBase
 {
     /// <summary>
-    /// ÈºÁĞ±í
+    /// ç¾¤åˆ—è¡¨
     /// </summary>
     public List<GroupInfo> groups { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 56 [²å¼ş]»ñÈ¡ºÃÓÑÁĞ±í
+/// 56 [æ’ä»¶]è·å–å¥½å‹åˆ—è¡¨
 /// </summary>
 public record ReListFriendPack : PackBase
 {
     /// <summary>
-    /// ÅóÓÑÁĞ±í
+    /// æœ‹å‹åˆ—è¡¨
     /// </summary>
     public List<ReFriendInfoPack> friends { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 57 [²å¼ş]»ñÈ¡Èº³ÉÔ±
+/// 57 [æ’ä»¶]è·å–ç¾¤æˆå‘˜
 /// </summary>
 public record ReListMemberPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±ÁĞ±í
+    /// æˆå‘˜åˆ—è¡¨
     /// </summary>
     public List<ReMemberInfoPack> members { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 58 [²å¼ş]»ñÈ¡ÈºÉèÖÃ
+/// 58 [æ’ä»¶]è·å–ç¾¤è®¾ç½®
 /// </summary>
 public record ReGroupSettingPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Éè¶¨
+    /// è®¾å®š
     /// </summary>
     public GroupSettings setting { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 90 [²å¼ş]»ñÈ¡Í¼Æ¬Url
+/// 90 [æ’ä»¶]è·å–å›¾ç‰‡Url
 /// </summary>
 public record ReGetImageUrlPack : PackBase
 {
     /// <summary>
-    /// Í¼Æ¬UUID
+    /// å›¾ç‰‡UUID
     /// </summary>
     public string uuid { get; set; }
     /// <summary>
-    /// Í¼Æ¬µØÖ·
+    /// å›¾ç‰‡åœ°å€
     /// </summary>
     public string url { get; set; }
 }
 /// <summary>
-/// 91 [²å¼ş]»ñÈ¡Èº³ÉÔ±ĞÅÏ¢
+/// 91 [æ’ä»¶]è·å–ç¾¤æˆå‘˜ä¿¡æ¯
 /// </summary>
 public record ReMemberInfoPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// êÇ³Æ
+    /// æ˜µç§°
     /// </summary>
     public string nick { get; set; }
     /// <summary>
-    /// Í·ÏñÍ¼Æ¬
+    /// å¤´åƒå›¾ç‰‡
     /// </summary>
     public string img { get; set; }
     /// <summary>
-    /// ÈºÈ¨ÏŞ
+    /// ç¾¤æƒé™
     /// </summary>
     public MemberPermission per { get; set; }
     /// <summary>
-    /// ÈºÃûÆ¬
+    /// ç¾¤åç‰‡
     /// </summary>
     public string nameCard { get; set; }
     /// <summary>
-    /// ÈºÍ·ÏÎ
+    /// ç¾¤å¤´è¡”
     /// </summary>
     public string specialTitle { get; set; }
     /// <summary>
-    /// Í·ÏñÏÂÔØÁ´½Ó
+    /// å¤´åƒä¸‹è½½é“¾æ¥
     /// </summary>
     public string avatarUrl { get; set; }
     /// <summary>
-    /// ±»½ûÑÔÊ£ÓàÊ±³¤
+    /// è¢«ç¦è¨€å‰©ä½™æ—¶é•¿
     /// </summary>
     public int muteTimeRemaining { get; set; }
     /// <summary>
-    /// ÈëÈºÊ±¼ä
+    /// å…¥ç¾¤æ—¶é—´
     /// </summary>
     public int joinTimestamp { get; set; }
     /// <summary>
-    /// ×îºó·¢ÑÔÊ±¼ä
+    /// æœ€åå‘è¨€æ—¶é—´
     /// </summary>
     public int lastSpeakTimestamp { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// ç¾¤ç­‰çº§å¤´è¡”
+    /// </summary>
+    public string rankTitle { get; set; }
+    /// <summary>
+    /// ç¾¤æ´»è·ƒåº¦ç›¸å…³å±æ€§
+    /// </summary>
+    public MemberActiveInfo active { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 92 [²å¼ş]»ñÈ¡ÅóÓÑĞÅÏ¢
+/// 92 [æ’ä»¶]è·å–æœ‹å‹ä¿¡æ¯
 /// </summary>
 public record ReFriendInfoPack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í·ÏñÍ¼Æ¬
+    /// å¤´åƒå›¾ç‰‡
     /// </summary>
     public string img { get; set; }
     /// <summary>
-    /// ºÃÓÑ±¸×¢
+    /// å¥½å‹å¤‡æ³¨
     /// </summary>
     public string remark { get; set; }
     /// <summary>
-    /// ÓÃ»§ÏêÏ¸×ÊÁÏ
+    /// ç”¨æˆ·è¯¦ç»†èµ„æ–™
     /// </summary>
     public UserProfile userProfile { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// ç”¨æˆ·åˆ†ç»„ID
+    /// </summary>
+    public int groupId { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 101 [²å¼ş]»ñÈ¡ÈºÎÄ¼ş
+/// 101 [æ’ä»¶]è·å–ç¾¤æ–‡ä»¶
 /// </summary>
 public record ReGroupFilesPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÁĞ±í
+    /// æ–‡ä»¶åˆ—è¡¨
     /// </summary>
     public List<GroupFileInfo> files { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 109 [²å¼ş]»ñÈ¡Èº¹«¸æ
+/// 109 [æ’ä»¶]è·å–ç¾¤å…¬å‘Š
 /// </summary>
 public record ReGroupAnnouncementsPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Èº¹«¸æ
+    /// ç¾¤å…¬å‘Š
     /// </summary>
     public List<GroupAnnouncement> list { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
-//»úÆ÷ÈËÃ¶¾Ù
 /// <summary>
-/// ĞÔ±ğ
+/// 128 [æ’ä»¶]è·å–å¥½å‹åˆ†ç»„ä¿¡æ¯
+/// </summary>
+public record ReFriendGroupPack : PackBase
+{
+    /// <summary>
+    /// å¥½å‹åˆ†ç»„æ•°æ®
+    /// </summary>
+    public FriendGroupInfo info { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
+    /// </summary>
+    public string uuid { get; set; }
+}
+/// <summary>
+/// 129 [æ’ä»¶]è·å–æ‰€æœ‰å¥½å‹åˆ†ç»„ä¿¡æ¯
+/// </summary>
+public record ReListFriendGroupPack : PackBase
+{
+    /// <summary>
+    /// å¥½å‹åˆ†ç»„åˆ—è¡¨
+    /// </summary>
+    public List<FriendGroupInfo> infos { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
+    /// </summary>
+    public string uuid { get; set; }
+}
+//////////////////////////////////////////////////////////
+//æœºå™¨äººæšä¸¾
+//////////////////////////////////////////////////////////
+/// <summary>
+/// æ€§åˆ«
 /// </summary>
 public enum Sex
 {
@@ -214,7 +262,7 @@ public enum Sex
     UNKNOWN
 }
 /// <summary>
-/// ³ÉÔ±È¨ÏŞ
+/// æˆå‘˜æƒé™
 /// </summary>
 public enum MemberPermission
 {
@@ -222,104 +270,200 @@ public enum MemberPermission
     ADMINISTRATOR,
     OWNER
 }
-//»úÆ÷ÈËÊı¾İÀàĞÍ
 /// <summary>
-/// Èº¹«¸æ
+/// æ¶ˆæ¯æ¥æºç±»å‹
+/// </summary>
+public enum MessageSourceKind
+{
+    /// <summary>
+    /// ç¾¤æ¶ˆæ¯
+    /// </summary>
+    GROUP = 0,
+    /// <summary>
+    /// å¥½å‹æ¶ˆæ¯
+    /// </summary>
+    FRIEND,
+    /// <summary>
+    /// æ¥è‡ªç¾¤æˆå‘˜çš„ä¸´æ—¶ä¼šè¯æ¶ˆæ¯
+    /// </summary>
+    TEMP,
+    /// <summary>
+    /// æ¥è‡ªé™Œç”Ÿäººçš„æ¶ˆæ¯
+    /// </summary>
+    STRANGER
+}
+/// <summary>
+/// ç¾¤æˆå‘˜å¤´è¡”è¯¦æƒ…Detail
+/// </summary>
+public enum MemberMedalType
+{
+    /// <summary>
+    /// ç¾¤ä¸»ç‹¬æœ‰çš„å¤´è¡”
+    /// </summary>
+    OWNER = 300,
+    /// <summary>
+    /// ç®¡ç†å‘˜ç‹¬æœ‰çš„å¤´è¡”
+    /// </summary>
+    ADMIN = 301,
+    /// <summary>
+    /// ç¾¤ä¸»æˆäºˆçš„å¤´è¡”
+    /// </summary>
+    SPECIAL = 302,
+    /// <summary>
+    /// ç¾¤ä¸»è®¾å®šçš„å¤´è¡”, ä¿æŒæ´»è·ƒå³å¯è·å¾—
+    /// </summary>
+    ACTIVE = 315
+}
+/// <summary>
+/// ç¾¤è£èª‰ä¿¡æ¯
+/// </summary>
+public enum GroupHonorType
+{
+    /// <summary>
+    /// é¾™ç‹
+    /// </summary>
+    TALKATIVE = 1,
+    /// <summary>
+    /// ç¾¤èŠä¹‹ç«
+    /// </summary>
+    PERFORMER = 2,
+    /// <summary>
+    /// ç¾¤èŠç‚½ç„°
+    /// </summary>
+    LEGEND = 3,
+    /// <summary>
+    /// å†’å°–å°æ˜¥ç¬‹
+    /// </summary>
+    STRONG_NEWBIE = 4,
+    /// <summary>
+    /// å¿«ä¹æºæ³‰
+    /// </summary>
+    EMOTION = 5,
+    /// <summary>
+    /// å­¦æœ¯æ–°æ˜Ÿ
+    /// </summary>
+    BRONZE = 6,
+    /// <summary>
+    /// é¡¶å°–å­¦éœ¸
+    /// </summary>
+    SILVER = 7,
+    /// <summary>
+    /// è‡³å°Šå­¦ç¥
+    /// </summary>
+    GOLDEN = 8,
+    /// <summary>
+    /// ä¸€ç¬”å½“å…ˆ
+    /// </summary>
+    WHIRLWIND = 9,
+    /// <summary>
+    /// å£•ç¤¼çš‡å† 
+    /// </summary>
+    RICHER = 10,
+    /// <summary>
+    /// å–„è´¢ç¦ç¦„å¯¿
+    /// </summary>
+    RED_PACKET = 11
+}
+//////////////////////////////////////////////////////////
+//æœºå™¨äººæ•°æ®ç±»å‹
+//////////////////////////////////////////////////////////
+/// <summary>
+/// ç¾¤å…¬å‘Š
 /// </summary>
 public record GroupAnnouncement
 {
     /// <summary>
-    /// ·¢ËÍÕßID
+    /// å‘é€è€…ID
     /// </summary>
     public long senderId;
     /// <summary>
-    /// ¹«¸æID
+    /// å…¬å‘ŠID
     /// </summary>
     public string fid;
     /// <summary>
-    /// ÓĞÈË¶¼ÒÑÈ·ÈÏ
+    /// æœ‰äººéƒ½å·²ç¡®è®¤
     /// </summary>
     public bool allConfirmed;
     /// <summary>
-    /// ÎªÒÑ¾­È·ÈÏµÄ³ÉÔ±ÊıÁ¿
+    /// ä¸ºå·²ç»ç¡®è®¤çš„æˆå‘˜æ•°é‡
     /// </summary>
     public int confirmedMembersCount;
     /// <summary>
-    /// ¹«¸æ·¢³öµÄÊ±¼ä
+    /// å…¬å‘Šå‘å‡ºçš„æ—¶é—´
     /// </summary>
     public long publicationTime;
     /// <summary>
-    /// ÄÚÈİ
+    /// å†…å®¹
     /// </summary>
     public string content;
     /// <summary>
-    /// Í¼Æ¬
+    /// å›¾ç‰‡
     /// </summary>
     public string image;
     /// <summary>
-    /// ÊÇ·ñ·¢ËÍ¸øĞÂ³ÉÔ±
+    /// æ˜¯å¦å‘é€ç»™æ–°æˆå‘˜
     /// </summary>
     public bool sendToNewMember;
     /// <summary>
-    /// ÖÃ¶¥
+    /// ç½®é¡¶
     /// </summary>
     public bool isPinned;
     /// <summary>
-    /// ĞŞ¸ÄêÇ³Æ
+    /// ä¿®æ”¹æ˜µç§°
     /// </summary>
     public bool showEditCard;
     /// <summary>
-    /// Ê¹ÓÃµ¯´°
+    /// ä½¿ç”¨å¼¹çª—
     /// </summary>
     public bool showPopup;
     /// <summary>
-    /// ĞèÒªÈº³ÉÔ±È·ÈÏ
+    /// éœ€è¦ç¾¤æˆå‘˜ç¡®è®¤
     /// </summary>
     public bool requireConfirmation;
 }
 /// <summary>
-/// ÈºÎÄ¼şĞÅÏ¢
+/// ç¾¤æ–‡ä»¶ä¿¡æ¯
 /// </summary>
 public record GroupFileInfo
 {
     /// <summary>
-    /// ÎÄ¼şÃû
+    /// æ–‡ä»¶å
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ÎÄ¼şID
+    /// æ–‡ä»¶ID
     /// </summary>
     public string id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string absolutePath { get; set; }
     /// <summary>
-    /// ÊÇ·ñÊÇÎÄ¼ş
+    /// æ˜¯å¦æ˜¯æ–‡ä»¶
     /// </summary>
     public bool isFile { get; set; }
     /// <summary>
-    /// ÊÇ·ñÊÇÎÄ¼ş¼Ğ
+    /// æ˜¯å¦æ˜¯æ–‡ä»¶å¤¹
     /// </summary>
     public bool isFolder { get; set; }
     /// <summary>
-    /// ÎÄ¼ş´óĞ¡
+    /// æ–‡ä»¶å¤§å°
     /// </summary>
     public long size { get; set; }
     /// <summary>
-    /// ÉÏ´«ÕßQQºÅ
+    /// ä¸Šä¼ è€…QQå·
     /// </summary>
     public long uploaderId { get; set; }
     /// <summary>
-    /// ÉÏ´«Ê±¼ä
+    /// ä¸Šä¼ æ—¶é—´
     /// </summary>
     public long uploadTime { get; set; }
     /// <summary>
-    /// ÉÏ´ÎĞŞ¸ÄÊ±¼ä
+    /// ä¸Šæ¬¡ä¿®æ”¹æ—¶é—´
     /// </summary>
     public long lastModifyTime { get; set; }
     /// <summary>
-    /// ÎÄ¼şµ½ÆÚÊ±¼ä
+    /// æ–‡ä»¶åˆ°æœŸæ—¶é—´
     /// </summary>
     public long expiryTime { get; set; }
     /// <summary>
@@ -332,2481 +476,2365 @@ public record GroupFileInfo
     public string md5 { get; set; }
 }
 /// <summary>
-/// ÓÃ»§ĞÅÏ¢
+/// ç”¨æˆ·ä¿¡æ¯
 /// </summary>
 public record UserProfile
 {
     /// <summary>
-    /// êÇ³Æ
+    /// æ˜µç§°
     /// </summary>
     public string nickname { get; set; }
     /// <summary>
-    /// ÓÊÏä
+    /// é‚®ç®±
     /// </summary>
     public string email { get; set; }
     /// <summary>
-    /// ÄêÁä
+    /// å¹´é¾„
     /// </summary>
     public int age { get; set; }
     /// <summary>
-    /// QQµÈ¼¶
+    /// QQç­‰çº§
     /// </summary>
     public int qLevel { get; set; }
     /// <summary>
-    /// ĞÔ±ğ
+    /// æ€§åˆ«
     /// </summary>
     public Sex sex { get; set; }
     /// <summary>
-    /// ¸öĞÔÇ©Ãû
+    /// ä¸ªæ€§ç­¾å
     /// </summary>
     public string sign { get; set; }
 }
 /// <summary>
-/// ÈºĞÅÏ¢
+/// ç¾¤ä¿¡æ¯
 /// </summary>
 public record GroupInfo
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id;
     /// <summary>
-    /// ÈºÃû
+    /// ç¾¤å
     /// </summary>
     public string name;
     /// <summary>
-    /// ÈºÍ·Ïñ
+    /// ç¾¤å¤´åƒ
     /// </summary>
     public string img;
     /// <summary>
-    /// ËùÓĞÕßQQºÅ
+    /// æ‰€æœ‰è€…QQå·
     /// </summary>
     public long oid;
     /// <summary>
-    /// »úÆ÷ÈËËùÓµÓĞµÄÈ¨ÏŞ
+    /// æœºå™¨äººæ‰€æ‹¥æœ‰çš„æƒé™
     /// </summary>
     public MemberPermission per;
 }
 /// <summary>
-/// ÈºÉè¶¨
+/// ç¾¤è®¾å®š
 /// </summary>
 public record GroupSettings
 {
     /// <summary>
-    /// ÈëÈº¹«¸æ, Ã»ÓĞÊ±Îª¿Õ×Ö·û´®.
+    /// å…¥ç¾¤å…¬å‘Š, æ²¡æœ‰æ—¶ä¸ºç©ºå­—ç¬¦ä¸².
     /// </summary>
     public string entranceAnnouncement { get; set; }
     /// <summary>
-    /// È«Ìå½ûÑÔ×´Ì¬
+    /// å…¨ä½“ç¦è¨€çŠ¶æ€
     /// </summary>
     public bool isMuteAll { get; set; }
     /// <summary>
-    /// ÔÊĞíÈºÔ±ÑûÇëºÃÓÑÈëÈºµÄ×´Ì¬
+    /// å…è®¸ç¾¤å‘˜é‚€è¯·å¥½å‹å…¥ç¾¤çš„çŠ¶æ€
     /// </summary>
     public bool isAllowMemberInvite { get; set; }
     /// <summary>
-    /// ×Ô¶¯¼ÓÈºÉóÅú
+    /// è‡ªåŠ¨åŠ ç¾¤å®¡æ‰¹
     /// </summary>
     public bool isAutoApproveEnabled { get; set; }
     /// <summary>
-    /// ÄäÃûÁÄÌì
+    /// åŒ¿åèŠå¤©
     /// </summary>
     public bool isAnonymousChatEnabled { get; set; }
 }
 /// <summary>
-/// ÏûÏ¢À´Ô´ÀàĞÍ
+/// å¥½å‹åˆ†ç»„æ•°æ®
 /// </summary>
-public enum MessageSourceKind
+public record FriendGroupInfo
 {
     /// <summary>
-    /// ÈºÏûÏ¢
+    /// å¥½å‹åˆ†ç»„ ID
     /// </summary>
-    GROUP = 0,
+    public int id { get; set; }
     /// <summary>
-    /// ºÃÓÑÏûÏ¢
+    /// å¥½å‹åˆ†ç»„å
     /// </summary>
-    FRIEND,
+    public string name { get; set; }
     /// <summary>
-    /// À´×ÔÈº³ÉÔ±µÄÁÙÊ±»á»°ÏûÏ¢
+    /// å¥½å‹åˆ†ç»„å†…å¥½å‹æ•°é‡
     /// </summary>
-    TEMP,
+    public int count { get; set; }
     /// <summary>
-    /// À´×ÔÄ°ÉúÈËµÄÏûÏ¢
+    /// å±äºæœ¬åˆ†ç»„çš„å¥½å‹é›†åˆ
     /// </summary>
-    STRANGER
+    public List<long> friends { get; set; }
 }
-//»úÆ÷ÈË¹«¹²Êı¾İ°ü
 /// <summary>
-/// »ù´¡°ü
+/// ç¾¤æ´»è·ƒåº¦ç›¸å…³å±æ€§
+/// </summary>
+public record MemberActiveInfo
+{
+    /// <summary>
+    /// ç¾¤æ´»è·ƒç­‰çº§. å–å€¼ä¸º 1~6 (åŒ…å«)
+    /// </summary>
+    public int rank { get; set; }
+    /// <summary>
+    /// ç¾¤æ´»è·ƒç§¯åˆ†
+    /// </summary>
+    public int point { get; set; }
+    /// <summary>
+    /// ç¾¤è£èª‰æ ‡è¯†
+    /// </summary>
+    public List<GroupHonorType> honors { get; set; }
+    /// <summary>
+    /// ç¾¤è£èª‰ç­‰çº§. å–å€¼ä¸º 1~100 (åŒ…å«)
+    /// </summary>
+    public int temperature { get; set; }
+    /// <summary>
+    /// å½“å‰ä½©æˆ´çš„å¤´è¡”
+    /// </summary>
+    public string title { get; set; }
+    /// <summary>
+    /// å½“å‰ä½©æˆ´çš„å¤´è¡”çš„é¢œè‰²
+    /// </summary>
+    public string color { get; set; }
+    /// <summary>
+    /// å½“å‰ä½©æˆ´çš„å¤´è¡”ç±»å‹
+    /// </summary>
+    public MemberMedalType wearing { get; set; }
+    /// <summary>
+    /// æ‹¥æœ‰çš„æ‰€æœ‰å¤´è¡”
+    /// </summary>
+    public List<MemberMedalType> medals { get; set; }
+}
+//////////////////////////////////////////////////////////
+//æœºå™¨äººæ•°æ®åŒ…
+//////////////////////////////////////////////////////////
+/// <summary>
+/// åŸºç¡€åŒ…
 /// </summary>
 public abstract record PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long qq { get; set; }
 }
 /// <summary>
-/// 0 [²å¼ş]²å¼ş¿ªÊ¼Á¬½Ó
+/// 0 [æ’ä»¶]æ’ä»¶å¼€å§‹è¿æ¥
 /// </summary>
 public record StartPack : PackBase
 {
     /// <summary>
-    /// ²å¼şÃû×Ö
+    /// æ’ä»¶åå­—
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ¼àÌıµÄ°ü
+    /// ç›‘å¬çš„åŒ…
     /// </summary>
     public List<byte> reg { get; set; }
     /// <summary>
-    /// ¼àÌıµÄÈº£¬¿ÉÒÔÎªnull
+    /// ç›‘å¬çš„ç¾¤ï¼Œå¯ä»¥ä¸ºnull
     /// </summary>
     public List<long> groups { get; set; }
     /// <summary>
-    /// ¼àÌıµÄQQºÅ£¬¿ÉÒÔÎªnull
+    /// ç›‘å¬çš„QQå·ï¼Œå¯ä»¥ä¸ºnull
     /// </summary>
     public List<long> qqList { get; set; }
 }
 /// <summary>
-/// 1 [»úÆ÷ÈË]Í¼Æ¬ÉÏ´«Ç°. ¿ÉÒÔ×èÖ¹ÉÏ´«£¨ÊÂ¼ş£©
+/// 1 [æœºå™¨äºº]å›¾ç‰‡ä¸Šä¼ å‰. å¯ä»¥é˜»æ­¢ä¸Šä¼ ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BeforeImageUploadPack : PackBase
 {
     /// <summary>
-    /// ·¢ËÍ¸øµÄºÅÂë
+    /// å‘é€ç»™çš„å·ç 
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í¼Æ¬ID
+    /// å›¾ç‰‡ID
     /// </summary>
     public string name { get; set; }
 }
 /// <summary>
-/// 2 [»úÆ÷ÈË]Í·Ïñ±»ĞŞ¸Ä£¨Í¨¹ıÆäËû¿Í»§¶ËĞŞ¸ÄÁËÍ·Ïñ£©£¨ÊÂ¼ş£©
+/// 2 [æœºå™¨äºº]å¤´åƒè¢«ä¿®æ”¹ï¼ˆé€šè¿‡å…¶ä»–å®¢æˆ·ç«¯ä¿®æ”¹äº†å¤´åƒï¼‰ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotAvatarChangedPack : PackBase
 {
 
 }
 /// <summary>
-/// 3 [»úÆ÷ÈË]ÔÚÈºÀïµÄÈ¨ÏŞ±»¸Ä±ä. ²Ù×÷ÈËÒ»¶¨ÊÇÈºÖ÷£¨ÊÂ¼ş£©
+/// 3 [æœºå™¨äºº]åœ¨ç¾¤é‡Œçš„æƒé™è¢«æ”¹å˜. æ“ä½œäººä¸€å®šæ˜¯ç¾¤ä¸»ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotGroupPermissionChangePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉµÄÈ¨ÏŞ
+    /// æ—§çš„æƒé™
     /// </summary>
     public MemberPermission old { get; set; }
     /// <summary>
-    /// µ±Ç°È¨ÏŞ
+    /// å½“å‰æƒé™
     /// </summary>
     public MemberPermission now { get; set; }
 }
 /// <summary>
-/// 4 [»úÆ÷ÈË]±»ÑûÇë¼ÓÈëÒ»¸öÈº£¨ÊÂ¼ş£©
+/// 4 [æœºå™¨äºº]è¢«é‚€è¯·åŠ å…¥ä¸€ä¸ªç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotInvitedJoinGroupRequestEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÑûÇëÈËQQºÅ
+    /// é‚€è¯·äººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÊÂ¼şID
+    /// äº‹ä»¶ID
     /// </summary>
     public long eventid { get; set; }
 }
 /// <summary>
-/// 5 [»úÆ÷ÈË]³É¹¦¼ÓÈëÁËÒ»¸öĞÂÈº£¨²»È·¶¨. ¿ÉÄÜÊÇÖ÷¶¯¼ÓÈë£©£¨ÊÂ¼ş£©
+/// 5 [æœºå™¨äºº]æˆåŠŸåŠ å…¥äº†ä¸€ä¸ªæ–°ç¾¤ï¼ˆä¸ç¡®å®š. å¯èƒ½æ˜¯ä¸»åŠ¨åŠ å…¥ï¼‰ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotJoinGroupEventAPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 6 [»úÆ÷ÈË]³É¹¦¼ÓÈëÁËÒ»¸öĞÂÈº£¨»úÆ÷ÈË±»Ò»¸öÈºÄÚµÄ³ÉÔ±Ö±½ÓÑûÇë¼ÓÈëÁËÈº£©£¨ÊÂ¼ş£©
+/// 6 [æœºå™¨äºº]æˆåŠŸåŠ å…¥äº†ä¸€ä¸ªæ–°ç¾¤ï¼ˆæœºå™¨äººè¢«ä¸€ä¸ªç¾¤å†…çš„æˆå‘˜ç›´æ¥é‚€è¯·åŠ å…¥äº†ç¾¤ï¼‰ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotJoinGroupEventBPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÑûÇëÈËQQ
+    /// é‚€è¯·äººQQ
     /// </summary>
     public long fid;
 }
 /// <summary>
-/// 7 [»úÆ÷ÈË]Ö÷¶¯ÍË³öÒ»¸öÈº£¨ÊÂ¼ş£©
+/// 7 [æœºå™¨äºº]ä¸»åŠ¨é€€å‡ºä¸€ä¸ªç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotLeaveEventAPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 8 [»úÆ÷ÈË]±»¹ÜÀíÔ±»òÈºÖ÷Ìß³öÈº£¨ÊÂ¼ş£©
+/// 8 [æœºå™¨äºº]è¢«ç®¡ç†å‘˜æˆ–ç¾¤ä¸»è¸¢å‡ºç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotLeaveEventBPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQ
+    /// æ‰§è¡ŒäººQQ
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 9 [»úÆ÷ÈË]±»½ûÑÔ£¨ÊÂ¼ş£©
+/// 9 [æœºå™¨äºº]è¢«ç¦è¨€ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotMuteEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ½ûÑÔÊ±¼ä
+    /// ç¦è¨€æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 10 [»úÆ÷ÈË]Ö÷¶¯ÀëÏß£¨ÊÂ¼ş£©
-/// 12 [»úÆ÷ÈË]±»·şÎñÆ÷¶Ï¿ª£¨ÊÂ¼ş£©
-/// 13 [»úÆ÷ÈË]ÒòÍøÂçÎÊÌâ¶øµôÏß£¨ÊÂ¼ş£©
+/// 10 [æœºå™¨äºº]ä¸»åŠ¨ç¦»çº¿ï¼ˆäº‹ä»¶ï¼‰
+/// 12 [æœºå™¨äºº]è¢«æœåŠ¡å™¨æ–­å¼€ï¼ˆäº‹ä»¶ï¼‰
+/// 13 [æœºå™¨äºº]å› ç½‘ç»œé—®é¢˜è€Œæ‰çº¿ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotOfflineEventAPack : PackBase
 {
     /// <summary>
-    /// ÀëÏßÔ­Òò
+    /// ç¦»çº¿åŸå› 
     /// </summary>
     public string message { get; set; }
 }
 /// <summary>
-/// 11 [»úÆ÷ÈË]±»¼·ÏÂÏß£¨ÊÂ¼ş£©
+/// 11 [æœºå™¨äºº]è¢«æŒ¤ä¸‹çº¿ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotOfflineEventBPack : PackBase
 {
     /// <summary>
-    /// ÀëÏßÔ­Òò
+    /// ç¦»çº¿åŸå› 
     /// </summary>
     public string message { get; set; }
     /// <summary>
-    /// ±êÌâ
+    /// æ ‡é¢˜
     /// </summary>
     public string title { get; set; }
 }
 /// <summary>
-/// 14 [»úÆ÷ÈË]·şÎñÆ÷Ö÷¶¯ÒªÇó¸ü»»ÁíÒ»¸ö·şÎñÆ÷£¨ÊÂ¼ş£©
+/// 14 [æœºå™¨äºº]æœåŠ¡å™¨ä¸»åŠ¨è¦æ±‚æ›´æ¢å¦ä¸€ä¸ªæœåŠ¡å™¨ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotOfflineEventCPack : PackBase
 {
 
 }
 /// <summary>
-/// 15 [»úÆ÷ÈË]µÇÂ¼Íê³É, ºÃÓÑÁĞ±í, Èº×éÁĞ±í³õÊ¼»¯Íê³É£¨ÊÂ¼ş£©
+/// 15 [æœºå™¨äºº]ç™»å½•å®Œæˆ, å¥½å‹åˆ—è¡¨, ç¾¤ç»„åˆ—è¡¨åˆå§‹åŒ–å®Œæˆï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotOnlineEventPack : PackBase
 {
 
 }
 /// <summary>
-/// 16 [»úÆ÷ÈË]Ö÷¶¯»ò±»¶¯ÖØĞÂµÇÂ¼£¨ÊÂ¼ş£©
+/// 16 [æœºå™¨äºº]ä¸»åŠ¨æˆ–è¢«åŠ¨é‡æ–°ç™»å½•ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotReloginEventPack : PackBase
 {
     /// <summary>
-    /// Ô­ÒòÏûÏ¢
+    /// åŸå› æ¶ˆæ¯
     /// </summary>
     public string message { get; set; }
 }
 /// <summary>
-/// 17 [»úÆ÷ÈË]±»È¡Ïû½ûÑÔ£¨ÊÂ¼ş£©
+/// 17 [æœºå™¨äºº]è¢«å–æ¶ˆç¦è¨€ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotUnmuteEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 18 [»úÆ÷ÈË]³É¹¦Ìí¼ÓÁËÒ»¸öĞÂºÃÓÑ£¨ÊÂ¼ş£©
+/// 18 [æœºå™¨äºº]æˆåŠŸæ·»åŠ äº†ä¸€ä¸ªæ–°å¥½å‹ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendAddEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// êÇ³Æ
+    /// æ˜µç§°
     /// </summary>
     public string nick { get; set; }
 }
 /// <summary>
-/// 19 [»úÆ÷ÈË]ºÃÓÑÍ·ÏñĞŞ¸Ä£¨ÊÂ¼ş£©
+/// 19 [æœºå™¨äºº]å¥½å‹å¤´åƒä¿®æ”¹ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendAvatarChangedEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í¼Æ¬url
+    /// å›¾ç‰‡url
     /// </summary>
     public string url { get; set; }
 }
 /// <summary>
-/// 20 [»úÆ÷ÈË]ºÃÓÑÒÑ±»É¾³ı£¨ÊÂ¼ş£©
+/// 20 [æœºå™¨äºº]å¥½å‹å·²è¢«åˆ é™¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendDeleteEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 21 [»úÆ÷ÈË]ÔÚºÃÓÑÏûÏ¢·¢ËÍºó¹ã²¥£¨ÊÂ¼ş£©
+/// 21 [æœºå™¨äºº]åœ¨å¥½å‹æ¶ˆæ¯å‘é€åå¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendMessagePostSendEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÊÇ·ñ³É¹¦·¢ËÍ
+    /// æ˜¯å¦æˆåŠŸå‘é€
     /// </summary>
     public bool res { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// ´íÎóÏûÏ¢
+    /// é”™è¯¯æ¶ˆæ¯
     /// </summary>
     public string error { get; set; }
 }
 /// <summary>
-/// 22 [»úÆ÷ÈË]ÔÚ·¢ËÍºÃÓÑÏûÏ¢Ç°¹ã²¥£¨ÊÂ¼ş£©
+/// 22 [æœºå™¨äºº]åœ¨å‘é€å¥½å‹æ¶ˆæ¯å‰å¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendMessagePreSendEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 23 [»úÆ÷ÈË]ºÃÓÑêÇ³Æ¸Ä±ä£¨ÊÂ¼ş£©
+/// 23 [æœºå™¨äºº]å¥½å‹æ˜µç§°æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendRemarkChangeEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉµÄêÇ³Æ
+    /// æ—§çš„æ˜µç§°
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄêÇ³Æ
+    /// æ–°çš„æ˜µç§°
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 24 [»úÆ÷ÈË]Èº "ÄäÃûÁÄÌì" ¹¦ÄÜ×´Ì¬¸Ä±ä£¨ÊÂ¼ş£©
+/// 24 [æœºå™¨äºº]ç¾¤ "åŒ¿åèŠå¤©" åŠŸèƒ½çŠ¶æ€æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupAllowAnonymousChatEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public bool old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public bool now { get; set; }
 }
 /// <summary>
-/// 25 [»úÆ÷ÈË]Èº "Ì¹°×Ëµ" ¹¦ÄÜ×´Ì¬¸Ä±ä£¨ÊÂ¼ş£©
+/// 25 [æœºå™¨äºº]ç¾¤ "å¦ç™½è¯´" åŠŸèƒ½çŠ¶æ€æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupAllowConfessTalkEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public bool old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public bool now { get; set; }
 }
 /// <summary>
-/// 26 [»úÆ÷ÈË]Èº "ÔÊĞíÈºÔ±ÑûÇëºÃÓÑ¼ÓÈº" ¹¦ÄÜ×´Ì¬¸Ä±ä£¨ÊÂ¼ş£©
+/// 26 [æœºå™¨äºº]ç¾¤ "å…è®¸ç¾¤å‘˜é‚€è¯·å¥½å‹åŠ ç¾¤" åŠŸèƒ½çŠ¶æ€æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupAllowMemberInviteEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public bool old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public bool now { get; set; }
 }
 /// <summary>
-/// 27 [»úÆ÷ÈË]ÈëÈº¹«¸æ¸Ä±ä£¨ÊÂ¼ş£©
+/// 27 [æœºå™¨äºº]å…¥ç¾¤å…¬å‘Šæ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 //public record GroupEntranceAnnouncementChangeEventPack : PackBase
 //{
 //    / <summary>
-//    / ÈººÅ
+//    / ç¾¤å·
 //    / </summary>
 //    public long id { get; set; }
 //    / <summary>
-//    / Ö´ĞĞÈËQQºÅ
+//    / æ‰§è¡ŒäººQQå·
 //    / </summary>
 //    public long fid { get; set; }
 //    / <summary>
-//    / ¾ÉµÄ×´Ì¬
+//    / æ—§çš„çŠ¶æ€
 //    / </summary>
 //    public bool old { get; set; }
 //    / <summary>
-//    / ĞÂµÄ×´Ì¬
+//    / æ–°çš„çŠ¶æ€
 //    / </summary>
 //    public bool now { get; set; }
 //}
 /// <summary>
-/// 28 [»úÆ÷ÈË]ÔÚÈºÏûÏ¢·¢ËÍºó¹ã²¥£¨ÊÂ¼ş£©
+/// 28 [æœºå™¨äºº]åœ¨ç¾¤æ¶ˆæ¯å‘é€åå¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupMessagePostSendEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÊÇ·ñ·¢ËÍ³É¹¦
+    /// æ˜¯å¦å‘é€æˆåŠŸ
     /// </summary>
     public bool res { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ·¢ËÍµÄÏûÏ¢
+    /// å‘é€çš„æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// ´íÎóÏûÏ¢
+    /// é”™è¯¯æ¶ˆæ¯
     /// </summary>
     public string error { get; set; }
 }
 /// <summary>
-/// 29 [»úÆ÷ÈË]ÔÚ·¢ËÍÈºÏûÏ¢Ç°¹ã²¥£¨ÊÂ¼ş£©
+/// 29 [æœºå™¨äºº]åœ¨å‘é€ç¾¤æ¶ˆæ¯å‰å¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupMessagePreSendEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 30 [»úÆ÷ÈË]Èº "È«Ô±½ûÑÔ" ¹¦ÄÜ×´Ì¬¸Ä±ä£¨ÊÂ¼ş£©
+/// 30 [æœºå™¨äºº]ç¾¤ "å…¨å‘˜ç¦è¨€" åŠŸèƒ½çŠ¶æ€æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupMuteAllEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public bool old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public bool now { get; set; }
 }
 /// <summary>
-/// 31 [»úÆ÷ÈË]ÈºÃû¸Ä±ä£¨ÊÂ¼ş£©
+/// 31 [æœºå™¨äºº]ç¾¤åæ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupNameChangeEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄÃû×Ö
+    /// æ—§çš„åå­—
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄÃû×Ö
+    /// æ–°çš„åå­—
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 32 [»úÆ÷ÈË]Í¼Æ¬ÉÏ´«³É¹¦£¨ÊÂ¼ş£©
+/// 32 [æœºå™¨äºº]å›¾ç‰‡ä¸Šä¼ æˆåŠŸï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record ImageUploadEventAPack : PackBase
 {
     /// <summary>
-    /// Ä¿±êID
+    /// ç›®æ ‡ID
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ä¿±êID
+    /// ç›®æ ‡ID
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Í¼Æ¬ID
+    /// å›¾ç‰‡ID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 33 [»úÆ÷ÈË]Í¼Æ¬ÉÏ´«Ê§°Ü£¨ÊÂ¼ş£©
+/// 33 [æœºå™¨äºº]å›¾ç‰‡ä¸Šä¼ å¤±è´¥ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record ImageUploadEventBPack : PackBase
 {
     /// <summary>
-    /// Ä¿±êID
+    /// ç›®æ ‡ID
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ´íÎóÂë
+    /// é”™è¯¯ç 
     /// </summary>
     public int index { get; set; }
     /// <summary>
-    /// ×ÊÔ´Ãû
+    /// èµ„æºå
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ´íÎóÏûÏ¢
+    /// é”™è¯¯æ¶ˆæ¯
     /// </summary>
     public string error { get; set; }
 }
 /// <summary>
-/// 34 [»úÆ÷ÈË]³ÉÔ±ÈºÃûÆ¬¸Ä¶¯£¨ÊÂ¼ş£©
+/// 34 [æœºå™¨äºº]æˆå‘˜ç¾¤åç‰‡æ”¹åŠ¨ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberCardChangeEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 35 [»úÆ÷ÈË]³É³ÉÔ±±»ÑûÇë¼ÓÈëÈº£¨ÊÂ¼ş£©
+/// 35 [æœºå™¨äºº]æˆæˆå‘˜è¢«é‚€è¯·åŠ å…¥ç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record InviteMemberJoinEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ½øÈºÈËêÇ³Æ
+    /// è¿›ç¾¤äººæ˜µç§°
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ÑûÇëÈËQQºÅ
+    /// é‚€è¯·äººQQå·
     /// </summary>
     public long ifid { get; set; }
     /// <summary>
-    /// ÑûÇëÈËêÇ³Æ
+    /// é‚€è¯·äººæ˜µç§°
     /// </summary>
     public string iname { get; set; }
 }
 /// <summary>
-/// 36 [»úÆ÷ÈË] ³ÉÔ±Ö÷¶¯¼ÓÈëÈº£¨ÊÂ¼ş£©
+/// 36 [æœºå™¨äºº] æˆå‘˜ä¸»åŠ¨åŠ å…¥ç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberJoinEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ½øÈºÈËQQºÅ
+    /// è¿›ç¾¤äººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¼ÓÈëÈËêÇ³Æ
+    /// åŠ å…¥äººæ˜µç§°
     /// </summary>
     public string name { get; set; }
 }
 /// <summary>
-/// 37 [»úÆ÷ÈË]Ò»¸öÕËºÅÇëÇó¼ÓÈëÈºÊÂ¼ş, [Bot] ÔÚ´ËÈºÖĞÊÇ¹ÜÀíÔ±»òÈºÖ÷.£¨ÊÂ¼ş£©
+/// 37 [æœºå™¨äºº]ä¸€ä¸ªè´¦å·è¯·æ±‚åŠ å…¥ç¾¤äº‹ä»¶, [Bot] åœ¨æ­¤ç¾¤ä¸­æ˜¯ç®¡ç†å‘˜æˆ–ç¾¤ä¸».ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberJoinRequestEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ½øÈºÈË
+    /// è¿›ç¾¤äºº
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÑûÇëÈËID
+    /// é‚€è¯·äººID
     /// </summary>
     public long qif { get; set; }
     /// <summary>
-    /// ÈëÈºÏûÏ¢
+    /// å…¥ç¾¤æ¶ˆæ¯
     /// </summary>
     public string message { get; set; }
     /// <summary>
-    /// ÊÂ¼şID
+    /// äº‹ä»¶ID
     /// </summary>
     public long eventid { get; set; }
 }
 /// <summary>
-/// 38 [»úÆ÷ÈË]³ÉÔ±±»Ìß³öÈº£¨ÊÂ¼ş£©
+/// 38 [æœºå™¨äºº]æˆå‘˜è¢«è¸¢å‡ºç¾¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberLeaveEventAPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ±»Ìß³öÈËQQºÅ
+    /// è¢«è¸¢å‡ºäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long eid { get; set; }
 }
 /// <summary>
-/// 39 [»úÆ÷ÈË]³ÉÔ±Ö÷¶¯Àë¿ª£¨ÊÂ¼ş£©
+/// 39 [æœºå™¨äºº]æˆå‘˜ä¸»åŠ¨ç¦»å¼€ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberLeaveEventBPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Àë¿ªÈËQQºÅ
+    /// ç¦»å¼€äººQQå·
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 40 [»úÆ÷ÈË]Èº³ÉÔ±±»½ûÑÔ£¨ÊÂ¼ş£©
+/// 40 [æœºå™¨äºº]ç¾¤æˆå‘˜è¢«ç¦è¨€ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberMuteEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ±»½ûÑÔµÄQQºÅ
+    /// è¢«ç¦è¨€çš„QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Ö´ĞĞ½ûÑÔµÄQQºÅ
+    /// æ‰§è¡Œç¦è¨€çš„QQå·
     /// </summary>
     public long eid { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 41 [»úÆ÷ÈË]³ÉÔ±È¨ÏŞ¸Ä±ä£¨ÊÂ¼ş£©
+/// 41 [æœºå™¨äºº]æˆå‘˜æƒé™æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberPermissionChangeEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public MemberPermission old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public MemberPermission now { get; set; }
 }
 /// <summary>
-/// 42 [»úÆ÷ÈË]³ÉÔ±ÈºÍ·ÏÎ¸Ä¶¯£¨ÊÂ¼ş£©
+/// 42 [æœºå™¨äºº]æˆå‘˜ç¾¤å¤´è¡”æ”¹åŠ¨ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberSpecialTitleChangeEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ¾ÉµÄ×´Ì¬
+    /// æ—§çš„çŠ¶æ€
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄ×´Ì¬
+    /// æ–°çš„çŠ¶æ€
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 43 [»úÆ÷ÈË]Èº³ÉÔ±±»È¡Ïû½ûÑÔ£¨ÊÂ¼ş£©
+/// 43 [æœºå™¨äºº]ç¾¤æˆå‘˜è¢«å–æ¶ˆç¦è¨€ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberUnmuteEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ±»Ö´ĞĞÈËQQºÅ
+    /// è¢«æ‰§è¡ŒäººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Ö´ĞĞÈËQQºÅ
+    /// æ‰§è¡ŒäººQQå·
     /// </summary>
     public long eid { get; set; }
 }
 /// <summary>
-/// 44 [»úÆ÷ÈË]ºÃÓÑÏûÏ¢³·»Ø£¨ÊÂ¼ş£©
+/// 44 [æœºå™¨äºº]å¥½å‹æ¶ˆæ¯æ’¤å›ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MessageRecallEventAPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] mid { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 45 [»úÆ÷ÈË]ÈºÏûÏ¢³·»ØÊÂ¼ş£¨ÊÂ¼ş£©
+/// 45 [æœºå™¨äºº]ç¾¤æ¶ˆæ¯æ’¤å›äº‹ä»¶ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MessageRecallEventBPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ³·»ØÕß
+    /// æ’¤å›è€…
     /// </summary>
     public long oid { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] mid { get; set; }
 }
 /// <summary>
-/// 46 [»úÆ÷ÈË]Ò»¸öÕËºÅÇëÇóÌí¼Ó»úÆ÷ÈËÎªºÃÓÑ£¨ÊÂ¼ş£©
+/// 46 [æœºå™¨äºº]ä¸€ä¸ªè´¦å·è¯·æ±‚æ·»åŠ æœºå™¨äººä¸ºå¥½å‹ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record NewFriendRequestEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóÈËQQºÅ
+    /// è¯·æ±‚äººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÇëÇóÏûÏ¢
+    /// è¯·æ±‚æ¶ˆæ¯
     /// </summary>
     public string message;
     /// <summary>
-    /// ÊÂ¼şID
+    /// äº‹ä»¶ID
     /// </summary>
     public long eventid;
 }
 /// <summary>
-/// 47 [»úÆ÷ÈË]ÔÚÈºÁÙÊ±»á»°ÏûÏ¢·¢ËÍºó¹ã²¥£¨ÊÂ¼ş£©
+/// 47 [æœºå™¨äºº]åœ¨ç¾¤ä¸´æ—¶ä¼šè¯æ¶ˆæ¯å‘é€åå¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record TempMessagePostSendEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍµ½µÄQQºÅ
+    /// å‘é€åˆ°çš„QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÊÇ·ñ³É¹¦·¢ËÍ
+    /// æ˜¯å¦æˆåŠŸå‘é€
     /// </summary>
     public bool res { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// ´íÎóĞÅÏ¢
+    /// é”™è¯¯ä¿¡æ¯
     /// </summary>
     public string error { get; set; }
 }
 /// <summary>
-/// 48 [»úÆ÷ÈË]ÔÚ·¢ËÍÈºÁÙÊ±»á»°ÏûÏ¢Ç°¹ã²¥£¨ÊÂ¼ş£©
+/// 48 [æœºå™¨äºº]åœ¨å‘é€ç¾¤ä¸´æ—¶ä¼šè¯æ¶ˆæ¯å‰å¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record TempMessagePreSendEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍÈËµÄQQºÅ
+    /// å‘é€äººçš„QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 49 [»úÆ÷ÈË]ÊÕµ½ÈºÏûÏ¢£¨ÊÂ¼ş£©
+/// 49 [æœºå™¨äºº]æ”¶åˆ°ç¾¤æ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupMessageEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍÈËQQºÅ
+    /// å‘é€äººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÈºÃûÆ¬
+    /// ç¾¤åç‰‡
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ·¢ËÍÊ±¼ä
+    /// å‘é€æ—¶é—´
     /// </summary>
     public int time { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ·¢ËÍÈËÈ¨ÏŞ
+    /// å‘é€äººæƒé™
     /// </summary>
     public MemberPermission permission { get; set; }
     /// <summary>
-    /// ·¢ËÍµÄÏûÏ¢
+    /// å‘é€çš„æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 50 [»úÆ÷ÈË]ÊÕµ½ÈºÁÙÊ±»á»°ÏûÏ¢£¨ÊÂ¼ş£©
+/// 50 [æœºå™¨äºº]æ”¶åˆ°ç¾¤ä¸´æ—¶ä¼šè¯æ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record TempMessageEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍÈËQQºÅ
+    /// å‘é€äººQQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÈºÃûÆ¬
+    /// ç¾¤åç‰‡
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ·¢ËÍÈËÈ¨ÏŞ
+    /// å‘é€äººæƒé™
     /// </summary>
     public MemberPermission permission { get; set; }
     /// <summary>
-    /// ·¢ËÍµÄÏûÏ¢
+    /// å‘é€çš„æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 51 [»úÆ÷ÈË]ÊÕµ½ÅóÓÑÏûÏ¢£¨ÊÂ¼ş£©
+/// 51 [æœºå™¨äºº]æ”¶åˆ°æœ‹å‹æ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendMessageEventPack : PackBase
 {
     /// <summary>
-    /// ÅóÓÑQQºÅ
+    /// æœ‹å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// êÇ³Æ
+    /// æ˜µç§°
     /// </summary>
     public string name { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 52 [²å¼ş]·¢ËÍÈºÏûÏ¢
+/// 52 [æ’ä»¶]å‘é€ç¾¤æ¶ˆæ¯
 /// </summary>
 public record SendGroupMessagePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// ÈºÁĞ±í
+    /// ç¾¤åˆ—è¡¨
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 53 [²å¼ş]·¢ËÍË½ÁÄÏûÏ¢
+/// 53 [æ’ä»¶]å‘é€ç§èŠæ¶ˆæ¯
 /// </summary>
 public record SendGroupPrivateMessagePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
+    /// <summary>
+    /// æˆå‘˜QQå·ç»„
+    /// </summary>
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 54 [²å¼ş]·¢ËÍºÃÓÑÏûÏ¢
+/// 54 [æ’ä»¶]å‘é€å¥½å‹æ¶ˆæ¯
 /// </summary>
 public record SendFriendMessagePack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 55 [²å¼ş]»ñÈ¡ÈºÁĞ±í
-/// 56 [²å¼ş]»ñÈ¡ºÃÓÑÁĞ±í
+/// 55 [æ’ä»¶]è·å–ç¾¤åˆ—è¡¨
+/// 56 [æ’ä»¶]è·å–å¥½å‹åˆ—è¡¨
+/// 129 [æ’ä»¶]è·å–æ‰€æœ‰å¥½å‹åˆ†ç»„ä¿¡æ¯
 /// </summary>
 public record GetPack : PackBase
 {
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 57 [²å¼ş]»ñÈ¡Èº³ÉÔ±
+/// 57 [æ’ä»¶]è·å–ç¾¤æˆå‘˜
 /// </summary>
 public record GroupGetMemberInfoPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// åªè·å–å…³é”®æ•°æ®
+    /// </summary>
+    public bool fast { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 58 [²å¼ş]»ñÈ¡ÈºÉèÖÃ
+/// 58 [æ’ä»¶]è·å–ç¾¤è®¾ç½®
 /// </summary>
 public record GroupGetSettingPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 59 [²å¼ş]»ØÓ¦ÊÂ¼ş
+/// 59 [æ’ä»¶]å›åº”äº‹ä»¶
 /// </summary>
 public record EventCallPack : PackBase
 {
     /// <summary>
-    /// ÊÂ¼şID
+    /// äº‹ä»¶ID
     /// </summary>
     public long eventid { get; set; }
     /// <summary>
-    /// ·½·¨
+    /// æ–¹æ³•
     /// </summary>
     public int dofun { get; set; }
     /// <summary>
-    /// ¸½´ø²ÎÊı
+    /// é™„å¸¦å‚æ•°
     /// </summary>
     public List<string> arg { get; set; }
 }
 /// <summary>
-/// 61 [²å¼ş]·¢ËÍÍ¼Æ¬µ½Èº
+/// 61 [æ’ä»¶]å‘é€å›¾ç‰‡åˆ°ç¾¤
 /// </summary>
 public record SendGroupImagePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í¼Æ¬Êı¾İ
+    /// å›¾ç‰‡æ•°æ®
     /// </summary>
     public byte[] data { get; set; }
     /// <summary>
-    /// ÈººÅ×é
+    /// ç¾¤å·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 62 [²å¼ş]·¢ËÍÍ¼Æ¬µ½Ë½ÁÄ
+/// 62 [æ’ä»¶]å‘é€å›¾ç‰‡åˆ°ç§èŠ
 /// </summary>
 public record SendGroupPrivateImagePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Í¼Æ¬Êı¾İ
+    /// å›¾ç‰‡æ•°æ®
     /// </summary>
     public byte[] data { get; set; }
+    /// <summary>
+    /// QQå·ç»„
+    /// </summary>
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 63 [²å¼ş]·¢ËÍÍ¼Æ¬µ½ÅóÓÑ
+/// 63 [æ’ä»¶]å‘é€å›¾ç‰‡åˆ°æœ‹å‹
 /// </summary>
 public record SendFriendImagePack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í¼Æ¬Êı¾İ
+    /// å›¾ç‰‡æ•°æ®
     /// </summary>
     public byte[] data { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
     public List<long> ids { get; set; }
 }
 /// <summary>
-/// 64 [²å¼ş]É¾³ıÈºÔ±
+/// 64 [æ’ä»¶]åˆ é™¤ç¾¤å‘˜
 /// </summary>
 public record GroupKickMemberPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ºÚÃûµ¥
+    /// é»‘åå•
     /// </summary>
     public bool black { get; set; }
 }
 /// <summary>
-/// 65 [²å¼ş]½ûÑÔÈºÔ±
+/// 65 [æ’ä»¶]ç¦è¨€ç¾¤å‘˜
 /// </summary>
 public record GroupMuteMemberPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
 }
 /// <summary>
-/// 66 [²å¼ş]½â³ı½ûÑÔ
+/// 66 [æ’ä»¶]è§£é™¤ç¦è¨€
 /// </summary>
 public record GroupUnmuteMemberPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 67 [²å¼ş]¿ªÆôÈ«Ô±½ûÑÔ
+/// 67 [æ’ä»¶]å¼€å¯å…¨å‘˜ç¦è¨€
 /// </summary>
 public record GroupMuteAllPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 68 [²å¼ş]¹Ø±ÕÈ«Ô±½ûÑÔ
+/// 68 [æ’ä»¶]å…³é—­å…¨å‘˜ç¦è¨€
 /// </summary>
 public record GroupUnmuteAllPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 69 [²å¼ş]ÉèÖÃÈºÃûÆ¬
+/// 69 [æ’ä»¶]è®¾ç½®ç¾¤åç‰‡
 /// </summary>
 public record GroupSetMemberCardPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ĞÂµÄÈºÃûÆ¬
+    /// æ–°çš„ç¾¤åç‰‡
     /// </summary>
     public string card { get; set; }
 }
 /// <summary>
-/// 70 [²å¼ş]ÉèÖÃÈºÃû
+/// 70 [æ’ä»¶]è®¾ç½®ç¾¤å
 /// </summary>
 public record GroupSetNamePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ĞÂµÄÈºÃû
+    /// æ–°çš„ç¾¤å
     /// </summary>
     public string name { get; set; }
 }
 /// <summary>
-/// 71 [²å¼ş]³·»ØÏûÏ¢
+/// 71 [æ’ä»¶]æ’¤å›æ¶ˆæ¯
 /// </summary>
 public record ReCallMessagePack : PackBase
 {
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ÀàĞÍ
+    /// æ¶ˆæ¯ç±»å‹
     /// </summary>
     public MessageSourceKind kind { get; set; }
 }
 /// <summary>
-/// 72 [»úÆ÷ÈË]ÓÑÊäÈë×´Ì¬¸Ä±ä£¨ÊÂ¼ş£©
+/// 72 [æœºå™¨äºº]å‹è¾“å…¥çŠ¶æ€æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendInputStatusChangedEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÊäÈë×´Ì¬
+    /// è¾“å…¥çŠ¶æ€
     /// </summary>
     public bool input { get; set; }
 }
 /// <summary>
-/// 73 [»úÆ÷ÈË]ºÃÓÑêÇ³Æ¸Ä±ä£¨ÊÂ¼ş£©
+/// 73 [æœºå™¨äºº]å¥½å‹æ˜µç§°æ”¹å˜ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record FriendNickChangedEventPack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉµÄêÇ³Æ
+    /// æ—§çš„æ˜µç§°
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄêÇ³Æ
+    /// æ–°çš„æ˜µç§°
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 74 [²å¼ş]·¢ËÍÓïÒôµ½Èº
+/// 74 [æ’ä»¶]å‘é€è¯­éŸ³åˆ°ç¾¤
 /// </summary>
 public record SendGroupSoundPack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÄÚÈİ
+    /// æ–‡ä»¶å†…å®¹
     /// </summary>
     public byte[] data { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 75 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½Èº
+/// 75 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°ç¾¤
 /// </summary>
 public record SendGroupImageFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
     /// <summary>
-    /// ÈººÅ×é
+    /// ç¾¤å·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 76 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½ÈºË½ÁÄ
+/// 76 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°ç¾¤ç§èŠ
 /// </summary>
 public record SendGroupPrivateImageFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
+    /// <summary>
+    /// ç¾¤å‘˜QQå·ç»„
+    /// </summary>
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 77 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½ÅóÓÑ
+/// 77 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°æœ‹å‹
 /// </summary>
 public record SendFriendImageFilePack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 78 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÓïÒô·¢ËÍµ½Èº
+/// 78 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½è¯­éŸ³å‘é€åˆ°ç¾¤
 /// </summary>
 public record SendGroupSoundFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
     /// <summary>
-    /// Èº×é
+    /// ç¾¤ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 79 [»úÆ÷ÈË]³ÉÔ±Èº»Ö¸´£¨ÊÂ¼ş£©
+/// 79 [æœºå™¨äºº]æˆå‘˜ç¾¤æ¢å¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record MemberJoinRetrieveEventPack : PackBase
 {
     /// <summary>
-    /// QQÈº
+    /// QQç¾¤
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 80 [»úÆ÷ÈË]»úÆ÷ÈËÈº»Ö¸´£¨ÊÂ¼ş£©
+/// 80 [æœºå™¨äºº]æœºå™¨äººç¾¤æ¢å¤ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record BotJoinGroupEventRetrieveEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 81 [»úÆ÷ÈË]Èº³ÉÔ±´ÁÒ»´Á£¨ÊÂ¼ş£©
-/// 82 [»úÆ÷ÈË]»úÆ÷ÈË±»´ÁÒ»´Á£¨ÊÂ¼ş£©
+/// 81 [æœºå™¨äºº]ç¾¤æˆå‘˜æˆ³ä¸€æˆ³ï¼ˆäº‹ä»¶ï¼‰
+/// 82 [æœºå™¨äºº]æœºå™¨äººè¢«æˆ³ä¸€æˆ³ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record NudgedEventPack : PackBase
 {
     /// <summary>
-    /// QQÈº
+    /// QQç¾¤
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢Æğ´ÁÒ»´ÁQQºÅ
+    /// å‘èµ·æˆ³ä¸€æˆ³QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ±»´Á³ÉÔ±QQºÅ
+    /// è¢«æˆ³æˆå‘˜QQå·
     /// </summary>
     public long aid { get; set; }
     /// <summary>
-    /// ´ÁÒ»´ÁµÄ¶¯×÷Ãû³Æ
+    /// æˆ³ä¸€æˆ³çš„åŠ¨ä½œåç§°
     /// </summary>
     public string action { get; set; }
     /// <summary>
-    /// ´ÁÒ»´ÁÖĞÉèÖÃµÄ×Ô¶¨Òåºó×º
+    /// æˆ³ä¸€æˆ³ä¸­è®¾ç½®çš„è‡ªå®šä¹‰åç¼€
     /// </summary>
     public string suffix { get; set; }
 }
 /// <summary>
-/// 83 [²å¼ş]·¢ËÍÅóÓÑ´ÁÒ»´Á
+/// 83 [æ’ä»¶]å‘é€æœ‹å‹æˆ³ä¸€æˆ³
 /// </summary>
 public record SendFriendNudgePack : PackBase
 {
     /// <summary>
-    /// ºÃÓÑQQºÅ
+    /// å¥½å‹QQå·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 84 [²å¼ş]·¢ËÍÈº³ÉÔ±´ÁÒ»´Á
+/// 84 [æ’ä»¶]å‘é€ç¾¤æˆå‘˜æˆ³ä¸€æˆ³
 /// </summary>
 public record SendGroupMemberNudgePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ³ÉÔ±QQºÅ
+    /// æˆå‘˜QQå·
     /// </summary>
     public long fid { get; set; }
 }
 /// <summary>
-/// 85 [»úÆ÷ÈË]ÁúÍõ¸Ä±äÊ±£¨ÊÂ¼ş£©
+/// 85 [æœºå™¨äºº]é¾™ç‹æ”¹å˜æ—¶ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupTalkativeChangePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏÈÇ°ÁúÍõ
+    /// å…ˆå‰é¾™ç‹
     /// </summary>
     public long old { get; set; }
     /// <summary>
-    /// µ±Ç°ÁúÍõ
+    /// å½“å‰é¾™ç‹
     /// </summary>
     public long now { get; set; }
 }
 /// <summary>
-/// 86 [»úÆ÷ÈË]ÆäËû¿Í»§¶ËÉÏÏß£¨ÊÂ¼ş£©
+/// 86 [æœºå™¨äºº]å…¶ä»–å®¢æˆ·ç«¯ä¸Šçº¿ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record OtherClientOnlineEventPack : PackBase
 {
     /// <summary>
-    /// Éè±¸Id
+    /// è®¾å¤‡Id
     /// </summary>
     public int appId { get; set; }
     /// <summary>
-    /// Éè±¸ÀàĞÍ
+    /// è®¾å¤‡ç±»å‹
     /// </summary>
     public string kind { get; set; }
     /// <summary>
-    /// Éè±¸Æ½Ì¨
+    /// è®¾å¤‡å¹³å°
     /// </summary>
     public string platform { get; set; }
     /// <summary>
-    /// Éè±¸Ãû×Ö
+    /// è®¾å¤‡åå­—
     /// </summary>
     public string deviceName { get; set; }
     /// <summary>
-    /// Éè±¸ÀàĞÍ
+    /// è®¾å¤‡ç±»å‹
     /// </summary>
     public string deviceKind { get; set; }
 }
 /// <summary>
-/// 87 [»úÆ÷ÈË]ÆäËû¿Í»§¶ËÀëÏß£¨ÊÂ¼ş£©
+/// 87 [æœºå™¨äºº]å…¶ä»–å®¢æˆ·ç«¯ç¦»çº¿ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record OtherClientOfflineEventPack : PackBase
 {
     /// <summary>
-    /// Éè±¸ID
+    /// è®¾å¤‡ID
     /// </summary>
     public int appId { get; set; }
     /// <summary>
-    /// Éè±¸Æ½Ì¨
+    /// è®¾å¤‡å¹³å°
     /// </summary>
     public string platform { get; set; }
     /// <summary>
-    /// Éè±¸Ãû×Ö
+    /// è®¾å¤‡åå­—
     /// </summary>
     public string deviceName { get; set; }
     /// <summary>
-    /// Éè±¸ÀàĞÍ
+    /// è®¾å¤‡ç±»å‹
     /// </summary>
     public string deviceKind { get; set; }
 }
 /// <summary>
-/// 88 [»úÆ÷ÈË]ÆäËû¿Í»§¶Ë·¢ËÍÏûÏ¢¸ø Bot£¨ÊÂ¼ş£©
+/// 88 [æœºå™¨äºº]å…¶ä»–å®¢æˆ·ç«¯å‘é€æ¶ˆæ¯ç»™ Botï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record OtherClientMessageEventPack : PackBase
 {
     /// <summary>
-    /// Éè±¸ID
+    /// è®¾å¤‡ID
     /// </summary>
     public int appId { get; set; }
     /// <summary>
-    /// Éè±¸Æ½Ì¨
+    /// è®¾å¤‡å¹³å°
     /// </summary>
     public string platform { get; set; }
     /// <summary>
-    /// Éè±¸Ãû×Ö
+    /// è®¾å¤‡åå­—
     /// </summary>
     public string deviceName { get; set; }
     /// <summary>
-    /// Éè±¸ÀàĞÍ
+    /// è®¾å¤‡ç±»å‹
     /// </summary>
     public string deviceKind { get; set; }
     /// <summary>
-    /// ĞÅÏ¢
+    /// ä¿¡æ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 89 [»úÆ÷ÈË]ÆäËû¿Í»§¶Ë·¢ËÍÈºÏûÏ¢£¨ÊÂ¼ş£©
+/// 89 [æœºå™¨äºº]å…¶ä»–å®¢æˆ·ç«¯å‘é€ç¾¤æ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupMessageSyncEventPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ê±¼ä
+    /// æ—¶é—´
     /// </summary>
     public int time { get; set; }
     /// <summary>
-    /// ÏûÏ¢
+    /// æ¶ˆæ¯
     /// </summary>
     public List<string> message { get; set; }
 }
 /// <summary>
-/// 90 [²å¼ş]»ñÈ¡Í¼Æ¬Url
+/// 90 [æ’ä»¶]è·å–å›¾ç‰‡Url
 /// </summary>
 public record GetImageUrlPack : PackBase
 {
     /// <summary>
-    /// Í¼Æ¬UUID
+    /// å›¾ç‰‡UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 91 [²å¼ş]»ñÈ¡Èº³ÉÔ±ĞÅÏ¢
+/// 91 [æ’ä»¶]è·å–ç¾¤æˆå‘˜ä¿¡æ¯
 /// </summary>
 public record GetMemberInfoPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// åªè·å–å…³é”®æ•°æ®
+    /// </summary>
+    public bool fast { get; set; }
+    /// <summary>
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 92 [²å¼ş]»ñÈ¡ÅóÓÑĞÅÏ¢
+/// 92 [æ’ä»¶]è·å–æœ‹å‹ä¿¡æ¯
 /// </summary>
 public record GetFriendInfoPack : PackBase
 {
     /// <summary>
-    /// ÅóÓÑQQºÅ
+    /// æœ‹å‹QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 93 [²å¼ş]·¢ËÍÒôÀÖ·ÖÏí
+/// 93 [æ’ä»¶]å‘é€éŸ³ä¹åˆ†äº«
 /// </summary>
 public record SendMusicSharePack : PackBase
 {
     /// <summary>
-    /// ·¢ËÍÄ¿±ê
+    /// å‘é€ç›®æ ‡
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍÄ¿±ê
+    /// å‘é€ç›®æ ‡
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÒôÀÖÀàĞÍ
+    /// éŸ³ä¹ç±»å‹
     /// </summary>
     public int type { get; set; }
     /// <summary>
-    /// Ä¿±êÀàĞÍ
+    /// ç›®æ ‡ç±»å‹
     /// </summary>
     public int type1 { get; set; }
     /// <summary>
-    /// ±êÌâ
+    /// æ ‡é¢˜
     /// </summary>
     public string title { get; set; }
     /// <summary>
-    /// ¸ÅÒª
+    /// æ¦‚è¦
     /// </summary>
     public string summary { get; set; }
     /// <summary>
-    /// Ìø×ªUrl
+    /// è·³è½¬Url
     /// </summary>
     public string jumpUrl { get; set; }
     /// <summary>
-    /// Í¼Æ¬Url
+    /// å›¾ç‰‡Url
     /// </summary>
     public string pictureUrl { get; set; }
     /// <summary>
-    /// ÒôÀÖUrl
+    /// éŸ³ä¹Url
     /// </summary>
     public string musicUrl { get; set; }
+    /// <summary>
+    /// å·ç ç»„
+    /// </summary>
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 94 [²å¼ş]ÉèÖÃÈº¾«»ªÏûÏ¢
+/// 94 [æ’ä»¶]è®¾ç½®ç¾¤ç²¾åæ¶ˆæ¯
 /// </summary>
 public record GroupSetEssenceMessagePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids1 { get; set; }
     /// <summary>
-    /// ÏûÏ¢ID
+    /// æ¶ˆæ¯ID
     /// </summary>
     public int[] ids2 { get; set; }
 }
 /// <summary>
-/// 95 [²å¼ş]ÏûÏ¢¶ÓÁĞ
+/// 95 [æ’ä»¶]æ¶ˆæ¯é˜Ÿåˆ—
 /// </summary>
 public record MessageBuffPack : PackBase
 {
     /// <summary>
-    /// ·¢ËÍÄ¿±ê
+    /// å‘é€ç›®æ ‡
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·¢ËÍÄ¿±ê
+    /// å‘é€ç›®æ ‡
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ·¢ËÍ¶ÔÏóÀàĞÍ
+    /// å‘é€å¯¹è±¡ç±»å‹
     /// </summary>
     public int type;
     /// <summary>
-    /// ÊÇ·ñ·¢ËÍ
+    /// æ˜¯å¦å‘é€
     /// </summary>
     public bool send { get; set; }
     /// <summary>
-    /// ÏûÏ¢ÄÚÈİ
+    /// æ¶ˆæ¯å†…å®¹
     /// </summary>
     public List<string> text { get; set; }
     /// <summary>
-    /// Í¼Æ¬Â·¾¶
+    /// å›¾ç‰‡è·¯å¾„
     /// </summary>
     public string imgurl { get; set; }
     /// <summary>
-    /// Í¼Æ¬Êı¾İ
+    /// å›¾ç‰‡æ•°æ®
     /// </summary>
     public byte[] imgData { get; set; }
 }
 
 /// <summary>
-/// 96 [²å¼ş]·¢ËÍÅóÓÑ÷»×Ó
+/// 96 [æ’ä»¶]å‘é€æœ‹å‹éª°å­
 /// </summary>
 public record SendFriendDicePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// µãÊı
+    /// ç‚¹æ•°
     /// </summary>
     public int dice { get; set; }
 }
 /// <summary>
-/// 97 [²å¼ş]·¢ËÍÈº÷»×Ó
+/// 97 [æ’ä»¶]å‘é€ç¾¤éª°å­
 /// </summary>
 public record SendGroupDicePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// µãÊı
+    /// ç‚¹æ•°
     /// </summary>
     public int dice { get; set; }
 }
 /// <summary>
-/// 98 [²å¼ş]·¢ËÍÈºË½ÁÄ÷»×Ó
+/// 98 [æ’ä»¶]å‘é€ç¾¤ç§èŠéª°å­
 /// </summary>
 public record SendGroupPrivateDicePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±QQºÅ
+    /// ç¾¤å‘˜QQå·
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// µãÊı
+    /// ç‚¹æ•°
     /// </summary>
     public int dice { get; set; }
 }
 /// <summary>
-/// 99 [²å¼ş]ÉÏ´«ÈºÎÄ¼ş
+/// 99 [æ’ä»¶]ä¸Šä¼ ç¾¤æ–‡ä»¶
 /// </summary>
 public record GroupAddFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
     /// <summary>
-    /// ÈºÎÄ¼şÃû³Æ
+    /// ç¾¤æ–‡ä»¶åç§°
     /// </summary>
     public string name { get; set; }
 }
 /// <summary>
-/// 100 [²å¼ş]É¾³ıÈºÎÄ¼ş
+/// 100 [æ’ä»¶]åˆ é™¤ç¾¤æ–‡ä»¶
 /// </summary>
 public record GroupDeleteFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÎÄ¼şID
+    /// ç¾¤æ–‡ä»¶ID
     /// </summary>
     public string fid { get; set; }
 }
 /// <summary>
-/// 101 [²å¼ş]»ñÈ¡ÈºÎÄ¼ş
+/// 101 [æ’ä»¶]è·å–ç¾¤æ–‡ä»¶
 /// </summary>
 public record GroupGetFilesPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 102 [²å¼ş]ÒÆ¶¯ÈºÎÄ¼ş
+/// 102 [æ’ä»¶]ç§»åŠ¨ç¾¤æ–‡ä»¶
 /// </summary>
 public record GroupMoveFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Ô­ÈºÎÄ¼şID
+    /// åŸç¾¤æ–‡ä»¶ID
     /// </summary>
     public string fid { get; set; }
     /// <summary>
-    /// ĞÂÈºÎÄ¼şÂ·¾¶
+    /// æ–°ç¾¤æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string dir { get; set; }
 }
 /// <summary>
-/// 103 [²å¼ş]ÖØÃüÃûÈºÎÄ¼ş
+/// 103 [æ’ä»¶]é‡å‘½åç¾¤æ–‡ä»¶
 /// </summary>
 public record GroupRenameFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉÈºÎÄ¼şÃû
+    /// æ—§ç¾¤æ–‡ä»¶å
     /// </summary>
     public string fid { get; set; }
     /// <summary>
-    /// ĞÂÈºÎÄ¼şÃû
+    /// æ–°ç¾¤æ–‡ä»¶å
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 104 [²å¼ş]´´ĞÂÈºÎÄ¼şÎÄ¼ş¼Ğ
+/// 104 [æ’ä»¶]åˆ›æ–°ç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
 /// </summary>
 public record GroupAddDirPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼ş¼ĞÃû×Ö
+    /// æ–‡ä»¶å¤¹åå­—
     /// </summary>
     public string dir { get; set; }
 }
 /// <summary>
-/// 105 [²å¼ş]É¾³ıÈºÎÄ¼şÎÄ¼ş¼Ğ
+/// 105 [æ’ä»¶]åˆ é™¤ç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
 /// </summary>
 public record GroupDeleteDirPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼ş¼ĞÃû×Ö
+    /// æ–‡ä»¶å¤¹åå­—
     /// </summary>
     public string dir { get; set; }
 }
 /// <summary>
-/// 106 [²å¼ş]ÖØÃüÃûÈºÎÄ¼şÎÄ¼ş¼Ğ
+/// 106 [æ’ä»¶]é‡å‘½åç¾¤æ–‡ä»¶æ–‡ä»¶å¤¹
 /// </summary>
 public record GroupRenameDirPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ¾ÉµÄÃû×Ö
+    /// æ—§çš„åå­—
     /// </summary>
     public string old { get; set; }
     /// <summary>
-    /// ĞÂµÄÃû×Ö
+    /// æ–°çš„åå­—
     /// </summary>
     public string now { get; set; }
 }
 /// <summary>
-/// 107 [²å¼ş]ÏÂÔØÈºÎÄ¼şµ½Ö¸¶¨Î»ÖÃ
+/// 107 [æ’ä»¶]ä¸‹è½½ç¾¤æ–‡ä»¶åˆ°æŒ‡å®šä½ç½®
 /// </summary>
 public record GroupDownloadFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şID
+    /// æ–‡ä»¶ID
     /// </summary>
     public string fid { get; set; }
     /// <summary>
-    /// ÏÂÔØµ½µÄÂ·¾¶
+    /// ä¸‹è½½åˆ°çš„è·¯å¾„
     /// </summary>
     public string dir { get; set; }
 }
 /// <summary>
-/// 108 [²å¼ş]ÉèÖÃÈ¡Ïû¹ÜÀíÔ±
+/// 108 [æ’ä»¶]è®¾ç½®å–æ¶ˆç®¡ç†å‘˜
 /// </summary>
 public record GroupSetAdminPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÈºÔ±
+    /// ç¾¤å‘˜
     /// </summary>
     public long fid { get; set; }
     /// <summary>
-    /// ÉèÖÃ»òÈ¡Ïû
+    /// è®¾ç½®æˆ–å–æ¶ˆ
     /// </summary>
     public bool type { get; set; }
 }
 /// <summary>
-/// 109 [²å¼ş]»ñÈ¡Èº¹«¸æ
+/// 109 [æ’ä»¶]è·å–ç¾¤å…¬å‘Š
 /// </summary>
 public record GroupGetAnnouncementsPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÇëÇóUUID
+    /// è¯·æ±‚UUID
     /// </summary>
     public string uuid { get; set; }
 }
 /// <summary>
-/// 110 [²å¼ş]ÉèÖÃÈº¹«¸æ
+/// 110 [æ’ä»¶]è®¾ç½®ç¾¤å…¬å‘Š
 /// </summary>
 public record GroupAddAnnouncementPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Í¼Æ¬Â·¾¶
+    /// å›¾ç‰‡è·¯å¾„
     /// </summary>
     public string imageFile { get; set; }
     /// <summary>
-    /// ·¢ËÍ¸øĞÂÈºÔ±
+    /// å‘é€ç»™æ–°ç¾¤å‘˜
     /// </summary>
     public bool sendToNewMember { get; set; }
     /// <summary>
-    /// ¶¥ÖÃ
+    /// é¡¶ç½®
     /// </summary>
     public bool isPinned { get; set; }
     /// <summary>
-    /// ÏÔÊ¾ÄÜ¹»Òıµ¼Èº³ÉÔ±ĞŞ¸ÄêÇ³ÆµÄ´°¿Ú
+    /// æ˜¾ç¤ºèƒ½å¤Ÿå¼•å¯¼ç¾¤æˆå‘˜ä¿®æ”¹æ˜µç§°çš„çª—å£
     /// </summary>
     public bool showEditCard { get; set; }
     /// <summary>
-    /// Ê¹ÓÃµ¯´°
+    /// ä½¿ç”¨å¼¹çª—
     /// </summary>
     public bool showPopup { get; set; }
     /// <summary>
-    /// ĞèÒªÈº³ÉÔ±È·ÈÏ
+    /// éœ€è¦ç¾¤æˆå‘˜ç¡®è®¤
     /// </summary>
     public bool requireConfirmation { get; set; }
     /// <summary>
-    /// ¹«¸æÄÚÈİ
+    /// å…¬å‘Šå†…å®¹
     /// </summary>
     public string text { get; set; }
 }
 /// <summary>
-/// 111 [²å¼ş]É¾³ıÈº¹«¸æ
+/// 111 [æ’ä»¶]åˆ é™¤ç¾¤å…¬å‘Š
 /// </summary>
 public record GroupDeleteAnnouncementPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// Î¨Ò»Ê¶±ğÊôĞÔ
+    /// å”¯ä¸€è¯†åˆ«å±æ€§
     /// </summary>
     public string fid { get; set; }
 }
 /// <summary>
-/// 112 [²å¼ş]·¢ËÍºÃÓÑÓïÑÔÎÄ¼ş
+/// 112 [æ’ä»¶]å‘é€å¥½å‹è¯­è¨€æ–‡ä»¶
 /// </summary>
 public record SendFriendSoundFilePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÎÄ¼şÂ·¾¶
+    /// æ–‡ä»¶è·¯å¾„
     /// </summary>
     public string file { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
 /// <summary>
-/// 113 [»úÆ÷ÈË]Èº½âÉ¢ÏûÏ¢£¨ÊÂ¼ş£©
+/// 113 [æœºå™¨äºº]ç¾¤è§£æ•£æ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record GroupDisbandPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
 }
 /// <summary>
-/// 114 [²å¼ş]ÉèÖÃÔÊĞíÈºÔ±ÑûÇëºÃÓÑÈëÈºµÄ×´Ì¬
+/// 114 [æ’ä»¶]è®¾ç½®å…è®¸ç¾¤å‘˜é‚€è¯·å¥½å‹å…¥ç¾¤çš„çŠ¶æ€
 /// </summary>
 public record GroupSetAllowMemberInvitePack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÊÇ·ñÔÊĞí
+    /// æ˜¯å¦å…è®¸
     /// </summary>
     public bool enable { get; set; }
 }
 /// <summary>
-/// 115 [²å¼ş]ÉèÖÃÔÊĞíÄäÃûÁÄÌì
+/// 115 [æ’ä»¶]è®¾ç½®å…è®¸åŒ¿åèŠå¤©
 /// </summary>
 public record GroupSetAnonymousChatEnabledPack : PackBase
 {
     /// <summary>
-    /// ÈººÅ
+    /// ç¾¤å·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÊÇ·ñÔÊĞí
+    /// æ˜¯å¦å…è®¸
     /// </summary>
     public bool enable { get; set; }
 }
 /// <summary>
-/// 116 [»úÆ÷ÈË]ÊÕµ½Ä°ÉúÈËÏûÏ¢£¨ÊÂ¼ş£©
+/// 116 [æœºå™¨äºº]æ”¶åˆ°é™Œç”Ÿäººæ¶ˆæ¯ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record StrangerMessageEventPack : FriendMessageEventPack
 {
 
 }
 /// <summary>
-/// 117 [²å¼ş]·¢ËÍÄ°ÉúÈËÏûÏ¢
+/// 117 [æ’ä»¶]å‘é€é™Œç”Ÿäººæ¶ˆæ¯
 /// </summary>
 public record SendStrangerMessagePack : SendFriendMessagePack
 {
 
 }
 /// <summary>
-/// 118 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÍ¼Æ¬·¢ËÍµ½Ä°ÉúÈË
+/// 118 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½å›¾ç‰‡å‘é€åˆ°é™Œç”Ÿäºº
 /// </summary>
 public record SendStrangerImageFilePack : SendFriendImageFilePack
 {
 
 }
 /// <summary>
-/// 119 [²å¼ş]·¢ËÍÄ°ÉúÈË÷»×Ó
+/// 119 [æ’ä»¶]å‘é€é™Œç”Ÿäººéª°å­
 /// </summary>
 public record SendStrangerDicePack : SendFriendDicePack
 {
 
 }
 /// <summary>
-/// 120 [²å¼ş]·¢ËÍÄ°ÉúÈË´ÁÒ»´Á
+/// 120 [æ’ä»¶]å‘é€é™Œç”Ÿäººæˆ³ä¸€æˆ³
 /// </summary>
 public record SendStrangerNudgePack : SendFriendNudgePack
 {
 
 }
 /// <summary>
-/// 121 [²å¼ş]´Ó±¾µØÎÄ¼ş¼ÓÔØÓïÒô·¢ËÍµ½Ä°ÉúÈË
+/// 121 [æ’ä»¶]ä»æœ¬åœ°æ–‡ä»¶åŠ è½½è¯­éŸ³å‘é€åˆ°é™Œç”Ÿäºº
 /// </summary>
 public record SendStrangerSoundFilePack : SendFriendSoundFilePack
 {
 
 }
 /// <summary>
-/// 122 [»úÆ÷ÈË]ÔÚ·¢ËÍÄ°ÉúÈËÏûÏ¢Ç°¹ã²¥£¨ÊÂ¼ş£©
+/// 122 [æœºå™¨äºº]åœ¨å‘é€é™Œç”Ÿäººæ¶ˆæ¯å‰å¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record StrangerMessagePreSendEventPack : FriendMessagePreSendEventPack
 {
 
 }
 /// <summary>
-/// 123 [»úÆ÷ÈË]ÔÚÄ°ÉúÈËÏûÏ¢·¢ËÍºó¹ã²¥£¨ÊÂ¼ş£©
+/// 123 [æœºå™¨äºº]åœ¨é™Œç”Ÿäººæ¶ˆæ¯å‘é€åå¹¿æ’­ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record StrangerMessagePostSendEventPack : FriendMessagePostSendEventPack
 {
 
 }
 /// <summary>
-/// 124 [»úÆ÷ÈË]Ä°ÉúÈË¹ØÏµ¸Ä±ä->É¾³ı£¨ÊÂ¼ş£©
-/// 125 [»úÆ÷ÈË]Ä°ÉúÈË¹ØÏµ¸Ä±ä->ÅóÓÑ£¨ÊÂ¼ş£©
+/// 124 [æœºå™¨äºº]é™Œç”Ÿäººå…³ç³»æ”¹å˜->åˆ é™¤ï¼ˆäº‹ä»¶ï¼‰
+/// 125 [æœºå™¨äºº]é™Œç”Ÿäººå…³ç³»æ”¹å˜->æœ‹å‹ï¼ˆäº‹ä»¶ï¼‰
 /// </summary>
 public record StrangerRelationChangePack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ·½Ê½
+    /// æ–¹å¼
     /// </summary>
     public int type { get; set; }
 }
 /// <summary>
-/// 126 [²å¼ş]·¢ËÍºÃÓÑÓïÒô
+/// 126 [æ’ä»¶]å‘é€å¥½å‹è¯­éŸ³
 /// </summary>
 public record SendFriendSoundPack : PackBase
 {
     /// <summary>
-    /// QQºÅ
+    /// QQå·
     /// </summary>
     public long id { get; set; }
     /// <summary>
-    /// ÓïÒôÄÚÈİ
+    /// è¯­éŸ³å†…å®¹
     /// </summary>
     public byte[] data { get; set; }
     /// <summary>
-    /// QQºÅ×é
+    /// QQå·ç»„
     /// </summary>
-    public List<long> ids { get; set; }
+    public HashSet<long> ids { get; set; }
 }
-public static class BuildPack
+/// <summary>
+/// 128 [æ’ä»¶]è·å–å¥½å‹åˆ†ç»„ä¿¡æ¯
+/// </summary>
+public record GetFriendGroupPack : PackBase
 {
     /// <summary>
-    /// ¹¹½¨Ò»¸ö°ü
+    /// åˆ†ç»„ID
     /// </summary>
-    /// <param name="obj">¶ÔÏó</param>
-    /// <param name="index">°üID</param>
-    /// <returns>¹¹½¨ºÃµÄ°ü</returns>
-    public static byte[] Build(object obj, byte index)
-    {
-        byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj) + " ");
-        data[^1] = index;
-        return data;
-    }
+    public int id { get; set; }
     /// <summary>
-    /// ¹¹½¨Ò»¸öÍ¼Æ¬·¢ËÍ°ü
+    /// è¯·æ±‚UUID
     /// </summary>
-    /// <param name="qq">ÔËĞĞqq</param>
-    /// <param name="id">·¢¸øÈºµÄºÅÂë</param>
-    /// <param name="fid">·¢¸øÅóÓÑµÄqqºÅ</param>
-    /// <param name="img">Í¼Æ¬BASE64Á÷</param>
-    /// <param name="index">°üID</param>
-    /// <returns>¹¹½¨ºÃµÄ°ü</returns>
-    public static byte[] BuildImage(long qq, long id, long fid, string img, byte index, List<long> ids)
-    {
-        string temp = "";
-        if (id != 0)
-        {
-            temp += $"id={id}&";
-        }
-        if (fid != 0)
-        {
-            temp += $"fid={fid}&";
-        }
-        if (ids != null)
-        {
-            string temp1 = "ids=";
-            foreach (var item in ids)
-            {
-                temp1 += $"{item},";
-            }
-            temp1 = temp1[..^1];
-            temp += temp1 + "&";
-        }
-        temp += $"qq={qq}&img={img}";
-        byte[] data = Encoding.UTF8.GetBytes(temp + " ");
-        data[^1] = index;
-        return data;
-    }
-    /// <summary>
-    /// ¹¹½¨Ò»¸ö·¢ËÍÓïÒôµÄ°ü
-    /// </summary>
-    /// <param name="qq">ÔËĞĞµÄqqºÅ</param>
-    /// <param name="id">·¢ËÍ¸øµÄid</param>
-    /// <param name="sound">ÒôÆµBASE64</param>
-    /// <param name="index">°üID</param>
-    /// <returns>¹¹½¨ºÃµÄ°ü</returns>
-    public static byte[] BuildSound(long qq, long id, string sound, byte index, List<long> ids)
-    {
-        string temp = $"id={id}&qq={qq}&sound={sound}";
-        if (ids != null)
-        {
-            string temp1 = "ids=";
-            foreach (var item in ids)
-            {
-                temp1 += $"{item},";
-            }
-            temp1 = temp1[..^1];
-            temp += temp1 + "&";
-        }
-        byte[] data = Encoding.UTF8.GetBytes(temp + " ");
-        data[^1] = index;
-        return data;
-    }
+    public string uuid { get; set; }
 }
-
-public record RobotConfig
+/// <summary>
+/// 130 [æ’ä»¶]åˆ›å»ºå¥½å‹åˆ†ç»„
+/// </summary>
+public record FriendGroupCreatePack : PackBase
 {
     /// <summary>
-    /// »úÆ÷ÈËIP
+    /// åˆ†ç»„å
     /// </summary>
-    public string IP { get; set; }
-    /// <summary>
-    /// »úÆ÷ÈË¶Ë¿Ú
-    /// </summary>
-    public int Port { get; set; }
-    /// <summary>
-    /// ¼àÌıµÄ°ü
-    /// </summary>
-    public List<byte> Pack { get; set; }
-    /// <summary>
-    /// ²å¼şÃû×Ö
-    /// </summary>
-    public string Name { get; set; }
-    /// <summary>
-    /// ¼àÌıµÄÈº£¬¿ÉÒÔÎªnull
-    /// </summary>
-    public List<long> Groups { get; set; }
-    /// <summary>
-    /// ¼àÌıµÄqqºÅ£¬¿ÉÒÔÎªnull
-    /// </summary>
-    public List<long> QQs { get; set; }
-    /// <summary>
-    /// ÔËĞĞµÄqq£¬¿ÉÒÔ²»ÉèÖÃ
-    /// </summary>
-    public long RunQQ { get; set; }
-    /// <summary>
-    /// ÖØÁ¬Ê±¼ä
-    /// </summary>
-    public int Time { get; set; }
-    /// <summary>
-    /// ¼ì²âÊÇ·ñ¶Ï¿ª
-    /// </summary>
-    public bool Check { get; set; }
-    /// <summary>
-    /// »úÆ÷ÈËÊÂ¼ş»Øµ÷º¯Êı
-    /// </summary>
-    public Action<byte, object> CallAction { get; set; }
-    /// <summary>
-    /// »úÆ÷ÈËÈÕÖ¾»Øµ÷º¯Êı
-    /// </summary>
-    public Action<LogType, string> LogAction { get; set; }
-    /// <summary>
-    /// »úÆ÷ÈË×´Ì¬»Øµ÷º¯Êı
-    /// </summary>
-    public Action<StateType> StateAction { get; set; }
+    public string name { get; set; }
 }
-
-public partial class RobotSDK
+/// <summary>
+/// 131 [æ’ä»¶]ä¿®æ”¹å¥½å‹åˆ†ç»„å 
+/// </summary>
+public record FriendGroupRenamePack : PackBase
 {
-    public static readonly Dictionary<byte, Type> PackType = new()
-    {
-        { 0, typeof(StartPack)},
-        { 1, typeof(BeforeImageUploadPack) },
-        { 2, typeof(BotAvatarChangedPack) },
-        { 3, typeof(BotGroupPermissionChangePack) },
-        { 4, typeof(BotInvitedJoinGroupRequestEventPack) },
-        { 5, typeof(BotJoinGroupEventAPack) },
-        { 6, typeof(BotJoinGroupEventBPack) },
-        { 7, typeof(BotLeaveEventAPack) },
-        { 8, typeof(BotLeaveEventBPack) },
-        { 9, typeof(BotMuteEventPack) },
-        { 10, typeof(BotOfflineEventAPack) },
-        { 11, typeof(BotOfflineEventBPack) },
-        { 12, typeof(BotOfflineEventAPack) },
-        { 13, typeof(BotOfflineEventAPack) },
-        { 14, typeof(BotOfflineEventCPack) },
-        { 15, typeof(BotOnlineEventPack) },
-        { 16, typeof(BotReloginEventPack) },
-        { 17, typeof(BotUnmuteEventPack) },
-        { 18, typeof(FriendAddEventPack) },
-        { 19, typeof(FriendAvatarChangedEventPack) },
-        { 20, typeof(FriendDeleteEventPack) },
-        { 21, typeof(FriendMessagePostSendEventPack) },
-        { 22, typeof(FriendMessagePreSendEventPack) },
-        { 23, typeof(FriendRemarkChangeEventPack) },
-        { 24, typeof(GroupAllowAnonymousChatEventPack) },
-        { 25, typeof(GroupAllowConfessTalkEventPack) },
-        { 26, typeof(GroupAllowMemberInviteEventPack) },
-        //{ 27, typeof(GroupEntranceAnnouncementChangeEventPack) },
-        { 28, typeof(GroupMessagePostSendEventPack) },
-        { 29, typeof(GroupMessagePreSendEventPack) },
-        { 30, typeof(GroupMuteAllEventPack) },
-        { 31, typeof(GroupNameChangeEventPack) },
-        { 32, typeof(ImageUploadEventAPack) },
-        { 33, typeof(ImageUploadEventBPack) },
-        { 34, typeof(MemberCardChangeEventPack) },
-        { 35, typeof(InviteMemberJoinEventPack) },
-        { 36, typeof(MemberJoinEventPack) },
-        { 37, typeof(MemberJoinRequestEventPack) },
-        { 38, typeof(MemberLeaveEventAPack) },
-        { 39, typeof(MemberLeaveEventBPack) },
-        { 40, typeof(MemberMuteEventPack) },
-        { 41, typeof(MemberPermissionChangeEventPack) },
-        { 42, typeof(MemberSpecialTitleChangeEventPack) },
-        { 43, typeof(MemberUnmuteEventPack) },
-        { 44, typeof(MessageRecallEventAPack) },
-        { 45, typeof(MessageRecallEventBPack) },
-        { 46, typeof(NewFriendRequestEventPack) },
-        { 47, typeof(TempMessagePostSendEventPack) },
-        { 48, typeof(TempMessagePreSendEventPack) },
-        { 49, typeof(GroupMessageEventPack) },
-        { 50, typeof(TempMessageEventPack) },
-        { 51, typeof(FriendMessageEventPack) },
-        { 52, typeof(SendGroupMessagePack) },
-        { 53, typeof(SendGroupPrivateMessagePack) },
-        { 54, typeof(SendFriendMessagePack) },
-        { 55, typeof(ReListGroupPack) },
-        { 56, typeof(ReListFriendPack) },
-        { 57, typeof(ReListMemberPack) },
-        { 58, typeof(ReGroupSettingPack) },
-        { 59, typeof(EventCallPack) },
-        //60ÎŞ
-        { 61, typeof(SendGroupImagePack) },
-        { 62, typeof(SendGroupPrivateImagePack)},
-        { 63, typeof(SendFriendImagePack)},
-        { 64, typeof(GroupKickMemberPack) },
-        { 65, typeof(GroupMuteMemberPack) },
-        { 66, typeof(GroupUnmuteMemberPack) },
-        { 67, typeof(GroupMuteAllPack) },
-        { 68, typeof(GroupUnmuteAllPack) },
-        { 69, typeof(GroupSetMemberCardPack) },
-        { 70, typeof(GroupSetNamePack) },
-        { 71, typeof(ReCallMessagePack) },
-        { 72, typeof(FriendInputStatusChangedEventPack) },
-        { 73, typeof(FriendNickChangedEventPack) },
-        { 74, typeof(SendGroupSoundPack) },
-        { 75, typeof(SendGroupImageFilePack) },
-        { 76, typeof(SendGroupPrivateImageFilePack) },
-        { 77, typeof(SendFriendImageFilePack) },
-        { 78, typeof(SendGroupSoundFilePack) },
-        { 79, typeof(MemberJoinRetrieveEventPack) },
-        { 80, typeof(BotJoinGroupEventRetrieveEventPack) },
-        { 81, typeof(NudgedEventPack) },
-        { 82, typeof(NudgedEventPack) },
-        { 83, typeof(SendFriendNudgePack) },
-        { 84, typeof(SendGroupMemberNudgePack) },
-        { 85, typeof(GroupTalkativeChangePack) },
-        { 86, typeof(OtherClientOnlineEventPack) },
-        { 87, typeof(OtherClientOfflineEventPack) },
-        { 88, typeof(OtherClientMessageEventPack) },
-        { 89, typeof(GroupMessageSyncEventPack) },
-        { 90, typeof(ReGetImageUrlPack) },
-        { 91, typeof(ReMemberInfoPack) },
-        { 92, typeof(ReFriendInfoPack) },
-        { 93, typeof(SendMusicSharePack) },
-        { 94, typeof(GroupSetEssenceMessagePack) },
-        { 95, typeof(MessageBuffPack) },
-        { 96, typeof(SendFriendDicePack) },
-        { 97, typeof(SendGroupDicePack) },
-        { 98, typeof(SendGroupPrivateDicePack) },
-        { 99, typeof(GroupAddFilePack) },
-        { 100, typeof(GroupDeleteFilePack) },
-        { 101, typeof(ReGroupFilesPack) },
-        { 102, typeof(GroupMoveFilePack) },
-        { 103, typeof(GroupRenameFilePack) },
-        { 104, typeof(GroupAddDirPack) },
-        { 105, typeof(GroupDeleteDirPack) },
-        { 106, typeof(GroupRenameDirPack) },
-        { 107, typeof(GroupDownloadFilePack) },
-        { 108, typeof(GroupSetAdminPack) },
-        { 109, typeof(ReGroupAnnouncementsPack) },
-        { 110, typeof(GroupAddAnnouncementPack) },
-        { 111, typeof(GroupDeleteAnnouncementPack) },
-        { 112, typeof(SendFriendSoundFilePack) },
-        { 113, typeof(GroupDisbandPack) },
-        { 114, typeof(GroupSetAllowMemberInvitePack) },
-        { 115, typeof(GroupSetAnonymousChatEnabledPack) },
-        { 116, typeof(StrangerMessageEventPack) },
-        { 117, typeof(SendStrangerMessagePack) },
-        { 118, typeof(SendStrangerImageFilePack) },
-        { 119, typeof(SendStrangerDicePack) },
-        { 120, typeof(SendStrangerNudgePack) },
-        { 121, typeof(SendStrangerSoundFilePack) },
-        { 122, typeof(StrangerMessagePreSendEventPack) },
-        { 123, typeof(StrangerMessagePostSendEventPack) },
-        { 124, typeof(StrangerRelationChangePack) },
-        { 125, typeof(StrangerRelationChangePack) },
-        { 126, typeof(SendFriendSoundPack) }
-    };
+    /// <summary>
+    /// å¥½å‹ç»„ID
+    /// </summary>
+    public int id { get; set; }
+    /// <summary>
+    /// æ–°çš„åå­—
+    /// </summary>
+    public string name { get; set; }
+}
+/// <summary>
+/// 132 [æ’ä»¶]ç§»åŠ¨å¥½å‹åˆ°åˆ†ç»„
+/// </summary>
+public record FriendGroupMovePack : PackBase
+{
+    /// <summary>
+    /// å¥½å‹åˆ†ç»„ID
+    /// </summary>
+    public int id { get; set; }
+    /// <summary>
+    /// å¥½å‹QQå·
+    /// </summary>
+    public long fid { get; set; }
+}
+/// <summary>
+/// 133 [æ’ä»¶]åˆ é™¤å¥½å‹åˆ†ç»„
+/// </summary>
+public record FriendGroupDeletePack : PackBase
+{
+    /// <summary>
+    /// å¥½å‹åˆ†ç»„ID
+    /// </summary>
+    public int id { get; set; }
+}
+/// <summary>
+/// 134 [æ’ä»¶]ä¿®æ”¹ç¾¤æˆå‘˜å¤´è¡”
+/// </summary>
+public record GroupMemberEditSpecialTitlePack : PackBase
+{
+    /// <summary>
+    /// ç¾¤å·
+    /// </summary>
+    public long id { get; set; }
+    /// <summary>
+    /// ç¾¤æˆå‘˜
+    /// </summary>
+    public long fid { get; set; }
+    /// <summary>
+    /// å¤´è¡”
+    /// </summary>
+    public string name { get; set; }
 }

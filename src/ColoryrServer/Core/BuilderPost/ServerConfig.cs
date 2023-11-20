@@ -17,7 +17,7 @@ public interface ITopAPI
     public void Reboot();
 }
 
-public static class PostServerConfig
+public static class ServerConfig
 {
     private static ITopAPI top;
     public static void Init(ITopAPI api)

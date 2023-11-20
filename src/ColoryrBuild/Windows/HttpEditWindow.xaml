@@ -11,10 +11,6 @@
     ResizeMode="NoResize"
     mc:Ignorable="d">
     <Grid>
-        <Rectangle
-            Fill="#FFF4F4F5"
-            Stroke="#FF5ABED6"
-            StrokeThickness="2" />
         <Label
             Margin="4,4,0,0"
             HorizontalAlignment="Left"
@@ -39,7 +35,7 @@
             Text="{Binding Port}" />
         <Button
             Width="90"
-            Margin="50,32,0,0"
+            Margin="10,30,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click"
@@ -47,7 +43,7 @@
             IsDefault="True" />
         <Button
             Width="90"
-            Margin="199,32,0,0"
+            Margin="229,30,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click_1"

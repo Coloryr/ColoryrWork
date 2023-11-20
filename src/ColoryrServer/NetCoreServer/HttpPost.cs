@@ -7,20 +7,18 @@ using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Server;
 using HttpMultipartParser;
 using NetCoreServer;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
+using System.Text.Json.Nodes;
 
 namespace ColoryrServer.NetCoreServer;
 
 internal class HttpPost
 {
-    private static HttpDllRequest InitArg(HttpRequest request, Dictionary<string, string> headers)
+    private static HttpDllRequest? InitArg(HttpRequest request, Dictionary<string, string> headers)
     {
         MyContentType type = MyContentType.XFormData;
-        var temp = new Dictionary<string, dynamic>();
-        string? contentType;
-        if (!headers.TryGetValue("Content-Type", out contentType))
+        var temp = new Dictionary<string, dynamic?>();
+        if (!headers.TryGetValue("Content-Type", out string? contentType))
         {
             contentType = null;
         }
@@ -69,12 +67,18 @@ internal class HttpPost
             }
             else if (contentType.StartsWith(ServerContentType.JSON))
             {
-                JObject obj = JObject.Parse(Function.GetSrings(request.Body, "{"));
-                foreach (var item in obj)
+                var obj = JsonNode.Parse(request.Body);
+                if (obj is { })
                 {
-                    temp.Add(item.Key, item.Value);
+                    if (obj is JsonObject obj1)
+                    {
+                        foreach (var item in obj1)
+                        {
+                            temp.Add(item.Key, item.Value);
+                        }
+                    }
+                    type = MyContentType.Json;
                 }
-                type = MyContentType.Json;
             }
             else
             {
@@ -131,7 +135,7 @@ internal class HttpPost
             if (headers.TryGetValue(BuildKV.BuildK, out var item))
             {
                 var obj1 = PostDo.StartBuild(request.BodyBytes, item);
-                session.Response.MakeGetResponse(JsonConvert.SerializeObject(obj1));
+                session.Response.MakeGetResponse(JsonUtils.ToString(obj1));
             }
             else
             {
@@ -186,7 +190,7 @@ internal class HttpPost
                         session.Response.SetBody(bytes);
                         break;
                     case ResType.Json:
-                        session.Response.SetBody(JsonConvert.SerializeObject(httpReturn.Data));
+                        session.Response.SetBody(JsonUtils.ToString(httpReturn.Data));
                         break;
                         //case ResType.Stream:
                         //    var stream = httpReturn.Data as Stream;

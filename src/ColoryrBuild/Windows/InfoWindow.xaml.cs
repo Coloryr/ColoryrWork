@@ -7,14 +7,14 @@ namespace ColoryrBuild.Windows;
 /// </summary>
 public partial class InfoWindow : Window
 {
-    public static void Show(string title, string text = null)
+    public static void Show(string title, string? text = null)
     {
         App.ThisApp.Dispatcher.Invoke(() =>
         {
             _ = new InfoWindow(title, text);
         });
     }
-    private InfoWindow(string title, string text)
+    private InfoWindow(string title, string? text)
     {
         InitializeComponent();
         Title = title;

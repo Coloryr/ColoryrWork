@@ -119,36 +119,36 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Class" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\ClassDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\ClassDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\DllDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\DllDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Mqtt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\MqttDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\MqttDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Netty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\NettyDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\Demo\NettyDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Robot" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\RobotDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\RobotDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Service1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Service1DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\Service1DemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Service2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Service2DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\Service2DemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Service3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Service3DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\Service3DemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Service4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\Service4DemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\Service4DemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Socket" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\SocketDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\SocketDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WebSocket" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Demo\WebSocketDemoCS.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\Demo\WebSocketDemoCS.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

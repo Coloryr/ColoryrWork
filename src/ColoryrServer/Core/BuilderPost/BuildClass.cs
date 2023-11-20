@@ -5,18 +5,19 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
+using ColoryrWork.Lib.Build;
 using ColoryrWork.Lib.Build.Object;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace ColoryrServer.Core.BuilderPost;
 
 /// <summary>
 /// 编辑器类操作
 /// </summary>
-internal static class PostBuildClass
+internal static class BuildClass
 {
     /// <summary>
     /// 添加一个类
@@ -41,7 +42,7 @@ internal static class PostBuildClass
             .Replace(CodeDemo.Name, json.UUID)
         };
         CodeManager.StorageClass(obj, json.UUID,
-            DemoResource.Class.Replace(CodeDemo.Name, json.UUID), json.User);
+            Encoding.UTF8.GetString(DemoResource.Class).Replace(CodeDemo.Name, json.UUID), json.User);
         GenClass.StartGen(obj);
         ServerMain.LogOut($"[{json.User}]创建Class[{json.UUID}]完成");
 
@@ -115,7 +116,7 @@ internal static class PostBuildClass
             };
         }
 
-        var list = JsonConvert.DeserializeObject<List<CodeEditObj>>(json.Code);
+        var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
 
         code.code = FileUtils.StartEdit(code.code, list);
         obj.Text = json.Text;
@@ -199,7 +200,7 @@ internal static class PostBuildClass
         }
 
         CodeManager.StorageClass(obj, json.Temp,
-            DemoResource.Class.Replace(CodeDemo.Name, json.Temp), json.User);
+            Encoding.UTF8.GetString(DemoResource.Class).Replace(CodeDemo.Name, json.Temp), json.User);
 
         return new ReMessage
         {

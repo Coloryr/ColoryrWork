@@ -1,4 +1,4 @@
-using ColoryrServer.Core.DllManager.Service;
+using ColoryrServer.Core.Dll.Service;
 using ColoryrWork.Lib.Build.Object;
 using System;
 
@@ -7,98 +7,98 @@ namespace ColoryrServer.SDK;
 public static class ServiceSDK
 {
     /// <summary>
-    /// ÊÇ·ñ´æÔÚ·şÎñ
+    /// æ˜¯å¦å­˜åœ¨æœåŠ¡
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
-    /// <returns>ÊÇ·ñ´æÔÚ</returns>
+    /// <param name="name">æœåŠ¡åå­—</param>
+    /// <returns>æ˜¯å¦å­˜åœ¨</returns>
     public static bool Have(string name)
         => ServiceManager.Have(name);
     /// <summary>
-    /// Æô¶¯Ò»¸ö·şÎñ
+    /// å¯åŠ¨ä¸€ä¸ªæœåŠ¡
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
-    /// <param name="arg">·şÎñ²ÎÊı</param>
+    /// <param name="name">æœåŠ¡åå­—</param>
+    /// <param name="arg">æœåŠ¡å‚æ•°</param>
     public static void Start(string name)
         => ServiceManager.Start(name);
     /// <summary>
-    /// Í£Ö¹Ò»¸ö·şÎñ
+    /// åœæ­¢ä¸€ä¸ªæœåŠ¡
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
+    /// <param name="name">æœåŠ¡åå­—</param>
     public static void Stop(string name)
         => ServiceManager.Stop(name);
     /// <summary>
-    /// ÔİÍ£Ò»¸ö·şÎñ
+    /// æš‚åœä¸€ä¸ªæœåŠ¡
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
+    /// <param name="name">æœåŠ¡åå­—</param>
     public static void Pause(string name)
         => ServiceManager.Pause(name);
     /// <summary>
-    /// »ñÈ¡Ò»¸ö·şÎñµÄ×´Ì¬
+    /// è·å–ä¸€ä¸ªæœåŠ¡çš„çŠ¶æ€
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
-    /// <returns>×´Ì¬</returns>
+    /// <param name="name">æœåŠ¡åå­—</param>
+    /// <returns>çŠ¶æ€</returns>
     public static ServiceState GetState(string name)
         => ServiceManager.GetState(name);
     /// <summary>
-    /// ÉèÖÃ·şÎñ²ÎÊı
+    /// è®¾ç½®æœåŠ¡å‚æ•°
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
-    /// <param name="arg">²ÎÊı</param>
+    /// <param name="name">æœåŠ¡åå­—</param>
+    /// <param name="arg">å‚æ•°</param>
     public static void SetArg(string name, object[] arg)
         => ServiceManager.SetArg(name, arg);
     /// <summary>
-    /// »ñÈ¡·şÎñ´íÎóĞÅÏ¢
+    /// è·å–æœåŠ¡é”™è¯¯ä¿¡æ¯
     /// </summary>
-    /// <param name="name">·şÎñÃû×Ö</param>
-    /// <returns>´íÎóĞÅÏ¢</returns>
+    /// <param name="name">æœåŠ¡åå­—</param>
+    /// <returns>é”™è¯¯ä¿¡æ¯</returns>
     public static Exception GetError(string name)
         => ServiceManager.GetError(name);
 }
 /// <summary>
-/// ¹¹½¨´úÂëÇ°/ĞŞ¸Ä´úÂëÇ°
+/// æ„å»ºä»£ç å‰/ä¿®æ”¹ä»£ç å‰
 /// </summary>
 public record PerBuildArg
 {
     /// <summary>
-    /// ±à¼­µÄÓÃ»§
+    /// ç¼–è¾‘çš„ç”¨æˆ·
     /// </summary>
     public string User;
     /// <summary>
-    /// ´úÂëÀàĞÍ
+    /// ä»£ç ç±»å‹
     /// </summary>
     public CodeType CodeType;
     /// <summary>
-    /// ´úÂë¶ÔÏó
+    /// ä»£ç å¯¹è±¡
     /// </summary>
     public CSFileObj CodeObj;
     /// <summary>
-    /// ĞŞ¸ÄºóµÄ´úÂë
+    /// ä¿®æ”¹åçš„ä»£ç 
     /// </summary>
     public string EditCode;
     /// <summary>
-    /// ÎÄ¼şÃû
+    /// æ–‡ä»¶å
     /// </summary>
     public string File;
 }
 /// <summary>
-/// ¹¹½¨ºó
+/// æ„å»ºå
 /// </summary>
 public record PostBuildArg
 {
     /// <summary>
-    /// ´úÂëÀàĞÍ
+    /// ä»£ç ç±»å‹
     /// </summary>
     public CodeType CodeType;
     /// <summary>
-    /// ´úÂë¶ÔÏó
+    /// ä»£ç å¯¹è±¡
     /// </summary>
     public CSFileObj CodeObj;
     /// <summary>
-    /// ¹¹½¨½á¹û
+    /// æ„å»ºç»“æœ
     /// </summary>
     public bool BuildRes;
     /// <summary>
-    /// ±à¼­µÄÓÃ»§
+    /// ç¼–è¾‘çš„ç”¨æˆ·
     /// </summary>
     public string User;
 }

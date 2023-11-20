@@ -6,7 +6,7 @@ namespace ColoryrServer.SDK;
 public static class WebHtml
 {
     /// <summary>
-    /// »ñÈ¡¶¯Ì¬Ç°¶Ë×ÊÔ´
+    /// è·å–åŠ¨æ€å‰ç«¯èµ„æº
     /// </summary>
     /// <param name="uuid"></param>
     /// <param name="name"></param>
@@ -17,10 +17,10 @@ public static class WebHtml
         return route.Invoke(null, name).Data as byte[];
     }
     /// <summary>
-    /// »ñÈ¡¾²Ì¬Ç°¶Ë×ÊÔ´
+    /// è·å–é™æ€å‰ç«¯èµ„æº
     /// </summary>
-    /// <param name="uuid">×ÊÔ´UUID</param>
-    /// <param name="name">Ãû×Ö</param>
+    /// <param name="uuid">èµ„æºUUID</param>
+    /// <param name="name">åå­—</param>
     /// <returns></returns>
     public static byte[] GetStaticWebFile(string[] uuid)
     {

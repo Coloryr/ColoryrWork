@@ -3,7 +3,8 @@ using ColoryrServer.Core.Database;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
-using Newtonsoft.Json;
+using ColoryrWork.Lib.Build;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Collections.Specialized;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
@@ -12,7 +13,24 @@ namespace ColoryrServer.ASP;
 
 internal static class HttpGet
 {
-    private readonly static string[] data1 = Array.Empty<string>();
+    private readonly static string[] data1 = [];
+
+    internal static Task<(MyContentType, IDictionary<string, dynamic?>?)> GetBody(HttpRequest request)
+    {
+        var temp = new Dictionary<string, dynamic?>();
+        if (request.QueryString.HasValue)
+        {
+            var b = request.QueryString.ToUriComponent()[1..];
+            foreach (string a in b.Split('&'))
+            {
+                var item = a.Split("=");
+                temp.Add(item[0], item[1]);
+            }
+        }
+
+        return Task.FromResult<(MyContentType, IDictionary<string, dynamic?>?)>
+            ((MyContentType.XFormData, temp));
+    }
     internal static async Task RoteGetIndex(HttpContext context)
     {
         HttpRequest request = context.Request;
@@ -47,17 +65,7 @@ internal static class HttpGet
 
     private static HttpDllRequest InitArg(HttpRequest request)
     {
-        var temp = new Dictionary<string, dynamic>();
-        if (request.QueryString.HasValue)
-        {
-            var b = request.QueryString.ToUriComponent()[1..];
-            foreach (string a in b.Split('&'))
-            {
-                var item = a.Split("=");
-                temp.Add(item[0], item[1]);
-            }
-        }
-        NameValueCollection collection = new();
+        NameValueCollection collection = [];
         foreach (var item in request.Headers)
         {
             collection.Add(item.Key, item.Value);
@@ -66,9 +74,9 @@ internal static class HttpGet
         {
             Cookie = ASPHttpUtils.HaveCookie(request.Headers.Cookie),
             RowRequest = collection,
-            Parameter = temp,
             Method = request.Method,
-            ContentType = MyContentType.XFormData
+            ContentType = request.ContentType,
+            GetBody = () => GetBody(request)
         };
     }
 
@@ -87,22 +95,22 @@ internal static class HttpGet
         var route = HttpUtils.GetUUID(name, out string funtion);
         if (route != null)
         {
-            HttpReturn httpReturn;
+            CoreHttpReturn httpReturn;
             if (route.IsDll)
             {
                 var arg = InitArg(request);
-                httpReturn = route.Invoke(arg, funtion);
+                httpReturn = await route.Invoke(arg, funtion);
             }
             else
             {
-                httpReturn = route.Invoke(null, funtion);
+                httpReturn = await route.Invoke(null, funtion);
             }
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;
             if (httpReturn.Head != null)
                 foreach (var Item in httpReturn.Head)
                 {
-                    response.Headers.Add(Item.Key, Item.Value);
+                    response.Headers.Append(Item.Key, Item.Value);
                 }
             if (httpReturn.Cookie != null)
                 foreach (var item in httpReturn.Cookie)
@@ -118,7 +126,7 @@ internal static class HttpGet
                     await response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
                     break;
                 case ResType.Json:
-                    await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data), httpReturn.Encoding);
+                    await response.WriteAsync(JsonUtils.ToString(httpReturn.Data), httpReturn.Encoding);
                     break;
                 case ResType.Stream:
                     if (httpReturn.Data is not Stream stream)
@@ -175,7 +183,7 @@ internal static class HttpGet
             var httpReturn = HttpReturnSave.ResError;
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;
-            await response.WriteAsync(JsonConvert.SerializeObject(httpReturn.Data));
+            await response.WriteAsync(JsonUtils.ToString(httpReturn.Data));
         }
     }
 }

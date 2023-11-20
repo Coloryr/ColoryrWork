@@ -1,37 +1,34 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
+﻿using Newtonsoft.Json;
+using System.Text;
 
 namespace ColoryrWork.Lib.Build;
 
 public static class JsonUtils
 {
-    private readonly static JsonSerializerOptions Options1 = new()
-    {
-        IncludeFields = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-    };
-
-    private readonly static JsonSerializerOptions Options2 = new()
-    {
-        WriteIndented = true,
-        IncludeFields = true,
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-    };
-
     /// <summary>
     /// 反序列化，将json字符串转换成json类
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="result"></param>
     /// <returns></returns>
-    public static T ToObj<T>(string result)
+    public static T? ToObj<T>(string result)
     {
         try
         {
-            return JsonSerializer.Deserialize<T>(result, Options1);
+            return JsonConvert.DeserializeObject<T>(result);
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
+    public static T? ToObj<T>(byte[] result)
+    {
+        try
+        {
+            var str = Encoding.UTF8.GetString(result);
+            return JsonConvert.DeserializeObject<T>(str);
         }
         catch
         {
@@ -45,8 +42,8 @@ public static class JsonUtils
     /// <typeparam name="T"></typeparam>
     /// <param name="jsonClass"></param>
     /// <returns></returns>
-    public static string ToString(object jsonClass)
+    public static string ToString<T>(T jsonClass)
     {
-        return JsonSerializer.Serialize(jsonClass, Options2);
+        return JsonConvert.SerializeObject(jsonClass);
     }
 }
