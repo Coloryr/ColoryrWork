@@ -4,8 +4,13 @@ using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build;
-using Org.BouncyCastle.Asn1.Ocsp;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
+using System.Text.Encodings.Web;
+using System.Text.Json.Nodes;
+using static System.Net.Mime.MediaTypeNames;
+using System.Web;
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using HttpResponse = Microsoft.AspNetCore.Http.HttpResponse;
 
@@ -15,20 +20,64 @@ internal static class HttpGet
 {
     private readonly static string[] data1 = [];
 
-    internal static Task<(MyContentType, IDictionary<string, dynamic?>?)> GetBody(HttpRequest request)
+    internal static Task<(MyContentType, IDictionary<string, dynamic?>)> GetBody(HttpRequest request, JsonType json)
     {
         var temp = new Dictionary<string, dynamic?>();
         if (request.QueryString.HasValue)
         {
             var b = request.QueryString.ToUriComponent()[1..];
-            foreach (string a in b.Split('&'))
+            b = HttpUtility.UrlDecode(b, System.Text.Encoding.UTF8);
+            if (b.StartsWith('{') || b.StartsWith('[') && json != JsonType.None)
             {
-                var item = a.Split("=");
-                temp.Add(item[0], item[1]);
+                if (json == JsonType.SystemJson)
+                {
+                    var obj = JsonNode.Parse(b);
+                    if (obj is { })
+                    {
+                        if (obj is JsonObject obj1)
+                        {
+                            foreach (var item in obj1)
+                            {
+                                temp.Add(item.Key, item.Value);
+                            }
+                        }
+                        else
+                        {
+                            temp.Add("", obj);
+                        }
+                    }
+                }
+                else
+                {
+                    string str = new StreamReader(request.Body).ReadToEnd();
+                    var obj = JToken.Parse(str);
+                    if (obj is { })
+                    {
+                        if (obj is JObject obj1)
+                        {
+                            foreach (var item in obj1)
+                            {
+                                temp.Add(item.Key, item.Value);
+                            }
+                        }
+                        else
+                        {
+                            temp.Add("", obj);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (string a in b.Split('&'))
+                {
+                    var item = a.Split("=");
+                    temp.Add(item[0], item[1]);
+                }
             }
         }
 
-        return Task.FromResult<(MyContentType, IDictionary<string, dynamic?>?)>
+        return Task.FromResult<(MyContentType, IDictionary<string, dynamic?>)>
             ((MyContentType.XFormData, temp));
     }
     internal static async Task RoteGetIndex(HttpContext context)
@@ -76,7 +125,7 @@ internal static class HttpGet
             RowRequest = collection,
             Method = request.Method,
             ContentType = request.ContentType,
-            GetBody = () => GetBody(request)
+            GetBody = (type) => GetBody(request, type)
         };
     }
 

@@ -44,8 +44,7 @@ internal static partial class DllRun
                     Data = new GetMeesage
                     {
                         Res = 90,
-                        Text = "找不到方法",
-                        Data = null
+                        Text = "找不到方法"
                     },
                     Res = ResType.Json,
                     ReCode = 404
@@ -57,7 +56,7 @@ internal static partial class DllRun
             object dllres;
             if (mi.IsStatic)
             {
-                if (mi.ReturnType == typeof(Task<dynamic>))
+                if (mi.ReturnType == typeof(Task<object>))
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), mi) as Dll.DllAsyncIN;
                     dllres = temp!(arg).Result;
@@ -71,7 +70,7 @@ internal static partial class DllRun
             else
             {
                 var obj1 = Activator.CreateInstance(dll.SelfType);
-                if (mi.ReturnType == typeof(Task<dynamic>))
+                if (mi.ReturnType == typeof(Task<object>))
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), obj1, mi) as Dll.DllAsyncIN;
                     dllres = temp!(arg).Result;
@@ -274,13 +273,13 @@ internal static partial class DllRun
                 if (mi.IsStatic)
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.SocketUdpIn), mi) as Dll.SocketUdpIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
                     var temp = Delegate.CreateDelegate(typeof(Dll.SocketUdpIn), obj1, mi) as Dll.SocketUdpIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
 
                 if (dllres)
@@ -322,13 +321,13 @@ internal static partial class DllRun
                 if (mi.IsStatic)
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketMessageIn), mi) as Dll.WebSocketMessageIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
                     var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketMessageIn), obj1, mi) as Dll.WebSocketMessageIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
 
                 if (dllres)
@@ -370,13 +369,13 @@ internal static partial class DllRun
                 if (mi.IsStatic)
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketOpenIn), mi) as Dll.WebSocketOpenIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
                 else
                 {
                     var obj1 = Activator.CreateInstance(dll.SelfType);
                     var temp = Delegate.CreateDelegate(typeof(Dll.WebSocketOpenIn), obj1, mi) as Dll.WebSocketOpenIn;
-                    dllres = temp(head);
+                    dllres = temp!(head);
                 }
 
                 if (dllres)

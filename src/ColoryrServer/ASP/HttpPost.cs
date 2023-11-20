@@ -6,34 +6,36 @@ using HttpMultipartParser;
 using ColoryrWork.Lib.Build;
 using System.Collections.Specialized;
 using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace ColoryrServer.ASP;
 
 internal static class HttpPost
 {
-    internal static async Task<(MyContentType, IDictionary<string, dynamic?>?)> GetBody(HttpRequest Request)
+    internal static async Task<(MyContentType, IDictionary<string, dynamic?>)> GetBody(HttpRequest request, JsonType json)
     {
         MyContentType type = MyContentType.Error;
         var temp = new Dictionary<string, dynamic?>();
-        if (Request.ContentType != null)
+        if (request.ContentType != null)
         {
-            if (Request.ContentType is ServerContentType.POSTXFORM)
+            if (request.ContentType is ServerContentType.POSTXFORM)
             {
                 type = MyContentType.XFormData;
-                foreach (var item in Request.Form)
+                foreach (var item in request.Form)
                 {
                     temp.Add(item.Key, item.Value);
                 }
-                foreach (var item in Request.Form.Files)
+                foreach (var item in request.Form.Files)
                 {
                     temp.Add(item.Name, item);
                 }
             }
-            else if (Request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
+            else if (request.ContentType.StartsWith(ServerContentType.POSTFORMDATA))
             {
                 try
                 {
-                    var parser = await MultipartFormDataParser.ParseAsync(Request.Body);
+                    var parser = await MultipartFormDataParser.ParseAsync(request.Body);
                     foreach (var item in parser.Parameters)
                     {
                         temp.Add(item.Name, item.Data);
@@ -53,26 +55,49 @@ internal static class HttpPost
                 catch (Exception e)
                 {
                     ServerMain.LogError("Post处理出错", e);
-                    return (type, null);
+                    return (type, temp);
                 }
             }
-            else if (Request.ContentType.StartsWith(ServerContentType.JSON))
+            else if (request.ContentType.StartsWith(ServerContentType.JSON))
             {
-                var obj = JsonNode.Parse(Request.Body);
-                if (obj is { })
+                if (json == JsonType.SystemJson)
                 {
-                    if (obj is JsonObject obj1)
+                    var obj = await JsonNode.ParseAsync(request.Body);
+                    if (obj is { })
                     {
-                        foreach (var item in obj1)
+                        if (obj is JsonObject obj1)
                         {
-                            temp.Add(item.Key, item.Value);
+                            foreach (var item in obj1)
+                            {
+                                temp.Add(item.Key, item.Value);
+                            }
                         }
+                        else
+                        {
+                            temp.Add("", obj);
+                        }
+                        type = MyContentType.Json;
                     }
-                    else
+                }
+                else if(json == JsonType.NewtonsoftJson)
+                {
+                    string str = new StreamReader(request.Body).ReadToEnd();
+                    var obj = JToken.Parse(str);
+                    if (obj is { })
                     {
-                        temp.Add("", obj);
+                        if (obj is JObject obj1)
+                        {
+                            foreach (var item in obj1)
+                            {
+                                temp.Add(item.Key, item.Value);
+                            }
+                        }
+                        else
+                        {
+                            temp.Add("", obj);
+                        }
+                        type = MyContentType.Json;
                     }
-                    type = MyContentType.Json;
                 }
             }
             else
@@ -99,7 +124,7 @@ internal static class HttpPost
             ContentType = request.ContentType,
             Method = request.Method,
             Stream = request.Body,
-            GetBody = () => GetBody(request)
+            GetBody = (type) => GetBody(request, type)
         };
     }
 
@@ -189,9 +214,10 @@ internal static class HttpPost
             await response.BodyWriter.WriteAsync(WebBinManager.BaseDir.HtmlFixMode);
             return;
         }
-        var name = context.GetRouteValue("name") as string;
-        if (name == null)
+        if (context.GetRouteValue("name") is not string name)
+        {
             return;
+        }
         var arg = name.Split('/');
         if (ASPServer.Config.UrlRoutes.TryGetValue(request.Host.Host, out var rote1))
         {

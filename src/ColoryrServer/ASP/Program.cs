@@ -13,16 +13,17 @@ namespace ColoryrServer.ASP;
 public static class ASPServer
 {
     internal static ASPConfig Config { get; set; }
-    internal static IHttpClients Clients;
+    public static IHttpClients Clients;
 
-    private static WebApplication Web;
+    public static WebApplication Web;
 
-    private const string https = "https";
-    private const string http = "http";
-    private static Dictionary<string, X509Certificate2> Ssls = new();
-    private static X509Certificate2 DefaultSsl;
-    private static bool IsReboot = true;
-    private static bool IsRun = true;
+    public const string https = "https";
+    public const string http = "http";
+    public static Dictionary<string, X509Certificate2> Ssls = new();
+    public static X509Certificate2 DefaultSsl;
+    public static bool IsReboot = true;
+    public static bool IsRun = false;
+    public static bool IsStarting = true;
 
     private static void PageReload()
     {
@@ -32,15 +33,22 @@ public static class ASPServer
     public static void Main()
     {
         ServerConfig.Init(new ASPTopAPI());
+        
         while (IsReboot)
         {
+            IsStarting = true;
             IsReboot = false;
             ServerMain.Init();
             WebBinManager.Reload = PageReload;
             ASPConfigUtils.Start();
             ServerMain.Start();
 
-            StartRead();
+            if (!IsRun)
+            {
+                IsRun = true;
+                StartRead();
+            }
+
             var builder = WebApplication.CreateBuilder();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(new ColoryrLoggerProvider());
@@ -108,14 +116,15 @@ public static class ASPServer
 
             Web.MapPost("/", Build);
 
+            IsStarting = false;
+
             Web.Run();
             Web.DisposeAsync().AsTask().Wait();
             ServerMain.LogOut("正在关闭服务器");
             ServerMain.Stop();
-            
         }
 
-        ServerMain.LogOut("按下任意键退出");
+        ServerMain.LogOut("按下回车键退出");
         IsRun = false;
         ReadThread.Interrupt();
     }
@@ -132,9 +141,11 @@ public static class ASPServer
                 {
                     try
                     {
-                        string command = Console.ReadLine();
-                        if (command == null)
+                        var command = Console.ReadLine();
+                        if (command == null || IsStarting)
+                        {
                             return;
+                        }
                         var arg = command.Split(' ');
                         switch (arg[0])
                         {

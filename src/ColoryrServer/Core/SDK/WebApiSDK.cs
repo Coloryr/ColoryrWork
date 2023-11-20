@@ -31,7 +31,7 @@ public class HttpDllRequest
     /// <summary>
     /// 解析请求数据
     /// </summary>
-    public required Func<Task<(MyContentType, IDictionary<string, dynamic?>?)>> GetBody;
+    public required Func<JsonType, Task<(MyContentType, IDictionary<string, object?>)>> GetBody;
 }
 public abstract class HttpDllResponse
 {

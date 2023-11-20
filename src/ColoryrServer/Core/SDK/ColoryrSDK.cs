@@ -127,6 +127,12 @@ public enum MyContentType
 {
     Json, XFormData, MFormData, Other, Error
 }
+
+public enum JsonType
+{ 
+    SystemJson, NewtonsoftJson, None
+}
+
 public partial class EnCode
 {
     /// <summary>

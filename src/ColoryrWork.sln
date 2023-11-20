@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrBuild", "ColoryrBuil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrServer.ASP", "ColoryrServer\ASP\ColoryrServer.ASP.csproj", "{CE8E78C5-911D-4423-8DEE-51AA8AFB3F74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest", "ColoryrTest\ColoryrTest.csproj", "{27355409-7CF0-4042-8F84-1E026DD497F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest.ASP", "ColoryrTest\ColoryrTest.ASP.csproj", "{27355409-7CF0-4042-8F84-1E026DD497F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTest.Run", "ColoryrTest.Run\ColoryrTest.Run.csproj", "{9050391D-E477-4752-B7B4-5AD919694299}"
 EndProject

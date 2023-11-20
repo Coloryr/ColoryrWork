@@ -6,7 +6,6 @@ using ColoryrWork.Lib.Build.Object;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrServer.Core.Http;
 
@@ -75,9 +74,9 @@ public class WebRoute : RouteObj
     {
         IsReload = true;
 
-        if (obj.Codes.ContainsKey(name))
+        if (obj.Codes.TryGetValue(name, out var value))
         {
-            string text = obj.Codes[name];
+            var text = value;
             if (name.ToLower().EndsWith(".html"))
             {
                 if (ServerMain.Config.CodeSetting.MinifyHtml)
@@ -189,7 +188,7 @@ public class WebRoute : RouteObj
 
 public static class HttpInvokeRoute
 {
-    private static ConcurrentDictionary<string, RouteObj> Routes = new();
+    private static readonly ConcurrentDictionary<string, RouteObj> Routes = new();
 
     public static bool CheckBase(string name)
     {
@@ -204,9 +203,9 @@ public static class HttpInvokeRoute
 
     public static void AddDll(string name, DllAssembly dll)
     {
-        if (Routes.ContainsKey(name))
+        if (Routes.TryGetValue(name, out var value))
         {
-            (Routes[name] as DllRoute).Update(dll);
+            (value as DllRoute)?.Update(dll);
         }
         else
         {
@@ -218,7 +217,7 @@ public static class HttpInvokeRoute
     {
         if (Routes.ContainsKey(name))
         {
-            (Routes[name] as WebRoute).Reload();
+            (Routes[name] as WebRoute)?.Reload();
         }
         else
         {
@@ -226,7 +225,7 @@ public static class HttpInvokeRoute
         }
     }
 
-    public static RouteObj Get(string url)
+    public static RouteObj? Get(string url)
     {
         if (Routes.TryGetValue(url, out var item))
         {
@@ -245,9 +244,9 @@ public static class HttpInvokeRoute
     {
         if (Routes.TryGetValue(uuid, out var item))
         {
-            if (item is WebRoute)
+            if (item is WebRoute web)
             {
-                (item as WebRoute).Reload(name);
+                web.Reload(name);
             }
         }
     }
@@ -256,9 +255,9 @@ public static class HttpInvokeRoute
     {
         if (Routes.TryGetValue(uuid, out var item))
         {
-            if (item is WebRoute)
+            if (item is WebRoute web)
             {
-                (item as WebRoute).Remove(name);
+                web.Remove(name);
             }
         }
     }
@@ -267,9 +266,9 @@ public static class HttpInvokeRoute
     {
         if (Routes.TryGetValue(uuid, out var item))
         {
-            if (item is DllRoute)
+            if (item is DllRoute web)
             {
-                (item as DllRoute).Lock();
+                web.Lock();
             }
         }
     }
