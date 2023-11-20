@@ -14,7 +14,7 @@ public abstract class RouteObj
 {
     public bool IsDll { get; protected set; }
     public bool IsReload { get; protected set; }
-    public abstract Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function);
+    public abstract CoreHttpReturn Invoke(HttpDllRequest? arg, string function);
 }
 
 public class DllRoute : RouteObj
@@ -26,7 +26,7 @@ public class DllRoute : RouteObj
         this.dll = dll;
     }
 
-    public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
+    public override CoreHttpReturn Invoke(HttpDllRequest? arg, string function)
     {
         return DllRun.DllGo(dll, arg, function);
     }
@@ -53,7 +53,7 @@ public class WebRoute : RouteObj
         Reload();
     }
 
-    public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
+    public override CoreHttpReturn Invoke(HttpDllRequest? arg, string function)
     {
         if (string.IsNullOrWhiteSpace(function))
         {
@@ -61,14 +61,14 @@ public class WebRoute : RouteObj
         }
         if (cache.TryGetValue(function, out var item))
         {
-            return Task.FromResult(new CoreHttpReturn()
+            return new CoreHttpReturn()
             {
                 Res = ResType.Byte,
                 Data = item,
                 ContentType = ServerContentType.EndType(function)
-            });
+            };
         }
-        return Task.FromResult(HttpReturnSave.Res404);
+        return HttpReturnSave.Res404;
     }
 
     public void Reload(string name)

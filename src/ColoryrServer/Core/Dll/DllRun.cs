@@ -29,7 +29,7 @@ internal static partial class DllRun
     /// <param name="arg">参数</param>
     /// <param name="function">方法名</param>
     /// <returns></returns>
-    internal static async Task<CoreHttpReturn> DllGo(DllAssembly dll, HttpDllRequest arg, string function)
+    internal static CoreHttpReturn DllGo(DllAssembly dll, HttpDllRequest arg, string function)
     {
         try
         {
@@ -60,7 +60,7 @@ internal static partial class DllRun
                 if (mi.ReturnType == typeof(Task<dynamic>))
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), mi) as Dll.DllAsyncIN;
-                    dllres = await temp!(arg);
+                    dllres = temp!(arg).Result;
                 }
                 else
                 {
@@ -74,7 +74,7 @@ internal static partial class DllRun
                 if (mi.ReturnType == typeof(Task<dynamic>))
                 {
                     var temp = Delegate.CreateDelegate(typeof(Dll.DllAsyncIN), obj1, mi) as Dll.DllAsyncIN;
-                    dllres = await temp!(arg);
+                    dllres = temp!(arg).Result;
                 }
                 else
                 {

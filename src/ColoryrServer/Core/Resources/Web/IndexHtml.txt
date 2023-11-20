@@ -16,7 +16,7 @@
 
 <body>
     <div class="center">
-        »¶Ó­Ê¹ÓÃColoryrServer
+        æ¬¢è¿Žä½¿ç”¨ColoryrServer
     </div>
 </body>
 

@@ -14,7 +14,7 @@ public static class WebHtml
     public static byte[]? GetWebFile(string uuid, string name)
     {
         var route = HttpInvokeRoute.Get(uuid);
-        return route.Invoke(null, name).Result.Data as byte[];
+        return route.Invoke(null, name).Data as byte[];
     }
     /// <summary>
     /// 获取静态前端资源

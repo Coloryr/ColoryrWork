@@ -127,11 +127,11 @@ internal static class HttpPost
                     await response.WriteAsync(HttpReturnSave.FromError.Data as string);
                     return;
                 }
-                httpReturn = await route.Invoke(arg, funtion);
+                httpReturn = route.Invoke(arg, funtion);
             }
             else
             {
-                httpReturn = await route.Invoke(null, funtion);
+                httpReturn = route.Invoke(null, funtion);
             }
             response.ContentType = httpReturn.ContentType;
             response.StatusCode = httpReturn.ReCode;

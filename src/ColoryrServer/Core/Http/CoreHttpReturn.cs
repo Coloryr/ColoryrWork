@@ -92,9 +92,9 @@ public static class HttpReturnSave
             IsDll = false;
             IsReload = false;
         }
-        public override Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
+        public override CoreHttpReturn Invoke(HttpDllRequest? arg, string function)
         {
-            return Task.FromResult(ResReload);
+            return ResReload;
         }
     }
 
@@ -105,9 +105,9 @@ public static class HttpReturnSave
             IsDll = false;
             IsReload = false;
         }
-        override public Task<CoreHttpReturn> Invoke(HttpDllRequest? arg, string function)
+        override public CoreHttpReturn Invoke(HttpDllRequest? arg, string function)
         {
-            return Task.FromResult(ResFixMode);
+            return ResFixMode;
         }
     }
 }
