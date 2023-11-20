@@ -2,12 +2,11 @@
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
-using HttpMultipartParser;
 using ColoryrWork.Lib.Build;
+using HttpMultipartParser;
+using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using System.Text.Json.Nodes;
-using Newtonsoft.Json.Linq;
-using System.IO;
 
 namespace ColoryrServer.ASP;
 
@@ -79,7 +78,7 @@ internal static class HttpPost
                         type = MyContentType.Json;
                     }
                 }
-                else if(json == JsonType.NewtonsoftJson)
+                else if (json == JsonType.NewtonsoftJson)
                 {
                     string str = new StreamReader(request.Body).ReadToEnd();
                     var obj = JToken.Parse(str);

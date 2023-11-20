@@ -150,7 +150,7 @@ internal static partial class DllRun
         }
         catch (Exception e)
         {
-            _ =  Task.Run(() => ServiceOnError(e));
+            _ = Task.Run(() => ServiceOnError(e));
             if (e.InnerException is VarDump dump)
             {
                 if (dll.Debug)

@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.SDK;
 using System;
 using System.IO;
-using System.Text;
 
 namespace ColoryrServer.Core.FileSystem.Managers;
 

@@ -5,9 +5,9 @@ using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.PortServer;
 using ColoryrServer.Core.Robot;
 using ColoryrServer.Core.Utils;
+using ColoryrWork.Lib.Build;
 using DotNetty.Transport.Channels;
 using Fleck;
-using ColoryrWork.Lib.Build;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -129,7 +129,7 @@ public enum MyContentType
 }
 
 public enum JsonType
-{ 
+{
     SystemJson, NewtonsoftJson, None
 }
 

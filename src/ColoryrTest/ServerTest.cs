@@ -1,14 +1,10 @@
-using ColoryrServer.ASP;
 using ColoryrServer.Core.Dll;
-using ColoryrServer.Core.FileSystem;
-using ColoryrServer.Core;
+using ColoryrServer.Core.Http;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using System.Reflection;
 using System.Net.Http.Headers;
-using Newtonsoft.Json.Linq;
+using System.Reflection;
 using System.Text.Json.Nodes;
-using ColoryrServer.Core.Http;
 
 namespace ColoryrServer.ASP.Test;
 
@@ -222,7 +218,7 @@ public class ServerTest
         string name = "web/test";
         var obj = new WebObj()
         {
-            IsVue =false,
+            IsVue = false,
             Codes = new()
             {
                 { "index.html", "web1" },

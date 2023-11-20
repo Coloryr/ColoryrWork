@@ -4,8 +4,8 @@ using ColoryrServer.Core.FileSystem;
 using ColoryrServer.Core.Managers;
 using ColoryrServer.Core.Utils;
 using ColoryrServer.SDK;
-using ColoryrWork.Lib.Build.Object;
 using ColoryrWork.Lib.Build;
+using ColoryrWork.Lib.Build.Object;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +48,7 @@ internal static class BuildService
             {
                 ServiceType.Normal => Encoding.UTF8.GetString(DemoResource.Service1),
                 ServiceType.ErrorDump => Encoding.UTF8.GetString(DemoResource.Service2),
-                ServiceType.OnlyOpen =>  Encoding.UTF8.GetString(DemoResource.Service3),
+                ServiceType.OnlyOpen => Encoding.UTF8.GetString(DemoResource.Service3),
                 ServiceType.Builder => Encoding.UTF8.GetString(DemoResource.Service4),
                 _ => ""
             }

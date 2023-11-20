@@ -47,7 +47,7 @@ internal static class FileStreamManager
     public static void Start()
     {
         IsRun = true;
-        
+
         TickThread.Start();
         ServerMain.OnStop += Stop;
     }
