@@ -27,10 +27,6 @@ public record MainConfig
     /// </summary>
     public List<SQLConfig> MSsql { get; set; }
     /// <summary>
-    /// Oracle配置
-    /// </summary>
-    public List<SQLConfig> Oracle { get; set; }
-    /// <summary>
     /// SQLite配置
     /// </summary>
     public List<SQLConfig> SQLite { get; set; }
@@ -87,17 +83,17 @@ public record PipeConfigObj
     /// </summary>
     public bool Enable { get; set; }
     /// <summary>
-    /// 是否为服务器端
+    /// 模式
     /// </summary>
-    public bool Server { get; set; }
+    public int Mode { get; set; }
     /// <summary>
-    /// 服务器IP
+    /// 节点
     /// </summary>
-    public string IP { get; set; }
+    public Dictionary<string, ushort> Node { get; set; }
     /// <summary>
-    /// 服务器端口
+    /// 验证密室
     /// </summary>
-    public int Port { get; set; }
+    public string Key { get; set; }
 }
 
 public record SslConfigObj

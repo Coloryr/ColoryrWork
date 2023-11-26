@@ -1,7 +1,7 @@
 ﻿using ColoryrServer.Core.Database;
 using ColoryrServer.Core.DBConnection;
 using Dapper;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -207,70 +207,6 @@ public partial class SqliteSql : IDatabase
     public MySqlConnection Get()
     {
         return MysqlCon.GetConnection(ID);
-    }
-}
-public partial class OracleSql : IDatabase
-{
-    private string Database;
-    private int ID;
-    /// <summary>
-    /// MSsql数据库
-    /// </summary>
-    /// <param name="database">数据库名</param>
-    /// <param name="id">数据库ID</param>
-    public OracleSql(string database = "", int id = 0)
-    {
-        ID = id;
-        if (!Core.DBConnection.OracleCon.Contains(id))
-            throw new ErrorDump($"没有Oracle数据库{id}");
-        Database = database;
-    }
-
-    /// <summary>
-    /// 执行查询
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>返回的数据</returns>
-    public IEnumerable<dynamic> Query(string sql, object arg)
-    {
-        var conn = Get();
-        conn.ChangeDatabase(Database);
-        return conn.Query(sql, arg);
-    }
-    /// <summary>
-    /// 执行查询
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>返回的数据</returns>
-    public IEnumerable<T> Query<T>(string sql, object arg)
-    {
-        var conn = Get();
-        conn.ChangeDatabase(Database);
-        return conn.Query<T>(sql, arg);
-    }
-
-    /// <summary>
-    /// 执行语句
-    /// </summary>
-    /// <param name="sql">sql语句</param>
-    /// <param name="arg">参数</param>
-    /// <returns>返回的数据</returns>
-    public int Execute(string sql, object arg)
-    {
-        var conn = Get();
-        conn.ChangeDatabase(Database);
-        return conn.Execute(sql, arg);
-    }
-
-    /// <summary>
-    /// 获取一个数据库链接
-    /// </summary>
-    /// <returns>链接</returns>
-    public Oracle.ManagedDataAccess.Client.OracleConnection Get()
-    {
-        return Core.DBConnection.OracleCon.GetConnection(ID);
     }
 }
 

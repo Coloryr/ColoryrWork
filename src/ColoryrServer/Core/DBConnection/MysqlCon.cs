@@ -1,6 +1,6 @@
 ﻿using ColoryrServer.Core.FileSystem;
 using Dapper;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

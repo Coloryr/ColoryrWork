@@ -1,7 +1,6 @@
 ﻿using ColoryrServer.Core.Database;
 using ColoryrServer.SDK;
 using ColoryrWork.Lib.Build.Object;
-using HtmlCompression.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Concurrent;
@@ -9,7 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Yahoo.Yui.Compressor;
+using WebMarkupMin.Core;
+using WebMarkupMin.Yui;
 
 namespace ColoryrServer.Core.Utils;
 
@@ -26,23 +26,30 @@ public static class ExtensionMethods
 }
 public static class CodeCompressUtils
 {
-    private static readonly HtmlCompressor html = new();
-    private static readonly CssCompressor css = new();
+    private static readonly HtmlMinifier html;
+    private static readonly YuiCssMinifier css;
+    private static readonly YuiJsMinifier js;
+
+    static CodeCompressUtils()
+    {
+        css = new();
+        js = new();
+        html = new(cssMinifier: css, jsMinifier: js);
+    }
 
     public static string JS(string code)
     {
-        return JavaScriptMinifier.Minify(code).ToString();
+        return js.Minify(code, true).MinifiedContent;
     }
     public static string CSS(string code)
     {
-        return css.Compress(code);
+        return css.Minify(code, true).MinifiedContent;
     }
     public static string HTML(string code)
     {
-        return html.Compress(code);
+        return html.Minify(code).MinifiedContent;
     }
 }
-
 
 public static class StreamUtils
 {

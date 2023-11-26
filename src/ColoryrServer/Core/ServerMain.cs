@@ -167,7 +167,6 @@ public static class ServerMain
             LogDatabsae.Start();
             MSCon.Start();
             RedisCon.Start();
-            OracleCon.Start();
             MysqlCon.Start();
             SqliteCon.Start();
             RamDatabase.Start();
