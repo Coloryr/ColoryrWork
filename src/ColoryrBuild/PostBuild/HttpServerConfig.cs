@@ -12,7 +12,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<SocketObj?> GetSocketConfig()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -32,7 +32,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<HttpListObj?> GetHttpConfigList()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -54,7 +54,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> AddHttpConfig(string ip, int port)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -78,7 +78,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> RemoveHttpConfig(string ip, int port)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -102,7 +102,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> AddHttpRoute(string key, RouteConfigObj obj)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -125,7 +125,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> RemoveHttpRoute(string key)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -148,7 +148,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> AddHttpUrlRoute(string key, RouteConfigObj obj)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -171,7 +171,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> RemoveHttpUrlRoute(string key)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -194,7 +194,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>设置结果</returns>
     public async Task<ReMessage?> SetServerEnable(bool enable, string type)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -219,7 +219,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns></returns>
     public async Task<ReMessage?> SetSocket(string ip, int port, string type)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -241,7 +241,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// </summary>
     public async Task Reboot()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -260,7 +260,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>返回</returns>
     public async Task<UserList?> GetAllUser()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -283,7 +283,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> AddUser(string user, string password)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -306,7 +306,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> RemoveUser(string user)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -328,7 +328,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> Rebuild()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -349,7 +349,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> InitLog()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -370,7 +370,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> GetLog()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -391,7 +391,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> MakePack()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,

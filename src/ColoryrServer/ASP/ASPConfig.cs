@@ -4,7 +4,7 @@ using ColoryrWork.Lib.Build.Object;
 
 namespace ColoryrServer.ASP;
 
-internal record SslObj
+public record SslObj
 {
     public string Ssl { get; set; }
     public string Password { get; set; }
@@ -30,7 +30,7 @@ public record RequsetChooseObj
     public List<string> StreamType { get; set; }
 }
 
-internal record ASPConfig
+public record ASPConfig
 {
     /// <summary>
     /// Http配置
@@ -63,7 +63,7 @@ internal static class ASPConfigUtils
                     new()
                     {
                         Url = "http://127.0.0.1",
-                        Heads = new()
+                        Heads = []
                     }
                 }
             },
@@ -74,18 +74,18 @@ internal static class ASPConfigUtils
                     new()
                     {
                         Url = "http://localhost:81/",
-                        Heads = new()
+                        Heads = []
                     }
                 }
             },
-            Http = new()
-            {
+            Http =
+            [
                 new()
                 {
                     IP = "+",
                     Port = 8080
                 }
-            },
+            ],
             RouteEnable = false,
             UseSsl = false,
             Ssls = new()
@@ -101,14 +101,14 @@ internal static class ASPConfigUtils
             },
             Requset = new()
             {
-                Temp = new()
-                {
+                Temp =
+                [
                     ".jpg",
                     ".png",
                     ".mp4",
                     ".jpge",
                     ".gif"
-                },
+                ],
                 TempTime = 1800,
                 Stream = true,
                 StreamType = new()

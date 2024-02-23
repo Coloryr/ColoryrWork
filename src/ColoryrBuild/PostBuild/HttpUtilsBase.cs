@@ -79,7 +79,7 @@ public abstract class HttpUtilsBase
     /// </summary>
     /// <param name="pack">数据包</param>
     /// <returns>结果</returns>
-    public async Task<string?> DoPost(BuildOBJ pack)
+    public async Task<string?> DoPost(BuildObj pack)
     {
         try
         {

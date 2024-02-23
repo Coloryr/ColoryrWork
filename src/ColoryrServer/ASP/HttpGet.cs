@@ -26,31 +26,26 @@ internal static class HttpGet
             b = HttpUtility.UrlDecode(b, System.Text.Encoding.UTF8);
             if (b.StartsWith('{') || b.StartsWith('[') && json != JsonType.None)
             {
-                if (json == JsonType.SystemJson)
+                if (json == JsonType.SystemJson && JsonNode.Parse(b) is { } obj)
                 {
-                    var obj = JsonNode.Parse(b);
-                    if (obj is { })
+                    if (obj is JsonObject obj1)
                     {
-                        if (obj is JsonObject obj1)
+                        foreach (var item in obj1)
                         {
-                            foreach (var item in obj1)
-                            {
-                                temp.Add(item.Key, item.Value);
-                            }
+                            temp.Add(item.Key, item.Value);
                         }
-                        else
-                        {
-                            temp.Add("", obj);
-                        }
+                    }
+                    else
+                    {
+                        temp.Add("", obj);
                     }
                 }
                 else
                 {
                     string str = new StreamReader(request.Body).ReadToEnd();
-                    var obj = JToken.Parse(str);
-                    if (obj is { })
+                    if (JToken.Parse(str) is { } obj2)
                     {
-                        if (obj is JObject obj1)
+                        if (obj2 is JObject obj1)
                         {
                             foreach (var item in obj1)
                             {
@@ -59,7 +54,7 @@ internal static class HttpGet
                         }
                         else
                         {
-                            temp.Add("", obj);
+                            temp.Add("", obj2);
                         }
                     }
                 }
@@ -166,7 +161,8 @@ internal static class HttpGet
             switch (httpReturn.Res)
             {
                 case ResType.String:
-                    await response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
+                    string str = httpReturn.Data as string ?? "";
+                    await response.WriteAsync(str, httpReturn.Encoding);
                     break;
                 case ResType.Byte:
                     await response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);

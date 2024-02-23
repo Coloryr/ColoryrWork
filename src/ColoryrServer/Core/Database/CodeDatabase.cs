@@ -216,19 +216,22 @@ internal static class CodeDatabase
         }
     }
 
-    public static void SaveCode(CSFileCode obj, string user, string name = null, string code = null)
+    public static void SaveCode(CSFileCode obj, string user, 
+        string? name = null, string? code = null)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
 
         if (obj.Type == CodeType.Class)
         {
-            QCodeObj old = null;
-            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime,updatetime FROM class WHERE uuid=@uuid",
+            QCodeObj? old = null;
+            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime," +
+                $"updatetime FROM class WHERE uuid=@uuid",
             new { uuid = obj.UUID });
             if (list.Any())
             {
                 old = list.First();
-                codeSQL.Execute($"UPDATE class SET text=@text,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid",
+                codeSQL.Execute($"UPDATE class SET text=@text,version=@version," +
+                    $"createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid",
                     new
                     {
                         text = obj.Text,
@@ -240,7 +243,8 @@ internal static class CodeDatabase
             }
             else
             {
-                codeSQL.Execute($"INSERT INTO class (uuid,text,version,createtime,updatetime) VALUES(@uuid,@text,@version,@createtime,@updatetime)",
+                codeSQL.Execute($"INSERT INTO class (uuid,text,version,createtime,updatetime) " +
+                    $"VALUES(@uuid,@text,@version,@createtime,@updatetime)",
                     new
                     {
                         text = obj.Text,
@@ -251,7 +255,8 @@ internal static class CodeDatabase
                     });
             }
 
-            var list1 = codeSQL.Query<ClassCodeObj>("SELECT code FROM classcode WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
+            var list1 = codeSQL.Query<ClassCodeObj>("SELECT code FROM classcode " +
+                "WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
             if (list1.Any())
             {
                 old ??= obj.ToQCode();
@@ -259,7 +264,8 @@ internal static class CodeDatabase
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) " +
+                        $"VALUES(@uuid,@name,@code,@user,@time)", new
                     {
                         old.uuid,
                         old.code,
@@ -269,11 +275,13 @@ internal static class CodeDatabase
                     });
                 }
 
-                codeSQL.Execute($"UPDATE classcode SET code=@code WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, code, name });
+                codeSQL.Execute($"UPDATE classcode SET code=@code " +
+                    $"WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, code, name });
             }
             else
             {
-                codeSQL.Execute($"INSERT INTO classcode (uuid,code,name) VALUES(@uuid,@code,@name)", new { uuid = obj.UUID, code, name });
+                codeSQL.Execute($"INSERT INTO classcode (uuid,code,name) " +
+                    $"VALUES(@uuid,@code,@name)", new { uuid = obj.UUID, code, name });
             }
         }
         else
@@ -289,7 +297,8 @@ internal static class CodeDatabase
                 _ => throw new ErrorDump("code type error")
             };
 
-            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,code,createtime,updatetime FROM {type} WHERE uuid=@uuid",
+            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version," +
+                $"code,createtime,updatetime FROM {type} WHERE uuid=@uuid",
                 new { uuid = obj.UUID });
             if (list.Any())
             {
@@ -297,7 +306,8 @@ internal static class CodeDatabase
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,user,time) VALUES(@uuid,@text,@code,@version,@user,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,user,time) " +
+                        $"VALUES(@uuid,@text,@code,@version,@user,@time)", new
                     {
                         obj1.uuid,
                         obj1.text,
@@ -308,7 +318,8 @@ internal static class CodeDatabase
                     });
                 }
 
-                codeSQL.Execute($"UPDATE {type} SET text=@text,code=@code,version=@version,createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid", new
+                codeSQL.Execute($"UPDATE {type} SET text=@text,code=@code,version=@version," +
+                    $"createtime=@createtime,updatetime=@updatetime WHERE uuid=@uuid", new
                 {
                     uuid = obj.UUID,
                     text = obj.Text,
@@ -320,7 +331,8 @@ internal static class CodeDatabase
             }
             else
             {
-                codeSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,createtime,updatetime) VALUES(@uuid,@text,@code,@version,@createtime,@updatetime)", new
+                codeSQL.Execute($"INSERT INTO {type} (uuid,text,code,version,createtime,updatetime) " +
+                    $"VALUES(@uuid,@text,@code,@version,@createtime,@updatetime)", new
                 {
                     uuid = obj.UUID,
                     text = obj.Text,
@@ -337,7 +349,8 @@ internal static class CodeDatabase
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
         var arg = new { uuid, name };
-        var list = codeSQL.Query<ClassCodeObj>($"SELECT code FROM classcode WHERE uuid=@uuid AND name=@name",
+        var list = codeSQL.Query<ClassCodeObj>($"SELECT code FROM classcode " +
+            $"WHERE uuid=@uuid AND name=@name",
             arg);
         if (list.Any())
         {
@@ -345,7 +358,8 @@ internal static class CodeDatabase
             {
                 ClassCodeObj obj1 = list.First();
                 using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
+                codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) " +
+                    $"VALUES(@uuid,@name,@code,@user,@time)", new
                 { uuid, name, obj1.code, user, time = DateTime.Now.ToString() });
             }
 
@@ -358,7 +372,8 @@ internal static class CodeDatabase
         if (type == CodeType.Class)
         {
             using var codeSQL = new SqliteConnection(CodeConnStr);
-            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime,updatetime FROM class WHERE uuid=@uuid",
+            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime," +
+                $"updatetime FROM class WHERE uuid=@uuid",
                 new { uuid });
             if (list.Any())
             {
@@ -366,7 +381,8 @@ internal static class CodeDatabase
                 {
                     QCodeObj obj1 = list.First();
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO class (uuid,text,version,user,time) VALUES(@uuid,@text,@version,@user,@time)", new
+                    codeLogSQL.Execute($"INSERT INTO class (uuid,text,version,user,time) " +
+                        $"VALUES(@uuid,@text,@version,@user,@time)", new
                     {
                         obj1.uuid,
                         obj1.text,
@@ -379,12 +395,14 @@ internal static class CodeDatabase
                 codeSQL.Execute($"DELETE FROM class WHERE uuid=@uuid", new { uuid });
                 if (ServerMain.Config.CodeSetting.CodeLog)
                 {
-                    var list1 = codeSQL.Query<ClassCodeObj>($"SELECT code,name FROM classcode WHERE uuid=@uuid", new { uuid });
+                    var list1 = codeSQL.Query<ClassCodeObj>($"SELECT code,name " +
+                        $"FROM classcode WHERE uuid=@uuid", new { uuid });
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
 
                     foreach (var item in list1)
                     {
-                        codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) VALUES(@uuid,@name,@code,@user,@time)", new
+                        codeLogSQL.Execute($"INSERT INTO classcode (uuid,name,code,user,time) " +
+                            $"VALUES(@uuid,@name,@code,@user,@time)", new
                         {
                             uuid,
                             item.name,
@@ -411,7 +429,8 @@ internal static class CodeDatabase
             };
 
             using var codeSQL = new SqliteConnection(CodeConnStr);
-            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime,updatetime,code FROM {type1} WHERE uuid=@uuid",
+            var list = codeSQL.Query<QCodeObj>($"SELECT uuid,text,version,createtime," +
+                $"updatetime,code FROM {type1} WHERE uuid=@uuid",
                 new { uuid });
             if (list.Any())
             {
@@ -419,7 +438,8 @@ internal static class CodeDatabase
                 {
                     QCodeObj obj1 = list.First();
                     using var codeLogSQL = new SqliteConnection(CodeLogConnStr);
-                    codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,user,code) VALUES(@uuid,@text,@version,@time,@user,@code)", new
+                    codeLogSQL.Execute($"INSERT INTO {type1} (uuid,text,version,time,user,code) " +
+                        $"VALUES(@uuid,@text,@version,@time,@user,@code)", new
                     {
                         obj1.uuid,
                         obj1.text,
@@ -438,22 +458,24 @@ internal static class CodeDatabase
     public static List<ClassCodeObj>? GetClassCode(string uuid)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
-        var list = codeSQL.Query<ClassCodeObj>("SELECT name,code FROM classcode WHERE uuid=@uuid", new { uuid });
+        var list = codeSQL.Query<ClassCodeObj>("SELECT name,code FROM classcode " +
+            "WHERE uuid=@uuid", new { uuid });
 
         if (!list.Any())
             return null;
 
         return list.ToList();
     }
-    public static ClassCodeObj CheckClassCode(CSFileCode obj, string name)
+    public static ClassCodeObj? CheckClassCode(CSFileCode obj, string name)
     {
         using var codeSQL = new SqliteConnection(CodeConnStr);
-        var list = codeSQL.Query<ClassCodeObj>("SELECT name,code FROM classcode WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
+        var list = codeSQL.Query<ClassCodeObj>("SELECT name,code FROM classcode " +
+            "WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
 
         return list.FirstOrDefault();
     }
 
-    public static List<IEnumerable<QCodeObj>> GetCodes()
+    public static List<IEnumerable<QCodeObj>>? GetCodes()
     {
         try
         {

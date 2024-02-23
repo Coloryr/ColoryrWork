@@ -21,10 +21,10 @@ internal static class BuildDll
     /// </summary>
     /// <param name="json">接口信息</param>
     /// <returns>结果</returns>
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         string uuid = json.UUID.Replace('\\', '/');
-        if (uuid.EndsWith("/"))
+        if (uuid.EndsWith('/'))
         {
             uuid = uuid[..^1];
         }
@@ -77,7 +77,7 @@ internal static class BuildDll
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Dll, json.UUID, json.User);
         AssemblyList.RemoveDll(json.UUID);
@@ -89,7 +89,7 @@ internal static class BuildDll
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetDll(json.UUID);
         if (obj == null)
@@ -110,6 +110,14 @@ internal static class BuildDll
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Dll[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

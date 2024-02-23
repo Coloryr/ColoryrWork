@@ -6,13 +6,13 @@ namespace ColoryrServer.ASP;
 
 internal static class HttpRoute
 {
-    internal static async Task RouteDo(HttpRequest Request, string[] arg,
-        RouteConfigObj rote, HttpResponse Response, int start = 1)
+    internal static async Task RouteDo(HttpRequest request, string[] arg,
+        RouteConfigObj route, HttpResponse response, int start = 1)
     {
-        HttpClient ProxyRequest = ASPServer.Clients.GetOne();
-        HttpRequestMessage message = new()
+        var client = ASPServer.GetHttpClient();
+        var message = new HttpRequestMessage()
         {
-            Method = new HttpMethod(Request.Method)
+            Method = new HttpMethod(request.Method)
         };
         string url = "";
         if (arg.Length >= start)
@@ -23,13 +23,13 @@ internal static class HttpRoute
             }
         }
 
-        message.RequestUri = new Uri($"{rote.Url}{url}");
-        if (Request.Method is "GET")
+        message.RequestUri = new Uri($"{route.Url}{url}");
+        if (request.Method is "GET")
             message.Content = new StringContent("");
         else
-            message.Content = new StreamContent(Request.Body);
+            message.Content = new StreamContent(request.Body);
 
-        foreach (var item in Request.Headers)
+        foreach (var item in request.Headers)
         {
             try
             {
@@ -45,33 +45,33 @@ internal static class HttpRoute
 
             }
         }
-        foreach (var item in rote.Heads)
+        foreach (var item in route.Heads)
         {
             message.Headers.Add(item.Key, item.Value);
         }
 
         if (url.EndsWith(".php"))
         {
-            var res = await ProxyRequest.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-            Response.StatusCode = (int)res.StatusCode;
+            var res = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+            response.StatusCode = (int)res.StatusCode;
             if (res.Content.Headers.ContentType != null)
-                Response.ContentType = res.Content.Headers.ContentType.ToString();
+                response.ContentType = res.Content.Headers.ContentType.ToString();
 
             foreach (var item in res.Headers)
             {
                 if (item.Key is "Transfer-Encoding")
                     continue;
                 StringValues values = new(item.Value.ToArray());
-                Response.Headers.Append(item.Key, values);
+                response.Headers.Append(item.Key, values);
             }
 
-            await res.Content.CopyToAsync(Response.Body);
+            await res.Content.CopyToAsync(response.Body);
         }
         else
         {
-            var res = await ProxyRequest.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+            var res = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
 
-            Response.StatusCode = (int)res.StatusCode;
+            response.StatusCode = (int)res.StatusCode;
             if (res.Content == null)
             {
                 ServerMain.LogWarn("Content is null");
@@ -84,15 +84,15 @@ internal static class HttpRoute
             }
             if (res.Content.Headers.ContentType != null)
             {
-                Response.ContentType = res.Content.Headers.ContentType.ToString();
+                response.ContentType = res.Content.Headers.ContentType.ToString();
             }
 
             foreach (var item in res.Headers)
             {
                 StringValues values = new(item.Value.ToArray());
-                Response.Headers.Append(item.Key, values);
+                response.Headers.Append(item.Key, values);
             }
-            await HttpClientUtils.CopyToAsync(res.Content.ReadAsStream(), Response.Body, CancellationToken.None);
+            await res.Content.ReadAsStream().CopyToAsync(response.Body);
         }
     }
 }

@@ -27,7 +27,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Dll => PostBuildType.GetDll,
             _ => throw new NotImplementedException(),
         };
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -50,7 +50,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> ClassFileEdit(CSFileCode obj, string file, List<CodeEditObj> list)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -89,7 +89,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Web => PostBuildType.AddWeb,
             _ => PostBuildType.AddDll,
         };
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -124,7 +124,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Web => PostBuildType.RemoveWeb,
             _ => PostBuildType.RemoveDll,
         };
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -157,7 +157,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Service => PostBuildType.CodeTask,
             _ => PostBuildType.CodeDll,
         };
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -191,7 +191,7 @@ public partial class HttpBuild : HttpUtilsBase
             CodeType.Service => PostBuildType.UpdataTask,
             _ => PostBuildType.UpdataDll,
         };
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -215,7 +215,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<APIFileObj?> GetApi()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -237,7 +237,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> AddClassFile(CSFileObj obj, string file)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -261,7 +261,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> RemoveClassFile(CSFileObj obj, string file)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -284,7 +284,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ClassCodeGetObj?> GetClassCode(CSFileObj obj)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,

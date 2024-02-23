@@ -14,7 +14,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildMqtt
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetMqtt(json.UUID) != null)
             return new ReMessage
@@ -54,7 +54,7 @@ internal static class BuildMqtt
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Mqtt, json.UUID, json.User);
         AssemblyList.RemoveMqtt(json.UUID);
@@ -66,7 +66,7 @@ internal static class BuildMqtt
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetMqtt(json.UUID);
         if (obj == null)
@@ -88,6 +88,14 @@ internal static class BuildMqtt
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
         obj.Code = FileUtils.StartEdit(obj.Code, list);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Mqtt[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Text = json.Text;
 
         var sw = new Stopwatch();

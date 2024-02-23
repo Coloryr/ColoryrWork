@@ -16,8 +16,8 @@ namespace ColoryrServer.Core.BuilderPost;
 public static class PostDo
 {
     public static bool IsRebuild { get; private set; } = false;
-    private readonly static Dictionary<string, string> Client = new();
-    private readonly static Dictionary<string, int> Timer = new();
+    private readonly static Dictionary<string, string> Client = [];
+    private readonly static Dictionary<string, int> Timer = [];
     private readonly static Thread TaskThread = new(Run)
     {
         Name = "LogThread"
@@ -37,14 +37,14 @@ public static class PostDo
         Timer.Clear();
     }
 
-    public static async Task<object> StartBuild(Stream input, string value)
+    public static async Task<object?> StartBuild(Stream input, string value)
     {
         using MemoryStream stream = new();
         await input.CopyToAsync(stream);
         return StartBuild(stream.ToArray(), value);
     }
 
-    public static object StartBuild(byte[] input, string value)
+    private static object? StartBuild(byte[] input, string value)
     {
         if (value != BuildKV.BuildV)
         {
@@ -52,7 +52,7 @@ public static class PostDo
         }
         var receivedData = DeCode.AES256(input,
             ServerMain.Config.AES.Key, ServerMain.Config.AES.IV);
-        var json = JsonUtils.ToObj<BuildOBJ>(receivedData);
+        var json = JsonUtils.ToObj<BuildObj>(receivedData);
         if (json == null)
         {
             return PostRes.ArgError;
@@ -238,21 +238,14 @@ public static class PostDo
     {
         lock (Timer)
         {
-            if (Timer.ContainsKey(uuid))
+            if (!Timer.TryAdd(uuid, 0))
             {
                 Timer[uuid] = 0;
-            }
-            else
-            {
-                Timer.Add(uuid, 0);
             }
         }
         lock (Client)
         {
-            if (!Client.ContainsKey(uuid))
-            {
-                Client.Add(uuid, "");
-            }
+            Client.TryAdd(uuid, "");
         }
 
         return PostRes.AddClient;
@@ -270,9 +263,9 @@ public static class PostDo
 
         lock (Client)
         {
-            if (Client.ContainsKey(uuid))
+            if (Client.TryGetValue(uuid, out string? value))
             {
-                string text = Client[uuid];
+                string text = value;
                 Client[uuid] = "";
                 return new ReMessage
                 {
@@ -298,7 +291,7 @@ public static class PostDo
 
     private static void Run()
     {
-        List<string> remove = new();
+        List<string> remove = [];
         while (IsRun)
         {
             try

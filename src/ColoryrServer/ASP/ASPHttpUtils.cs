@@ -1,11 +1,11 @@
 ﻿namespace ColoryrServer.ASP;
 
-public class ASPHttpUtils
+public static class ASPHttpUtils
 {
     public static Dictionary<string, List<string>> HaveCookie(string? hashtable)
     {
         if (hashtable == null)
-            return new();
+            return [];
         var list = new Dictionary<string, List<string>>();
         string[] cookies = hashtable.Split(';');
         foreach (var item in cookies)
@@ -13,7 +13,7 @@ public class ASPHttpUtils
             var temp = item.Split("=");
             if (temp.Length == 1)
             {
-                list.Add(temp[0].Trim(), new());
+                list.Add(temp[0].Trim(), []);
             }
             else
             {
@@ -24,7 +24,7 @@ public class ASPHttpUtils
                 }
                 else
                 {
-                    list.Add(key, new List<string>() { temp[1].Trim() });
+                    list.Add(key, [temp[1].Trim()]);
                 }
             }
         }

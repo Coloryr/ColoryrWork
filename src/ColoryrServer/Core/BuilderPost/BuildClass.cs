@@ -24,7 +24,7 @@ internal static class BuildClass
     /// </summary>
     /// <param name="json">类信息</param>
     /// <returns>结果</returns>
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetClass(json.UUID) != null)
             return new ReMessage
@@ -68,7 +68,7 @@ internal static class BuildClass
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Class, json.UUID, json.User);
         AssemblyList.RemoveClass(json.UUID);
@@ -80,14 +80,14 @@ internal static class BuildClass
         };
     }
 
-    public static ClassCodeGetObj GetCode(BuildOBJ json)
+    public static ClassCodeGetObj GetCode(BuildObj json)
     {
         var list = CodeDatabase.GetClassCode(json.UUID);
         var obj = CodeManager.GetClass(json.UUID);
-        return new ClassCodeGetObj { Obj = obj, List = list ?? new() };
+        return new ClassCodeGetObj { Obj = obj, List = list ?? [] };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetClass(json.UUID);
         if (obj == null)
@@ -117,7 +117,14 @@ internal static class BuildClass
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
-
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Class[{json.UUID}]代码补丁错误"
+            };
+        }
         code.code = FileUtils.StartEdit(code.code, list);
         obj.Text = json.Text;
 
@@ -141,7 +148,7 @@ internal static class BuildClass
         };
     }
 
-    public static ReMessage Build(BuildOBJ json)
+    public static ReMessage Build(BuildObj json)
     {
         var obj = CodeManager.GetClass(json.UUID);
         if (obj == null)
@@ -178,7 +185,7 @@ internal static class BuildClass
         };
     }
 
-    public static ReMessage AddFile(BuildOBJ json)
+    public static ReMessage AddFile(BuildObj json)
     {
         var obj = CodeManager.GetClass(json.UUID);
         if (obj == null)
@@ -209,7 +216,7 @@ internal static class BuildClass
         };
     }
 
-    public static ReMessage RemoveFile(BuildOBJ json)
+    public static ReMessage RemoveFile(BuildObj json)
     {
         var obj = CodeManager.GetClass(json.UUID);
         if (obj == null)

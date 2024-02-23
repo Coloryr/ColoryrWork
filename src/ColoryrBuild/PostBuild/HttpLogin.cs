@@ -38,7 +38,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>登录结果</returns>
     public async Task<bool> AutoLogin()
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -64,7 +64,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>登录结果</returns>
     public async Task<bool> Login(string Pass)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Code = Pass,

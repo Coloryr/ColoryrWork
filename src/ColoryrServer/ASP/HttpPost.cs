@@ -148,7 +148,8 @@ internal static class HttpPost
                 if (arg == null)
                 {
                     response.StatusCode = 500;
-                    await response.WriteAsync(HttpReturnSave.FromError.Data as string);
+                    string str = HttpReturnSave.FromError.Data as string ?? "";
+                    await response.WriteAsync(str);
                     return;
                 }
                 httpReturn = route.Invoke(arg, funtion);
@@ -172,7 +173,8 @@ internal static class HttpPost
             switch (httpReturn.Res)
             {
                 case ResType.String:
-                    await response.WriteAsync(httpReturn.Data as string, httpReturn.Encoding);
+                    string str = httpReturn.Data as string ?? "";
+                    await response.WriteAsync(str, httpReturn.Encoding);
                     break;
                 case ResType.Byte:
                     await response.BodyWriter.WriteAsync(httpReturn.Data as byte[]);
@@ -185,7 +187,8 @@ internal static class HttpPost
                     if (httpReturn.Data is not Stream stream)
                     {
                         response.StatusCode = 500;
-                        await response.WriteAsync(HttpReturnSave.StreamError.Data as string);
+                        string str1 = HttpReturnSave.StreamError.Data as string ?? "";
+                        await response.WriteAsync(str1);
                     }
                     else
                     {

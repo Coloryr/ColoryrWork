@@ -14,7 +14,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildSocket
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetSocket(json.UUID) != null)
             return new ReMessage
@@ -55,7 +55,7 @@ internal static class BuildSocket
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Socket, json.UUID, json.User);
         AssemblyList.RemoveSocket(json.UUID);
@@ -67,7 +67,7 @@ internal static class BuildSocket
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetSocket(json.UUID);
         if (obj == null)
@@ -88,6 +88,14 @@ internal static class BuildSocket
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Socket[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

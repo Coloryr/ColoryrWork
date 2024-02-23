@@ -42,7 +42,7 @@ internal static class ClusterPipe
         }
     }
 
-    private static async void StartClient(string ip, ushort port)
+    private static void StartClient(string ip, ushort port)
     {
         try
         {
@@ -76,21 +76,21 @@ internal static class ClusterPipe
         try
         {
             ServerMain.LogWarn("集群启动服务器");
-            ServerBootstrap = new ServerBootstrap();
-            ServerBootstrap.Group(BossGroup, WorkerGroup)
-                .Channel<TcpServerSocketChannel>()
-                .Option(ChannelOption.SoBacklog, 100)
-                .Handler(new LoggingHandler("SRV-LSTN"))
-                .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
-                {
-                    IChannelPipeline pipeline = channel.Pipeline;
-                    pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
-                    pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
+            //ServerBootstrap = new ServerBootstrap();
+            //ServerBootstrap.Group(BossGroup, WorkerGroup)
+            //    .Channel<TcpServerSocketChannel>()
+            //    .Option(ChannelOption.SoBacklog, 100)
+            //    .Handler(new LoggingHandler("SRV-LSTN"))
+            //    .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+            //    {
+            //        IChannelPipeline pipeline = channel.Pipeline;
+            //        pipeline.AddLast("framing-enc", new LengthFieldPrepender(4));
+            //        pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
 
-                    pipeline.AddLast("pipe", new PipeServerHandler());
-                }));
+            //        pipeline.AddLast("pipe", new PipeServerHandler());
+            //    }));
 
-            BoundChannel = await ServerBootstrap.BindAsync(ServerMain.Config.Pipe.Port);
+            //BoundChannel = await ServerBootstrap.BindAsync(ServerMain.Config.Pipe.Port);
         }
         catch (Exception e)
         {

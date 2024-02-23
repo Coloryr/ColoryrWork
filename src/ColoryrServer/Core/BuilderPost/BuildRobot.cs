@@ -14,7 +14,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildRobot
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetRobot(json.UUID) != null)
             return new ReMessage
@@ -54,7 +54,7 @@ internal static class BuildRobot
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Robot, json.UUID, json.User);
         AssemblyList.RemoveRobot(json.UUID);
@@ -66,7 +66,7 @@ internal static class BuildRobot
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetRobot(json.UUID);
         if (obj == null)
@@ -87,6 +87,14 @@ internal static class BuildRobot
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Robot[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

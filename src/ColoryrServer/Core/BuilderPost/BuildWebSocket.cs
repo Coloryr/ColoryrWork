@@ -14,7 +14,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildWebSocket
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetWebSocket(json.UUID) != null)
             return new ReMessage
@@ -54,7 +54,7 @@ internal static class BuildWebSocket
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.WebSocket, json.UUID, json.User);
         AssemblyList.RemoveWebSocket(json.UUID);
@@ -66,7 +66,7 @@ internal static class BuildWebSocket
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetWebSocket(json.UUID);
         if (obj == null)
@@ -87,6 +87,14 @@ internal static class BuildWebSocket
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"WebSocket[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

@@ -11,7 +11,7 @@ internal static class RedisCon
     /// <summary>
     /// 连接状态
     /// </summary>
-    public static readonly Dictionary<int, bool> State = new();
+    public static readonly Dictionary<int, bool> State = [];
     /// <summary>
     /// 连接配置
     /// </summary>
@@ -19,7 +19,7 @@ internal static class RedisCon
     /// <summary>
     /// 连接字符串
     /// </summary>
-    private static readonly Dictionary<int, string> ConnectStr = new();
+    private static readonly Dictionary<int, string> ConnectStr = [];
 
     /// <summary>
     /// 连接测试
@@ -82,12 +82,12 @@ internal static class RedisCon
     /// <param name="key">键</param>
     /// <param name="value">值</param>
     /// <param name="expireMinutes">存在秒</param>
-    internal static bool Set(string key, string value, int expireMinutes, int id)
+    internal static bool Set(string key, string value, double expireMinutes, int id)
     {
         try
         {
             var conn = ConnectionMultiplexer.Connect(ConnectStr[id]);
-            return conn.GetDatabase().StringSet(key, value);
+            return conn.GetDatabase().StringSet(key, value, TimeSpan.FromSeconds(expireMinutes));
         }
         catch (Exception e)
         {

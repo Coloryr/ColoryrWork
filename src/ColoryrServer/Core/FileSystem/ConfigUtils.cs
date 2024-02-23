@@ -299,18 +299,6 @@ internal static class ConfigUtils
                     Conn = "{0}:{1}"
                 }
             },
-            Oracle = new()
-            {
-                new()
-                {
-                    Enable = false,
-                    IP = "",
-                    User = "",
-                    Password = "",
-                    TimeOut = 1000,
-                    Conn = "Data Source=MyDatabase.db;Mode=ReadWriteCreate"
-                }
-            },
             SQLite = new()
             {
                 new()
@@ -347,9 +335,6 @@ internal static class ConfigUtils
             Pipe = new()
             {
                 Enable = false,
-                IP = "127.0.0.1",
-                Port = 45678,
-                Server = false
             },
             Requset = new()
             {

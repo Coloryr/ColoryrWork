@@ -15,7 +15,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildService
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (CodeManager.GetService(json.UUID) != null)
             return new ReMessage
@@ -76,7 +76,7 @@ internal static class BuildService
         return list;
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         CodeManager.RemoveFile(CodeType.Service, json.UUID, json.User);
         AssemblyList.RemoveService(json.UUID);
@@ -88,7 +88,7 @@ internal static class BuildService
         };
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = CodeManager.GetService(json.UUID);
         if (obj == null)
@@ -109,6 +109,14 @@ internal static class BuildService
         }
 
         var list = JsonUtils.ToObj<List<CodeEditObj>>(json.Code);
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Task[{json.UUID}]代码补丁错误"
+            };
+        }
         obj.Code = FileUtils.StartEdit(obj.Code, list);
         obj.Text = json.Text;
 

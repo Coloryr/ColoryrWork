@@ -9,14 +9,14 @@ namespace ColoryrServer.Core.Database;
 
 internal static class LoginDatabase
 {
-    public record LoginObj
+    public record QLoginObj
     {
         public string user { get; set; }
         public string uuid { get; set; }
         public DateTime time { get; set; }
     }
 
-    public record UserObj
+    public record QUserObj
     {
         public string user { get; set; }
         public string password { get; set; }
@@ -60,10 +60,10 @@ internal static class LoginDatabase
     public static bool CheckLogin(string user, string uuid)
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<LoginObj>("SELECT user,uuid,time FROM login WHERE user=@user", new { user });
+        var list = sql.Query<QLoginObj>("SELECT user,uuid,time FROM login WHERE user=@user", new { user });
         if (!list.Any())
             return false;
-        LoginObj item = list.First();
+        QLoginObj item = list.First();
         if (item.uuid != uuid)
             return false;
         if (DateTime.Now - item.time > TimeSpan.FromDays(7))
@@ -75,7 +75,7 @@ internal static class LoginDatabase
     public static bool AddUser(string user, string password)
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<UserObj>("SELECT id FROM user WHERE user=@user",
+        var list = sql.Query<QUserObj>("SELECT id FROM user WHERE user=@user",
             new { user });
         if (list.Any())
             return false;
@@ -88,7 +88,7 @@ internal static class LoginDatabase
     public static bool Remove(string user)
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<UserObj>("SELECT id FROM user WHERE user=@user",
+        var list = sql.Query<QUserObj>("SELECT id FROM user WHERE user=@user",
             new { user });
         if (!list.Any())
             return false;
@@ -102,17 +102,17 @@ internal static class LoginDatabase
     public static bool CheckPassword(string user, string password)
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<UserObj>("SELECT password FROM user WHERE user=@user", new { user });
+        var list = sql.Query<QUserObj>("SELECT password FROM user WHERE user=@user", new { user });
         if (!list.Any())
             return false;
         var item = list.First();
         return item.password == password;
     }
 
-    public static List<UserObj> GetAllUser()
+    public static List<QUserObj> GetAllUser()
     {
         using var sql = new SqliteConnection(connStr);
-        var list = sql.Query<UserObj>("SELECT user,time FROM user");
+        var list = sql.Query<QUserObj>("SELECT user,time FROM user");
         return list.ToList();
     }
 

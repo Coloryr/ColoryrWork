@@ -17,7 +17,7 @@ public enum PostBuildType
     SetServerEnable, Rebuild, InitLog, GetLog,
     Check, Login, GetApi, ServerReboot, MakePack
 }
-public record BuildOBJ
+public record BuildObj
 {
     public string Token { get; set; }
     public string User { get; set; }

@@ -18,7 +18,7 @@ public record QWebObj
     public string updatetime { get; set; }
 }
 
-public record FWebObj
+public record QWebObj1
 {
     public string uuid { get; set; }
     public string name { get; set; }
@@ -178,7 +178,7 @@ internal static class WebDatabase
                     obj.Codes.Add(item1.name, item1.code);
                 }
 
-                var wlist = fileSQL.Query<FWebObj>("SELECT name,data FROM web WHERE uuid=@uuid",
+                var wlist = fileSQL.Query<QWebObj1>("SELECT name,data FROM web WHERE uuid=@uuid",
                     arg);
                 foreach (var item1 in wlist)
                 {
@@ -223,7 +223,7 @@ internal static class WebDatabase
     {
         using var fileSQL = new SqliteConnection(WebFileConnStr);
         var arg = new { uuid = obj.UUID, name };
-        var list = fileSQL.Query<FWebObj>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", arg);
+        var list = fileSQL.Query<QWebObj1>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", arg);
         if (list.Any())
         {
             fileSQL.Execute("DELETE FROM web WHERE uuid=@uuid AND name=@name", arg);
@@ -287,7 +287,7 @@ internal static class WebDatabase
     {
         using var fileSQL = new SqliteConnection(WebFileConnStr);
         string time = DateTime.Now.ToString();
-        var list = fileSQL.Query<FWebObj>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
+        var list = fileSQL.Query<QWebObj1>("SELECT data FROM web WHERE uuid=@uuid AND name=@name", new { uuid = obj.UUID, name });
         if (list.Any())
         {
             fileSQL.Execute("UPDATE web SET data=@data,time=@time WHERE uuid=@uuid AND name=@name",

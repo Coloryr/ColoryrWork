@@ -1,5 +1,6 @@
 ﻿using ColoryrServer.Core.FileSystem;
 using Dapper;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ internal static class MSCon
     /// <summary>
     /// 连接状态
     /// </summary>
-    private static readonly Dictionary<int, bool> State = new();
+    private static readonly Dictionary<int, bool> State = [];
     /// <summary>
     /// 连接配置
     /// </summary>
@@ -21,11 +22,11 @@ internal static class MSCon
     /// <summary>
     /// 连接字符串
     /// </summary>
-    private static readonly Dictionary<int, string> ConnectStr = new();
+    private static readonly Dictionary<int, string> ConnectStr = [];
     /// <summary>
     /// 连接状态
     /// </summary>
-    private static readonly ConcurrentDictionary<int, bool> Connecting = new();
+    private static readonly ConcurrentDictionary<int, bool> Connecting = [];
 
     /// <summary>
     /// 连接测试
@@ -60,17 +61,17 @@ internal static class MSCon
     /// <returns>是否能连接</returns>
     internal static bool Contains(int id)
     {
-        if (State.ContainsKey(id) && State[id])
+        if (State.TryGetValue(id, out bool value) && value)
+        {
             return true;
+        }
         else if (Config.Count - 1 >= id)
         {
-            if (Connecting.ContainsKey(id))
-                return false;
-            if (!Connecting.TryAdd(id, true))
-                return false;
             var config = Config[id];
-            if (!config.Enable)
+            if (Connecting.ContainsKey(id) || !Connecting.TryAdd(id, true) || !config.Enable)
+            {
                 return false;
+            }
             var pass = Encoding.UTF8.GetString(Convert.FromBase64String(config.Password));
             string ConnectString = string.Format(config.Conn, config.IP, config.User, pass);
             State.Add(id, false);
@@ -84,7 +85,7 @@ internal static class MSCon
             {
                 ServerMain.LogWarn($"Ms数据库{id}连接失败");
             }
-            Connecting.TryRemove(id, out var v);
+            Connecting.TryRemove(id, out var _);
             return State[id];
         }
         return false;

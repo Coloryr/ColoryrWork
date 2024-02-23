@@ -47,8 +47,9 @@ public static class HttpUtils
 
         return null;
     }
-    public static async Task Static(string name, HttpRequest request, HttpResponse response)
+    public static async Task Static(string? name, HttpRequest request, HttpResponse response)
     {
+        name ??= "";
         if (ASPServer.Config.Requset.Stream)
         {
             var a = name.LastIndexOf('.');
@@ -57,7 +58,7 @@ public static class HttpUtils
                 string type = name[a..];
                 if (ASPServer.Config.Requset.StreamType.Contains(type))
                 {
-                    NameValueCollection collection = new();
+                    NameValueCollection collection = [];
                     foreach (var item in request.Headers)
                     {
                         collection.Add(item.Key, item.Value);

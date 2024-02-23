@@ -14,7 +14,7 @@ namespace ColoryrServer.Core.BuilderPost;
 
 internal static class BuildWeb
 {
-    public static ReMessage Add(BuildOBJ json)
+    public static ReMessage Add(BuildObj json)
     {
         if (WebFileManager.GetHtml(json.UUID) != null)
         {
@@ -105,12 +105,12 @@ internal static class BuildWeb
         return list;
     }
 
-    public static WebObj GetCode(BuildOBJ json)
+    public static WebObj GetCode(BuildObj json)
     {
         return WebFileManager.GetHtml(json.UUID);
     }
 
-    public static ReMessage Updata(BuildOBJ json)
+    public static ReMessage Updata(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -139,6 +139,14 @@ internal static class BuildWeb
                 Message = $"Web[{json.UUID}]不存在文件[{json.Temp}]"
             };
         }
+        if (list == null)
+        {
+            return new ReMessage
+            {
+                Build = false,
+                Message = $"Web[{json.UUID}]代码补丁错误"
+            };
+        }
         code = FileUtils.StartEdit(code, list);
         obj.Text = json.Text;
 
@@ -157,7 +165,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage AddCode(BuildOBJ json)
+    public static ReMessage AddCode(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -185,7 +193,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage RemoveFile(BuildOBJ json)
+    public static ReMessage RemoveFile(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -226,7 +234,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage WebAddFile(BuildOBJ json)
+    public static ReMessage WebAddFile(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -254,7 +262,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage Remove(BuildOBJ json)
+    public static ReMessage Remove(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -274,7 +282,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage SetIsVue(BuildOBJ json)
+    public static ReMessage SetIsVue(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -294,7 +302,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage Build(BuildOBJ json)
+    public static ReMessage Build(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -332,7 +340,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage Download(BuildOBJ json)
+    public static ReMessage Download(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -344,7 +352,7 @@ internal static class BuildWeb
             };
         }
 
-        if (!obj.Files.ContainsKey(json.Code))
+        if (!obj.Files.TryGetValue(json.Code, out byte[]? value))
         {
             return new ReMessage
             {
@@ -356,11 +364,11 @@ internal static class BuildWeb
         return new ReMessage
         {
             Build = true,
-            Message = Convert.ToBase64String(obj.Files[json.Code])
+            Message = Convert.ToBase64String(value)
         };
     }
 
-    public static ReMessage BuildRes(BuildOBJ json)
+    public static ReMessage BuildRes(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)
@@ -399,7 +407,7 @@ internal static class BuildWeb
         };
     }
 
-    public static ReMessage ZIP(BuildOBJ json)
+    public static ReMessage ZIP(BuildObj json)
     {
         var obj = WebFileManager.GetHtml(json.UUID);
         if (obj == null)

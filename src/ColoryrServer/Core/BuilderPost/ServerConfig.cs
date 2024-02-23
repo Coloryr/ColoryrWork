@@ -6,14 +6,14 @@ namespace ColoryrServer.Core.BuilderPost;
 
 public interface ITopAPI
 {
-    public HttpListObj GetHttpConfigList(BuildOBJ json);
-    public ReMessage AddHttpConfig(BuildOBJ json);
-    public ReMessage RemoveHttpConfig(BuildOBJ json);
-    public ReMessage AddHttpRouteConfig(BuildOBJ json);
-    public ReMessage RemoveHttpRouteConfig(BuildOBJ json);
-    public ReMessage AddHttpUrlRouteConfig(BuildOBJ json);
-    public ReMessage RemoveHttpUrlRouteConfig(BuildOBJ json);
-    public ReMessage SetServerEnable(BuildOBJ json);
+    public HttpListObj GetHttpConfigList(BuildObj json);
+    public ReMessage AddHttpConfig(BuildObj json);
+    public ReMessage RemoveHttpConfig(BuildObj json);
+    public ReMessage AddHttpRouteConfig(BuildObj json);
+    public ReMessage RemoveHttpRouteConfig(BuildObj json);
+    public ReMessage AddHttpUrlRouteConfig(BuildObj json);
+    public ReMessage RemoveHttpUrlRouteConfig(BuildObj json);
+    public ReMessage SetServerEnable(BuildObj json);
     public void Reboot();
 }
 
@@ -24,35 +24,35 @@ public static class ServerConfig
     {
         top = api;
     }
-    public static HttpListObj GetHttpConfigList(BuildOBJ json)
+    public static HttpListObj GetHttpConfigList(BuildObj json)
     {
         return top.GetHttpConfigList(json);
     }
-    public static ReMessage AddHttpConfig(BuildOBJ json)
+    public static ReMessage AddHttpConfig(BuildObj json)
     {
         return top.AddHttpConfig(json);
     }
-    public static ReMessage RemoveHttpConfig(BuildOBJ json)
+    public static ReMessage RemoveHttpConfig(BuildObj json)
     {
         return top.RemoveHttpConfig(json);
     }
-    public static ReMessage AddHttpRouteConfig(BuildOBJ json)
+    public static ReMessage AddHttpRouteConfig(BuildObj json)
     {
         return top.AddHttpRouteConfig(json);
     }
-    public static ReMessage RemoveHttpRouteConfig(BuildOBJ json)
+    public static ReMessage RemoveHttpRouteConfig(BuildObj json)
     {
         return top.RemoveHttpRouteConfig(json);
     }
-    public static ReMessage AddHttpUrlRouteConfig(BuildOBJ json)
+    public static ReMessage AddHttpUrlRouteConfig(BuildObj json)
     {
         return top.AddHttpUrlRouteConfig(json);
     }
-    public static ReMessage RemoveHttpUrlRouteConfig(BuildOBJ json)
+    public static ReMessage RemoveHttpUrlRouteConfig(BuildObj json)
     {
         return top.RemoveHttpUrlRouteConfig(json);
     }
-    public static ReMessage SetServerEnable(BuildOBJ json)
+    public static ReMessage SetServerEnable(BuildObj json)
     {
         if (json.Text == "FixMode")
         {
@@ -78,7 +78,7 @@ public static class ServerConfig
             Robot = ServerMain.Config.Robot.Socket
         };
     }
-    public static ReMessage SetSocketConfig(BuildOBJ json)
+    public static ReMessage SetSocketConfig(BuildObj json)
     {
         string ip = json.Code;
         int port = json.Version;
@@ -151,7 +151,7 @@ public static class ServerConfig
             };
         }
     }
-    public static ReMessage Reboot()
+    public static ReMessage? Reboot()
     {
         top.Reboot();
         return null;

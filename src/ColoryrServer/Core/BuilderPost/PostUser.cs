@@ -7,9 +7,9 @@ internal static class PostUser
 {
     public static UserList GetAll()
     {
-        UserList list = new()
+        var list = new UserList()
         {
-            List = new()
+            List = []
         };
         foreach (var item in LoginDatabase.GetAllUser())
         {
@@ -22,7 +22,7 @@ internal static class PostUser
         return list;
     }
 
-    public static ReMessage Add(BuildOBJ obj)
+    public static ReMessage Add(BuildObj obj)
     {
         string user = obj.Code;
         string password = obj.Text.ToLower();
@@ -42,7 +42,7 @@ internal static class PostUser
         };
     }
 
-    public static ReMessage Remove(BuildOBJ obj)
+    public static ReMessage Remove(BuildObj obj)
     {
         string user = obj.Code;
         var res = LoginDatabase.Remove(user.ToLower());

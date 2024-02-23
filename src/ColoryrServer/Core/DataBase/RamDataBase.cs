@@ -41,10 +41,10 @@ internal static class RamDatabase
     /// <summary>
     /// 缓存数据
     /// </summary>
-    private static ConcurrentDictionary<string, RamDataObj> RamCache;
+    private static readonly ConcurrentDictionary<string, RamDataObj> RamCache = [];
 
-    private static ConcurrentBag<string> QueueSave;
-    private static ConcurrentBag<string> QueueRemove;
+    private static readonly ConcurrentBag<string> QueueSave = [];
+    private static readonly ConcurrentBag<string> QueueRemove = [];
     private static Thread SaveThread;
 
     /// <summary>
@@ -53,13 +53,10 @@ internal static class RamDatabase
     private static void Stop()
     {
         State = false;
-        if (RamCache != null)
+        foreach (var item in RamCache)
         {
-            foreach (var item in RamCache)
-            {
-                if (item.Value.IsSave)
-                    FileRam.Save(item.Key, item.Value.Data);
-            }
+            if (item.Value.IsSave)
+                FileRam.Save(item.Key, item.Value.Data);
         }
         RamCache.Clear();
         QueueSave.Clear();
@@ -72,7 +69,7 @@ internal static class RamDatabase
     /// <param name="name">缓存名</param>
     /// <param name="key">键</param>
     /// <returns>值</returns>
-    internal static dynamic GetCache(string name, string key)
+    internal static dynamic? GetCache(string name, string key)
     {
         RamCache.TryGetValue(name, out var temp);
         if (temp == null)
@@ -132,16 +129,18 @@ internal static class RamDatabase
         {
             IsSave = save
         };
-        if (!RamCache.ContainsKey(name))
+        if (!RamCache.TryGetValue(name, out RamDataObj? value))
         {
             RamCache.TryAdd(name, item);
         }
         else
         {
-            RamCache[name].IsSave = save;
+            value.IsSave = save;
         }
         if (save)
+        {
             QueueSave.Add(name);
+        }
         return name;
     }
     /// <summary>
@@ -152,10 +151,14 @@ internal static class RamDatabase
     {
         if (!RamCache.ContainsKey(name))
             return;
-        RamCache.TryRemove(name, out var temp);
-        temp.Data.Clear();
-        if (temp.IsSave)
-            QueueRemove.Add(name);
+        if (RamCache.TryRemove(name, out var temp))
+        {
+            temp.Data.Clear();
+            if (temp.IsSave == true)
+            {
+                QueueRemove.Add(name);
+            }
+        }
     }
 
     /// <summary>
@@ -163,9 +166,6 @@ internal static class RamDatabase
     /// </summary>
     internal static void Start()
     {
-        RamCache = new();
-        QueueSave = new();
-        QueueRemove = new();
         State = true;
         var list = FileRam.GetAll();
         foreach (var item in list)

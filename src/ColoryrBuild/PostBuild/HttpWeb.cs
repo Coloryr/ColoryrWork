@@ -15,7 +15,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage?> SetIsVue(WebObj obj, bool set)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -41,7 +41,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage?> WebCodeZIP(WebObj obj, string file)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -68,7 +68,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>服务器结果</returns>
     public async Task<ReMessage?> WebFileEdit(WebObj obj, string name, List<CodeEditObj> list)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -96,7 +96,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> WebDownloadFile(WebObj obj, string name)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -122,7 +122,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> AddWeb(string name, bool isVue)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -145,7 +145,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<WebObj?> GetWebCode(string name)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -167,7 +167,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> BuildWeb(CSFileObj obj)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -191,7 +191,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> BuildWebRes(CSFileObj obj)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -216,7 +216,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> AddWebCode(CSFileObj obj, string name)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -243,7 +243,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> AddWebFile(CSFileObj obj, string name, string by)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,
@@ -270,7 +270,7 @@ public partial class HttpBuild : HttpUtilsBase
     /// <returns>结果</returns>
     public async Task<ReMessage?> WebRemoveFile(CSFileObj obj, string name)
     {
-        var data = await DoPost(new BuildOBJ
+        var data = await DoPost(new BuildObj
         {
             User = App.Config.Name,
             Token = App.Config.Token,

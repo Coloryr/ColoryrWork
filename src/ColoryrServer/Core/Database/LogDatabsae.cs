@@ -38,7 +38,9 @@ public static class LogDatabsae
         Task.Run(() =>
         {
             using var sql = new SqliteConnection(DBConnStr);
-            sql.Execute("INSERT INTO error (dll,text,time) VALUES(@dll,@text,@time)", new { dll, text, time = DateTime.Now.ToString() });
+            sql.Execute("INSERT INTO error (dll,text,time) " +
+                "VALUES(@dll,@text,@time)", 
+                new { dll, text, time = DateTime.Now.ToString() });
         });
     }
 
@@ -47,7 +49,9 @@ public static class LogDatabsae
         Task.Run(() =>
         {
             using var sql = new SqliteConnection(DBConnStr);
-            sql.Execute("INSERT INTO webbuild (name,text,time) VALUES(@name,@text,@time)", new { name, text, time = DateTime.Now.ToString() });
+            sql.Execute("INSERT INTO webbuild (name,text,time) " +
+                "VALUES(@name,@text,@time)", 
+                new { name, text, time = DateTime.Now.ToString() });
         });
     }
 }

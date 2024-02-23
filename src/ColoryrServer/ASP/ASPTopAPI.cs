@@ -6,7 +6,7 @@ namespace ColoryrServer.ASP;
 
 public class ASPTopAPI : ITopAPI
 {
-    public ReMessage SetServerEnable(BuildOBJ json)
+    public ReMessage SetServerEnable(BuildObj json)
     {
         if (json.Text == "Route")
         {
@@ -25,13 +25,13 @@ public class ASPTopAPI : ITopAPI
             Message = "错误的类型"
         };
     }
-    public HttpListObj GetHttpConfigList(BuildOBJ json)
+    public HttpListObj GetHttpConfigList(BuildObj json)
     {
         var list = new HttpListObj()
         {
-            HttpList = new(),
-            RouteList = new(),
-            UrlRouteList = new(),
+            HttpList = [],
+            RouteList = [],
+            UrlRouteList = [],
         };
         foreach (var item in ASPServer.Config.Http)
         {
@@ -50,7 +50,7 @@ public class ASPTopAPI : ITopAPI
         return list;
     }
 
-    public ReMessage AddHttpConfig(BuildOBJ json)
+    public ReMessage AddHttpConfig(BuildObj json)
     {
         SocketConfig item = new()
         {
@@ -77,7 +77,7 @@ public class ASPTopAPI : ITopAPI
         };
     }
 
-    public ReMessage RemoveHttpConfig(BuildOBJ json)
+    public ReMessage RemoveHttpConfig(BuildObj json)
     {
         if (ASPServer.Config.Http.Count == 1)
         {
@@ -108,11 +108,18 @@ public class ASPTopAPI : ITopAPI
         };
     }
 
-    public ReMessage AddHttpRouteConfig(BuildOBJ json)
+    public ReMessage AddHttpRouteConfig(BuildObj json)
     {
         string targe = json.Temp;
         var item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
-
+        if (item == null)
+        {
+            return new ReMessage()
+            {
+                Build = false,
+                Message = "传入参数错误"
+            };
+        }
         if (ASPServer.Config.Routes.ContainsKey(targe))
         {
             return new ReMessage()
@@ -132,7 +139,7 @@ public class ASPTopAPI : ITopAPI
         };
     }
 
-    public ReMessage RemoveHttpRouteConfig(BuildOBJ json)
+    public ReMessage RemoveHttpRouteConfig(BuildObj json)
     {
         string targe = json.Code;
         if (!ASPServer.Config.Routes.ContainsKey(targe))
@@ -154,10 +161,18 @@ public class ASPTopAPI : ITopAPI
         };
     }
 
-    public ReMessage AddHttpUrlRouteConfig(BuildOBJ json)
+    public ReMessage AddHttpUrlRouteConfig(BuildObj json)
     {
         string targe = json.Temp;
-        RouteConfigObj item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
+        var item = JsonUtils.ToObj<RouteConfigObj>(json.Code);
+        if (item == null)
+        {
+            return new ReMessage()
+            {
+                Build = false,
+                Message = "传入参数错误"
+            };
+        }
 
         if (ASPServer.Config.UrlRoutes.ContainsKey(targe))
         {
@@ -178,7 +193,7 @@ public class ASPTopAPI : ITopAPI
         };
     }
 
-    public ReMessage RemoveHttpUrlRouteConfig(BuildOBJ json)
+    public ReMessage RemoveHttpUrlRouteConfig(BuildObj json)
     {
         string targe = json.Code;
         if (!ASPServer.Config.UrlRoutes.ContainsKey(targe))
