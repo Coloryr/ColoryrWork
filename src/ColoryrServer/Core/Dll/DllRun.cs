@@ -451,146 +451,146 @@ internal static partial class DllRun
     /// 消息请求
     /// </summary>
     /// <param name="head"></param>
-    public static void RobotGo(RobotMessage head)
-    {
-        foreach (var dll in AssemblyList.GetRobot())
-        {
-            try
-            {
-                if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotMessage))
-                    continue;
+    //public static void RobotGo(RobotMessage head)
+    //{
+    //    foreach (var dll in AssemblyList.GetRobot())
+    //    {
+    //        try
+    //        {
+    //            if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotMessage))
+    //                continue;
 
-                MethodInfo mi = dll.MethodInfos[CodeDemo.RobotMessage];
-                bool dllres;
-                if (mi.IsStatic)
-                {
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), mi) as Dll.RobotMessageIn;
-                    dllres = temp!(head);
-                }
-                else
-                {
-                    var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), obj1, mi) as Dll.RobotMessageIn;
-                    dllres = temp!(head);
-                }
+    //            MethodInfo mi = dll.MethodInfos[CodeDemo.RobotMessage];
+    //            bool dllres;
+    //            if (mi.IsStatic)
+    //            {
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), mi) as Dll.RobotMessageIn;
+    //                dllres = temp!(head);
+    //            }
+    //            else
+    //            {
+    //                var obj1 = Activator.CreateInstance(dll.SelfType);
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotMessageIn), obj1, mi) as Dll.RobotMessageIn;
+    //                dllres = temp!(head);
+    //            }
 
-                if (dllres)
-                    return;
-            }
-            catch (Exception e)
-            {
-                string error;
-                if (e.InnerException is ErrorDump Dump)
-                {
-                    error = Dump.data;
-                }
-                else
-                {
-                    error = e.ToString();
-                }
+    //            if (dllres)
+    //                return;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            string error;
+    //            if (e.InnerException is ErrorDump Dump)
+    //            {
+    //                error = Dump.data;
+    //            }
+    //            else
+    //            {
+    //                error = e.ToString();
+    //            }
 
-                Task.Run(() => ServiceOnError(e));
-                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
-                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
-            }
-        }
-    }
-    /// <summary>
-    /// 机器人事件
-    /// </summary>
-    /// <param name="head"></param>
-    public static void RobotGo(RobotEvent head)
-    {
-        foreach (var dll in AssemblyList.GetRobot())
-        {
-            try
-            {
-                if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotEvent) || !dll.Check(head.Type))
-                    continue;
+    //            Task.Run(() => ServiceOnError(e));
+    //            LogDatabsae.PutError($"[Robot]{dll.Name}", error);
+    //            ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
+    //        }
+    //    }
+    //}
+    ///// <summary>
+    ///// 机器人事件
+    ///// </summary>
+    ///// <param name="head"></param>
+    //public static void RobotGo(RobotEvent head)
+    //{
+    //    foreach (var dll in AssemblyList.GetRobot())
+    //    {
+    //        try
+    //        {
+    //            if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotEvent) || !dll.Check(head.Type))
+    //                continue;
 
-                MethodInfo mi = dll.MethodInfos[CodeDemo.RobotEvent];
-                bool dllres;
-                if (mi.IsStatic)
-                {
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), mi) as Dll.RobotEventIn;
-                    dllres = temp!(head);
-                }
-                else
-                {
-                    var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), obj1, mi) as Dll.RobotEventIn;
-                    dllres = temp!(head);
-                }
+    //            MethodInfo mi = dll.MethodInfos[CodeDemo.RobotEvent];
+    //            bool dllres;
+    //            if (mi.IsStatic)
+    //            {
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), mi) as Dll.RobotEventIn;
+    //                dllres = temp!(head);
+    //            }
+    //            else
+    //            {
+    //                var obj1 = Activator.CreateInstance(dll.SelfType);
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotEventIn), obj1, mi) as Dll.RobotEventIn;
+    //                dllres = temp!(head);
+    //            }
 
-                if (dllres)
-                    return;
-            }
-            catch (Exception e)
-            {
-                string error;
-                if (e.InnerException is ErrorDump Dump)
-                {
-                    error = Dump.data;
-                }
-                else
-                {
-                    error = e.ToString();
-                }
+    //            if (dllres)
+    //                return;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            string error;
+    //            if (e.InnerException is ErrorDump Dump)
+    //            {
+    //                error = Dump.data;
+    //            }
+    //            else
+    //            {
+    //                error = e.ToString();
+    //            }
 
-                Task.Run(() => ServiceOnError(e));
-                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
-                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
-            }
-        }
-    }
-    /// <summary>
-    /// 机器人发送消息后
-    /// </summary>
-    /// <param name="head"></param>
-    public static void RobotGo(RobotSend head)
-    {
-        foreach (var dll in AssemblyList.GetRobot())
-        {
-            try
-            {
-                if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotSend))
-                    continue;
+    //            Task.Run(() => ServiceOnError(e));
+    //            LogDatabsae.PutError($"[Robot]{dll.Name}", error);
+    //            ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
+    //        }
+    //    }
+    //}
+    ///// <summary>
+    ///// 机器人发送消息后
+    ///// </summary>
+    ///// <param name="head"></param>
+    //public static void RobotGo(RobotSend head)
+    //{
+    //    foreach (var dll in AssemblyList.GetRobot())
+    //    {
+    //        try
+    //        {
+    //            if (!dll.MethodInfos.ContainsKey(CodeDemo.RobotSend))
+    //                continue;
 
-                MethodInfo mi = dll.MethodInfos[CodeDemo.RobotSend];
-                bool dllres;
-                if (mi.IsStatic)
-                {
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), mi) as Dll.RobotSendIn;
-                    dllres = temp!(head);
-                }
-                else
-                {
-                    var obj1 = Activator.CreateInstance(dll.SelfType);
-                    var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), obj1, mi) as Dll.RobotSendIn;
-                    dllres = temp!(head);
-                }
+    //            MethodInfo mi = dll.MethodInfos[CodeDemo.RobotSend];
+    //            bool dllres;
+    //            if (mi.IsStatic)
+    //            {
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), mi) as Dll.RobotSendIn;
+    //                dllres = temp!(head);
+    //            }
+    //            else
+    //            {
+    //                var obj1 = Activator.CreateInstance(dll.SelfType);
+    //                var temp = Delegate.CreateDelegate(typeof(Dll.RobotSendIn), obj1, mi) as Dll.RobotSendIn;
+    //                dllres = temp!(head);
+    //            }
 
-                if (dllres)
-                    return;
-            }
-            catch (Exception e)
-            {
-                string error;
-                if (e.InnerException is ErrorDump Dump)
-                {
-                    error = Dump.data;
-                }
-                else
-                {
-                    error = e.ToString();
-                }
+    //            if (dllres)
+    //                return;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            string error;
+    //            if (e.InnerException is ErrorDump Dump)
+    //            {
+    //                error = Dump.data;
+    //            }
+    //            else
+    //            {
+    //                error = e.ToString();
+    //            }
 
-                Task.Run(() => ServiceOnError(e));
-                LogDatabsae.PutError($"[Robot]{dll.Name}", error);
-                ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
-            }
-        }
-    }
+    //            Task.Run(() => ServiceOnError(e));
+    //            LogDatabsae.PutError($"[Robot]{dll.Name}", error);
+    //            ServerMain.LogError("[Robot]{dll.Name}运行错误", e);
+    //        }
+    //    }
+    //}
     /// <summary>
     /// Mqtt加载消息
     /// </summary>

@@ -161,7 +161,7 @@ public static class ServerMain
             FileRam.Start();
             HttpClientUtils.Start();
             PortMqttServer.Start();
-            RobotUtils.Start();
+            //RobotUtils.Start();
             LoginDatabase.Start();
             WebBinManager.Start();
             LogDatabsae.Start();

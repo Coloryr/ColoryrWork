@@ -13,9 +13,9 @@ public static class Dll
     public delegate bool WebSocketMessageIn(WebSocketMessage arg);
     public delegate bool WebSocketOpenIn(WebSocketOpen arg);
     public delegate bool WebSocketCloseIn(WebSocketClose arg);
-    public delegate bool RobotMessageIn(RobotMessage arg);
-    public delegate bool RobotEventIn(RobotEvent arg);
-    public delegate bool RobotSendIn(RobotSend arg);
+    //public delegate bool RobotMessageIn(RobotMessage arg);
+    //public delegate bool RobotEventIn(RobotEvent arg);
+    //public delegate bool RobotSendIn(RobotSend arg);
     public delegate bool MQTTMessageLoadingIn(DllMqttLoadingRetainedMessages arg);
     public delegate bool MQTTValidatorIn(DllMqttConnectionValidator arg);
     public delegate bool MQTTUnsubscriptionIn(DllMqttUnsubscription arg);

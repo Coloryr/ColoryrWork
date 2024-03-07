@@ -1,5 +1,4 @@
-﻿using ColoryrSDK;
-using ColoryrServer.Core;
+﻿using ColoryrServer.Core;
 using ColoryrServer.Core.Dll;
 using ColoryrServer.Core.FileSystem.Managers;
 using ColoryrServer.Core.PortServer;
@@ -574,8 +573,8 @@ public partial class Tools
     /// 获取在线的机器人
     /// </summary>
     /// <returns>机器人QQ号列表</returns>
-    public static List<long> GetBots()
-        => new(RobotUtils.GetQQs());
+    //public static List<long> GetBots()
+    //    => new(RobotUtils.GetQQs());
     /// <summary>
     /// 压缩HTML
     /// </summary>
@@ -601,8 +600,8 @@ public partial class Tools
     /// 获取机器人
     /// </summary>
     /// <returns>机器人</returns>
-    public static RobotSDK GetRobot()
-        => RobotUtils.Robot;
+    //public static RobotSDK GetRobot()
+    //    => RobotUtils.Robot;
     /// <summary>
     /// 获取一个WebSocket客户端
     /// </summary>
