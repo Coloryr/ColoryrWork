@@ -58,6 +58,7 @@ public partial class ServerContentType
     public const string ICO = "application/x-icon";
     public const string JS = "application/x-javascript";
     public const string TXT = "text/plain";
+    public const string CSS = "text/css";
     /// <summary>
     /// 直接获取返回类型
     /// </summary>
@@ -90,6 +91,8 @@ public partial class ServerContentType
                 return GIF;
             case ".ico":
                 return ICO;
+            case ".css":
+                return CSS;
             default:
                 return html ? HTML : TXT;
         }

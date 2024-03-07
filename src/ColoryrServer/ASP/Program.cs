@@ -109,7 +109,10 @@ public static class ASPServer
             builder.Services.AddTransient<IHttpClients, HttpClients>();
 
             _web = builder.Build();
-            //Web.UseHttpsRedirection();
+            if (Config.UseSsl)
+            {
+                _web.UseHttpsRedirection();
+            }
             _clients = _web.Services.GetRequiredService<IHttpClients>();
 
             _web.MapGet("/", Config.RouteEnable ? HttpGet.RoteGetIndex : HttpGet.GetIndex);
